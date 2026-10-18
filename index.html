@@ -3382,8 +3382,8 @@ return c?t+' · '+[4,3,1][d]+(d==2?' life':' lives')+' · '+SORD.filter(m=>bBt(S
 var INV=4;
 var AMT=['pa','pa','sh','ri','rk','sh','ri','ri','bl','sh','bl'];
 function RDY(p){return shopIt(p).length}
-var AMI={pa:{n:'Pistol ammo',s:'PISTOL',c:'#e8c040',buy:120,cost:30,max:600,drop:60},ri:{n:'Rifle rounds',s:'RIFLE',c:'#d88a3a',buy:80,cost:45,max:400,drop:40},sh:{n:'Shotgun shells',s:'SHELLS',c:'#d84a3a',buy:8,cost:40,max:160,drop:6},rk:{n:'Rockets',s:'ROCKETS',c:'#8a9a6a',buy:10,cost:90,max:36,drop:5},bl:{n:'Ammo belts',s:'BELTS',c:'#c8b070',buy:300,cost:70,max:1200,drop:150}};
-var MAG=[12,30,6,20,1,8,20,30,100,8,120],RLT=[1.25,1.3,1.7,1.4,2.2,1.9,1.6,1.4,2.4,1.9,2.4];
+var AMI={pa:{n:'Pistol ammo',s:'PISTOL',c:'#e8c040',buy:300,cost:30,max:1200,drop:60},ri:{n:'Rifle rounds',s:'RIFLE',c:'#d88a3a',buy:200,cost:40,max:800,drop:40},sh:{n:'Shotgun shells',s:'SHELLS',c:'#d84a3a',buy:8,cost:40,max:160,drop:6},rk:{n:'Rockets',s:'ROCKETS',c:'#8a9a6a',buy:10,cost:90,max:36,drop:5},bl:{n:'Ammo belts',s:'BELTS',c:'#c8b070',buy:300,cost:70,max:1200,drop:150}};
+var MAG=[18,45,6,30,1,8,30,40,100,8,120],RLT=[1.25,1.3,1.7,1.4,2.2,1.9,1.6,1.4,2.4,1.9,2.4];
 // what each enemy type tends to drop
 var ZAM=['pa','pa','sh','ri','bl','pa','rk','bl','rk','sh','ri','ri','rk','sh','pa','rk','pa','ri'];
 function AMG(i,ci){return CH[ci]&&CH[ci].dw&&i==0?24:MAG[i]}
