@@ -1404,7 +1404,7 @@ if(z.t==9){if(sg&&d<320){if(d<120){a=Math.atan2(z.y-P.y,z.x-P.x);m=.6}else m=0;i
 else if(z.t==11){if(sg&&d<340){if(d<150){a=Math.atan2(z.y-P.y,z.x-P.x);m=.7}else m=0;if(z.cd<=0){z.cd=2.6;spit(z)}}}}
 if(z.t==18||z.t==19){const r=zBeh(z,T,dt,a,m);a=r[0];m=r[1];if(r[2])continue}
 if(T.boss){const d=Math.hypot(P.x-z.x,P.y-z.y),sg=los(z,P);z.cd=(z.cd??1.5)-dt;
-if(z.t==6){z.s2=(z.s2??3)-dt;if(z.s2<=0&&zs.length+nq.length<28+12*Math.max(0,MPn-1)){z.s2=5;sfx('horn',z.x,z.y,.5);{let u=zSecT(1,0);if(u!=null)nq.push(mk(u,z.x-20,z.y+22));u=zSecT(1,0);if(u!=null)nq.push(mk(u,z.x+20,z.y+22))}}}
+if(z.t==6){z.s2=(z.s2??3)-dt;if(z.s2<=0&&zs.length+nq.length<28+12*Math.max(0,MPn-1)){z.s2=5;sfx('horn',z.x,z.y,.5);{let u=zSecT(1,0,1);if(u!=null)nq.push(mk(u,z.x-20,z.y+22));u=zSecT(1,0,1);if(u!=null)nq.push(mk(u,z.x+20,z.y+22))}}}
 else if(z.t==7){z.ks=z.ks??0;z.kt=(z.kt??2.5)-dt;
 if(z.ks==1){m=0;a=Math.atan2(P.y-z.y,P.x-z.x);z.da=a;if(z.kt<=0){z.ks=2;z.kt=.8}}
 else if(z.ks==2){a=z.da;m=2.4;if(z.kt<=0){z.ks=3;z.kt=.9}}
@@ -4125,13 +4125,14 @@ if(OLX)setTimeout(()=>{if(S.ol){OL.busy=1;olSync().then(r=>{if(r=='ask'&&mode=='
 // sp = counts as "special" · rg = counts as "ranged" · w = spawn weight in regular waves
 // max = most of this type alive at once outside its own intro wave (optional)
 // of = offspring of another type (never scheduled; unlocked together with its parent)
+// free = never counted by the caps (only its parent was) and never blocked by them
 var ZC={
  0:{n:'Walker',tier:1,cat:['Standard'],sp:0,rg:0,w:5},
  1:{n:'Runner',tier:1,cat:['Fast'],sp:1,rg:0,w:3},
  2:{n:'Brute',tier:1,cat:['Strong'],sp:0,rg:0,w:2},
  3:{n:'Dasher',tier:2,cat:['Fast'],sp:1,rg:0,w:2},
  4:{n:'Splitter',tier:2,cat:['Strong'],sp:1,rg:0,w:1.5},
- 5:{n:'Splitling',tier:1,cat:['Fast'],sp:1,rg:0,w:0,of:4},
+ 5:{n:'Splitling',tier:1,cat:['Fast'],sp:0,rg:0,w:0,of:4,free:1},
  9:{n:'Bones',tier:3,cat:['Ranged'],sp:0,rg:1,w:2},
  10:{n:'Toxic',tier:1,cat:['Explosive'],sp:0,rg:0,w:2},
  11:{n:'Toxic the Spitter',tier:2,cat:['Ranged'],sp:0,rg:1,w:2},
@@ -4146,7 +4147,8 @@ var ZCFG={
  intro:{first:3,every:3,mult:{sp:.6,rg:.4,other:.8},min:1,max:0}, // max 0 = no upper limit
  // waves 1-20 introduce only ONE ranged type: this one (11 = Toxic the Spitter, 9 = Bones).
  // The other ranged type stays locked until after wave 20.
- early:{end:20,ranged:11},
+ early:{end:20,ranged:11,campaign:[11,9]},
+ // ^ free play always uses `ranged`; each campaign level picks one of `campaign` at random
  // introduction order: tier 1 types first, then tier 2, then tier 3 (random order inside a tier).
  // Put ZT numbers in `fixed` (e.g. [1,10,2,...]) for an exact order instead.
  fixed:null,
@@ -4168,7 +4170,7 @@ function zPlan(){const C=ZCFG,ty=Object.keys(ZC).map(Number).filter(t=>ZC[t].of=
  const W=[],used=new Set();for(let i=0;i<o.length*2+4;i++){let v=C.intro.first+i*C.intro.every;while(zBossW(v)||used.has(v))v++;used.add(v);W.push(v)}
  // fill the slots in order, but only ONE ranged type may land in waves 1..early.end (the configured one);
  // the configured one is pulled forward if it would otherwise miss that window
- const E=C.early,rg=t=>!!ZC[t].rg,er=ZC[E.ranged]&&rg(E.ranged)?E.ranged:null,q=o.slice(),R={};let k=0,nr=0;
+ const E=C.early,rg=t=>!!ZC[t].rg,er0=(GMD=='c'&&E.campaign&&E.campaign.length)?E.campaign[Math.random()*E.campaign.length|0]:E.ranged,er=ZC[er0]&&rg(er0)?er0:null,q=o.slice(),R={};let k=0,nr=0;
  while(q.length&&k<W.length){const v=W[k],nx=W[k+1]||1e9;k++;let i=0;
   if(v<=E.end){if(er!=null&&q.includes(er)&&nx>E.end)i=q.indexOf(er);else i=q.findIndex(t=>!rg(t)||(nr==0&&(er==null||t===er)));if(i<0)continue}
   const t=q.splice(i,1)[0];R[t]=v;if(v<=E.end&&rg(t))nr++}
@@ -4177,12 +4179,12 @@ function zPlan(){const C=ZCFG,ty=Object.keys(ZC).map(Number).filter(t=>ZC[t].of=
 function zIntro(w=wave){for(const t in IW)if(IW[t]==w&&ZC[t])return +t;return null}
 function zUnl(t){const c=ZC[t];if(!c)return false;if(t==ZCFG.filler)return true;if(c.of!=null)return zUnl(c.of);return IW[t]!=null&&IW[t]<=wave}
 // living classified zombies, including ones queued to join this frame
-function zCen(){const C={n:0,r:0,s:0,b:{}};for(const L of[zs,nq])for(const z of L){if(!(z.hp>0))continue;const c=ZC[z.t];if(!c)continue;C.n++;if(c.rg)C.r++;if(c.sp)C.s++;C.b[z.t]=(C.b[z.t]||0)+1}return C}
+function zCen(){const C={n:0,r:0,s:0,b:{}};for(const L of[zs,nq])for(const z of L){if(!(z.hp>0))continue;const c=ZC[z.t];if(!c||c.free)continue;C.n++;if(c.rg)C.r++;if(c.sp)C.s++;C.b[z.t]=(C.b[z.t]||0)+1}return C}
 // does one more of type t fit under the caps? true, or the reason it doesn't. Integer-only maths:
 // (count+1)/(living+1) <= pct/100  ⇔  (count+1)*100 <= pct*(living+1)
-function zFits(t,C){const c=ZC[t];if(!c)return true;const it=zIntro();if(it!=null&&(t==it||c.of==it))return true;const d=zDi(),n1=C.n+1;
+function zFits(t,C){const c=ZC[t];if(!c||c.free)return true;const it=zIntro();if(it!=null&&(t==it||c.of==it))return true;const d=zDi(),n1=C.n+1;
  if(c.rg&&(C.r+1)*100>ZCFG.cap.rg[d]*n1)return'ranged';if(c.sp&&(C.s+1)*100>ZCFG.cap.sp[d]*n1)return'special';if(c.max&&(C.b[t]||0)>=c.max)return'max';return true}
-function zOK(t,C){if(!zUnl(t))return'locked';const it=zIntro();if(it!=null&&t!=it&&ZC[t].of!=it)return'intro';return zFits(t,C)}
+function zOK(t,C,nl){if(!nl&&!zUnl(t))return'locked';const it=zIntro();if(it!=null&&t!=it&&ZC[t].of!=it)return'intro';return zFits(t,C)}
 function zW(t){const c=ZC[t],r=(ZCFG.ramp||{})[c.tier]||0;if(!r||IW[t]==null)return c.w;return c.w*Math.min(1,.35+.65*Math.max(0,wave-IW[t])/r)}
 function zPool(){const A=[];for(const k in ZC){const t=+k,c=ZC[t];if(c.of!=null||!(c.w>0)||!zUnl(t))continue;A.push([t,zW(t)])}return A}
 function zRoll(A){let r=Math.random()*A.reduce((q,w)=>q+w[1],0);for(const[i,w]of A){r-=w;if(r<=0)return i}return A.length?A[A.length-1][0]:null}
@@ -4200,7 +4202,8 @@ function zPick(){const C=zCen(),it=zIntro();
   else{ZD.dl++;zEv('spawn delayed: '+(t!=null?ZC[t].n:'?')+' ('+f+' cap), nothing else fits');return null}}
  ZD.wt=0;if(WRC){WRC.t.push(t);WRC.i=WRC.t.length}return t}
 // secondary spawns (splits, summons): the type to use, or the fallback, or null when neither may appear
-function zSecT(t,fb){const C=zCen(),f=zOK(t,C);if(f===true)return t;if(ZD.rj[f]!=null)ZD.rj[f]++;
+// nl = ignore whether t is unlocked yet (Juggernaut's Runners)
+function zSecT(t,fb,nl){const C=zCen(),f=zOK(t,C,nl);if(f===true)return t;if(ZD.rj[f]!=null)ZD.rj[f]++;
  if(fb!=null&&fb!==t&&zOK(fb,C)===true){zEv((ZC[t]?ZC[t].n:t)+' summon '+f+' → '+ZC[fb].n);return fb}zEv((ZC[t]?ZC[t].n:t)+' summon/split blocked ('+f+')');return null}
 // queue an already-built zombie object if it is allowed to appear
 function zQ(o){if(zSecT(o.t)==null)return null;o.m0=o.m0||o.hp;nq.push(o);return o}
