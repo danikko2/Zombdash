@@ -1277,7 +1277,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden&&mode=='pla
 function plan(){IW=zPlan()}
 function nextBoss(){if(!BB.length){BB=[6,7,8,12,13];for(let i=BB.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[BB[i],BB[j]]=[BB[j],BB[i]]}if(BB[BB.length-1]==LB){const j=Math.random()*(BB.length-1)|0;[BB[BB.length-1],BB[j]]=[BB[j],BB[BB.length-1]]}}LB=BB.pop();return LB}
 function start(){WRC=WRP=null;TUT=null;livesInit();RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];GCC=[];CWIN=null;KN=null;RH=null;SVB=0;MPn=0;mapFix();plan();BB=[];build();P=mkP(sel,S.ac,'any',0);PL=[P];zs=[];bs=[];pt=[];wave=swEff()-1;kills=0;ET=0;PRE=0;if(CPR){cpApply();olRun();return}cpClear();lmRun();olRun();if(swEff()>1){PRE=1;shop()}else if(tutOK())tutStart();else nextWave()}
-function nextWave(){OPF=0;duck(1);if(!MPn&&!TUT&&wave>=1)cpSave();PRE=0;P=PL[0];wave++;for(const p of PL){if(p.sc0!=null&&p.cash<p.sc0)chEv(p,'spend',p.sc0-p.cash);p.sc0=null;if(!p.dead)chEv(p,'wave',wave);if(p.sw0==1)mapUnl(p,wave)}nzn='';for(const t in IW)if(IW[t]==wave)nzn=ZT[t].n;if(wave>S.best){S.best=wave;sv()}const bw=wave%10==0;const nz=Math.round((4+wave*3+Math.floor(wave*wave*.12))*(MPn>1?1+.6*(MPn-1):1));toSp=zWaveN(bw?Math.floor(nz*.35):nz);spT=1;mode='play';ui.innerHTML='';banner=2.2;ep=[];pd=[];fr=[];rg=[];DR=[];FT=[];ET=0;for(const p of PL){p.dd=0;p.bn=0;if(p.dead||p.dn)respawn(p);p.shd=sPk(p,1)?1:0;if(sPk(p,7)){p.inv=Math.max(p.inv||0,3);FT.push({x:p.x,y:p.y-38,t:'HEROIC ENTRANCE',c:'#ffcf40',l:1.6})}}{const rp=WRP&&WRP.w==wave;bossQ=bw?(rp?WRP.b:nextBoss()):-1;WRC=rp?{w:wave,b:WRP.b,t:WRP.t,i:0,x:WRP.x,rp:1}:{w:wave,b:bossQ,t:[],i:0,x:null};WRP=null}if(GMD=='c'&&wave>=20){toSp=0;bossQ=-1;svSpawn()}music(bw?'boss':'game');sfx('wave');if(nzn)sfx('newz')}
+function nextWave(){OPF=0;duck(1);if(!MPn&&!TUT&&wave>=1)cpSave();PRE=0;P=PL[0];wave++;for(const p of PL){if(p.sc0!=null&&p.cash<p.sc0)chEv(p,'spend',p.sc0-p.cash);p.sc0=null;if(!p.dead)chEv(p,'wave',wave);if(p.sw0==1)mapUnl(p,wave)}nzn='';for(const t in IW)if(IW[t]==wave)nzn=ZT[t].n;if(wave>S.best){S.best=wave;sv()}const bw=wave%10==0;const nz=zWaveCount(wave);toSp=zWaveN(bw?Math.floor(nz*.35):nz);spT=1;mode='play';ui.innerHTML='';banner=2.2;ep=[];pd=[];fr=[];rg=[];DR=[];FT=[];ET=0;for(const p of PL){p.dd=0;p.bn=0;if(p.dead||p.dn)respawn(p);p.shd=sPk(p,1)?1:0;if(sPk(p,7)){p.inv=Math.max(p.inv||0,3);FT.push({x:p.x,y:p.y-38,t:'HEROIC ENTRANCE',c:'#ffcf40',l:1.6})}}{const rp=WRP&&WRP.w==wave;bossQ=bw?(rp?WRP.b:nextBoss()):-1;WRC=rp?{w:wave,b:WRP.b,t:WRP.t,i:0,x:WRP.x,rp:1}:{w:wave,b:bossQ,t:[],i:0,x:null};WRP=null}if(GMD=='c'&&wave>=20){toSp=0;bossQ=-1;svSpawn()}music(bw?'boss':'game');sfx('wave');if(nzn)sfx('newz')}
 function shop(){if(S.dev&&!S.balNM)for(const p of PL)p.cash=999999;if(mode!='shop'){if(!PRE&&!MPn&&!CPR)setTimeout(cpSave,0);if(!PRE){sfx('clear');for(const p of PL){P=p;gainXP(10+4*wave);chEv(p,'clear',1)}if(SVD){SVD=0;sv()}P=PL[0]}music('menu');duck(.85);for(const p of PL){p.rdy=0;p.sc=p.sc||0;p.sc0=p.cash;amFill(p)}}mode='shop';L=R=null;if(MPn)return mshop();const AC=pc(Math.round((S.df?800:500)*(1-.1*rk('arm')))),RC=pc(Math.round(30*(1-.1*rk('arm')))),ar=P.ar||0;show(`<div class="p sp"><h2>${PRE?'GET READY · WAVE '+(wave+1):'WAVE '+wave+' CLEARED'}</h2><div class=chips><span class=chip>$<b>${P.cash}</b></span><span class=chip><span class=hp>♥</span> <b>${P.hp}/${P.mx}</b></span>${ar?`<span class=chip><span class=arc>ARMOR</span> <b>${ar}/6</b></span>`:''}</div><div class=sg>`+WP.map((w,i)=>{const o=P.own.includes(i),can=P.cash>=pc(w.cost);return `<button data-q=1 class="${P.cur==i?'on':''} ${!o&&(!can||P.own.length>=INV)?'no':''}" onclick="buy(${i})"><canvas data-gun=${i} data-cm=${cmOf(P.ac,i)}></canvas>${wN(P.ci||0,i)}<small>${o?(P.cur==i?'equipped':'equip'):P.own.length>=INV?'slots full':'$'+pc(w.cost)}</small></button>`}).join('')+`<button data-q=1 class="${P.cash<pc(25)||P.hp>=P.mx?'no':''}" onclick="heal()"><span class=ico>+♥</span>Heal +1<small>$${pc(25)}</small></button><button data-q=1 class="${P.mx>=MXH(P)||P.cash<pc(250)?'no':''}" onclick="mhp()"><span class=ico>♥+</span>Max HP<small>${P.mx>=MXH(P)?'maxed ('+MXH(P)+')':'$'+pc(250)}</small></button><button data-q=1 class="${!ar?(P.cash<AC?'no':''):ar>=6||P.cash<30?'no':''}" onclick="armor()"><span class="ico arc">▣</span>${!ar?'Armor +6':ar<6?'Repair':'Armor'}<small>${!ar?'$'+AC:ar<6?'$'+(6-ar)*RC+' (6-'+(6-ar)+')':'full 6/6'}</small></button></div>${invHTML()}<button class=go onclick="nextWave()">START WAVE ${wave+1}</button></div>`)}
 function buy(i){const w=WP[i];if(!P.mg)amInit(P);if(P.own.includes(i)){P.cur=i;sfx('click')}else if(P.own.length>=INV)sfx('deny');else if(P.cash>=pc(w.cost)){const c=pc(w.cost);P.cash-=c;P.paid[i]=c;P.own.push(i);P.cur=i;const t=AMT[i];P.mg[i]=AMG(i,P.ci||0);P.am[t]=Math.min(AMI[t].max,P.am[t]+AMG(i,P.ci||0)*2);sfx('buy')}else sfx('deny');shop()}
 function arm(d){if(d>=2&&sPk(P,14))d--;if(d>0&&sPk(P,10)&&Math.random()<.2){FT.push({x:P.x,y:P.y-30,t:'PHASED',c:'#e8e8ff',l:.8});return 0}if(d>0&&P.shd){P.shd=0;FT.push({x:P.x,y:P.y-30,t:'PLATING BLOCKED',c:'#9fe8ff',l:1});sfx('armor');return 0}if(P.ar>0&&d>0){const a=Math.min(P.ar,d);P.ar-=a;d-=a;sfx('armor')}return d}
@@ -1357,10 +1357,10 @@ function tgt(z){if(!MPn)return P;if(z.t==14&&z.es==1&&alive(z.tg))return z.tg;z.
 function inp(p){let mx=0,my=0,fire=false;
 if(p.inp=='km'||p.inp=='any'){if(L){mx=L.x-L.ox;my=L.y-L.oy}if(keys.a)mx-=50;if(keys.d)mx+=50;if(keys.w)my-=50;if(keys.s)my+=50;
 if(R){const dx=R.x-R.ox,dy=R.y-R.oy;if(Math.hypot(dx,dy)>10){p.a=Math.atan2(dy,dx);fire=true}}
-else if(mouse.d){const v=MPn&&p.vp||{x:0,y:0,z:tutZ()},c=MPn&&p.cam||cam;p.a=Math.atan2((mouse.y-v.y)/v.z+c.y-p.y,(mouse.x-v.x)/v.z+c.x-p.x);fire=true}}
+else if(mouse.d||MSE.on){const v=MPn&&p.vp||{x:0,y:0,z:tutZ()},c=MPn&&p.cam||cam;p.a=Math.atan2((mouse.y-v.y)/v.z+c.y-p.y,(mouse.x-v.x)/v.z+c.x-p.x);if(mouse.d)fire=true}}
 for(const q of GP){if(p.inp!='any'&&q.i!==p.inp)continue;const g=q.g,ax=g.axes[0]||0,ay=g.axes[1]||0,am=Math.hypot(ax,ay);
 if(am>.22){const k=Math.min(1,(am-.22)/.68)*50/am;mx+=ax*k;my+=ay*k}if(q.b[12])my-=50;if(q.b[13])my+=50;if(q.b[14])mx-=50;if(q.b[15])mx+=50;
-const rx=g.axes[2]||0,ry=g.axes[3]||0,rm=Math.hypot(rx,ry);if(rm>.3){p.a=Math.atan2(ry,rx);if(rm>.6)fire=true}if(q.b[7])fire=true;
+const rx=g.axes[2]||0,ry=g.axes[3]||0,rm=Math.hypot(rx,ry);if(rm>.3){p.a=Math.atan2(ry,rx);const tD=70+120*Math.min(1,(rm-.3)/.6);p.rtD=p.rtD?p.rtD+(tD-p.rtD)*.25:tD;p.rtW=performance.now();MSE.on=0}if(q.b[7]){fire=true;p.rtW=performance.now();MSE.on=0}
 if(q.jp(2))amRel(p);if(q.jp(4)||q.jp(5)||q.jp(3)){const o=p.own.slice(),j=o.indexOf(p.cur);p.cur=o[(j+(q.jp(4)?-1:1)+o.length)%o.length];sfx('click')}}
 if(p.root>0){mx=0;my=0}return{mx,my,fire}}
 function updP(dt){if(P.dead)return 0;
@@ -1446,7 +1446,7 @@ drawDrops();for(const p of pt){X.fillStyle=p.c;X.fillRect(p.x-2,p.y-2,4,4)}
 drawPlayers();subCan();schFg();vehFg();fsCan();mnFog();
 for(const p of ep){if(p.k==5){svBul(p);continue}if(p.k==3){X.fillStyle='#ff5a1a';X.beginPath();X.arc(p.x,p.y,7,0,7);X.fill();X.fillStyle='#ffb02e';X.beginPath();X.arc(p.x-1,p.y-1,4,0,7);X.fill();X.fillStyle='#ffe9a0';X.fillRect(p.x-2,p.y-2,3,3)}else if(p.k==2){X.fillStyle='#7ed44a';X.beginPath();X.arc(p.x,p.y,5,0,7);X.fill();X.fillStyle='#bff28a';X.fillRect(p.x-2,p.y-3,2,2)}else if(p.k){X.strokeStyle='#d9c9a0';X.lineWidth=p.big?5:2;X.beginPath();X.moveTo(p.x,p.y);X.lineTo(p.x-p.vx/320*(p.big?40:16),p.y-p.vy/320*(p.big?40:16));X.stroke();X.fillStyle='#fff';X.fillRect(p.x-2,p.y-2,4,4)}else{X.fillStyle='#444';X.fillRect(p.x-6,p.y-6,12,12);X.fillStyle='#8a8a8a';X.fillRect(p.x-5,p.y-5,9,9)}}
 for(const r of rg){const k=r.l/r.m;X.globalAlpha=.7*k;X.strokeStyle=r.c||'#8ee03a';X.lineWidth=4;X.beginPath();X.arc(r.x,r.y,r.r*(1-k)+6,0,7);X.stroke();X.globalAlpha=1}
-for(const p of sk){const k=p.l/p.m;X.globalAlpha=.45*k;X.fillStyle='#8a8a8a';X.beginPath();X.arc(p.x,p.y,4+(1-k)*10,0,7);X.fill()}X.globalAlpha=1;X.restore();tutDark();zmEnd();if(MPn)arrows();hud();tutHud()}
+for(const p of sk){const k=p.l/p.m;X.globalAlpha=.45*k;X.fillStyle='#8a8a8a';X.beginPath();X.arc(p.x,p.y,4+(1-k)*10,0,7);X.fill()}X.globalAlpha=1;aimRet();X.restore();tutDark();zmEnd();if(MPn)arrows();hud();tutHud()}
 function shield(x,y,f){const H_=['#####','#####','#####','.###.','..#..'];X.fillStyle='#070a08';for(let j=0;j<5;j++)for(let i=0;i<5;i++)if(H_[j][i]=='#')X.fillRect(x+i*2-1,y+j*2+1,4,4);for(let j=0;j<5;j++)for(let i=0;i<5;i++)if(H_[j][i]=='#'){X.fillStyle=f?(j<1&&i<3?'#cfe8ff':'#6aa8e0'):'#26303c';X.fillRect(x+i*2,y+j*2+2,2,2)}}
 function heart(x,y,f){const H_=['.##.##.','#######','#######','.#####.','..###..','...#...'];X.fillStyle='#070a08';for(let j=0;j<6;j++)for(let i=0;i<7;i++)if(H_[j][i]=='#')X.fillRect(x+i*2-1,y+j*2-1,4,4);for(let j=0;j<6;j++)for(let i=0;i<7;i++)if(H_[j][i]=='#'){X.fillStyle=f?(j<2&&i<3&&i>0?'#ff9a8a':'#e0443a'):'#3d2226';X.fillRect(x+i*2,y+j*2,2,2)}}
 function hpanel(x,y,w,h){X.fillStyle='rgba(7,10,8,.72)';X.fillRect(x,y,w,h);X.fillStyle='rgba(155,232,96,.35)';X.fillRect(x,y,w,2);X.fillStyle='rgba(0,0,0,.5)';X.fillRect(x,y+h,w,3)}
@@ -4297,6 +4297,11 @@ function zdText(){const C=zCen(),d=zDi(),pc=(a,b)=>b?(a*100/b).toFixed(1)+'%':'0
  (ev?'Last: '+ev.m+' ('+ag+')\n':'Last: no cap events\n')+
  'Schedule '+sch}
 
+// ---- wave size: normal count = base + perWave×wave + floor(growth×wave²), then × the map's % (campaign / free play) ----
+var ZWN={b:4,w:3,g:.12},ZMAPM={c:{},f:{}};try{MP.forEach((_,m)=>{ZMAPM.c[m]=100;ZMAPM.f[m]=100})}catch(e){}
+function zWaveBase(w){return ZWN.b+w*ZWN.w+Math.floor(w*w*ZWN.g)}
+function zWaveCount(w){const t=(GMD=='c'?ZMAPM.c:ZMAPM.f)[mapId],k=(t==null?100:t)/100;return Math.max(1,Math.round(zWaveBase(w)*k*(MPn>1?1+.6*(MPn-1):1)))}
+
 // ---------- split screen campaign: pick the map on the same campaign map screens as single player ----------
 var CMLB=0;
 // the lobby's combined progress: a map or section counts as open when the players' progress together opens it
@@ -4310,7 +4315,7 @@ function clbGo(){if(!mOpen(cAcc(),DIF(),mapId)){sfx('deny');return}S.mp=mapId;SV
 // Every value here is the game's real variable. Changes are saved on this device in S.bal and only
 // apply while test mode is on; turning test mode off puts every default back.
 var BALR=[],BALM={},BALD={},BALT='guns',BALTO=0;
-const BALG=[['guns','Guns'],['ammo','Ammo'],['caps','Caps'],['zhp','Zombie HP'],['bhp','Boss HP'],['php','Player HP']];
+const BALG=[['guns','Guns'],['ammo','Ammo'],['caps','Caps'],['zhp','Zombie HP'],['bhp','Boss HP'],['php','Player HP'],['zc','Zombie count']];
 function balInit(){if(BALR.length)return;const add=(g,sub,lab,o,f,mn,mx,st)=>{const k=g+'|'+(sub||'')+'|'+lab;const e={g,sub,lab,o,f,mn,mx,st,k};BALR.push(e);BALM[k]=e;BALD[k]=o[f]};
  const up=(v,m,s)=>Math.max(m,Math.ceil(v/s)*s);
  WP.forEach((w,i)=>{const n=w.n+(i==0?' (Dual Pistols get 2× mag)':'');add('guns',n,'Damage',w,'d',.25,up(w.d*3,10,1),.25);add('guns',n,'Magazine',MAG,i,1,up(MAG[i]*4,20,10),1);add('guns',n,'Store price',w,'cost',0,up(w.cost*3,1000,100),10)});
@@ -4322,6 +4327,9 @@ function balInit(){if(BALR.length)return;const add=(g,sub,lab,o,f,mn,mx,st)=>{co
  for(const k in ZC){const t=+k;add('zhp','Base health (grows with each wave)',ZC[t].n,ZT[t],'hp',.5,up(ZT[t].hp*4,10,5),.5)}
  for(const t of[6,7,8,12,13])add('bhp','Wave bosses (×1.8 on Hard, more with more players)',ZT[t].n,ZT[t],'hp',10,up(ZT[t].hp*3,100,50),5);
  for(const ci in SVS){const D=SVS[ci],n=CH[ci]?CH[ci].n:'#'+ci;add('bhp','Survivor bosses (wave 20 of the campaign)',n,D,'hp',20,up(D.hp*3,100,50),10);if(D.h1)add('bhp','Survivor bosses (wave 20 of the campaign)',n+' · '+(D.p1||'first bar'),D,'h1',20,up(D.h1*3,100,50),10)}
+ add('zc','Every map: normal wave size = base + per wave × wave + growth × wave²','Base',ZWN,'b',0,40,1);add('zc','Every map: normal wave size = base + per wave × wave + growth × wave²','Per wave',ZWN,'w',0,12,.25);add('zc','Every map: normal wave size = base + per wave × wave + growth × wave²','Growth',ZWN,'g',0,1,.01);
+ CORD.forEach((m,i)=>add('zc','Campaign: % of the normal size on each map',(i+1)+'. '+MP[m].n,ZMAPM.c,m,10,400,5));
+ MP.forEach((M,m)=>add('zc','Free play: % of the normal size on each map',M.n,ZMAPM.f,m,10,400,5));
  CH.forEach((c,i)=>add('php','Starting health of each survivor (max health still goes up to 8 above it)',c.n,c,'hp',1,20,1))}
 function balApply(){balInit();for(const e of BALR)e.o[e.f]=BALD[e.k];if(!S.dev||!S.bal)return;for(const k in S.bal){const e=BALM[k],v=+S.bal[k];if(e&&isFinite(v))e.o[e.f]=Math.max(0,v)}}
 function balPct(e,v){const mx=Math.max(e.mx,v);return mx>e.mn?Math.round((v-e.mn)/(mx-e.mn)*100):0}
@@ -4339,14 +4347,15 @@ function balCss(){try{if(document.getElementById('balcss')||!document.head)retur
 .bal .bft{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:8px}.bal .bft button{flex:1 1 140px;font-size:15px}
 @media (max-width:560px){.bal .brow{grid-template-columns:1fr 70px 32px}.bal .brow input[type=range]{grid-column:1/-1;grid-row:2}}`;document.head.appendChild(st)}catch(e){}}
 function balOpen(t){if(!S.dev)return options();balInit();if(t)BALT=t;UIS='bal';mode='menu';balCss();let h='',sub=null;
- for(const e of BALR){if(e.g!=BALT)continue;if(e.sub!==sub){sub=e.sub;h+=`<h4 class=bsub>${sub}</h4>`}h+=balRow(e)}
+ for(const e of BALR){if(e.g!=BALT)continue;if(e.sub!==sub){sub=e.sub;h+=`<h4 class=bsub>${sub}</h4>`;if(BALT=='zc'&&e.lab=='Base')h+=`<p class=note id=balzc style="text-align:left;margin:2px 4px 6px">${balZcTxt()}</p>`}h+=balRow(e)}
  const n=Object.keys(S.bal||{}).length;
  show(`<div class="p wide bal"><h2>GAME BALANCE<small>test mode</small></h2><div class=row style="margin:0 0 4px"><button data-q=1 onclick="options()">◀ BACK TO OPTIONS</button></div><div class="seg btab">${BALG.map(([k,nm])=>`<button data-q=1 class="${BALT==k?'on':''}" onclick="balOpen('${k}')">${nm}${BALR.some(e=>e.g==k&&S.bal&&e.k in S.bal)?' •':''}</button>`).join('')}</div>
 <div class=bbody>${h}</div><p class=note>Changes save on this device and apply right away to new spawns, the store and the next run, but only while test mode is on. Highlighted rows differ from the game's defaults (${n} changed). Use “Copy changes” and paste the list to Claude to make them permanent for everyone.</p>
 <div class=bft><button data-q=1 class="${S.balNM?'':'on'}" onclick="balNM()">Unlimited test money: ${S.balNM?'OFF':'ON'}</button><button data-q=1 onclick="balReset(1)">Reset this tab</button><button data-q=1 class=red onclick="balReset(0)">Reset everything</button><button data-q=1 onclick="balCopy()">Copy changes</button></div><p class=note id=balmsg></p>
 <div class=row><button class=go onclick="options()">BACK</button></div></div>`)}
+function balZcTxt(){return 'At 100%, one player: '+[1,3,5,9,10,15,19,20,30].map(w=>'W'+w+' '+(w%10==0?Math.floor(zWaveBase(w)*.35)+' (boss)':zWaveBase(w))).join(' · ')+'. Split screen adds 60% per extra player. New-type waves use 40–80% of this.'}
 function balSet(i,v){const e=BALR[i];if(!e)return;S.bal=S.bal||{};if(v==null||v===''||!isFinite(+v))v=BALD[e.k];v=Math.max(0,+v);if(v==BALD[e.k])delete S.bal[e.k];else S.bal[e.k]=v;e.o[e.f]=S.dev?v:BALD[e.k];
- try{const r=document.getElementById('bal'+i);if(r){const[rg,nm]=r.querySelectorAll('input');if(rg){if(+rg.value!==v){if(v>+rg.max)rg.max=v;rg.value=v}rg.style.setProperty('--v',balPct(Object.assign({},e,{mx:+rg.max}),v)+'%')}if(nm&&document.activeElement!==nm)nm.value=balFmt(v);r.classList.toggle('ch',e.k in S.bal)}}catch(x){}
+ try{const r=document.getElementById('bal'+i);if(r){const[rg,nm]=r.querySelectorAll('input');if(rg){if(+rg.value!==v){if(v>+rg.max)rg.max=v;rg.value=v}rg.style.setProperty('--v',balPct(Object.assign({},e,{mx:+rg.max}),v)+'%')}if(nm&&document.activeElement!==nm)nm.value=balFmt(v);r.classList.toggle('ch',e.k in S.bal)}if(e.g=='zc'){const z=document.getElementById('balzc');if(z)z.textContent=balZcTxt()}}catch(x){}
  clearTimeout(BALTO);BALTO=setTimeout(()=>{try{sv()}catch(x){}},300)}
 function balReset(tab){if(!S.bal)S.bal={};for(const e of BALR)if(!tab||e.g==BALT)delete S.bal[e.k];balApply();try{sv()}catch(x){}sfx('click');balOpen()}
 function balNM(){S.balNM=S.balNM?0:1;if(!S.balNM&&S.dev)for(const p of PL||[])p.cash=999999;try{sv()}catch(x){}sfx('click');balOpen()}
@@ -4358,7 +4367,22 @@ const _devSet1=devSet;devSet=function(){_devSet1();balApply()};
 const _devOff1=devOff;devOff=function(){S.dev=0;balApply();_devOff1()};
 balApply();
 
-function loop(t){clFrame(t);zdFrame();requestAnimationFrame(loop);try{if(innerWidth!==LW||innerHeight!==LH){LW=innerWidth;LH=innerHeight;rs()}loopBody(t)}catch(e){showErr(e)}}
+// ---------- aiming reticle: mouse aims without firing (PC), right stick aims and the trigger fires (controllers) ----------
+var MSE={on:0};
+try{C.addEventListener('pointermove',e=>{if(e.pointerType=='mouse'){MSE.on=1}else MSE.on=0});C.addEventListener('pointerdown',e=>{if(e.pointerType&&e.pointerType!='mouse')MSE.on=0})}catch(e){}
+// world point the mouse is over, for the player using the mouse
+function msWorld(p){const v=MPn&&p.vp||{x:0,y:0,z:tutZ()},c=MPn&&p.cam||cam;return{x:(mouse.x-v.x)/v.z+c.x,y:(mouse.y-v.y)/v.z+c.y}}
+function retDraw1(x,y,col,a){X.save();X.globalAlpha=a;X.lineCap='square';
+ for(const[lw,c]of[[5,'#070a08'],[2,col]]){X.lineWidth=lw;X.strokeStyle=c;X.beginPath();X.arc(x,y,9,0,7);X.stroke();X.beginPath();for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){X.moveTo(x+dx*5,y+dy*5);X.lineTo(x+dx*14,y+dy*14)}X.stroke()}
+ X.fillStyle=col;X.fillRect(x-1,y-1,2,2);X.restore()}
+// drawn inside the world view of player P (called once per viewport)
+function aimRet(){if(mode!='play'||!P||P.dead||P.dn)return;const p=P,col=MPn?PC[p.pi]:'#ffe27a',now=performance.now();
+ if(MSE.on&&(p.inp=='km'||p.inp=='any')){const w=msWorld(p);retDraw1(w.x,w.y,col,.95);return}
+ if(p.rtW&&now-p.rtW<1400){const a=Math.min(1,(1400-(now-p.rtW))/400),D=p.rtD||110;retDraw1(p.x+Math.cos(p.a)*D,p.y-8+Math.sin(p.a)*D,col,.9*a)}}
+// hide the system cursor over the game while the reticle stands in for it
+let CURS='';function aimCursor(){try{const c=mode=='play'&&MSE.on?'none':'';if(c!==CURS){CURS=c;C.style.cursor=c}}catch(e){}}
+
+function loop(t){clFrame(t);aimCursor();zdFrame();requestAnimationFrame(loop);try{if(innerWidth!==LW||innerHeight!==LH){LW=innerWidth;LH=innerHeight;rs()}loopBody(t)}catch(e){showErr(e)}}
 function loopBody(t){const dt=Math.min(.05,(t-last)/1000||0);last=t;padPoll();if(mode=='splash'||mode=='intro'){padUI();CT+=dt;PZ.style.display='none';SB.innerHTML='';sbk='';drawCut(dt);return}padUI();if(mode=='play')upd(dt);if(SVD&&t-SVT>5000&&mode!='play'||SVD&&t-SVT>20000){SVD=0;SVT=t;sv()}for(const p of PL){if(p.hp<(p.php??p.hp)&&mode!='menu'&&mode!='lobby')sfx('hurt');p.php=p.hp}smk(dt);const kk=mode+MPn+(P?P.own+'|'+P.cur:'');if(kk!=sbk){sbk=kk;PZ.style.display=mode=='play'&&!MPn?'flex':'none';SB.innerHTML=mode=='play'&&!MPn?P.own.map((i,k)=>`<button data-q=1 class="${i==P.cur?'on':''}" onclick="eq(${i});sfx('click')">${k+1}<small>${CH[P.ci||0].dw&&i==0?'Duals':WP[i].n}</small></button>`).join('')+`<button data-q=1 onclick="amRel(P)">R<small>Reload</small></button>`:''}draw()}
 C.addEventListener('pointerdown',e=>{if(mode!='play')return;const q=gp(e);
 if(e.pointerType=='mouse'){mouse.d=1;mouse.x=q.x;mouse.y=q.y;return}
