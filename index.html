@@ -1260,7 +1260,7 @@ function buySk(){const A=SKA();for(const b of SKB){const ti=b.k.findIndex(k=>k.i
 function resetSk(){const A=SKA();let back=0;for(const b of SKB)b.k.forEach((k,ti)=>{back+=(A.sk[k.id]||0)*(ti+1)});A.sp+=back;A.sk={};sv();sfx('click');skills()}
 function nameScreen(fromSk){mode='menu';const A=S.ac;show(`<div class=p><h2>${A.name?'CHANGE NAME':'NEW SURVIVOR'}</h2><p>${A.name?'Pick a new name for your account.':'Create your account. You earn XP every run, level up, and spend skill points on permanent perks.'}</p><input id=unm maxlength=12 placeholder="Your name" value="${(A.name||'').replace(/"/g,'')}" autocomplete=off><p class=note id=nmsg>1–12 letters or numbers.</p><button class=go onclick="setName(${fromSk?1:0})">${A.name?'SAVE':'CREATE ACCOUNT'}</button>${A.name?`<button onclick="${fromSk?'skills()':'menu()'}">CANCEL</button>`:''}</div>`);const i=document.getElementById('unm');if(i&&i.focus)setTimeout(()=>{try{i.focus()}catch(e){}},50)}
 function setName(fromSk){const i=document.getElementById('unm'),v=((i&&i.value)||'').replace(/[^A-Za-z0-9 _-]/g,'').trim().slice(0,12);if(!v){const m=document.getElementById('nmsg');if(m)m.textContent='Please enter a name.';sfx('deny');return}S.ac.name=v;sv();sfx('buy');fromSk?skills():menu()}
-function menu(){try{olAuto()}catch(e){}mode='menu';MPn=0;SKI=0;UIS='';music('menu');duck(1);if(!S.ac.name)return nameScreen(0);const A=S.ac;show(`<div class="p title"><div><div class=logo><span>ZOMB</span><span>DASH</span></div><div class=tag>How long can you last!</div></div><div><div class=acct><span class=lv>LV ${A.lv}</span><div class=nm><b>${A.name}${bdH(A)}</b>${ttH(A)}<div class=xpb><i style="width:${Math.min(100,A.xp/xpNeed(A.lv)*100)}%"></i></div><small class=note>${A.xp}/${xpNeed(A.lv)} XP <button class=lnk data-q=1 onclick="accounts(0)">accounts</button></small></div></div><div class=stats><div><b>${A.pts}</b><small>Zombie Pts</small></div><div><b>${S.best}</b><small>Best wave</small></div></div>${cpBanner()}${olBanner()}<button class=go onclick="modes()">PLAY</button>${PCM()?'<button onclick="lobby()">SPLIT SCREEN</button>':''}<div class=row><button onclick="SKS=null;skills()">SKILLS<small>${A.sp?A.sp+' point'+(A.sp>1?'s':'')+' to spend':'upgrades'}</small></button><button onclick="mastery()">MASTERY<small>survivors</small></button></div><div class=row><button onclick="armory()">ARMORY<small>guns & camos</small></button><button onclick="chals()">CHALLENGES<small>${chN(S.ac)}/6 done</small></button></div><div class=row><button onclick="lbOpen()">LEADERBOARDS<small>best waves</small></button><button onclick="olMenu()">ONLINE<small>${olTag()}</small></button></div><button onclick="options()">OPTIONS</button>${AU.c&&AU.c.state=='running'?'':'<div class=hint id=sndh>tap anywhere to turn on sound</div>'}</div></div>`)}
+function menu(){CMLB=0;try{olAuto()}catch(e){}mode='menu';MPn=0;SKI=0;UIS='';music('menu');duck(1);if(!S.ac.name)return nameScreen(0);const A=S.ac;show(`<div class="p title"><div><div class=logo><span>ZOMB</span><span>DASH</span></div><div class=tag>How long can you last!</div></div><div><div class=acct><span class=lv>LV ${A.lv}</span><div class=nm><b>${A.name}${bdH(A)}</b>${ttH(A)}<div class=xpb><i style="width:${Math.min(100,A.xp/xpNeed(A.lv)*100)}%"></i></div><small class=note>${A.xp}/${xpNeed(A.lv)} XP <button class=lnk data-q=1 onclick="accounts(0)">accounts</button></small></div></div><div class=stats><div><b>${A.pts}</b><small>Zombie Pts</small></div><div><b>${S.best}</b><small>Best wave</small></div></div>${cpBanner()}${olBanner()}<button class=go onclick="modes()">PLAY</button>${PCM()?'<button onclick="lobby()">SPLIT SCREEN</button>':''}<div class=row><button onclick="SKS=null;skills()">SKILLS<small>${A.sp?A.sp+' point'+(A.sp>1?'s':'')+' to spend':'upgrades'}</small></button><button onclick="mastery()">MASTERY<small>survivors</small></button></div><div class=row><button onclick="armory()">ARMORY<small>guns & camos</small></button><button onclick="chals()">CHALLENGES<small>${chN(S.ac)}/6 done</small></button></div><div class=row><button onclick="lbOpen()">LEADERBOARDS<small>best waves</small></button><button onclick="olMenu()">ONLINE<small>${olTag()}</small></button></div><button onclick="options()">OPTIONS</button>${AU.c&&AU.c.state=='running'?'':'<div class=hint id=sndh>tap anywhere to turn on sound</div>'}</div></div>`)}
 function sl(k,lb){const v=Math.round(S[k]*100);return `<label class=sl><span>${lb}</span><input type=range min=0 max=100 value=${v} style="--v:${v}%" oninput="setVol('${k}',this)" onchange="sv();${k=='sv'?"sfx('buy')":''}"><output id=o${k}>${v}%</output></label>`}
 function setVol(k,el){S[k]=el.value/100;el.style.setProperty('--v',el.value+'%');const o=document.getElementById('o'+k);if(o)o.textContent=el.value+'%';auVol()}
 function options(fp){if(fp!=null)OPF=fp;if(!OPF)mode='menu';S.sw=cl(S.sw,1,S.dev?99:S.best);show(`<div class="p wide"><h2>OPTIONS</h2><div class=opt><div><h3>Audio</h3>${sl('mv','Music')}${sl('sv','Sound')}<div class=row><button onclick="auInit();sfx('wave')" data-q=1>Test sound</button></div><p class=note id=sst>${sndTxt()}</p><p class=note>No sound on iPhone? Check the silent switch and volume buttons.</p></div><div><h3>Screen</h3><div class=seg>${[['a','Auto'],['p','Vertical'],['l','Landscape']].map(o=>`<button class="${S.or==o[0]?'on':''}" onclick="setO('${o[0]}')">${o[1]}</button>`).join('')}</div><h3>After a wave</h3><div class=seg><button class="${S.qs?'on':''}" onclick="setQ(1)">Skip if empty</button><button class="${S.qs?'':'on'}" onclick="setQ(0)">Always 15s</button></div><p class=note>${S.qs?'Goes to the shop early when no items are left.':'Always waits the full 15 seconds before the shop.'}</p></div>`+
@@ -1404,7 +1404,7 @@ if(z.t==9){if(sg&&d<320){if(d<120){a=Math.atan2(z.y-P.y,z.x-P.x);m=.6}else m=0;i
 else if(z.t==11){if(sg&&d<340){if(d<150){a=Math.atan2(z.y-P.y,z.x-P.x);m=.7}else m=0;if(z.cd<=0){z.cd=2.6;spit(z)}}}}
 if(z.t==18||z.t==19){const r=zBeh(z,T,dt,a,m);a=r[0];m=r[1];if(r[2])continue}
 if(T.boss){const d=Math.hypot(P.x-z.x,P.y-z.y),sg=los(z,P);z.cd=(z.cd??1.5)-dt;
-if(z.t==6){z.s2=(z.s2??3)-dt;if(z.s2<=0&&zs.length+nq.length<28+12*Math.max(0,MPn-1)){z.s2=5;sfx('horn',z.x,z.y,.5);{let u=zSecT(1,0,1);if(u!=null)nq.push(mk(u,z.x-20,z.y+22));u=zSecT(1,0,1);if(u!=null)nq.push(mk(u,z.x+20,z.y+22))}}}
+if(z.t==6){z.s2=(z.s2??3)-dt;if(z.s2<=0&&zs.length+nq.length<28+12*Math.max(0,MPn-1)){z.s2=5;sfx('horn',z.x,z.y,.5);nq.push(mk(1,z.x-20,z.y+22),mk(1,z.x+20,z.y+22))}}
 else if(z.t==7){z.ks=z.ks??0;z.kt=(z.kt??2.5)-dt;
 if(z.ks==1){m=0;a=Math.atan2(P.y-z.y,P.x-z.x);z.da=a;if(z.kt<=0){z.ks=2;z.kt=.8}}
 else if(z.ks==2){a=z.da;m=2.4;if(z.kt<=0){z.ks=3;z.kt=.9}}
@@ -1514,7 +1514,7 @@ function lbMap(d){const o=ORD(),acs=lobAcs();let i=o.indexOf(mapId);for(let n=0;
 function lbMode(g){setGM(g);mapFix(lobAcs());sfx('click');rL()}
 function lbA(i,k,d){const s=LBY.s[i];if(!s)return;if(k=='ch')cycCh(s,d);else if(k=='ac')cycAc(s,d);else if(k=='v'){s.v=d;s.rdy=0;sfx('click')}else if(k=='rdy'){s.rdy=s.rdy?0:1;sfx(s.rdy?'buy':'click')}else if(k=='out'){LBY.s.splice(i,1);sfx('click')}rL()}
 function rL(){const kmIn=LBY.s.some(s=>s.inp=='km');mapFix(lobAcs());
-show(`<div class="p wide lob"><h2>SPLIT SCREEN</h2><div class="seg lmode"><button data-q=1 class="${GMD=='c'?'on':''}" onclick="lbMode('c')">CAMPAIGN</button><button data-q=1 class="${GMD=='f'?'on':''}" onclick="lbMode('f')">FREE PLAY</button></div><div class="seg lmode">${[0,1,2].map(d=>`<button data-q=1 class="${DIF()==d?'on':''}" onclick="setDif(${d});mapFix(lobAcs());rL()">${DNm(d,GMD=='c')}</button>`).join('')}</div><div class=lmap><button data-q=1 onclick="lbMap(-1);rL()">◀</button><div><i style="background:${MT[mapId]}"></i><b>${mapNm(mapId)}</b>${GMD=='c'?`<small class=lbos>wave 20 boss: ${CH[MUN[mapId]].n}</small>`:''}</div><button data-q=1 onclick="lbMap(1);rL()">▶</button></div><div class=lg>`+
+show(`<div class="p wide lob"><h2>SPLIT SCREEN</h2><div class="seg lmode"><button data-q=1 class="${GMD=='c'?'on':''}" onclick="lbMode('c')">CAMPAIGN</button><button data-q=1 class="${GMD=='f'?'on':''}" onclick="lbMode('f')">FREE PLAY</button></div><div class="seg lmode">${[0,1,2].map(d=>`<button data-q=1 class="${DIF()==d?'on':''}" onclick="setDif(${d});mapFix(lobAcs());rL()">${DNm(d,GMD=='c')}</button>`).join('')}</div><div class=lmap>${GMD=='c'?'':'<button data-q=1 onclick="lbMap(-1);rL()">◀</button>'}<div><i style="background:${MT[mapId]}"></i><b>${mapNm(mapId)}</b>${GMD=='c'?`<small class=lbos>wave 20 boss: ${CH[MUN[mapId]].n}</small>`:''}</div>${GMD=='c'?'<button data-q=1 class=go style="width:auto;min-width:0;height:auto;padding:8px 14px;font-size:13px;line-height:1.2;white-space:nowrap" onclick="clbOpen()">CHOOSE MAP</button>':'<button data-q=1 onclick="lbMap(1);rL()">▶</button>'}</div><div class=lg>`+
 [0,1,2,3].map(i=>{const s=LBY.s[i];if(!s)return `<div class="ls em" style="--pc:${PC[i]}"><b class=px>P${i+1}</b><p>Press <b>A</b> on a controller to join</p>${!kmIn?`<button data-q=1 onclick="joinL('km');rL()">Join with keyboard</button>`:''}</div>`;
 const A=acOf(s),u=unl(A);return `<div class="ls ${s.rdy?'rd':''}" style="--pc:${PC[i]}"><div class=lh><b class=px>P${i+1}</b><small>${s.inp=='km'?'Keyboard & mouse':'Controller '+(s.inp+1)}</small></div>
 <div class=lr><button data-q=1 onclick="lbA(${i},'ch',-1)">◀</button><div><canvas data-ch=${s.ci} data-v=${s.v||(slOn(A,s.ci)?9:0)}></canvas><span>${CH[s.ci].n}</span><small>♥ ${CH[s.ci].hp} · ${WP[CH[s.ci].w].n}</small></div><button data-q=1 onclick="lbA(${i},'ch',1)">▶</button></div>
@@ -1627,7 +1627,7 @@ function mapPrev(i){if(MPV[i])return MPV[i];if(typeof Image=='undefined'||!MPI[i
 function play(){if(GMD=='c')return cMap();UIS='map';mode='menu';MPn=0;mapFix();const m=MP[mapId],ok=mapOK(mapId),O=ORD();
 show(`<div class="p wide msel"><h2>${GMD=='c'?'CAMPAIGN':'FREE PLAY'} · SELECT A MAP</h2>${difSel()}<div class=mname>${mapNm(mapId)}</div><div class=mview><button data-q=1 class=arr onclick="mapStep(-1)" aria-label="Previous map">◀</button><img class="mprev ${ok?'':'lk'}" alt="" src="${MPI[mapId]||''}"><button data-q=1 class=arr onclick="mapStep(1)" aria-label="Next map">▶</button></div>
 <div class=dots>${O.map(k=>`<i class="${k==mapId?'on':''} ${mapOK(k)?'':'lk'}"></i>`).join('')}</div><p class=mdesc>${MPD[mapId]||m.d}</p><p class=munl>${munT(mapId)}</p><div class=row><button onclick="modes()">BACK</button><button id=mgo class="go ${ok?'':'no'}" onclick="mapGo()">${ok?'CONFIRM':'🔒 LOCKED'}</button></div></div>`)}
-function mapGo(){if(!mapOK(mapId)){sfx('deny');return}survs()}
+function mapGo(){if(CMLB)return clbGo();if(!mapOK(mapId)){sfx('deny');return}survs()}
 // arrows update the screen in place: no rebuilding, nothing new allocated per tap
 function mapStep(d){const now=performance.now();if(now-(mapStep.t||0)<70)return;mapStep.t=now;{const O=ORD(),i=O.indexOf(mapId);mapId=O[((i<0?0:i)+d+O.length)%O.length]}S.mp=mapId;SVD=1;sfx('click');
 const p=ui.querySelector&&ui.querySelector('.msel');if(!p)return play();const m=MP[mapId];p.querySelector('.mname').textContent=mapNm(mapId);p.querySelector('.mdesc').textContent=MPD[mapId]||m.d;{const u=p.querySelector('.munl');if(u)u.innerHTML=munT(mapId)}{const O=ORD();p.querySelectorAll('.dots i').forEach((e,k)=>e.className=(O[k]==mapId?'on':'')+(mapOK(O[k])?'':' lk'))}const ok=mapOK(mapId),im=p.querySelector('.mprev');if(im){im.src=MPI[mapId]||'';im.className='mprev'+(ok?'':' lk')}const gb=p.querySelector('#mgo');if(gb){gb.className='go'+(ok?'':' no');gb.textContent=ok?'CONFIRM':'🔒 LOCKED'}}
@@ -1890,7 +1890,7 @@ let GMD=S.gm=='c'?'c':'f';
 function cpOf(A){if(!A)return 0;if(A.cp==null){let n=0;while(n<OLDC.length&&(A.un||[]).includes(MUN[OLDC[n]]))n++;A.cp=n;A.cv=4}else{if(A.cv!==2&&A.cv!==3&&A.cv!==4){if(A.cp>=4)A.cp++;A.cv=2}if(A.cv===2){if(A.cp>=5)A.cp+=3;A.cv=3}if(A.cv===3){if(A.cp>=8)A.cp+=2;A.cv=4}}return A.cp}
 function mapOKA(A,m){return mOpen(A,GMD=='c'?DIF():0,m)}
 function lobAcs(){const L=typeof LBY!='undefined'&&LBY&&LBY.s?LBY.s.map(acOf).filter(Boolean):[];return L.length?L:[S.ac]}
-function mapOK(m,acs){return(acs||[S.ac]).some(A=>mapOKA(A,m))}
+function mapOK(m,acs){return(acs||[S.ac]).some(A=>mapOKA(A,m))||!!(acs&&acs.length>1&&GMD=='c'&&mOpen(cMerge(acs),DIF(),m))}
 function ORD(){return GMD=='c'?CORD:MP.map((_,i)=>i)}
 function swEff(){return GMD=='c'?(S.dev?cl(S.sw,1,20):1):S.sw}
 function setGM(g){GMD=g;S.gm=g;SVD=1}
@@ -1900,7 +1900,7 @@ function mapFix(acs){if(mapOK(mapId,acs))return;const O=ORD();let m=GMD=='c'?cam
 function munT(m){const A=S.ac,ci=MUN[m],ok=mapOK(m),i=CORD.indexOf(m);
 if(GMD=='c')return cMunT(m);
 if(!ok)return `🔒 Unlock it in the campaign first`;const b=mBest(A,m);return `Best wave here: ${b||'—'}`}
-function modes(){UIS='mode';mode='menu';MPn=0;const A=S.ac,c=cBeat(A),nf=MP.filter((_,m)=>mapOKA(A,m)).length;
+function modes(){CMLB=0;UIS='mode';mode='menu';MPn=0;const A=S.ac,c=cBeat(A),nf=MP.filter((_,m)=>mapOKA(A,m)).length;
 show(`<div class="p wide mds"><h2>CHOOSE A MODE</h2><div class=mdg>
 <button data-q=1 class="mdb ${GMD=='c'?'on':''}" onclick="setGM('c');mapId=campFront();S.mp=mapId;CMV=null;play()"><b>CAMPAIGN</b><span class=mdp>${c>=CORD.length?'✓ COMPLETE':c+'/'+CORD.length+' maps beaten'}</span><small>Survive 20 waves on each map, then defeat the survivor holding out there. Beat them and they join you, and the next map opens up.</small></button>
 <button data-q=1 class="mdb ${GMD=='f'?'on':''}" onclick="setGM('f');play()"><b>FREE PLAY</b><span class=mdp>${nf}/${MP.length} maps unlocked</span><small>Endless waves on any map you've opened up in the campaign. Chase your best wave.</small></button>
@@ -3477,8 +3477,8 @@ function cBeat(A){return SORD.filter(m=>bBt(A,0,m)).length}
 function campNx(){const A=S.ac,d=DIF(),m=SORD.find(k=>k!==mapId&&mOpen(A,d,k)&&!bBt(A,d,k));return m!=null?m:null}
 // ----- the campaign map screens -----
 var CMV=null;
-function cMap(){UIS='cmap';mode='menu';MPn=0;const A=S.ac,d=DIF();if(secOf(mapId)<0||!mOpen(A,d,mapId)){mapId=cFront(A,d);S.mp=mapId}if(CMV==null)CMV=secOf(mapId);if(CMV==='w')return cWorld();return cSec(CMV)}
-function cGo(v){CMV=v;sfx('click');if(v!=='w'){const A=S.ac,d=DIF(),s=SEC[v];if(secOf(mapId)!=v||!mOpen(A,d,mapId)){const f=s.m.find(m=>m>=0&&mOpen(A,d,m)&&!bBt(A,d,m));const g=s.m.find(m=>m>=0&&mOpen(A,d,m));if(f!=null||g!=null){mapId=f!=null?f:g;S.mp=mapId}}}cMap()}
+function cMap(){UIS='cmap';mode='menu';MPn=0;const A=cAcc(),d=DIF();if(secOf(mapId)<0||!mOpen(A,d,mapId)){mapId=cFront(A,d);S.mp=mapId}if(CMV==null)CMV=secOf(mapId);if(CMV==='w')return cWorld();return cSec(CMV)}
+function cGo(v){CMV=v;sfx('click');if(v!=='w'){const A=cAcc(),d=DIF(),s=SEC[v];if(secOf(mapId)!=v||!mOpen(A,d,mapId)){const f=s.m.find(m=>m>=0&&mOpen(A,d,m)&&!bBt(A,d,m));const g=s.m.find(m=>m>=0&&mOpen(A,d,m));if(f!=null||g!=null){mapId=f!=null?f:g;S.mp=mapId}}}cMap()}
 function cPick(m){if(m<0){sfx('deny');return}mapId=m;S.mp=m;SVD=1;sfx('click');cMap()}
 const cPath=(P,cl)=>{let d='M'+P[0][0]+' '+P[0][1];const n=P.length;for(let i=0;i<n;i++){const p0=P[(i-1+n)%n],p1=P[i],p2=P[(i+1)%n],p3=P[(i+2)%n];d+=` C${(p1[0]+(p2[0]-p0[0])/6).toFixed(1)} ${(p1[1]+(p2[1]-p0[1])/6).toFixed(1)} ${(p2[0]-(p3[0]-p1[0])/6).toFixed(1)} ${(p2[1]-(p3[1]-p1[1])/6).toFixed(1)} ${p2[0]} ${p2[1]}`}return d+(cl===false?'':'Z')};
 // little map art
@@ -3497,10 +3497,10 @@ var CWR=[
 {p:[[384,86],[556,70],[612,200],[574,330],[430,382],[376,386],[338,312],[418,206]],l:[490,230],dc:[[450,140,0],[540,150,1],[470,310,2],[540,280,3],[400,280,4]]},
 {p:[[568,74],[770,60],[900,152],[884,330],[704,380],[584,330],[622,200]],l:[750,215],dc:[[650,130,0],[820,170,1],[700,300,2],[830,290,3],[640,250,4]]},
 {p:[[706,462],[822,430],[928,476],[940,560],[826,602],[704,572]],l:[820,520],dc:[[740,490,0],[900,500,1],[760,570,2],[880,575,3]]}];
-function cWorld(){const A=S.ac,d=DIF(),cur=secOf(cFront(A,d));let lb='';
+function cWorld(){const A=cAcc(),d=DIF(),cur=secOf(cFront(A,d));let lb='';
 for(let i=0;i<5;i++){const S_=SEC[i],op=secOpen(A,d,i),dn=secDone(A,d,i),n=S_.m.filter(m=>m>=0),b=n.filter(m=>bBt(A,d,m)).length,[x,y]=CWC[i];
 lb+=`<button data-q=1 class="creg ${op?'':'lk'}" style="left:${x/10}%;top:${(y+(i==4?-14:30))/6.2}%" onclick="${op?`cGo(${i})`:`sfx('deny')`}"><b>${S_.n}</b><small>${op?(dn?'✓ complete':b+'/'+n.length+' beaten'):'🔒 finish '+SEC[i-1].n}</small>${i==cur?'<em class=cpn></em>':''}</button>`}
-show(`<div class="p wide cmp"><div class=cmh><button class="cbk cbm" data-q=1 onclick="modes()">MENU</button><h2>CAMPAIGN · WORLD MAP</h2>${difSel()}</div><div class="cmb cww"><canvas id=cmc width=1600 height=992></canvas>${lb}</div>
+show(`<div class="p wide cmp"><div class=cmh><button class="cbk cbm" data-q=1 onclick="${CMLB?'clbBack()':'modes()'}">${CMLB?'LOBBY':'MENU'}</button><h2>CAMPAIGN · WORLD MAP</h2>${difSel()}</div><div class="cmb cww"><canvas id=cmc width=1600 height=992></canvas>${lb}</div>
 <p class=cmn>Pick a section. Each section opens with one map; beat it and the rest of that section opens in any order. Beat every map in a section to reach the next.</p><div class=row><button class=go onclick="cGo(${cur})">GO TO ${SEC[cur].n.toUpperCase()}</button></div></div>`);
 const cv=document.getElementById&&document.getElementById('cmc'),g=cv&&cv.getContext&&cv.getContext('2d');if(!g||!g.drawImage)return;const art=cWorldArt();g.drawImage(art,0,0);const Q=AU.cmrg;if(!Q)return;g.save();g.scale(1.6,1.6);
 for(let i=0;i<5;i++){if(secOpen(A,d,i))continue;const R=cRng(9+i);g.fillStyle='rgba(70,80,96,.62)';for(let j=0;j<Q.gh;j++)for(let k=0;k<Q.gw;k++)if(Q.M[j*Q.gw+k]==i)g.fillRect(k*Q.cs,j*Q.cs,Q.cs+.5,Q.cs+.5);g.fillStyle='rgba(220,228,236,.22)';for(let k=0;k<26;k++){const x=CWC[i][0]+(R()-.5)*260,y=CWC[i][1]+(R()-.5)*170;if(Q.M[Math.floor(y/Q.cs)*Q.gw+Math.floor(x/Q.cs)]!==i)continue;g.beginPath();g.arc(x,y,16+R()*20,0,7);g.fill()}}g.restore()}
@@ -3509,18 +3509,18 @@ function cCompass(x,y){return `<g transform="translate(${x} ${y})" opacity=".85"
 // one section: its island, roads and the five map spots
 var CSL=[[175,390],[330,205],[515,330],[690,180],[830,400]],CRD=[[0,1],[0,2],[1,3],[2,3],[2,4],[3,4]];
 var CIS=[[70,330],[150,170],[300,110],[470,150],[620,90],[800,100],[920,220],[930,380],[860,520],[680,560],[520,500],[360,560],[180,540],[80,460]];
-function cSec(si){const A=S.ac,d=DIF(),S_=SEC[si],op=secOpen(A,d,si);if(!op)return cWorld();const front=cFront(A,d);let nodes='';
+function cSec(si){const A=cAcc(),d=DIF(),S_=SEC[si],op=secOpen(A,d,si);if(!op)return cWorld();const front=cFront(A,d);let nodes='';
 S_.m.forEach((m,k)=>{const[x,y]=CSL[k],L=(x/10).toFixed(1)+'%',T=((y-78)/6.2).toFixed(1)+'%';
 if(m<0){nodes+=`<button data-q=1 class="cnode cs" style="left:${L};top:${T}" onclick="cPick(-1)"><span class=ci><b>?</b></span><span class=cnl>Coming Soon</span></button>`;return}
 const o=mOpen(A,d,m),b=bBt(A,d,m),on=m===mapId;
 nodes+=`<button data-q=1 class="cnode ${o?'':'lk'} ${b?'dn':''} ${on?'on':''}" style="left:${L};top:${T}" onclick="cPick(${m})"><span class=ci>${!o?'<em class=clk>🔒</em>':''}</span>${b?'<span class=cdn>✓</span>':''}${o&&!b?'<span class=cnew>★</span>':''}${k==0?'<span class=cst>START</span>':''}${m===front&&o?'<span class=cme>YOU</span>':''}<span class=cnl>${MP[m].n}</span></button>`});
 const m=mapId,o=mOpen(A,d,m),done=S_.m.filter(q=>q>=0),nb=done.filter(q=>bBt(A,d,q)).length,nx=si<4?SEC[si+1].n:null;
-const info=`<div class=cmi><div><b>${MP[m].n}</b><small>${MPD[m]||MP[m].d}</small><span class=munl>${munT(m)}</span></div><button id=mgo class="go ${o?'':'no'}" onclick="mapGo()">${o?'PLAY':'🔒 LOCKED'}</button></div>`;
-show(`<div class="p wide cmp"><div class=cmh><button class=cbk data-q=1 onclick="cGo('w')" aria-label="World map">⟵ WORLD MAP</button><button class="cbk cbm" data-q=1 onclick="modes()">MENU</button><h2>${si+1}. ${S_.n.toUpperCase()}<small>${S_.sub} · ${nb}/${done.length} beaten${nx?' · beat them all to reach '+nx:''}</small></h2>${difSel()}</div>
+const info=`<div class=cmi><div><b>${MP[m].n}</b><small>${MPD[m]||MP[m].d}</small><span class=munl>${munT(m)}</span></div><button id=mgo class="go ${o?'':'no'}" onclick="mapGo()">${o?(CMLB?'CHOOSE':'PLAY'):'🔒 LOCKED'}</button></div>`;
+show(`<div class="p wide cmp"><div class=cmh><button class=cbk data-q=1 onclick="cGo('w')" aria-label="World map">⟵ WORLD MAP</button><button class="cbk cbm" data-q=1 onclick="${CMLB?'clbBack()':'modes()'}">${CMLB?'LOBBY':'MENU'}</button><h2>${si+1}. ${S_.n.toUpperCase()}<small>${S_.sub} · ${nb}/${done.length} beaten${nx?' · beat them all to reach '+nx:''}</small></h2>${difSel()}</div>
 <div class=cmb><canvas id=cmc width=1600 height=992></canvas>${nodes}</div>${info}</div>`);
 const cv=document.getElementById&&document.getElementById('cmc'),g=cv&&cv.getContext&&cv.getContext('2d');if(g&&g.drawImage)g.drawImage(cSecArt(si),0,0)}
 // end-of-map text and button
-function cMunT(m){const A=S.ac,d=DIF(),ci=MUN[m],s=secOf(m),o=mOpen(A,d,m);
+function cMunT(m){const A=cAcc(),d=DIF(),ci=MUN[m],s=secOf(m),o=mOpen(A,d,m);
 if(!o){if(!secOpen(A,d,s))return `🔒 Beat every map in ${SEC[s-1].n} on ${DNm(d,1)} first`;return `🔒 Beat ${MP[SEC[s].m[0]].n} on ${DNm(d,1)} to open this map`}
 return bBt(A,d,m)&&(A.un||[]).includes(ci)?`✓ Beaten · ${CH[ci].n} joined you · play it again any time`:`Survive 20 waves, then defeat <b>${CH[ci].n}</b> to recruit them`}
 
@@ -4141,66 +4141,92 @@ var ZC={
  19:{n:'Healer',tier:2,cat:['Healer'],sp:1,rg:0,w:1.2,max:3}
 };
 var ZCFG={
- // most ranged / special zombies allowed, as % of living zombies · [Easy, Normal, Hard]
+ // most ranged / special zombies allowed, as % of the zombies spawned SO FAR THIS WAVE · [Easy, Normal, Hard]
+ // (counting the whole wave means kills can never push a wave over its cap)
  cap:{rg:[15,15,20],sp:[35,35,45]},
  // a new type every 3 waves starting at wave 3; a boss wave pushes it to the next wave
  intro:{first:3,every:3,mult:{sp:.6,rg:.4,other:.8},min:1,max:0}, // max 0 = no upper limit
  // waves 1-20 introduce only ONE ranged type: this one (11 = Toxic the Spitter, 9 = Bones).
  // The other ranged type stays locked until after wave 20.
  early:{end:20,ranged:11,campaign:[11,9]},
- // ^ free play always uses `ranged`; each campaign level picks one of `campaign` at random
+ // ^ free play always uses `ranged`; campaign levels pick one of `campaign` at random (see camp below)
  // introduction order: tier 1 types first, then tier 2, then tier 3 (random order inside a tier).
  // Put ZT numbers in `fixed` (e.g. [1,10,2,...]) for an exact order instead.
  fixed:null,
  // after its intro wave a type starts at 35% of its spawn weight and reaches 100% after this many waves
  ramp:{1:0,2:3,3:6},
  filler:0, // always-unlocked type used when everything else is capped (Walker)
- bossEvery:10
+ bossEvery:10,
+ // ---- campaign: each section (SEC order) sets its own line-up ----
+ // pre   = tiers of the types already unlocked at wave 1 (random types of that tier, never ranged)
+ // slots = what each new-type wave (3, 6, 9, 12, 15, 18) brings: a tier number, or 'r' for the level's ranged type
+ //         (if a tier has no unused type left, the closest tier is used, easier first)
+ // sp    = special cap % on Easy/Medium; Hard adds campHard
+ // ranged = which ranged types this section may pick from (default early.campaign)
+ camp:[
+  {pre:[],      slots:[1,1,1,2,2,'r'], sp:25, ranged:[11]},  // 1 Hometown: no Bones yet
+  {pre:[],      slots:[1,1,2,2,2,'r'], sp:30},               // 2 Wrong Turn
+  {pre:[1],     slots:[2,2,'r',2,2,3], sp:35},               // 3 Zombville
+  {pre:[1,1],   slots:[2,'r',2,3,2,3], sp:40},               // 4 Countryside
+  {pre:[1,1,2], slots:[2,'r',2,3,2,3], sp:45}                // 5 Island (and anything after)
+ ],
+ campHard:10
 };
+function zCamp(){try{if(GMD!='c'||typeof secOf!='function')return null;const s=secOf(mapId);return s<0?null:ZCFG.camp[Math.min(s,ZCFG.camp.length-1)]}catch(e){return null}}
+function zCapSp(d){const c=zCamp();return c?c.sp+(d==2?ZCFG.campHard:0):ZCFG.cap.sp[d]}
+// campaign schedule for one level from its section's line-up
+function zPlanCamp(K){const R={},used=new Set(),rg=t=>!!ZC[t].rg,pool=Object.keys(ZC).map(Number).filter(t=>ZC[t].of==null&&t!=ZCFG.filler);
+ const pick=tier=>{const ks=[1,2,3].sort((a,b)=>Math.abs(a-tier)-Math.abs(b-tier)||a-b);for(const k of ks){const g=pool.filter(t=>!used.has(t)&&!rg(t)&&ZC[t].tier==k);if(g.length){const t=g[Math.random()*g.length|0];used.add(t);return t}}return null};
+ for(const tr of K.pre||[]){const t=pick(tr);if(t!=null)R[t]=0}
+ const rc=(K.ranged||ZCFG.early.campaign||[ZCFG.early.ranged]).filter(t=>ZC[t]&&rg(t)),er=rc.length?rc[Math.random()*rc.length|0]:null;
+ const W=[],usedW=new Set();for(let i=0;i<K.slots.length;i++){let v=ZCFG.intro.first+i*ZCFG.intro.every;while(zBossW(v)||usedW.has(v))v++;usedW.add(v);W.push(v)}
+ K.slots.forEach((sl,i)=>{if(sl=='r'){if(er!=null&&R[er]==null){R[er]=W[i];used.add(er)}}else{const t=pick(sl);if(t!=null)R[t]=W[i]}});
+ return R}
 // Exploder and Healer tuning
 var ZX={trig:46,fuse:.55,rad:72,dmg:2},ZH={every:6,r:170,pct:.4,glow:3,keep:200};
 
 function zBossW(v){return v%ZCFG.bossEvery==0}
 function zDi(){try{return cl(DIF(),0,2)}catch(e){return 1}}
 // the new-type schedule for one run: {ZT index: wave it is introduced}
-function zPlan(){const C=ZCFG,ty=Object.keys(ZC).map(Number).filter(t=>ZC[t].of==null&&t!=C.filler);let o=[];
+function zPlan(){{const K=zCamp();if(K)return zPlanCamp(K)}const C=ZCFG,ty=Object.keys(ZC).map(Number).filter(t=>ZC[t].of==null&&t!=C.filler);let o=[];
  if(C.fixed&&C.fixed.length){o=C.fixed.filter(t=>ty.includes(t));o.push(...ty.filter(t=>!o.includes(t)))}
  else{const tr=[...new Set(ty.map(t=>ZC[t].tier))].sort((a,b)=>a-b);for(const k of tr){const g=ty.filter(t=>ZC[t].tier==k);for(let i=g.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[g[i],g[j]]=[g[j],g[i]]}o.push(...g)}}
  // intro slots: first, first+every, … ; a boss wave moves that slot to the next wave
  const W=[],used=new Set();for(let i=0;i<o.length*2+4;i++){let v=C.intro.first+i*C.intro.every;while(zBossW(v)||used.has(v))v++;used.add(v);W.push(v)}
  // fill the slots in order, but only ONE ranged type may land in waves 1..early.end (the configured one);
  // the configured one is pulled forward if it would otherwise miss that window
- const E=C.early,rg=t=>!!ZC[t].rg,er0=(GMD=='c'&&E.campaign&&E.campaign.length)?E.campaign[Math.random()*E.campaign.length|0]:E.ranged,er=ZC[er0]&&rg(er0)?er0:null,q=o.slice(),R={};let k=0,nr=0;
+ const E=C.early,rg=t=>!!ZC[t].rg,er0=E.ranged,er=ZC[er0]&&rg(er0)?er0:null,q=o.slice(),R={};let k=0,nr=0;
  while(q.length&&k<W.length){const v=W[k],nx=W[k+1]||1e9;k++;let i=0;
   if(v<=E.end){if(er!=null&&q.includes(er)&&nx>E.end)i=q.indexOf(er);else i=q.findIndex(t=>!rg(t)||(nr==0&&(er==null||t===er)));if(i<0)continue}
   const t=q.splice(i,1)[0];R[t]=v;if(v<=E.end&&rg(t))nr++}
  return R}
 // the type being introduced this wave (or null)
-function zIntro(w=wave){for(const t in IW)if(IW[t]==w&&ZC[t])return +t;return null}
+function zIntro(w=wave){if(!(w>0))return null;for(const t in IW)if(IW[t]==w&&ZC[t])return +t;return null}
 function zUnl(t){const c=ZC[t];if(!c)return false;if(t==ZCFG.filler)return true;if(c.of!=null)return zUnl(c.of);return IW[t]!=null&&IW[t]<=wave}
 // living classified zombies, including ones queued to join this frame
 function zCen(){const C={n:0,r:0,s:0,b:{}};for(const L of[zs,nq])for(const z of L){if(!(z.hp>0))continue;const c=ZC[z.t];if(!c||c.free)continue;C.n++;if(c.rg)C.r++;if(c.sp)C.s++;C.b[z.t]=(C.b[z.t]||0)+1}return C}
-// does one more of type t fit under the caps? true, or the reason it doesn't. Integer-only maths:
-// (count+1)/(living+1) <= pct/100  ⇔  (count+1)*100 <= pct*(living+1)
-function zFits(t,C){const c=ZC[t];if(!c||c.free)return true;const it=zIntro();if(it!=null&&(t==it||c.of==it))return true;const d=zDi(),n1=C.n+1;
- if(c.rg&&(C.r+1)*100>ZCFG.cap.rg[d]*n1)return'ranged';if(c.sp&&(C.s+1)*100>ZCFG.cap.sp[d]*n1)return'special';if(c.max&&(C.b[t]||0)>=c.max)return'max';return true}
+// does one more of type t fit under the caps? true, or the reason it doesn't. Uses this wave's totals so far,
+// integer-only maths: (count+1)/(spawned+1) <= pct/100  ⇔  (count+1)*100 <= pct*(spawned+1)
+function zFits(t,C){const c=ZC[t];if(!c||c.free)return true;const it=zIntro();if(it!=null&&(t==it||c.of==it))return true;const d=zDi(),W=ZD.tw,n1=W.n+1;
+ if(c.rg&&(W.r+1)*100>ZCFG.cap.rg[d]*n1)return'ranged';if(c.sp&&(W.s+1)*100>zCapSp(d)*n1)return'special';if(c.max&&(C.b[t]||0)>=c.max)return'max';return true}
 function zOK(t,C,nl){if(!nl&&!zUnl(t))return'locked';const it=zIntro();if(it!=null&&t!=it&&ZC[t].of!=it)return'intro';return zFits(t,C)}
-function zW(t){const c=ZC[t],r=(ZCFG.ramp||{})[c.tier]||0;if(!r||IW[t]==null)return c.w;return c.w*Math.min(1,.35+.65*Math.max(0,wave-IW[t])/r)}
+function zW(t){const c=ZC[t],r=(ZCFG.ramp||{})[c.tier]||0;if(!r||IW[t]==null||IW[t]<=0)return c.w;return c.w*Math.min(1,.35+.65*Math.max(0,wave-IW[t])/r)}
 function zPool(){const A=[];for(const k in ZC){const t=+k,c=ZC[t];if(c.of!=null||!(c.w>0)||!zUnl(t))continue;A.push([t,zW(t)])}return A}
 function zRoll(A){let r=Math.random()*A.reduce((q,w)=>q+w[1],0);for(const[i,w]of A){r-=w;if(r<=0)return i}return A.length?A[A.length-1][0]:null}
 // ---- diagnostics state ----
-var ZD={w:0,it:null,rj:{special:0,ranged:0,max:0,locked:0,intro:0},dl:0,ev:null,wt:0,log:[]};
+var ZD={w:0,it:null,rj:{special:0,ranged:0,max:0,locked:0,intro:0},dl:0,ev:null,wt:0,log:[],tw:{n:0,r:0,s:0}};
+function zTally(t){const c=ZC[t];if(!c||c.free)return;const W=ZD.tw;W.n++;if(c.rg)W.r++;if(c.sp)W.s++}
 function zEv(m){ZD.ev={m,t:performance.now()};if(ZDON()){ZD.log.unshift(m);ZD.log.length=Math.min(ZD.log.length,4);try{console.log('[spawn] wave '+wave+': '+m)}catch(e){}}}
 // pick the next regular wave zombie (null = wait, nothing fits right now)
 function zPick(){const C=zCen(),it=zIntro();
- if(it!=null){if(WRC&&!(WRC.rp&&WRC.i<WRC.t.length)){WRC.t.push(it);WRC.i=WRC.t.length}else if(WRC)WRC.i++;ZD.wt=0;return it}
- if(WRC&&WRC.rp&&WRC.i<WRC.t.length){const t=WRC.t[WRC.i++],f=zOK(t,C);if(f===true){ZD.wt=0;return t}zEv('replayed '+(ZC[t]?ZC[t].n:t)+' skipped ('+f+')')}
+ if(it!=null){if(WRC&&!(WRC.rp&&WRC.i<WRC.t.length)){WRC.t.push(it);WRC.i=WRC.t.length}else if(WRC)WRC.i++;ZD.wt=0;zTally(it);return it}
+ if(WRC&&WRC.rp&&WRC.i<WRC.t.length){const t=WRC.t[WRC.i++],f=zOK(t,C);if(f===true){ZD.wt=0;zTally(t);return t}zEv('replayed '+(ZC[t]?ZC[t].n:t)+' skipped ('+f+')')}
  const A=zPool();let t=zRoll(A);const f=t==null?'none':zFits(t,C);
  if(f!==true){if(ZD.rj[f]!=null)ZD.rj[f]++;const B=A.filter(([u])=>zFits(u,C)===true),u=B.length?zRoll(B):null;
   if(u!=null){zEv((t!=null?ZC[t].n:'?')+' rejected ('+f+' cap) → spawned '+ZC[u].n);t=u}
-  else if(C.n==0||ZD.wt>4){t=ZCFG.filler;zEv('everything capped for '+ZD.wt.toFixed(1)+'s → '+ZC[t].n)}
+  else if(ZD.tw.n==0||ZD.wt>4){t=ZCFG.filler;zEv('everything capped for '+ZD.wt.toFixed(1)+'s → '+ZC[t].n)}
   else{ZD.dl++;zEv('spawn delayed: '+(t!=null?ZC[t].n:'?')+' ('+f+' cap), nothing else fits');return null}}
- ZD.wt=0;if(WRC){WRC.t.push(t);WRC.i=WRC.t.length}return t}
+ ZD.wt=0;zTally(t);if(WRC){WRC.t.push(t);WRC.i=WRC.t.length}return t}
 // secondary spawns (splits, summons): the type to use, or the fallback, or null when neither may appear
 // nl = ignore whether t is unlocked yet (Juggernaut's Runners)
 function zSecT(t,fb,nl){const C=zCen(),f=zOK(t,C,nl);if(f===true)return t;if(ZD.rj[f]!=null)ZD.rj[f]++;
@@ -4208,7 +4234,7 @@ function zSecT(t,fb,nl){const C=zCen(),f=zOK(t,C,nl);if(f===true)return t;if(ZD.
 // queue an already-built zombie object if it is allowed to appear
 function zQ(o){if(zSecT(o.t)==null)return null;o.m0=o.m0||o.hp;nq.push(o);return o}
 // how many zombies this wave sends (n = the normal count, already scaled for players/difficulty)
-function zWaveN(n){const it=zIntro(),I=ZCFG.intro;ZD={w:wave,it,rj:{special:0,ranged:0,max:0,locked:0,intro:0},dl:0,ev:null,wt:0,log:ZD.log||[]};if(it==null)return n;const c=ZC[it],k=c.sp?I.mult.sp:c.rg?I.mult.rg:I.mult.other;let v=Math.max(I.min,Math.round(n*k));if(I.max>0)v=Math.min(v,I.max);ZD.n0=n;ZD.k=k;ZD.n=v;
+function zWaveN(n){const it=zIntro(),I=ZCFG.intro;ZD={w:wave,it,rj:{special:0,ranged:0,max:0,locked:0,intro:0},dl:0,ev:null,wt:0,log:ZD.log||[],tw:{n:0,r:0,s:0}};if(it==null)return n;const c=ZC[it],k=c.sp?I.mult.sp:c.rg?I.mult.rg:I.mult.other;let v=Math.max(I.min,Math.round(n*k));if(I.max>0)v=Math.min(v,I.max);ZD.n0=n;ZD.k=k;ZD.n=v;
  if(ZDON())try{console.log('[spawn] wave '+wave+' introduces '+c.n+': '+v+' of them (normal '+n+' × '+Math.round(k*100)+'%)')}catch(e){}return v}
 
 // ---- Exploder and Healer behavior (called from the zombie update; returns [angle, speed mult, removed]) ----
@@ -4250,12 +4276,22 @@ function zdText(){const C=zCen(),d=zDi(),pc=(a,b)=>b?(a*100/b).toFixed(1)+'%':'0
  const sch=Object.entries(IW).sort((a,b)=>a[1]-b[1]).map(([t,w])=>w+':'+(ZC[t]?ZC[t].n.replace('Toxic the ','').replace('People ','P.'):t)+(w<=wave?'✓':'')).join(' ');
  return 'SPAWN DIAGNOSTICS · '+['Easy','Normal','Hard'][d]+(MPn>1?' · '+MPn+'P':'')+'\n'+
  'Wave '+wave+(it!=null?' · INTRO: '+ZC[it].n+' only ('+Math.round((ZD.k||0)*100)+'% of '+(ZD.n0||'?')+' = '+(ZD.n||'?')+')':' · regular')+'\n'+
- 'Living '+C.n+' · still to spawn '+toSp+'\n'+
- 'Ranged  '+C.r+' ('+pc(C.r,C.n)+') cap '+ZCFG.cap.rg[d]+'%\n'+
- 'Special '+C.s+' ('+pc(C.s,C.n)+') cap '+ZCFG.cap.sp[d]+'%\n'+
+ 'Living '+C.n+' · ranged '+C.r+' ('+pc(C.r,C.n)+') · special '+C.s+' ('+pc(C.s,C.n)+')\n'+
+ 'This wave '+ZD.tw.n+' spawned · still to spawn '+toSp+(zCamp()?' · campaign section '+(secOf(mapId)+1):'')+'\n'+
+ 'Ranged  '+ZD.tw.r+' ('+pc(ZD.tw.r,ZD.tw.n)+' of wave) cap '+ZCFG.cap.rg[d]+'%\n'+
+ 'Special '+ZD.tw.s+' ('+pc(ZD.tw.s,ZD.tw.n)+' of wave) cap '+zCapSp(d)+'%\n'+
  'Cap hits this wave: special '+ZD.rj.special+' · ranged '+ZD.rj.ranged+' · max '+ZD.rj.max+' · delayed '+ZD.dl+'\n'+
  (ev?'Last: '+ev.m+' ('+ag+')\n':'Last: no cap events\n')+
  'Schedule '+sch}
+
+// ---------- split screen campaign: pick the map on the same campaign map screens as single player ----------
+var CMLB=0;
+// the lobby's combined progress: a map or section counts as open when the players' progress together opens it
+function cMerge(acs){acs=(acs||[]).filter(Boolean);if(!acs.length)return S.ac;if(acs.length==1)return acs[0];const B=acs.map(bmOf);return{name:'Team',g:1,bm:[0,1,2].map(d=>B.reduce((v,b)=>v|b[d],0)),un:[...new Set(acs.flatMap(A=>A.un||[]))]}}
+function cAcc(){return CMLB?cMerge(lobAcs()):S.ac}
+function clbOpen(){if(GMD!='c'){sfx('deny');return}CMLB=1;CMV=null;sfx('click');cMap()}
+function clbBack(){CMLB=0;CMV=null;mode='lobby';UIS='';sfx('click');rL()}
+function clbGo(){if(!mOpen(cAcc(),DIF(),mapId)){sfx('deny');return}S.mp=mapId;SVD=1;clbBack()}
 
 function loop(t){clFrame(t);zdFrame();requestAnimationFrame(loop);try{if(innerWidth!==LW||innerHeight!==LH){LW=innerWidth;LH=innerHeight;rs()}loopBody(t)}catch(e){showErr(e)}}
 function loopBody(t){const dt=Math.min(.05,(t-last)/1000||0);last=t;padPoll();if(mode=='splash'||mode=='intro'){padUI();CT+=dt;PZ.style.display='none';SB.innerHTML='';sbk='';drawCut(dt);return}padUI();if(mode=='play')upd(dt);if(SVD&&t-SVT>5000&&mode!='play'||SVD&&t-SVT>20000){SVD=0;SVT=t;sv()}for(const p of PL){if(p.hp<(p.php??p.hp)&&mode!='menu'&&mode!='lobby')sfx('hurt');p.php=p.hp}smk(dt);const kk=mode+MPn+(P?P.own+'|'+P.cur:'');if(kk!=sbk){sbk=kk;PZ.style.display=mode=='play'&&!MPn?'flex':'none';SB.innerHTML=mode=='play'&&!MPn?P.own.map((i,k)=>`<button data-q=1 class="${i==P.cur?'on':''}" onclick="eq(${i});sfx('click')">${k+1}<small>${CH[P.ci||0].dw&&i==0?'Duals':WP[i].n}</small></button>`).join('')+`<button data-q=1 onclick="amRel(P)">R<small>Reload</small></button>`:''}draw()}
