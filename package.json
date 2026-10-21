@@ -1,0 +1,11 @@
+{
+  "name": "zombdash",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Zombdash, a pixel-art top-down zombie survival game by Doorhouse Games",
+  "scripts": {
+    "build": "node tools/build.js",
+    "check": "node tools/build.js --check",
+    "test": "node tools/build.js && node tests/run.js"
+  }
+}

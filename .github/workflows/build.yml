@@ -1,0 +1,30 @@
+name: Build index.html
+# Rebuilds index.html whenever something in src/ or tools/ changes, so edits made on github.com go live.
+on:
+  push:
+    branches: [main]
+    paths: ['src/**', 'tools/**']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: build-index
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Build
+        run: node tools/build.js
+      - name: Commit index.html if it changed
+        run: |
+          if git diff --quiet -- index.html; then echo "index.html already up to date"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Rebuild index.html from src/"
+          git push

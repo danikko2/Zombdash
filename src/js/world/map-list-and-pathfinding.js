@@ -1,0 +1,14 @@
+//# world/map-list-and-pathfinding.js — The map list (MP), build() to load a map, zombie pathfinding flow field, wall push-out
+const MP=[{n:'Suburb',d:'House, garage, road, wrecks',f:mapSuburb},{n:'Warehouse',d:'Shelves, containers, 4 doors',f:mapWare},{n:'Graveyard',d:'Open fields, tombstones, crypt',f:mapGrave},{n:'School',d:'Halls, classrooms, cafeteria',f:mapSchool},{n:'Old West',d:'Saloon, church, stables, shops',f:mapWest},{n:'Neighborhood',d:'Two houses, cul-de-sac, yards',f:mapNeighborhood},{n:'Military Base',d:'Runway, hangars, barracks, tanks',f:mapBase},{n:'Campground',d:'Cabins, lake, dock, campfire',f:mapCamp},{n:'Deadway Highway',d:'Jammed interstate, wrecks, emergency scene',f:mapHighway},{n:'Haunted Mansion',d:'Old mansion, portraits, statues, candles',f:mapMansion},{n:'Enchanted Forest',d:'Dense spooky woods, paths, an old road',f:mapForest},{n:'Urban Outskirts',d:'Run-down houses, wrecks, worn streets',f:mapUrban},{n:'City Park',d:'Trails, fishing ponds, food trucks, a big playground',f:mapPark},{n:'Downtown Zombville',d:'Skyscrapers, shops, apartments, the stadium',f:mapDowntown},{n:'Hometown Market',d:'Aisles, freezers, loading docks, parking lot',f:mapGrocery},{n:'Main Street',d:'Shops, city hall, police + fire stations',f:mapMainSt}];
+function build(){bgFree();WW=1800;WH=1800;WL=[];TR=[];SM=[];sk=[];NOGO=[];if(!MP[mapId])mapId=0;vRec.on=mapId!==3;vRec.L=[];vRec.busy=0;vehWrap();try{MP[mapId].f()}finally{vRec.on=0}HS.VH=vRec.L;mkSurf();bgLow()}
+try{build()}catch(e){console.error(e);mapId=0;S.mp=0;build()}
+function flow(){if(!MPn){bfs(fd,P.x,P.y);return}for(const p of PL){if(!alive(p))continue;if(!p.fd||p.fd.length!==fd.length)p.fd=new Int16Array(fd.length);bfs(p.fd,p.x,p.y)}}
+function bfs(F,px,py){const ci=cl(px/gs|0,0,gw-1),cj=cl(py/gs|0,0,gh-1),q=[cj*gw+ci];F.fill(-1);F[q[0]]=0;
+for(let h=0;h<q.length;h++){const c=q[h],i=c%gw,j=c/gw|0;for(const[di,dj]of D){const a=i+di,b=j+dj;if(a<0||b<0||a>=gw||b>=gh)continue;const n=b*gw+a;if(F[n]>=0||bl[n])continue;if(di&&dj&&(bl[j*gw+a]||bl[b*gw+i]))continue;F[n]=F[c]+1;q.push(n)}}}
+function dirTo(z){let tx=P.x,ty=P.y;
+if(z.x<0||z.x>WW||z.y<0||z.y>WH){tx=cl(z.x,4,WW-4);ty=cl(z.y,4,WH-4)}
+else{const F=MPn&&P.fd&&P.fd.length===fd.length?P.fd:fd,i=cl(z.x/gs|0,0,gw-1),j=cl(z.y/gs|0,0,gh-1),c=F[j*gw+i];
+if(c!=0){let bd=c<0?1e9:c,bx=0,by=0,f=0;for(const[di,dj]of D){const a=i+di,b=j+dj;if(a<0||b<0||a>=gw||b>=gh)continue;const n=F[b*gw+a];if(n<0||n>=bd)continue;if(di&&dj&&(bl[j*gw+a]||bl[b*gw+i]))continue;bd=n;bx=a;by=b;f=1}
+if(f){tx=bx*gs+gs/2;ty=by*gs+gs/2}}}
+return Math.atan2(ty-z.y,tx-z.x)}
+function push(o,r){for(const w of wlAt(o.x,o.y)){const nx=cl(o.x,w[0],w[0]+w[2]),ny=cl(o.y,w[1],w[1]+w[3]),dx=o.x-nx,dy=o.y-ny,d=Math.hypot(dx,dy);if(d<r){if(d>.01){o.x+=dx/d*(r-d);o.y+=dy/d*(r-d)}else o.y-=r}}}

@@ -1,0 +1,15 @@
+//# render/survivor-colours.js — Survivor colour variants
+// ---------- survivor colour variants (split screen) ----------
+const SKO_=[];const VC=[null,[70,185,70],[60,115,230],[210,55,55],[150,75,215]],VN=['Base','Green','Blue','Red','Purple'],SKC={};
+const RCS={0:{m:'s',c:[[122,74,38],[87,53,27],[146,88,45]]},2:{m:'s',c:[[46,158,91],[33,113,65],[55,189,109]]},3:{m:'s',c:[[255,216,74],[183,155,53],[255,255,88]]},
+6:{m:'s',c:[[190,198,212],[140,148,162],[226,232,240]]},7:{m:'s',c:[[28,150,160],[18,104,114],[80,200,206],[28,140,150],[18,100,110],[70,190,196]]},8:{m:'s',c:[[204,184,140],[160,140,102],[228,212,176]]},9:{m:'s',c:[[40,56,100],[28,40,74],[62,84,138]]},10:{m:'s',c:[[236,236,232],[200,200,198],[250,250,248]]},11:{m:'s',c:[[52,44,56],[36,30,40],[72,62,78]]},12:{m:'s',c:[[88,104,120],[66,80,94],[112,130,150]]},13:{m:'s',c:[[240,240,236],[206,206,204],[252,252,250]]},14:{m:'s',c:[[184,158,96],[146,124,74],[206,182,120]]},15:{m:'s',c:[[52,150,84],[36,112,60],[80,180,110]]},16:{m:'s',c:[[40,50,88],[28,34,62],[60,72,118]]},1:{m:'t'},4:{m:'t'},5:{m:'t'}};
+const lum=c=>.3*c[0]+.59*c[1]+.11*c[2];
+function skinImg(ci,v){if(!v||!PIMG.naturalWidth||!RCS[ci]||typeof document=='undefined'||!document.createElement)return PIMG;const key=ci+'_'+v;if(SKC[key]){SKO_.splice(SKO_.indexOf(key),1);SKO_.push(key);return SKC[key]}while(SKO_.length>=(LMX?2:6)){const o=SKO_.shift(),c=SKC[o];delete SKC[o];if(c&&c!==PIMG){c.width=0;c.height=0}}SKO_.push(key);
+try{const R=RCS[ci],T=VC[v]||[200,30,40],cv=document.createElement('canvas');cv.width=PIMG.naturalWidth;cv.height=PIMG.naturalHeight;const g=cv.getContext('2d');g.drawImage(PIMG,0,0);
+const set=R.m=='s'?new Set(R.c.map(c=>c[0]<<16|c[1]<<8|c[2])):null,ml=R.m=='s'?lum(R.c[0]):lum(T)*1.15,lt=lum(T);
+const rect=(x,y,w,h,box)=>{const d=g.getImageData(x,y,w,h),a=d.data;for(let j=0;j<h;j++)for(let i=0;i<w;i++){if(box&&(i<box[0]||i>box[1]||j<box[2]||j>box[3]))continue;const o=(j*w+i)*4;if(a[o+3]<10)continue;const r=a[o],gg=a[o+1],b=a[o+2];if(r==22&&gg==17&&b==28){if(v==9){a[o]=104;a[o+1]=8;a[o+2]=16}continue}
+if(v==9){const L=lum([r,gg,b]),sp=((i*7+j*13)%23==0);let q;if(set&&set.has(r<<16|gg<<8|b)){const k=L/ml,sh=((i-j)%10+10)%10<3;q=sh?[215*k,32*k,36*k]:[52*k,40*k,46*k]}else if(set&&r>gg&&gg>b&&r-b>45&&r>140)continue;else if(set){const h=L*.5;q=sp?[150,16,24]:[h*1.1+12,h*.85+6,h*.95+10]}else{const t=L/255;q=t>.62?[240*t,64*t,50*t]:sp?[160,18,26]:[L*.6+22,L*.36+10,L*.42+16]}a[o]=cl(q[0],0,255);a[o+1]=cl(q[1],0,255);a[o+2]=cl(q[2],0,255);continue}if(set){if(!set.has(r<<16|gg<<8|b))continue;const k=lum([r,gg,b])/ml;a[o]=cl(T[0]*k,0,255);a[o+1]=cl(T[1]*k,0,255);a[o+2]=cl(T[2]*k,0,255)}
+else{const k=lum([r,gg,b])/lt,q=.5;a[o]=cl(r*(1-q)+T[0]*k*q,0,255);a[o+1]=cl(gg*(1-q)+T[1]*k*q,0,255);a[o+2]=cl(b*(1-q)+T[2]*k*q,0,255)}}g.putImageData(d,x,y)};
+for(const f of PS[ci].walk.concat(PS[ci].idle))rect(f[0],f[1],f[2],f[3]);for(const f of PS[ci].gun)rect(f[0],f[1],f[2],f[3],set?(ci==8?[0,15,8,19]:[2,15,12,19]):(ci==8?[0,25,8,19]:[2,25,12,19]));
+return SKC[key]=cv}catch(e){return PIMG}}
+

@@ -1,0 +1,12 @@
+//# core/main-loop.js — Main loop and pointer/keyboard listeners
+function loop(t){clFrame(t);aimCursor();dtFrame();zdFrame();requestAnimationFrame(loop);try{if(innerWidth!==LW||innerHeight!==LH){LW=innerWidth;LH=innerHeight;rs()}loopBody(t)}catch(e){showErr(e)}}
+function loopBody(t){const dt=Math.min(.05,(t-last)/1000||0);last=t;padPoll();if(mode=='splash'||mode=='intro'){padUI();CT+=dt;PZ.style.display='none';SB.innerHTML='';sbk='';drawCut(dt);return}padUI();if(mode=='play')upd(dt);if(SVD&&t-SVT>5000&&mode!='play'||SVD&&t-SVT>20000){SVD=0;SVT=t;sv()}for(const p of PL){if(p.hp<(p.php??p.hp)&&mode!='menu'&&mode!='lobby')sfx('hurt');p.php=p.hp}smk(dt);const kk=mode+MPn+(P?P.own+'|'+P.cur:'');if(kk!=sbk){sbk=kk;PZ.style.display=mode=='play'&&!MPn?'flex':'none';SB.innerHTML=mode=='play'&&!MPn?P.own.map((i,k)=>`<button data-q=1 class="${i==P.cur?'on':''}" onclick="eq(${i});sfx('click')">${k+1}<small>${CH[P.ci||0].dw&&i==0?'Duals':WP[i].n}</small></button>`).join('')+`<button data-q=1 onclick="amRel(P)">R<small>Reload</small></button>`:''}draw()}
+C.addEventListener('pointerdown',e=>{if(mode!='play')return;const q=gp(e);
+if(e.pointerType=='mouse'){mouse.d=1;mouse.x=q.x;mouse.y=q.y;return}
+const s={id:e.pointerId,ox:q.x,oy:q.y,x:q.x,y:q.y};
+if(q.x<W/2&&!L)L=s;else if(q.x>=W/2&&!R)R=s});
+C.addEventListener('pointermove',e=>{const q=gp(e);mouse.x=q.x;mouse.y=q.y;for(const s of[L,R])if(s&&s.id==e.pointerId){s.x=q.x;s.y=q.y}});
+function up(e){mouse.d=0;if(L&&L.id==e.pointerId)L=null;if(R&&R.id==e.pointerId)R=null}
+C.addEventListener('pointerup',up);C.addEventListener('pointercancel',up);
+addEventListener('keydown',e=>{const kq=e.key.toLowerCase();if(mode=='splash'||mode=='intro'){introTap();return}if((!e.target||e.target.tagName!='INPUT')&&uiKey(kq)){if(e.preventDefault)e.preventDefault();return}if(mode=='lobby'){if(!e.target||e.target.tagName!='INPUT'){lobbyKey(kq);if(e.preventDefault&&(kq==' '||kq.startsWith('arrow')))e.preventDefault()}return}if(kq=='escape'||kq=='p'){if(mode=='play')pauseMenu();else if(mode=='pause')resume();return}keys[kq]=1;const n=e.key=='0'?9:e.key=='-'?10:+e.key-1;if(mode=='play'){const p=PL.find(p=>p.inp=='km'||p.inp=='any');if(p&&n>=0&&n<p.own.length)p.cur=p.own[n];if(p&&kq=='r')amRel(p)}});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=0);
+document.addEventListener('contextmenu',e=>e.preventDefault());
