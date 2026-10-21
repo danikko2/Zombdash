@@ -18,7 +18,7 @@ The game ships as **one self-contained file**, `index.html` (what GitHub Pages s
 | `src/assets/sounds/` | Recorded reload sounds (everything else is synthesized in `audio/sound.js`). |
 | `tools/build.js` | The build (Node, no packages needed). |
 | `tests/run.js`, `tests/suites/` | Automated tests that load the real game in Node with a fake browser. |
-| `docs/` | This file and the Supabase setup SQL for online accounts. |
+| `docs/` | This file, the map editor plan (`map-editor-plan.md`) and the Supabase setup SQL for online accounts. |
 
 ## Build and test
 
