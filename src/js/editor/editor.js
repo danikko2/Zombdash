@@ -281,9 +281,14 @@ const json=cmWrite(d),thumb=edMakeThumb(d);await msWrite([['put','maps',{id:d.id
 if(!ED)return 1;if(copy){hReset();E.d=d;edAllDirty()}E.mark=hTop();E.src='saved';E.probs=cmLint(E.d);ok=1;cmLoadAll().catch(()=>{});edToast(copy?'Saved a copy: you are now editing it':msMem()?'Saved for this visit only (export to keep it)':'Saved')}
 catch(err){edModal('Could not save',`<p>${edEsc(err&&err.message||err)}</p><p>Your changes are still here. Use Export JSON to keep a copy on your computer.</p>`,[['OK','',()=>0],['Export JSON','go',edExport]])}
 finally{if(ED){ED.saving=0;edUI()}}return ok}
-function edExport(){const E=ED;if(!E)return;cmDownload(E.d.name,cmWrite(E.d));edToast('Exported')}
+function edExport(){const E=ED;if(!E)return;cmDownload(E.d.name,cmWrite(E.d)).then(ok=>edToast(ok?'Exported':'Export cancelled'))}
 // download a map file
-function cmDownload(name,json){try{const b=new Blob([JSON.stringify(json,null,1)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=(String(name||'map').replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'-')||'map')+'.zombdash-map.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}catch(e){}}
+// inside the Claude artifact viewer files go through its save prompt (the "downloads" capability); everywhere else, a normal download.
+// Resolves 1 when the file was handed over, 0 when the viewer said no.
+function cmDownload(name,json){const fn=(String(name||'map').replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'-')||'map')+'.zombdash-map.json',txt=JSON.stringify(json,null,1);
+const plain=()=>{try{const b=new Blob([txt],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}catch(e){}return 1};
+let cu=null;try{const C=globalThis.claude;if(C&&typeof C.use=='function')cu=C.use('downloads')}catch(e){}if(!cu)return Promise.resolve(plain());
+return Promise.resolve(cu).then(dl=>dl?dl.save({filename:fn,data:txt}).then(()=>1,e=>e&&e.code=='declined'?0:plain()):plain(),()=>plain())}
 // ----- playtest -----
 function edPlaytest(){const E=ED,u=(S.ac.un||[0]).filter(i=>CH[i]).sort((a,b)=>a-b),ci=u.includes(E.ptc!=null?E.ptc:sel)?(E.ptc!=null?E.ptc:sel):u[0],pr=E.probs.filter(p=>p.lv=='err');
 edModal('Playtest',`<p>Plays this map in the real game. Nothing you earn is kept, and Esc → Back to editor returns here with everything as you left it.</p>${pr.length?`<p class=edwarn>⚠ ${edEsc(pr[0].m)}</p>`:''}

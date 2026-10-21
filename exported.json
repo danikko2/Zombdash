@@ -1,0 +1,99 @@
+{
+ "format": "zombdash-map",
+ "version": 1,
+ "id": "m4g0nu2gb",
+ "name": "Persist Me",
+ "description": "",
+ "tileSize": 32,
+ "width": 72,
+ "height": 56,
+ "ground": "grass",
+ "terrain": {
+  "legend": {
+   "g": "grass",
+   "n": "sand",
+   "m": "mud"
+  },
+  "rows": [
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "ggggggggnnnnnggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "ggggggggnnnnnggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "ggggggggnnnnnggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "ggggggggnnnnnggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "ggggggggnnnnnggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggmmmgggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggmmmgggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggmmmgggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+  ]
+ },
+ "props": [
+  {
+   "id": "pp",
+   "kind": "tent",
+   "x": 500,
+   "y": 500
+  }
+ ],
+ "vehicles": [],
+ "walls": [],
+ "playerStart": {
+  "x": 1152,
+  "y": 896
+ },
+ "zombieSpawns": {
+  "points": [],
+  "zones": []
+ },
+ "created": "2026-10-21T04:29:06.455Z",
+ "updated": "2026-10-21T04:29:07.394Z",
+ "order": [
+  "pp"
+ ]
+}
