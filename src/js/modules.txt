@@ -19,6 +19,9 @@ maps/military-camp-shared.js
 maps/military-base.js
 maps/campground.js
 world/map-list-and-pathfinding.js
+world/map-schema.js
+world/map-store.js
+world/custom-maps.js
 ui/core-ui.js
 progress/skills.js
 ui/menus.js
@@ -83,6 +86,12 @@ dev/test-switches.js
 game/drop-table.js
 dev/balance-editor.js
 input/aim-reticle.js
+editor/assets.js
+editor/history.js
+editor/editor-view.js
+editor/editor.js
+editor/playtest.js
+editor/workshop.js
 core/main-loop.js
 intro/cutscene.js
 core/start.js

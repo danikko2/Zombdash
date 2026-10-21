@@ -17,7 +17,7 @@ function memMB(){let b=BGL?BGL.width*BGL.height*4:(BG&&BG.width>1?WW*WH*4:0);for
 const CPK='zd_cp';
 function cpGet(){try{const c=JSON.parse(localStorage[CPK]||'null');return c&&c.v==1?c:null}catch(e){return null}}
 function cpClear(){try{delete localStorage[CPK]}catch(e){}}
-function cpSave(){if(MPn||TUT||!P||GMD=='c'&&wave>=20)return;try{const p=P;localStorage[CPK]=JSON.stringify({v:1,t:Date.now(),an:S.ac.name,gm:GMD,m:mapId,ci:p.ci||0,d:DIF(),w:wave,k:kills,L:LIVES,IW,BB,LB,
+function cpSave(){if(MPn||TUT||!P||cmIs(mapId)||GMD=='c'&&wave>=20)return;try{const p=P;localStorage[CPK]=JSON.stringify({v:1,t:Date.now(),an:S.ac.name,gm:GMD,m:mapId,ci:p.ci||0,d:DIF(),w:wave,k:kills,L:LIVES,IW,BB,LB,
 p:{cash:p.cash,hp:p.hp,mx:p.mx,ar:p.ar||0,own:p.own,cur:p.cur,mg:p.mg,am:p.am,paid:p.paid,v:p.v||0}})}catch(e){}}
 function cpOK(){const c=cpGet();return c&&c.an==S.ac.name&&MP[c.m]&&CH[c.ci]?c:null}
 function cpResume(){const c=cpOK();if(!c){sfx('deny');return menu()}sfx('click');setGM(c.gm);if(c.gm=='c')S.dlc=c.d;else S.dlf=c.d;mapId=c.m;S.mp=c.m;sel=c.ci;CPR=c;try{start()}finally{CPR=null}}

@@ -7,5 +7,5 @@ const GM=document.getElementById('game'),rot=()=>S.or=='l'&&innerHeight>innerWid
 const gp=e=>rot()?{x:e.clientY,y:innerWidth-e.clientX}:{x:e.clientX,y:e.clientY};
 function rs(){const r=rot(),nw=r?innerHeight:innerWidth,nh=r?innerWidth:innerHeight;if(nw!==W||nh!==H||C.width!==nw||C.height!==nh){W=C.width=nw;H=C.height=nh}GM.style.width=W+'px';GM.style.height=H+'px';ui.className=W>H?'ls':'';GM.style.transform=r?`translateX(${innerWidth}px) rotate(90deg)`:'none'}
 addEventListener('resize',rs);rs();
-function sv(){try{localStorage.deadyard=JSON.stringify(S)}catch(e){}}
+function sv(){if(sv.off)return;try{localStorage.deadyard=JSON.stringify(S)}catch(e){}}
 S.mv=S.mv??.6;S.qs=S.qs??1;S.sv=S.sv??.8;

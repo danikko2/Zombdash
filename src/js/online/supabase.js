@@ -29,7 +29,7 @@ async function olSync(force){if(!OLX||S.dev||!S.ol)return;const c=await olFetchS
 let OLT=0;function olAuto(){if(!OLX||!S.ol||S.olOff||OL.busy||Date.now()-OLT<60000)return;OLT=Date.now();OL.busy=1;olSync().then(r=>{if(r=='ask'&&mode=='menu'&&UIS=='')menu()},()=>{}).then(()=>{OL.busy=0})}
 // ----- leaderboards -----
 function olRun(){RUN0=Date.now();RUNW=wave+1}
-function olScore(){if(!OLX||S.olOff||S.dev||MPn||TUT||GMD!='f'||!P||P.ac!==S.ac||wave<2)return;const sc={name:olName(S.ac.name),map:mapId,mode:'f',diff:DIF(),wave,kills,survivor:P.ci||0,start:Math.min(RUNW,wave),secs:Math.round((Date.now()-RUN0)/1000)};
+function olScore(){if(!OLX||S.olOff||S.dev||MPn||TUT||cmIs(mapId)||GMD!='f'||!P||P.ac!==S.ac||wave<2)return;const sc={name:olName(S.ac.name),map:mapId,mode:'f',diff:DIF(),wave,kills,survivor:P.ci||0,start:Math.min(RUNW,wave),secs:Math.round((Date.now()-RUN0)/1000)};
 S.olq=(S.olq||[]).concat([sc]).slice(-10);sv();olFlush()}
 async function olFlush(){if(!OLX||!S.olq||!S.olq.length)return;try{const s=await olSess(true);if(!s)return;while(S.olq.length){const sc=S.olq[0];try{await sbRaw('/rest/v1/scores',{method:'POST',tok:s.at,prefer:'return=minimal',body:Object.assign({user_id:s.uid},sc)})}catch(e){if(!(e.status&&e.status<500))throw e}S.olq.shift();sv()}}catch(e){}}
 async function lbLoad(m,d,mine){const q=m<0?'':'&map=eq.'+m;return sbRaw('/rest/v1/leaderboard?select=user_id,name,map,wave,kills,survivor,created_at&mode=eq.f&diff=eq.'+d+q+(mine?'&user_id=eq.'+mine:'')+'&order=wave.desc,kills.desc,created_at.asc&limit='+(m<0?150:50))}

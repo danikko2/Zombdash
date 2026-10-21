@@ -173,7 +173,76 @@ input[type=range]::-moz-range-thumb{width:18px;height:22px;background:var(--ac);
 .mview .mprev.lk{filter:grayscale(1) brightness(.35)}.dots i.lk{background:#141a15}
 .cwin{display:flex;align-items:center;gap:12px;background:rgba(70,120,40,.3);box-shadow:inset 4px 0 0 var(--tox);padding:8px 12px;margin:0 0 10px;text-align:left}.cwin canvas{position:static;width:48px;height:60px;image-rendering:pixelated;flex:none}.cwin b{display:block;font-weight:400;font-size:21px;color:var(--tox)}.cwin small{font-size:16px;color:var(--fg)}
 .lmode{margin:0 0 8px}.lbos{font-size:15px;color:#ff8a5a;white-space:nowrap}
-.cpb{border:2px solid #9be860;background:rgba(40,70,30,.55);padding:10px 12px;margin:6px 0 10px;text-align:center}.cpb b{display:block;color:#9be860}.cpb small{display:block;opacity:.85;margin:3px 0 8px}.cpb .row{gap:8px}.lbl{display:flex;flex-direction:column;gap:3px;margin:8px 0;max-height:52vh;overflow:auto}.lbr{display:grid;grid-template-columns:34px 1fr auto 52px 70px;gap:8px;align-items:center;padding:5px 8px;background:rgba(0,0,0,.25)}.lbr.me{background:rgba(155,232,96,.2);outline:1px solid #9be860}.lbr small{opacity:.7;display:block;font-size:11px}.lbr b:first-child{color:#ffcf40}.opt input{width:100%;margin:4px 0;padding:8px;font:inherit;background:#0e1410;color:#e8f0e0;border:1px solid #3a4a3a}</style></head><body>
+.cpb{border:2px solid #9be860;background:rgba(40,70,30,.55);padding:10px 12px;margin:6px 0 10px;text-align:center}.cpb b{display:block;color:#9be860}.cpb small{display:block;opacity:.85;margin:3px 0 8px}.cpb .row{gap:8px}.lbl{display:flex;flex-direction:column;gap:3px;margin:8px 0;max-height:52vh;overflow:auto}.lbr{display:grid;grid-template-columns:34px 1fr auto 52px 70px;gap:8px;align-items:center;padding:5px 8px;background:rgba(0,0,0,.25)}.lbr.me{background:rgba(155,232,96,.2);outline:1px solid #9be860}.lbr small{opacity:.7;display:block;font-size:11px}.lbr b:first-child{color:#ffcf40}.opt input{width:100%;margin:4px 0;padding:8px;font:inherit;background:#0e1410;color:#e8f0e0;border:1px solid #3a4a3a}
+/* ---------- map workshop (editor/workshop.js) ---------- */
+#ui .ws,#ui.ls .ws{width:min(100%,800px)}#ui .ws.wsn{width:min(100%,560px)}
+.wsmsg{color:var(--tox);font-size:18px;margin:0 0 8px}
+.wsbar{display:flex;gap:8px;align-items:center;margin:0 0 10px}.wsbar input{flex:1;min-width:0;margin:0;font-size:20px;padding:8px}.wsbar button{width:auto;flex:none;margin:0;padding:9px 14px}
+.wsl{display:flex;flex-direction:column;gap:8px;max-height:min(54vh,520px);overflow:auto;padding:4px;margin:0 0 10px;text-align:left;scrollbar-width:thin;scrollbar-color:var(--bd) transparent}
+.wsc{display:flex;gap:12px;align-items:stretch;background:rgba(0,0,0,.3);box-shadow:inset 4px 0 0 var(--bd);padding:8px 10px 8px 12px}.wsc.bad{box-shadow:inset 4px 0 0 var(--blood)}
+.wst{flex:none;width:132px;height:99px;object-fit:cover;box-shadow:0 0 0 2px var(--ink);background:#0a0f0b;display:block}
+.wsi{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.wsi b{font-weight:400;font-size:22px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wsi small{font-size:16px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.wsi small.wsw{color:#ffb86a;white-space:normal}
+.wsa{display:flex;align-items:center;gap:8px;margin-top:auto;flex-wrap:wrap}.wsa>button{width:auto;margin:0;padding:6px 14px;font-size:18px}.wsa>button.go{font-size:11px;padding:9px 14px}.wslk{display:flex;flex-wrap:wrap}.wslk .lnk{font-size:17px}
+.wsemp{padding:22px 10px;text-align:center}.wsemp b{font-family:'Press Start 2P',monospace;font-weight:400;font-size:11px;color:var(--ac)}
+.wsf{display:block;text-align:left;margin:6px 0}.wsf span{display:block;font-size:17px;color:var(--mut)}.wsf input{margin:2px 0;font-size:20px;padding:7px}
+.ws select{width:100%;font:inherit;font-size:20px;padding:7px;margin:4px 0;background:#0a0f0b;color:var(--fg);border:0;box-shadow:0 0 0 2px var(--ink),0 0 0 4px var(--bd);outline:none}
+.wsrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}.wsps{margin:6px 0 2px}.wsps button{padding:6px 2px;font-size:15px}.wsps small{font-size:14px}
+.wsul{text-align:left;color:var(--fg);font-size:18px;margin:6px 0 12px;padding-left:22px}
+.dots i.cu{background:#5a4626}.dots i.cu.on{background:var(--ac)}
+@media(max-width:560px){.wst{width:88px;height:66px}.wsc{gap:8px}}
+/* ---------- map editor (editor/editor.js) ---------- */
+#ed{position:absolute;inset:0;z-index:30;display:flex;flex-direction:column;background:#0b100c;color:var(--fg);font:18px 'VT323',ui-monospace,monospace;pointer-events:auto;overflow:hidden;touch-action:none}
+#ed *{box-sizing:border-box}
+#ed button{width:auto;margin:0;padding:3px 7px;min-height:30px;font-size:17px;flex-direction:row;align-items:center;gap:5px;line-height:1;transition:none;background:linear-gradient(180deg,#2b3a2d,#1f2a21);box-shadow:0 0 0 1px var(--ink),inset 0 1px 0 rgba(255,255,255,.08),inset 0 -2px 0 rgba(0,0,0,.3)}
+#ed button:active{transform:translateY(1px);box-shadow:0 0 0 1px var(--ink)}
+#ed button.on{background:linear-gradient(180deg,#45662f,#2c4421);box-shadow:0 0 0 1px var(--tox),inset 0 1px 0 rgba(255,255,255,.14)}
+#ed button.go{background:linear-gradient(180deg,#ffdf6e,#e8ad22);color:#2a1d05;font-family:'VT323',monospace;font-size:18px;letter-spacing:0;padding:3px 12px}
+#ed button.red{background:linear-gradient(180deg,#a8342c,#7a201c)}#ed button:disabled{opacity:.35;cursor:default}
+#ed button:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+#ed button.lnk{min-height:0;box-shadow:none;background:none}
+.edi{width:16px;height:16px;fill:currentColor;flex:none;display:block}
+#ed input,#ed select,#ed textarea{font:inherit;font-size:18px;width:100%;margin:2px 0;padding:3px 6px;background:#0a0f0b;color:var(--fg);border:0;outline:none;box-shadow:0 0 0 1px var(--ink),0 0 0 2px #34483a;user-select:text;-webkit-user-select:text;pointer-events:auto}
+#ed input:focus,#ed select:focus,#ed textarea:focus{box-shadow:0 0 0 1px var(--ink),0 0 0 2px var(--ac)}
+#ed input[type=range]{height:10px;padding:0;margin:0;box-shadow:0 0 0 1px var(--ink)}#ed input[type=checkbox]{width:16px;height:16px;margin:0 8px 0 0;padding:0;accent-color:#9be860;box-shadow:none}
+#ed textarea{resize:vertical;min-height:56px;line-height:1}
+#ed h3{font:400 11px 'Press Start 2P',monospace;color:var(--ac);margin:4px 0 10px;letter-spacing:1px;text-transform:none;display:block}#ed h3::before,#ed h3::after{display:none}
+#ed h4{font:400 9px 'Press Start 2P',monospace;color:var(--mut);margin:14px 0 6px;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+#ed p{margin:6px 0}
+.edtop{flex:none;display:flex;align-items:center;gap:3px;padding:4px 6px;background:linear-gradient(180deg,#1f2c21,#152018);box-shadow:0 2px 0 var(--ink);z-index:3;overflow-x:auto;scrollbar-width:none}
+.edname{font:400 10px 'Press Start 2P',monospace;color:var(--ac);padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px;cursor:pointer}.eddot{font-style:normal;color:#ff8a5a}
+.edsep{width:1px;align-self:stretch;margin:2px 5px;background:#34483a;flex:none}.edgrow{flex:1;min-width:6px}
+#ed button.edgo{background:linear-gradient(180deg,#a8ec6e,#5fb034);color:#0f2108}
+.edmid{flex:1;display:flex;min-height:0;position:relative}
+.edl,.edr{flex:none;width:250px;overflow-y:auto;overflow-x:hidden;background:linear-gradient(180deg,#18221a,#111813);scrollbar-width:thin;scrollbar-color:#34483a transparent}
+.edl{box-shadow:2px 0 0 var(--ink);z-index:1}.edr{box-shadow:-2px 0 0 var(--ink);padding:10px 12px;z-index:1}
+#ed.nol .edl,#ed.nor .edr{display:none}
+#ed .edcol{position:absolute;top:44px;z-index:4;min-height:26px;padding:2px 4px;opacity:.9}.edcl{left:256px}.edcr{right:256px}#ed.nol .edcl{left:6px}#ed.nor .edcr{right:6px}#ed.nol .edcl .edi,#ed.nor .edcr .edi{transform:scaleX(-1)}
+.edc{flex:1;position:relative;min-width:0;overflow:hidden;background:#0b100c}
+#edcv{position:absolute;inset:0;width:100%;height:100%;display:block}
+#edmm{position:absolute;inset:auto 10px 10px auto;width:200px;height:150px;box-shadow:0 0 0 2px var(--ink),0 0 0 3px var(--bd);background:#0a0f0b;cursor:pointer;image-rendering:pixelated}
+.edtoast{position:absolute;left:50%;top:10px;transform:translateX(-50%);background:rgba(7,10,8,.92);color:var(--ac);padding:4px 12px;box-shadow:0 0 0 1px var(--bd);font-size:18px;pointer-events:none;opacity:0;transition:opacity .2s;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}.edtoast.on{opacity:1}
+.edst{flex:none;display:flex;gap:16px;align-items:center;padding:3px 10px;background:#101712;box-shadow:0 -2px 0 var(--ink);font-size:17px;color:var(--mut);white-space:nowrap;overflow:hidden}
+.edst .edtl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}.edst b{font-weight:400;color:var(--fg)}.edxy{min-width:230px}.eduns{color:#ff8a5a}.edok{color:var(--tox)}
+.edtabs{display:grid;grid-template-columns:repeat(4,1fr);position:sticky;top:0;z-index:2;background:#121a14;box-shadow:0 2px 0 var(--ink)}
+#ed .edtabs button{justify-content:center;min-height:34px;padding:3px 0;background:transparent;box-shadow:inset 0 -2px 0 transparent;font-size:16px}#ed .edtabs button.on{background:rgba(155,232,96,.1);box-shadow:inset 0 -2px 0 var(--tox)}
+.edpane{padding:8px 10px 14px}
+.edtools{display:flex;flex-wrap:wrap;gap:4px}
+.edsw{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}#ed .edsw button{flex-direction:column;padding:4px 2px;gap:3px;font-size:15px}.edsw img{width:40px;height:40px;image-rendering:pixelated;box-shadow:0 0 0 1px var(--ink)}
+.edrow{display:flex;gap:6px;align-items:center;margin:4px 0}.edrow input{flex:1;min-width:0}.edval{color:var(--ac);min-width:36px;text-align:right}
+.edhint{font-size:16px;color:var(--mut);line-height:1.05}
+.edag{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:8px}#ed .edag button{flex-direction:column;padding:3px 2px 4px;gap:1px;font-size:14px;line-height:.95;text-align:center;min-width:0}.edag img{width:56px;height:56px;image-rendering:pixelated}.edag span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;max-width:100%;overflow:hidden;white-space:normal;line-height:.9;min-height:1.8em}
+.edcur{display:flex;gap:8px;align-items:center;background:rgba(0,0,0,.3);padding:4px 6px;margin:6px 0}.edcur img{width:44px;height:44px;image-rendering:pixelated;flex:none}.edcur b{display:block;font-weight:400}.edcur small{font-size:15px;color:var(--mut)}
+.edcols{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin:6px 0}#ed .edcols button{min-height:20px;height:20px;padding:0;background:var(--c);box-shadow:0 0 0 1px var(--ink)}#ed .edcols button.on{box-shadow:0 0 0 1px var(--ink),0 0 0 3px #fff}
+.edlist{display:flex;flex-direction:column;gap:4px;margin-top:6px}#ed .edlist button{justify-content:flex-start;text-align:left;padding:6px 8px;gap:8px}.edlist span{display:flex;flex-direction:column;gap:1px}.edlist small{font-size:14px;color:var(--mut)}
+.edws{width:26px;height:12px;flex:none;box-shadow:0 0 0 1px var(--ink)}
+.edf{display:grid;grid-template-columns:70px 1fr;gap:6px;align-items:center;margin:3px 0}.edf span{color:var(--mut);font-size:16px}
+.edck{display:flex;align-items:center;margin:8px 0;font-size:17px;cursor:pointer}
+#ed .edwide{width:100%;justify-content:center;margin-top:12px}#ed .edmini{min-height:0;padding:1px 6px;font:15px 'VT323',monospace;letter-spacing:0;text-transform:none}
+.edprobs{display:flex;flex-direction:column;gap:4px}#ed .edp{justify-content:flex-start;text-align:left;align-items:flex-start;padding:4px 6px;font-size:15px;line-height:1;min-height:0;background:rgba(0,0,0,.3)}#ed .edp b{font-weight:400;flex:none}#ed .edp.err b{color:#ff6a5a}#ed .edp.warn b{color:#ffb86a}#ed .edp.info b{color:#7ab8e8}#ed .edp:disabled{opacity:.9}
+.edmod{position:absolute;inset:0;z-index:40;display:none;align-items:center;justify-content:center;background:rgba(5,8,6,.6)}.edmod.on{display:flex}
+.edbox{width:min(92%,440px);background:linear-gradient(180deg,#223024,#121a14);padding:14px 16px;box-shadow:0 0 0 3px var(--ink),0 0 0 5px var(--bd),0 10px 0 5px rgba(0,0,0,.4)}.edbox p{color:var(--fg);font-size:18px;line-height:1.1}.edbox .edrow{justify-content:flex-end;margin-top:14px}.edbox .edf{grid-template-columns:110px 1fr}#ed .edwarn{color:#ffb86a}
+@media(max-width:1180px){.edtop button>span{display:none}.edtop button.edgo>span,.edtop button[data-a=save]>span{display:inline}}
+@media(max-width:900px){.edl,.edr{width:210px}.edcl{left:216px}.edcr{right:216px}.edxy{min-width:0}}</style></head><body>
 <div id="game" style="width:100vw;height:100vh"><canvas id="c"></canvas><div id="ui"><div class="p" id="boot" style="animation:none"><h2>LOADING ZOMBDASH...</h2><p class="note">If this message stays on screen, tell Claude.</p></div></div><div id="sb"></div><button id="pz" aria-label="Pause" data-q="1" onclick="pauseMenu()"></button></div>
 <script>window.__zb=1;addEventListener('error',function(e){try{if(window.__zstarted)return;var d=document.getElementById('zerr0');if(!d){d=document.createElement('div');d.id='zerr0';d.style.cssText='position:fixed;left:8px;right:8px;bottom:8px;z-index:99;background:rgba(120,10,10,.95);color:#fff;font:14px monospace;padding:8px;white-space:pre-wrap;pointer-events:auto';document.body.appendChild(d)}var t=document.createElement('div');t.textContent='Startup error (please tell Claude): '+(e.message||e)+' @'+(e.lineno||'?')+':'+(e.colno||'?');d.appendChild(t);if(!document.getElementById('zrst')){var b=document.createElement('button');b.id='zrst';b.textContent='Try again with a fresh save (your old save is backed up)';b.style.cssText='margin-top:6px;font:14px monospace;padding:6px 10px;width:auto;display:inline-block';b.onclick=function(){try{if(localStorage.deadyard){localStorage.deadyard_backup=localStorage.deadyard;localStorage.removeItem('deadyard')}}catch(_){}location.reload()};d.appendChild(b)}}catch(_){}});</script>
 <script>
@@ -184,7 +253,7 @@ const GM=document.getElementById('game'),rot=()=>S.or=='l'&&innerHeight>innerWid
 const gp=e=>rot()?{x:e.clientY,y:innerWidth-e.clientX}:{x:e.clientX,y:e.clientY};
 function rs(){const r=rot(),nw=r?innerHeight:innerWidth,nh=r?innerWidth:innerHeight;if(nw!==W||nh!==H||C.width!==nw||C.height!==nh){W=C.width=nw;H=C.height=nh}GM.style.width=W+'px';GM.style.height=H+'px';ui.className=W>H?'ls':'';GM.style.transform=r?`translateX(${innerWidth}px) rotate(90deg)`:'none'}
 addEventListener('resize',rs);rs();
-function sv(){try{localStorage.deadyard=JSON.stringify(S)}catch(e){}}
+function sv(){if(sv.off)return;try{localStorage.deadyard=JSON.stringify(S)}catch(e){}}
 S.mv=S.mv??.6;S.qs=S.qs??1;S.sv=S.sv??.8;
 const AU={c:null,trk:null,want:null,step:0,nt:0,tl:{},php:0,gv:0,vo:0};
 const mf=n=>440*Math.pow(2,(n-69)/12),rnd=(a,b)=>a+Math.random()*(b-a);
@@ -1204,7 +1273,7 @@ g.font='10px "Press Start 2P", monospace';g.fillStyle='#2a1a10';g.fillText('CAMP
 for(const x of[AX-150,AX+150]){g.fillStyle='#5a3a22';g.fillRect(x-3,AY-100,6,8)}}
 
 const MP=[{n:'Suburb',d:'House, garage, road, wrecks',f:mapSuburb},{n:'Warehouse',d:'Shelves, containers, 4 doors',f:mapWare},{n:'Graveyard',d:'Open fields, tombstones, crypt',f:mapGrave},{n:'School',d:'Halls, classrooms, cafeteria',f:mapSchool},{n:'Old West',d:'Saloon, church, stables, shops',f:mapWest},{n:'Neighborhood',d:'Two houses, cul-de-sac, yards',f:mapNeighborhood},{n:'Military Base',d:'Runway, hangars, barracks, tanks',f:mapBase},{n:'Campground',d:'Cabins, lake, dock, campfire',f:mapCamp},{n:'Deadway Highway',d:'Jammed interstate, wrecks, emergency scene',f:mapHighway},{n:'Haunted Mansion',d:'Old mansion, portraits, statues, candles',f:mapMansion},{n:'Enchanted Forest',d:'Dense spooky woods, paths, an old road',f:mapForest},{n:'Urban Outskirts',d:'Run-down houses, wrecks, worn streets',f:mapUrban},{n:'City Park',d:'Trails, fishing ponds, food trucks, a big playground',f:mapPark},{n:'Downtown Zombville',d:'Skyscrapers, shops, apartments, the stadium',f:mapDowntown},{n:'Hometown Market',d:'Aisles, freezers, loading docks, parking lot',f:mapGrocery},{n:'Main Street',d:'Shops, city hall, police + fire stations',f:mapMainSt}];
-function build(){bgFree();WW=1800;WH=1800;WL=[];TR=[];SM=[];sk=[];NOGO=[];if(!MP[mapId])mapId=0;vRec.on=mapId!==3;vRec.L=[];vRec.busy=0;vehWrap();try{MP[mapId].f()}finally{vRec.on=0}HS.VH=vRec.L;mkSurf();bgLow()}
+function build(){bgFree();WW=1800;WH=1800;WL=[];TR=[];SM=[];sk=[];NOGO=[];const cd=cmIs(mapId)&&cmDocOf(mapId);if(!cd&&!MP[mapId])mapId=0;vRec.on=mapId!==3;vRec.L=[];vRec.busy=0;vehWrap();try{if(cd)cmBuild(cd);else MP[mapId].f()}finally{vRec.on=0}HS.VH=vRec.L;mkSurf();bgLow()}
 try{build()}catch(e){console.error(e);mapId=0;S.mp=0;build()}
 function flow(){if(!MPn){bfs(fd,P.x,P.y);return}for(const p of PL){if(!alive(p))continue;if(!p.fd||p.fd.length!==fd.length)p.fd=new Int16Array(fd.length);bfs(p.fd,p.x,p.y)}}
 function bfs(F,px,py){const ci=cl(px/gs|0,0,gw-1),cj=cl(py/gs|0,0,gh-1),q=[cj*gw+ci];F.fill(-1);F[q[0]]=0;
@@ -1216,6 +1285,245 @@ if(c!=0){let bd=c<0?1e9:c,bx=0,by=0,f=0;for(const[di,dj]of D){const a=i+di,b=j+d
 if(f){tx=bx*gs+gs/2;ty=by*gs+gs/2}}}
 return Math.atan2(ty-z.y,tx-z.x)}
 function push(o,r){for(const w of wlAt(o.x,o.y)){const nx=cl(o.x,w[0],w[0]+w[2]),ny=cl(o.y,w[1],w[1]+w[3]),dx=o.x-nx,dy=o.y-ny,d=Math.hypot(dx,dy);if(d<r){if(d>.01){o.x+=dx/d*(r-d);o.y+=dy/d*(r-d)}else o.y-=r}}}
+// ---------- custom maps: the data format ----------
+// A custom map is plain data. The Map Workshop writes it, cmBuild() in world/custom-maps.js turns it into a playable map,
+// and anyone (Claude included) can write one by hand: the JSON layout is in docs/ARCHITECTURE.md ("Custom map files").
+// In memory a map ("doc") keeps its terrain as one byte per tile (ter, an index into pal) so painting stays fast.
+// functions and registries only: nothing here runs during the first map build at boot
+const CMVER=1,CMTILE=32,CMMIN=[20,15],CMMAX=128;
+function cmH(a,b,k){const v=Math.sin(a*12.9898+b*78.233+k*37.719)*43758.5453;return v-Math.floor(v)}
+// the four 16px cells of a tile in three shades, the same pattern the built-in maps use for their ground
+function cmCells(g,x,y,a,b,c){for(let j=0;j<32;j+=16)for(let i=0;i<32;i+=16){const h=((x+i)*7+(y+j)*13)%5;g.fillStyle=h<2?a:h<4?b:c;g.fillRect(x+i,y+j,16,16)}}
+// a few small marks at stable spots in the tile
+function cmSpeck(g,x,y,tx,ty,n,cols,w,h,k){for(let i=0;i<n;i++){const u=cmH(tx,ty,k+i*3.1),v=cmH(ty+7,tx,k+i*5.7);g.fillStyle=cols[i%cols.length];g.fillRect(x+Math.floor(u*(32-w)),y+Math.floor(v*(32-h)),w,h)}}
+
+// ----- terrain registry -----
+// To add a terrain: push {id,n,ch,mc,f} with cmAddTer(). id is what map files store, n the name in the editor, ch its letter in map
+// files, mc its minimap colour, f(g,x,y,tx,ty) paints one 32px tile at world pixel x,y (tx,ty = tile column/row).
+// walk:0 makes it block walking (bullets still fly over it); liq:1 draws a shoreline where it meets other ground.
+const CMTER=[
+{id:'grass',n:'Grass',ch:'g',mc:'#52b04c',f(g,x,y){cmCells(g,x,y,'#4fae4a','#58b852','#47a043');g.fillStyle='#3a8a38';for(let j=0;j<32;j+=16)for(let i=0;i<32;i+=16)if(((x+i)*31+(y+j)*17)%7==0){g.fillRect(x+i+4,y+j+6,2,5);g.fillRect(x+i+9,y+j+4,2,6)}}},
+{id:'dirt',n:'Dirt',ch:'d',mc:'#8c6c46',f(g,x,y,tx,ty){cmCells(g,x,y,'#8b6b45','#94744c','#80623f');cmSpeck(g,x,y,tx,ty,3,['#a8865a','#6e5236','#7a5c3c'],2,2,1)}},
+{id:'asphalt',n:'Asphalt',ch:'a',mc:'#3e4146',f(g,x,y,tx,ty){cmCells(g,x,y,'#3d4045','#41454b','#393c41');cmSpeck(g,x,y,tx,ty,4,['#50545b','#2e3135'],1,1,2);if(cmH(tx,ty,9)<.12){g.fillStyle='rgba(0,0,0,.25)';g.fillRect(x+4+Math.floor(cmH(tx,ty,10)*10),y+8+Math.floor(cmH(tx,ty,11)*16),10+Math.floor(cmH(tx,ty,12)*8),1)}}},
+{id:'concrete',n:'Concrete',ch:'c',mc:'#a6a298',f(g,x,y,tx,ty){cmCells(g,x,y,'#a8a49a','#aeaaa0','#a29e94');g.fillStyle='#928e85';g.fillRect(x,y,32,1);g.fillRect(x,y,1,32);cmSpeck(g,x,y,tx,ty,2,['#9a968c','#b8b4aa'],1,1,3);if(cmH(tx,ty,13)<.1){g.fillStyle='#86827a';const cx=x+6+Math.floor(cmH(tx,ty,14)*16),cy=y+6+Math.floor(cmH(tx,ty,15)*16);g.fillRect(cx,cy,5,1);g.fillRect(cx+4,cy+1,1,3);g.fillRect(cx+5,cy+3,4,1)}}},
+{id:'sidewalk',n:'Sidewalk',ch:'s',mc:'#b8b4a8',f(g,x,y,tx,ty){g.fillStyle='#b8b4a8';g.fillRect(x,y,32,32);g.fillStyle='#c0bcb0';g.fillRect(x+1,y+1,14,2);g.fillRect(x+17,y+17,14,2);g.fillStyle='#a19d92';g.fillRect(x,y,32,1);g.fillRect(x,y,1,32);g.fillRect(x,y+16,32,1);g.fillRect(x+16,y,1,32);cmSpeck(g,x,y,tx,ty,2,['#aaa69a','#c8c4b8'],1,1,4)}},
+{id:'sand',n:'Sand',ch:'n',mc:'#dcc78f',f(g,x,y,tx,ty){cmCells(g,x,y,'#dcc78f','#e2cd95','#d5c088');cmSpeck(g,x,y,tx,ty,5,['#c4ae74','#efdcaa','#cdb87e'],1,1,5);if(cmH(tx,ty,16)<.3){g.fillStyle='#cdb87e';g.fillRect(x+3+Math.floor(cmH(tx,ty,17)*18),y+5+Math.floor(cmH(tx,ty,18)*22),7,1)}}},
+{id:'gravel',n:'Gravel',ch:'v',mc:'#8a857a',f(g,x,y,tx,ty){cmCells(g,x,y,'#8a857a','#918c80','#837e73');cmSpeck(g,x,y,tx,ty,10,['#6e695f','#a8a296','#5f5a52','#b8b2a6'],2,1,6)}},
+{id:'mud',n:'Mud',ch:'m',mc:'#5f4a33',f(g,x,y,tx,ty){cmCells(g,x,y,'#5f4a33','#654f37','#58442e');if(cmH(tx,ty,19)<.4){const cx=x+9+cmH(tx,ty,20)*14,cy=y+9+cmH(tx,ty,21)*14;g.fillStyle='#4a3a28';g.beginPath();g.ellipse(cx,cy,5+cmH(tx,ty,22)*4,3+cmH(tx,ty,23)*2,0,0,7);g.fill();g.fillStyle='#7d6749';g.fillRect(cx-2,cy-2,3,1)}cmSpeck(g,x,y,tx,ty,2,['#4f3d29','#6e5840'],2,1,7)}},
+{id:'water',n:'Water',ch:'w',mc:'#3070a0',walk:0,liq:1,f(g,x,y,tx,ty){cmCells(g,x,y,'#2e6c96','#3274a0','#2a668e');g.fillStyle='#4f93c0';for(let i=0;i<2;i++)g.fillRect(x+2+Math.floor(cmH(tx,ty,24+i)*22),y+4+Math.floor(cmH(tx,ty,26+i)*24),6,1);if(cmH(tx,ty,28)<.25){g.fillStyle='#8fc3e8';g.fillRect(x+4+Math.floor(cmH(tx,ty,29)*22),y+4+Math.floor(cmH(tx,ty,30)*22),2,1)}}},
+{id:'wood',n:'Wood floor',ch:'o',mc:'#a8793e',f(g,x,y,tx,ty){for(let r=0;r<4;r++){const py=y+r*8;g.fillStyle=['#a8793e','#b0824a','#9f7339'][Math.floor(cmH(tx,ty*4+r,31)*3)];g.fillRect(x,py,32,8);g.fillStyle='#7a5528';g.fillRect(x,py+7,32,1);g.fillRect(x+((tx*11+(ty*4+r)*13)%4)*8+3,py,1,7);if(cmH(tx,ty*4+r,32)<.4){g.fillStyle='#96683a';g.fillRect(x+Math.floor(cmH(tx,ty*4+r,33)*24),py+3,5,1)}}}},
+{id:'tile',n:'Tile floor',ch:'t',mc:'#cfcfc7',f(g,x,y){for(let j=0;j<32;j+=16)for(let i=0;i<32;i+=16){g.fillStyle=((x+i+y+j)/16)%2?'#d9d9d2':'#c4c4bc';g.fillRect(x+i,y+j,16,16)}}}];
+const CMTI=Object.create(null);for(const t of CMTER)CMTI[t.id]=t;
+function cmAddTer(t){if(!CMTI[t.id])CMTER.push(t);CMTI[t.id]=t}
+// overlays are painted on top of the ground and have no effect on movement; '.' in map files means none
+const CMOVL=[
+{id:'blood',n:'Blood',ch:'b',mc:'#7a1414',f(g,x,y,tx,ty){const n=2+Math.floor(cmH(tx,ty,40)*2);for(let i=0;i<n;i++){const cx=x+5+cmH(tx,ty,41+i)*22,cy=y+5+cmH(tx,ty,44+i)*22,r=3+cmH(tx,ty,47+i)*5;g.fillStyle='#6e1010';g.beginPath();g.ellipse(cx,cy,r,r*.75,0,0,7);g.fill();g.fillStyle='#8c1616';g.beginPath();g.ellipse(cx-r*.25,cy-r*.2,r*.5,r*.35,0,0,7);g.fill()}cmSpeck(g,x,y,tx,ty,4,['#7a1212','#5a0c0c'],2,2,50)}},
+{id:'burn',n:'Burn marks',ch:'x',mc:'#2a221c',f(g,x,y,tx,ty){g.fillStyle='rgba(22,17,13,.5)';g.fillRect(x,y,32,32);g.fillStyle='rgba(8,6,5,.45)';for(let i=0;i<2;i++){g.beginPath();g.ellipse(x+8+cmH(tx,ty,55+i)*16,y+8+cmH(tx,ty,57+i)*16,6+cmH(tx,ty,59+i)*6,4+cmH(tx,ty,61+i)*4,0,0,7);g.fill()}cmSpeck(g,x,y,tx,ty,4,['#4a4038','#6a5a4a','#1a1410'],1,1,63)}}];
+const CMOI=Object.create(null);for(const t of CMOVL)CMOI[t.id]=t;
+function cmAddOvl(t){if(!CMOI[t.id])CMOVL.push(t);CMOI[t.id]=t}
+function cmWet(d,i){const t=CMTI[d.pal[d.ter[i]]];return !!t&&t.walk===0}
+// shoreline where liquid meets other ground
+function cmShore(g,d,tx,ty,x,y){const T=d.tile;const dry=(a,b)=>a>=0&&b>=0&&a<d.w&&b<d.h&&!(CMTI[d.pal[d.ter[b*d.w+a]]]||{}).liq;
+g.fillStyle='#23597d';if(dry(tx,ty-1))g.fillRect(x,y,T,3);if(dry(tx,ty+1))g.fillRect(x,y+T-3,T,3);if(dry(tx-1,ty))g.fillRect(x,y,3,T);if(dry(tx+1,ty))g.fillRect(x+T-3,y,3,T);
+g.fillStyle='#a8d6f0';if(dry(tx,ty-1))g.fillRect(x,y,T,1);if(dry(tx,ty+1))g.fillRect(x,y+T-1,T,1);if(dry(tx-1,ty))g.fillRect(x,y,1,T);if(dry(tx+1,ty))g.fillRect(x+T-1,y,1,T)}
+// paint the ground (terrain, shorelines, overlays) of tiles tx0..tx1-1, ty0..ty1-1; miss=1 marks unknown terrain (editor)
+function cmGround(g,d,tx0,ty0,tx1,ty1,miss){const T=d.tile,gd=CMTI[d.ground]||CMTER[0];
+for(let ty=Math.max(0,ty0);ty<Math.min(d.h,ty1);ty++)for(let tx=Math.max(0,tx0);tx<Math.min(d.w,tx1);tx++){const i=ty*d.w+tx,x=tx*T,y=ty*T,t=CMTI[d.pal[d.ter[i]]];(t||gd).f(g,x,y,tx,ty);
+if(!t&&miss){g.strokeStyle='#ff3a5a';g.lineWidth=2;g.beginPath();g.moveTo(x+4,y+4);g.lineTo(x+T-4,y+T-4);g.moveTo(x+T-4,y+4);g.lineTo(x+4,y+T-4);g.stroke()}
+if(t&&t.liq)cmShore(g,d,tx,ty,x,y);const o=d.ovl[i];if(o){const q=CMOI[d.opal[o]];if(q)q.f(g,x,y,tx,ty)}}}
+
+// ----- wall styles -----
+// fl is the game's wall flag: 0 = wall (stops bullets), 1 = solid but not a building wall, 2 = see-through (bullets fly through).
+const CMWALL=[
+{id:'wall',n:'Wall',fl:0,f(g,x,y,w,h){g.fillStyle='#2e2420';g.fillRect(x,y,w,h);g.fillStyle='#7a695c';g.fillRect(x+1,y+1,Math.max(0,w-2),Math.max(0,h-2));g.fillStyle='#958474';g.fillRect(x+1,y+1,Math.max(0,w-2),Math.min(2,Math.max(0,h-2)))}},
+{id:'brick',n:'Brick wall',fl:0,f(g,x,y,w,h){g.fillStyle='#2a1510';g.fillRect(x,y,w,h);g.fillStyle='#9a4632';g.fillRect(x+1,y+1,Math.max(0,w-2),Math.max(0,h-2));g.fillStyle='#c27a5e';if(w>=h){for(let j=y+4;j<y+h-1;j+=5)g.fillRect(x+1,j,Math.max(0,w-2),1);for(let i=x+6;i<x+w-1;i+=10)g.fillRect(i,y+1,1,Math.max(0,h-2))}else{for(let i=x+4;i<x+w-1;i+=5)g.fillRect(i,y+1,1,Math.max(0,h-2));for(let j=y+6;j<y+h-1;j+=10)g.fillRect(x+1,j,Math.max(0,w-2),1)}}},
+{id:'concrete',n:'Concrete wall',fl:0,f(g,x,y,w,h){g.fillStyle='#2f3237';g.fillRect(x,y,w,h);g.fillStyle='#8c9099';g.fillRect(x+1,y+1,Math.max(0,w-2),Math.max(0,h-2));g.fillStyle='#a6aab2';g.fillRect(x+1,y+1,Math.max(0,w-2),Math.min(2,Math.max(0,h-2)));g.fillStyle='#7a7e86';if(w>=h)for(let i=x+48;i<x+w-2;i+=48)g.fillRect(i,y+1,1,Math.max(0,h-2));else for(let j=y+48;j<y+h-2;j+=48)g.fillRect(x+1,j,Math.max(0,w-2),1)}},
+{id:'wood',n:'Wood wall',fl:0,f(g,x,y,w,h){g.fillStyle='#2a1d14';g.fillRect(x,y,w,h);g.fillStyle='#8a5a2c';g.fillRect(x+1,y+1,Math.max(0,w-2),Math.max(0,h-2));g.fillStyle='#6e4520';if(w>=h)for(let j=y+4;j<y+h-1;j+=4)g.fillRect(x+1,j,Math.max(0,w-2),1);else for(let i=x+4;i<x+w-1;i+=4)g.fillRect(i,y+1,1,Math.max(0,h-2));g.fillStyle='#a8703a';g.fillRect(x+1,y+1,Math.max(0,w-2),1)}},
+{id:'fence',n:'Chain-link fence',fl:2,see:1,f(g,x,y,w,h){if(w>=h)fenceH(g,x,y+h/2,w);else fenceV(g,x+w/2,y,h)}},
+{id:'hidden',n:'Invisible blocker',fl:1,hid:1,f(){}}];
+const CMWI=Object.create(null);for(const t of CMWALL)CMWI[t.id]=t;
+function cmAddWall(t){if(!CMWI[t.id])CMWALL.push(t);CMWI[t.id]=t}
+
+// a real prop / vehicle size by name, or null (map files come from anywhere: "constructor" is not a prop)
+function cmOB(k){return typeof OB!='undefined'&&typeof k=='string'&&Object.prototype.hasOwnProperty.call(OB,k)&&OB[k]&&typeof OB[k].f=='function'?OB[k]:null}
+function cmHW(k){if(typeof HWV!='function'||typeof k!='string')return null;const s=HWV(k);return Array.isArray(s)?s:null}
+// ----- collision: everything a custom map adds to WL -----
+function cmVeh(o){const s=cmHW(o.veh);if(!s)return null;return{k:o.veh,x:o.x,y:o.y,a:(o.r||0)*Math.PI/180,L:s[0],W:s[1],c:o.c||undefined,dmg:o.dmg?1:0,burn:o.burn?1:0}}
+// a solid prop's footprint (OB[k].c) turned with the prop, as a box
+function cmFoot(o){const B=cmOB(o.k);if(!B||!B.c)return null;const cw=B.c[0],ch=B.c[1],r=(((o.r||0)%360)+360)%360;if(!r)return[o.x-cw/2,o.y-ch,cw,ch,1];
+const a=r*Math.PI/180,c=Math.cos(a),s=Math.sin(a);let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const[px,py]of[[-cw/2,-ch],[cw/2,-ch],[-cw/2,0],[cw/2,0]]){const X_=o.x+px*c-py*s,Y_=o.y+px*s+py*c;x0=Math.min(x0,X_);y0=Math.min(y0,Y_);x1=Math.max(x1,X_);y1=Math.max(y1,Y_)}return[x0,y0,x1-x0,y1-y0,1]}
+// a vehicle's collision, built by the same code the highway maps use (hwCol)
+function cmVehCol(o,out){const v=cmVeh(o);if(!v)return;const keep=WL;WL=[];try{hwCol(v)}finally{const r=WL;WL=keep;for(const w of r)out.push(w)}}
+function cmColl(d){const out=[],T=d.tile;
+for(const w of d.walls){const s=CMWI[w.s]||CMWI.wall;if(w.w>0&&w.h>0)out.push([w.x,w.y,w.w,w.h,s.fl])}
+// water: one see-through blocker per run of wet tiles, runs that repeat on the next row are merged downwards
+let open={};for(let ty=0;ty<=d.h;ty++){const now={};if(ty<d.h){let run=-1;for(let tx=0;tx<=d.w;tx++){const wet=tx<d.w&&cmWet(d,ty*d.w+tx);if(wet&&run<0)run=tx;else if(!wet&&run>=0){const k=run+','+tx;now[k]=open[k]?(open[k][3]+=T,open[k]):[run*T,ty*T,(tx-run)*T,T,2];run=-1}}}
+for(const k in open)if(!now[k])out.push(open[k]);open=now}
+for(const o of d.obj){if(o.veh)cmVehCol(o,out);else{const f=cmFoot(o);if(f)out.push(f)}}return out}
+
+// ----- new maps, ids -----
+function cmUid(p){return p+Date.now().toString(36).slice(-4)+Math.floor(Math.random()*1679616).toString(36).padStart(4,'0')}
+function cmNew(o){o=o||{};const w=cl(Math.round(+o.w||72),CMMIN[0],CMMAX),h=cl(Math.round(+o.h||56),CMMIN[1],CMMAX),gd=CMTI[o.ground]?o.ground:'grass',t=new Date().toISOString();
+return{v:CMVER,id:cmUid('m'),name:String(o.name||'Untitled map').replace(/[<>]/g,'').slice(0,40),desc:String(o.desc||'').replace(/[<>]/g,'').slice(0,240),tile:CMTILE,w,h,ground:gd,pal:[gd],ter:new Uint8Array(w*h),opal:[''],ovl:new Uint8Array(w*h),
+obj:[],walls:[],start:{x:Math.round(w*CMTILE/2),y:Math.round(h*CMTILE/2)},spawns:[],zones:[],created:t,updated:t,extra:{}}}
+// palette index for a terrain / overlay id (added on first use)
+function cmPi(d,id){let i=d.pal.indexOf(id);if(i<0){if(d.pal.length>=255)return 0;d.pal.push(id);i=d.pal.length-1}return i}
+function cmOi(d,id){if(!id)return 0;let i=d.opal.indexOf(id);if(i<0){if(d.opal.length>=255)return 0;d.opal.push(id);i=d.opal.length-1}return i}
+// a deep copy (terrain arrays copied too)
+function cmClone(d){const c=JSON.parse(JSON.stringify(Object.assign({},d,{ter:null,ovl:null})));c.ter=new Uint8Array(d.ter);c.ovl=new Uint8Array(d.ovl);return c}
+
+// ----- writing a map file -----
+const CMCH='ABCDEFGHIJKLMNOPQRSTUVWXYZhijklpqruyz0123456789#$%&*+-=?@^~!:;<>/|()[]{}';
+function cmLeg(ids,reg,used){const L={},by={};for(const id of ids){if(id==null||by[id]!=null)continue;let c=reg[id]&&reg[id].ch;if(!c||used.has(c))c=[...CMCH].find(x=>!used.has(x));if(!c)throw new Error('too many terrain types');used.add(c);by[id]=c;L[c]=id}return{L,by}}
+const cmR1=v=>Math.round(v*10)/10;
+function cmWrite(d){const used=new Set(['.']),tu=new Set([d.ground]);for(let i=0;i<d.ter.length;i++)tu.add(d.pal[d.ter[i]]);
+const T=cmLeg([...tu],CMTI,used),rows=[];for(let y=0;y<d.h;y++){let s='';for(let x=0;x<d.w;x++)s+=T.by[d.pal[d.ter[y*d.w+x]]];rows.push(s)}
+const out=Object.assign({},d.extra||{},{format:'zombdash-map',version:CMVER,id:d.id,name:d.name,description:d.desc||'',tileSize:d.tile,width:d.w,height:d.h,ground:d.ground,terrain:{legend:T.L,rows}});
+const ou=new Set();for(let i=0;i<d.ovl.length;i++)if(d.ovl[i])ou.add(d.opal[d.ovl[i]]);
+if(ou.size){const O=cmLeg([...ou],CMOI,new Set(['.'])),r=[];for(let y=0;y<d.h;y++){let s='';for(let x=0;x<d.w;x++){const o=d.ovl[y*d.w+x];s+=o?O.by[d.opal[o]]:'.'}r.push(s)}out.overlay={legend:O.L,rows:r}}else delete out.overlay;
+out.props=d.obj.filter(o=>!o.veh).map(o=>{const p={id:o.id,kind:o.k,x:cmR1(o.x),y:cmR1(o.y)};if(o.r)p.rot=cmR1(o.r);if(o.vr!=null)p.var=Math.round(o.vr*100)/100;return p});
+out.vehicles=d.obj.filter(o=>o.veh).map(o=>{const p={id:o.id,kind:o.veh,x:cmR1(o.x),y:cmR1(o.y),rot:cmR1(o.r||0)};if(o.c)p.color=o.c;if(o.dmg)p.damaged=true;if(o.burn)p.burnt=true;return p});
+out.walls=d.walls.map(w=>({id:w.id,x:cmR1(w.x),y:cmR1(w.y),w:cmR1(w.w),h:cmR1(w.h),style:w.s||'wall'}));
+out.playerStart={x:cmR1(d.start.x),y:cmR1(d.start.y)};
+out.zombieSpawns={points:d.spawns.map(s=>({id:s.id,x:cmR1(s.x),y:cmR1(s.y),enabled:s.on!==false})),zones:d.zones.map(z=>({id:z.id,x:cmR1(z.x),y:cmR1(z.y),w:cmR1(z.w),h:cmR1(z.h),enabled:z.on!==false}))};
+out.created=d.created;out.updated=d.updated;
+// draw order (props and vehicles share one list in the editor)
+out.order=d.obj.map(o=>o.id);return out}
+
+// ----- reading a map file -----
+// cmRead(json or text) -> {doc, errors, warnings}. Errors mean the file can't be used as it is (nothing is changed or thrown away);
+// warnings mean it loads but something in it won't show up in the game.
+const CMMIG={}; // CMMIG[n](json) upgrades a version n file to version n+1
+function cmRead(src){const E=[],Wn=[],res={doc:null,errors:E,warnings:Wn};let j=src;
+if(typeof j=='string'){try{j=JSON.parse(j)}catch(e){E.push('This file is not valid JSON ('+e.message+').');return res}}
+if(!j||typeof j!='object'||Array.isArray(j)){E.push('This file does not contain a map.');return res}
+if(j.format!=='zombdash-map'){E.push('This is not a Zombdash map file (it needs "format": "zombdash-map").');return res}
+let v=j.version;if(!Number.isInteger(v)||v<1){E.push('The map file has no valid "version".');return res}
+if(v>CMVER){E.push('This map was made with a newer version of Zombdash (map format '+v+'). Update the game to open it.');return res}
+try{j=JSON.parse(JSON.stringify(j));while(v<CMVER){j=CMMIG[v](j);v++;j.version=v}}catch(e){E.push('The map could not be upgraded to the current format: '+e.message);return res}
+const num=x=>typeof x=='number'&&isFinite(x),int=x=>Number.isInteger(x);
+const ts=j.tileSize==null?CMTILE:j.tileSize;if(ts!==CMTILE)E.push('"tileSize" must be '+CMTILE+'.');
+const w=j.width,h=j.height;if(!int(w)||!int(h)||w<CMMIN[0]||h<CMMIN[1]||w>CMMAX||h>CMMAX)E.push('"width" and "height" must be whole numbers of tiles, from '+CMMIN[0]+'×'+CMMIN[1]+' up to '+CMMAX+'×'+CMMAX+'.');
+if(E.length)return res;
+const d={v:CMVER,id:typeof j.id=='string'&&j.id?j.id.slice(0,40):cmUid('m'),name:String(j.name==null?'Untitled map':j.name).replace(/[<>]/g,'').slice(0,40)||'Untitled map',desc:String(j.description||'').replace(/[<>]/g,'').slice(0,240),tile:CMTILE,w,h,ground:'grass',pal:[],ter:new Uint8Array(w*h),opal:[''],ovl:new Uint8Array(w*h),obj:[],walls:[],start:{x:w*CMTILE/2,y:h*CMTILE/2},spawns:[],zones:[],created:typeof j.created=='string'?j.created:new Date().toISOString(),updated:typeof j.updated=='string'?j.updated:new Date().toISOString(),extra:{}};
+if(typeof j.ground=='string'&&j.ground)d.ground=j.ground;else if(j.ground!=null)E.push('"ground" must be a terrain name.');
+if(!CMTI[d.ground])Wn.push('Unknown default ground "'+d.ground+'": grass is shown instead.');
+d.pal.push(d.ground);
+// terrain grid
+const grid=(G,nm,leg,cb)=>{if(!G||typeof G!='object'||!G.legend||typeof G.legend!='object'||!Array.isArray(G.rows)){E.push('"'+nm+'" needs a "legend" and "rows".');return}
+for(const c in G.legend)if(c.length!==1||typeof G.legend[c]!='string'){E.push('"'+nm+'.legend" keys must be single characters naming a type.');return}
+if(G.rows.length!==h){E.push('"'+nm+'.rows" has '+G.rows.length+' rows, the map is '+h+' tiles tall.');return}
+for(let y=0;y<h;y++){const r=G.rows[y];if(typeof r!='string'||r.length!==w){E.push('"'+nm+'.rows['+y+']" must be a string of '+w+' characters.');return}
+for(let x=0;x<w;x++){const c=r[x];if(leg&&c==='.')continue;const id=G.legend[c];if(id==null){E.push('"'+nm+'.rows['+y+']" uses "'+c+'", which is not in the legend.');return}cb(y*w+x,id)}}};
+if(j.terrain==null){/* all ground */}else grid(j.terrain,'terrain',0,(i,id)=>{d.ter[i]=cmPi(d,id)});
+if(j.overlay!=null)grid(j.overlay,'overlay',1,(i,id)=>{d.ovl[i]=cmOi(d,id)});
+for(const id of d.pal)if(id!==d.ground&&!CMTI[id])Wn.push('Unknown terrain "'+id+'": '+(CMTI[d.ground]?CMTI[d.ground].n:'grass').toLowerCase()+' is shown instead.');
+for(const id of d.opal)if(id&&!CMOI[id])Wn.push('Unknown overlay "'+id+'": it is not shown.');
+const ids=new Set(),uid=(x,p)=>{let s=typeof x=='string'&&x?x.slice(0,24):cmUid(p);while(ids.has(s))s=cmUid(p);ids.add(s);return s};
+const list=(a,nm)=>{if(a==null)return[];if(!Array.isArray(a)){E.push('"'+nm+'" must be a list.');return[]}return a};
+const bad=(nm,i,why)=>E.push('"'+nm+'['+i+']" '+why);
+const unk=Object.create(null);
+list(j.props,'props').forEach((p,i)=>{if(!p||typeof p.kind!='string'||!num(p.x)||!num(p.y))return bad('props',i,'needs "kind", "x" and "y".');if(p.rot!=null&&!num(p.rot))return bad('props',i,'has a "rot" that is not a number.');
+const o={id:uid(p.id,'p'),k:p.kind,x:p.x,y:p.y,r:p.rot||0};if(num(p.var))o.vr=cl(p.var,0,1);d.obj.push(o);if(!cmOB(p.kind))unk[p.kind]=(unk[p.kind]||0)+1});
+list(j.vehicles,'vehicles').forEach((p,i)=>{if(!p||typeof p.kind!='string'||!num(p.x)||!num(p.y))return bad('vehicles',i,'needs "kind", "x" and "y".');if(p.rot!=null&&!num(p.rot))return bad('vehicles',i,'has a "rot" that is not a number.');
+const o={id:uid(p.id,'v'),veh:p.kind,x:p.x,y:p.y,r:p.rot||0};if(typeof p.color=='string'&&/^#[0-9a-f]{3,8}$/i.test(p.color))o.c=p.color;if(p.damaged)o.dmg=1;if(p.burnt)o.burn=1;d.obj.push(o);if(!cmHW(p.kind))unk[p.kind+' (vehicle)']=(unk[p.kind+' (vehicle)']||0)+1});
+for(const k in unk)Wn.push('Unknown '+(k.endsWith(' (vehicle)')?'vehicle "'+k.slice(0,-10)+'"':'prop "'+k+'"')+' ('+unk[k]+' placed): it is kept in the file but not shown in the game.');
+if(Array.isArray(j.order)){const pos={};j.order.forEach((id,i)=>{if(typeof id=='string')pos[id]=i});d.obj.forEach((o,i)=>o._o=pos[o.id]!=null?pos[o.id]:1e6+i);d.obj.sort((a,b)=>a._o-b._o);for(const o of d.obj)delete o._o}
+list(j.walls,'walls').forEach((q,i)=>{if(!q||!num(q.x)||!num(q.y)||!num(q.w)||!num(q.h)||q.w<=0||q.h<=0)return bad('walls',i,'needs "x", "y" and a positive "w" and "h".');const s=typeof q.style=='string'?q.style:'wall';if(!CMWI[s])Wn.push('Unknown wall style "'+s+'": drawn as a plain wall.');d.walls.push({id:uid(q.id,'w'),x:q.x,y:q.y,w:q.w,h:q.h,s})});
+const ps=j.playerStart;if(ps==null)Wn.push('No "playerStart": the player starts in the middle of the map.');else if(!num(ps.x)||!num(ps.y))E.push('"playerStart" needs "x" and "y".');else d.start={x:ps.x,y:ps.y};
+const zs_=j.zombieSpawns;if(zs_!=null&&typeof zs_!='object')E.push('"zombieSpawns" must be an object with "points" and "zones".');else if(zs_){
+list(zs_.points,'zombieSpawns.points').forEach((p,i)=>{if(!p||!num(p.x)||!num(p.y))return bad('zombieSpawns.points',i,'needs "x" and "y".');d.spawns.push({id:uid(p.id,'s'),x:p.x,y:p.y,on:p.enabled!==false})});
+list(zs_.zones,'zombieSpawns.zones').forEach((p,i)=>{if(!p||!num(p.x)||!num(p.y)||!num(p.w)||!num(p.h)||p.w<=0||p.h<=0)return bad('zombieSpawns.zones',i,'needs "x", "y" and a positive "w" and "h".');d.zones.push({id:uid(p.id,'z'),x:p.x,y:p.y,w:p.w,h:p.h,on:p.enabled!==false})})}
+// fields this version doesn't know are kept and written back unchanged
+const known=new Set(['format','version','id','name','description','tileSize','width','height','ground','terrain','overlay','props','vehicles','walls','playerStart','zombieSpawns','created','updated','order']);
+for(const k in j)if(!known.has(k))d.extra[k]=j[k];
+const W_=w*CMTILE,H_=h*CMTILE,out=d.obj.filter(o=>o.x<0||o.y<0||o.x>W_||o.y>H_).length;if(out)Wn.push(out+' prop'+(out>1?'s are':' is')+' outside the map edges.');
+if(d.start.x<0||d.start.y<0||d.start.x>W_||d.start.y>H_)Wn.push('The player start is outside the map.');
+if(!E.length)res.doc=d;return res}
+
+// ----- checks shown in the editor's Problems list -----
+// a walk grid like grid() builds in the game (16px cells, walls grown by 9px), then who can reach the player start
+function cmWalk(d,C){const g=16,W_=d.w*d.tile,H_=d.h*d.tile,gw_=Math.ceil(W_/g),gh_=Math.ceil(H_/g),b=new Uint8Array(gw_*gh_);
+for(const w of C){const i0=Math.max(0,Math.ceil((w[0]-9-8)/g)),i1=Math.min(gw_-1,Math.floor((w[0]+w[2]+9-8)/g)),j0=Math.max(0,Math.ceil((w[1]-9-8)/g)),j1=Math.min(gh_-1,Math.floor((w[1]+w[3]+9-8)/g));
+for(let j=j0;j<=j1;j++)for(let i=i0;i<=i1;i++){const px=i*g+8,py=j*g+8;if(px>w[0]-9&&px<w[0]+w[2]+9&&py>w[1]-9&&py<w[1]+w[3]+9)b[j*gw_+i]=1}}
+const F=new Int32Array(gw_*gh_).fill(-1),si=cl(Math.floor(d.start.x/g),0,gw_-1),sj=cl(Math.floor(d.start.y/g),0,gh_-1),q=[sj*gw_+si];
+if(!b[q[0]]){F[q[0]]=0;for(let k=0;k<q.length;k++){const c=q[k],i=c%gw_,j=(c/gw_)|0;for(const[di,dj]of D){const a=i+di,e=j+dj;if(a<0||e<0||a>=gw_||e>=gh_)continue;const n=e*gw_+a;if(F[n]>=0||b[n])continue;if(di&&dj&&(b[j*gw_+a]||b[e*gw_+i]))continue;F[n]=F[c]+1;q.push(n)}}}
+return{g,gw:gw_,gh:gh_,b,F,at(x,y){const i=cl(Math.floor(x/g),0,gw_-1),j=cl(Math.floor(y/g),0,gh_-1);return j*gw_+i}}}
+// -> [{lv:'err'|'warn'|'info', m:text, x, y}]
+function cmLint(d){const R=[],C=cmColl(d),M=cmWalk(d,C),W_=d.w*d.tile,H_=d.h*d.tile;
+if(d.start.x<0||d.start.y<0||d.start.x>W_||d.start.y>H_)R.push({lv:'err',m:'The player start is outside the map.',x:d.start.x,y:d.start.y});
+else if(M.b[M.at(d.start.x,d.start.y)])R.push({lv:'err',m:'The player start is inside a wall, water or a solid prop.',x:d.start.x,y:d.start.y});
+const sp=d.spawns.filter(s=>s.on!==false),zn=d.zones.filter(z=>z.on!==false);
+for(const s of sp){const c=M.at(s.x,s.y);if(s.x<0||s.y<0||s.x>W_||s.y>H_)R.push({lv:'warn',m:'A zombie spawn point is outside the map.',x:s.x,y:s.y});else if(M.b[c])R.push({lv:'warn',m:'A zombie spawn point is inside a wall or water: zombies would get stuck.',x:s.x,y:s.y});else if(M.F[c]<0&&!M.b[M.at(d.start.x,d.start.y)])R.push({lv:'warn',m:'A zombie spawn point can\'t reach the player start.',x:s.x,y:s.y})}
+for(const z of zn){let any=0,reach=0;for(let y=z.y+8;y<z.y+z.h;y+=16)for(let x=z.x+8;x<z.x+z.w;x+=16){if(x<0||y<0||x>W_||y>H_)continue;const c=M.at(x,y);if(!M.b[c]){any=1;if(M.F[c]>=0)reach=1}}
+if(!any)R.push({lv:'warn',m:'A spawn zone is completely blocked: no zombie can appear in it.',x:z.x+z.w/2,y:z.y+z.h/2});else if(!reach&&!M.b[M.at(d.start.x,d.start.y)])R.push({lv:'warn',m:'Zombies from a spawn zone can\'t reach the player start.',x:z.x+z.w/2,y:z.y+z.h/2})}
+if(!sp.length&&!zn.length)R.push({lv:'info',m:(d.spawns.length||d.zones.length?'Every zombie spawn is turned off':'No zombie spawns yet')+': zombies come from off-screen around the player, like on the built-in maps.'});
+const unk=Object.create(null);for(const o of d.obj){const ok=o.veh?cmHW(o.veh):cmOB(o.k);if(!ok){const k=o.veh||o.k;if(!unk[k])unk[k]={n:0,o};unk[k].n++}}
+for(const k in unk)R.push({lv:'warn',m:'Unknown '+(unk[k].o.veh?'vehicle':'prop')+' "'+k+'" ('+unk[k].n+'): kept, but not shown in the game.',x:unk[k].o.x,y:unk[k].o.y});
+for(const id of d.pal)if(!CMTI[id]&&(id!==d.ground||d.ter.some(v=>v===0)))R.push({lv:'warn',m:'Unknown terrain "'+id+'": shown as '+((CMTI[d.ground]||CMTER[0]).n.toLowerCase())+'.'});
+for(const w of d.walls)if(!CMWI[w.s]){R.push({lv:'warn',m:'Unknown wall style "'+w.s+'": drawn as a plain wall.',x:w.x,y:w.y});break}
+return R}
+// ---------- custom map storage ----------
+// Custom maps stay out of the save object S and out of the online saves. Database "zombdash-maps" holds three stores:
+//   maps: {id, json}   the map file exactly as Export writes it (see cmWrite)
+//   meta: {id, name, desc, w, h, created, updated, thumb}   what the Workshop list and Free Play need
+//   kv:   {k, ...}     small records, e.g. the editor's crash-safe draft ("draft")
+let CMDB=null,CMMEM=null;
+function cmDb(){return CMDB||(CMDB=new Promise(res=>{let r;try{if(typeof indexedDB=='undefined'||!indexedDB||!indexedDB.open)return res(null);r=indexedDB.open('zombdash-maps',1)}catch(e){return res(null)}
+r.onupgradeneeded=()=>{const db=r.result;for(const[n,k]of[['maps','id'],['meta','id'],['kv','k']])if(!db.objectStoreNames.contains(n))db.createObjectStore(n,{keyPath:k})};
+r.onsuccess=()=>res(r.result);r.onerror=()=>res(null);r.onblocked=()=>res(null)}).then(db=>{if(!db)CMMEM={maps:{},meta:{},kv:{}};return db}))}
+// maps live only in memory (no IndexedDB here): the Workshop says so and suggests exporting
+function msMem(){return !!CMMEM}
+const msReq=r=>new Promise((res,rej)=>{r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+const msCopy=v=>v==null?v:JSON.parse(JSON.stringify(v));
+async function msAll(st){const db=await cmDb();if(!db)return Object.values(CMMEM[st]).map(msCopy);return msReq(db.transaction(st).objectStore(st).getAll())}
+async function msGet(st,k){const db=await cmDb();if(!db)return msCopy(CMMEM[st][k]);return msReq(db.transaction(st).objectStore(st).get(k))}
+// several writes in one transaction: all of them happen or none do. ops: [['put',store,value] | ['del',store,key]]
+async function msWrite(ops){const db=await cmDb();if(!db){for(const[o,st,v]of ops){if(o=='put')CMMEM[st][st=='kv'?v.k:v.id]=msCopy(v);else delete CMMEM[st][v]}return}
+return new Promise((res,rej)=>{let t;try{t=db.transaction([...new Set(ops.map(o=>o[1]))],'readwrite');for(const[o,st,v]of ops){if(o=='put')t.objectStore(st).put(v);else t.objectStore(st).delete(v)}}catch(e){return rej(e)}
+t.oncomplete=()=>res();t.onerror=()=>rej(t.error||new Error('The browser refused to save'));t.onabort=()=>rej(t.error||new Error('The save was cancelled (is the device out of space?)'))})}
+// ---------- custom maps in the game ----------
+// Custom maps never get a slot in MP. While the game runs each saved map has a key from 1000 up (CMKEY), and the editor's
+// playtest map is key 900; mapId holds that key, and build() hands the map to cmBuild(). Keys are never written to S.mp.
+let CML=[],CMLOK=0,CMKN=1000,CMPTD=null;const CMKEY={},CMPTK=900;
+function cmIs(m){return typeof m=='number'&&m>=900}
+function cmKeyOf(id){return CMKEY[id]||(CMKEY[id]=CMKN++)}
+function cmEnt(m){if(m===CMPTK)return CMPTD?{id:CMPTD.id,key:CMPTK,doc:CMPTD,meta:{}}:null;return CML.find(e=>e.key===m&&e.doc)||null}
+function cmDocOf(m){const e=cmEnt(m);return e?e.doc:null}
+// keys of the maps Free Play can show (maps that failed to load stay in the Workshop only)
+function cmFree(){return CML.filter(e=>e.doc).map(e=>e.key)}
+function mpName(m){if(!cmIs(m))return MP[m]?MP[m].n:'?';const e=cmEnt(m);return e?e.doc.name||'Custom map':'Custom map'}
+function mpDesc(m){if(!cmIs(m))return MPD[m]||(MP[m]?MP[m].d:'');const e=cmEnt(m);return e?e.doc.desc||'A map made in the Map Workshop.':''}
+function mpImg(m){if(!cmIs(m))return MPI[m]||'';const e=cmEnt(m),u=e&&e.meta&&e.meta.thumb;return typeof u=='string'&&/^data:image\/(png|jpeg);base64,[A-Za-z0-9+/=]+$/.test(u)?u:''}
+function cmMunT(m){const d=cmDocOf(m);return d?`✎ Custom map · ${d.w}×${d.h} tiles · made in the Map Workshop`:''}
+// (re)load every saved map from the store; returns the list
+async function cmLoadAll(){const [metas,maps]=await Promise.all([msAll('meta'),msAll('maps')]),byId={};for(const r of maps||[])byId[r.id]=r;const L=[];
+for(const m of metas||[]){const rec=byId[m.id],r=rec?cmRead(rec.json):{doc:null,errors:['The map data is missing.'],warnings:[]};L.push({id:m.id,key:cmKeyOf(m.id),meta:m,doc:r.doc,errors:r.errors,warnings:r.warnings})}
+L.sort((a,b)=>String(a.meta.name||'').localeCompare(String(b.meta.name||''),undefined,{sensitivity:'base'}));CML=L;CMLOK=1;return L}
+// paint a whole custom map (ground, walls, props, vehicles) into g; used for the game's background and for thumbnails
+function cmBase(o){if(!o.veh)return o.y;const v=cmVeh(o);if(!v)return o.y;return o.y+Math.abs(Math.sin(v.a))*v.L/2+Math.abs(Math.cos(v.a))*v.W/2}
+function cmProp(g,o){const B=cmOB(o.k);if(!B)return;const v=o.vr!=null?o.vr:cmH(o.x,o.y,3),r=o.r||0;if(!r){B.f(g,o.x,o.y,v);return}
+const L=vRec.L,n=L?L.length:0;g.save();g.translate(o.x,o.y);g.rotate(r*Math.PI/180);try{B.f(g,0,0,v)}finally{g.restore()}
+// a turned sprite has no straight base line, so walk-behind uses its pixels instead
+if(L)for(let i=n;i<L.length;i++)delete L[i].base}
+function cmCar(g,o){const v=cmVeh(o);if(!v)return;const r=Math.hypot(v.L,v.W)/2+6;vDraw(g,v.x-r,v.y-r,r*2,r*2,q=>hwDraw(q,v))}
+function cmWallDraw(g,w){const s=CMWI[w.s]||CMWI.wall;s.f(g,w.x,w.y,w.w,w.h)}
+function cmPaint(g,d){cmGround(g,d,0,0,d.w,d.h,0);for(const w of d.walls)cmWallDraw(g,w);
+const O=d.obj.map((o,i)=>({o,b:cmBase(o),i})).sort((a,b)=>a.b-b.b||a.i-b.i);for(const{o}of O){if(o.veh)cmCar(g,o);else cmProp(g,o)}}
+// the map loader: everything a map function (mapXxx) does, from data
+function cmBuild(d){const T=d.tile;WW=d.w*T;WH=d.h*T;WL=cmColl(d);
+const sp=d.spawns.filter(s=>s.on!==false).map(s=>[s.x,s.y]),zn=d.zones.filter(z=>z.on!==false).map(z=>[z.x,z.y,z.w,z.h]);
+HS={cx:cl(d.start.x,0,WW),cy:cl(d.start.y,0,WH),px:cl(d.start.x,8,WW-8),py:cl(d.start.y,8,WH-8),nx0:0,nx1:0,ny0:0,ny1:0,CM:d.id};if(sp.length||zn.length)HS.CZ={p:sp,z:zn};
+grid();BG.width=WW;BG.height=WH;cmPaint(BG.getContext('2d'),d)}
+// where the next zombie appears on a custom map with spawn points or zones (spawnZ calls this)
+function cmSpawnAt(R){const Z=HS.CZ,c=[];for(const p of Z.p)c.push({x:p[0],y:p[1],w:0,h:0});for(const z of Z.z)c.push({x:z[0],y:z[1],w:z[2],h:z[3]});
+// like the spawn points of the built-in maps: prefer spots out of the player's sight
+const far=c.filter(q=>Math.hypot(q.x+q.w/2-P.x,q.y+q.h/2-P.y)>R*.75),pool=far.length?far:c,q=pool[Math.random()*pool.length|0];
+if(!q.w)return[q.x+rnd(-14,14),q.y+rnd(-14,14)];
+for(let n=0;n<10;n++){const x=q.x+Math.random()*q.w,y=q.y+Math.random()*q.h;if(!fdBad(x,y)&&!wlAt(x,y).some(w=>x>w[0]-12&&x<w[0]+w[2]+12&&y>w[1]-12&&y<w[1]+w[3]+12))return[x,y]}
+return[q.x+q.w/2,q.y+q.h/2]}
+// load the device's maps once the page is up (Free Play lists them; nothing waits for this)
+cmLoadAll().catch(e=>{try{console.warn('custom maps',e)}catch(_){}});
 let OPF=0;
 const MT=['linear-gradient(#7a695c,#7a695c) 34% 22%/34% 34% no-repeat,linear-gradient(#a8a49a,#a8a49a) 0 62%/100% 6% no-repeat,linear-gradient(#3d4045,#3d4045) 0 82%/100% 22% no-repeat,#58b852',
 'linear-gradient(#8a8f96,#8a8f96) 55% 42%/56% 46% no-repeat,repeating-linear-gradient(90deg,transparent 0 9px,#e8e8e4 9px 10px),linear-gradient(#d9dde3,#d9dde3) 6% 50%/14% 70% no-repeat,#4a4d53',
@@ -1260,7 +1568,7 @@ function buySk(){const A=SKA();for(const b of SKB){const ti=b.k.findIndex(k=>k.i
 function resetSk(){const A=SKA();let back=0;for(const b of SKB)b.k.forEach((k,ti)=>{back+=(A.sk[k.id]||0)*(ti+1)});A.sp+=back;A.sk={};sv();sfx('click');skills()}
 function nameScreen(fromSk){mode='menu';const A=S.ac;show(`<div class=p><h2>${A.name?'CHANGE NAME':'NEW SURVIVOR'}</h2><p>${A.name?'Pick a new name for your account.':'Create your account. You earn XP every run, level up, and spend skill points on permanent perks.'}</p><input id=unm maxlength=12 placeholder="Your name" value="${(A.name||'').replace(/"/g,'')}" autocomplete=off><p class=note id=nmsg>1–12 letters or numbers.</p><button class=go onclick="setName(${fromSk?1:0})">${A.name?'SAVE':'CREATE ACCOUNT'}</button>${A.name?`<button onclick="${fromSk?'skills()':'menu()'}">CANCEL</button>`:''}</div>`);const i=document.getElementById('unm');if(i&&i.focus)setTimeout(()=>{try{i.focus()}catch(e){}},50)}
 function setName(fromSk){const i=document.getElementById('unm'),v=((i&&i.value)||'').replace(/[^A-Za-z0-9 _-]/g,'').trim().slice(0,12);if(!v){const m=document.getElementById('nmsg');if(m)m.textContent='Please enter a name.';sfx('deny');return}S.ac.name=v;sv();sfx('buy');fromSk?skills():menu()}
-function menu(){CMLB=0;try{olAuto()}catch(e){}mode='menu';MPn=0;SKI=0;UIS='';music('menu');duck(1);if(!S.ac.name)return nameScreen(0);const A=S.ac;show(`<div class="p title"><div><div class=logo><span>ZOMB</span><span>DASH</span></div><div class=tag>How long can you last!</div></div><div><div class=acct><span class=lv>LV ${A.lv}</span><div class=nm><b>${A.name}${bdH(A)}</b>${ttH(A)}<div class=xpb><i style="width:${Math.min(100,A.xp/xpNeed(A.lv)*100)}%"></i></div><small class=note>${A.xp}/${xpNeed(A.lv)} XP <button class=lnk data-q=1 onclick="accounts(0)">accounts</button></small></div></div><div class=stats><div><b>${A.pts}</b><small>Zombie Pts</small></div><div><b>${S.best}</b><small>Best wave</small></div></div>${cpBanner()}${olBanner()}<button class=go onclick="modes()">PLAY</button>${PCM()?'<button onclick="lobby()">SPLIT SCREEN</button>':''}<div class=row><button onclick="SKS=null;skills()">SKILLS<small>${A.sp?A.sp+' point'+(A.sp>1?'s':'')+' to spend':'upgrades'}</small></button><button onclick="mastery()">MASTERY<small>survivors</small></button></div><div class=row><button onclick="armory()">ARMORY<small>guns & camos</small></button><button onclick="chals()">CHALLENGES<small>${chN(S.ac)}/6 done</small></button></div><div class=row><button onclick="lbOpen()">LEADERBOARDS<small>best waves</small></button><button onclick="olMenu()">ONLINE<small>${olTag()}</small></button></div><button onclick="options()">OPTIONS</button>${AU.c&&AU.c.state=='running'?'':'<div class=hint id=sndh>tap anywhere to turn on sound</div>'}</div></div>`)}
+function menu(){CMLB=0;try{olAuto()}catch(e){}mode='menu';MPn=0;SKI=0;UIS='';music('menu');duck(1);if(!S.ac.name)return nameScreen(0);const A=S.ac;show(`<div class="p title"><div><div class=logo><span>ZOMB</span><span>DASH</span></div><div class=tag>How long can you last!</div></div><div><div class=acct><span class=lv>LV ${A.lv}</span><div class=nm><b>${A.name}${bdH(A)}</b>${ttH(A)}<div class=xpb><i style="width:${Math.min(100,A.xp/xpNeed(A.lv)*100)}%"></i></div><small class=note>${A.xp}/${xpNeed(A.lv)} XP <button class=lnk data-q=1 onclick="accounts(0)">accounts</button></small></div></div><div class=stats><div><b>${A.pts}</b><small>Zombie Pts</small></div><div><b>${S.best}</b><small>Best wave</small></div></div>${cpBanner()}${olBanner()}<button class=go onclick="modes()">PLAY</button><button onclick="workshop()">CREATE<small>map workshop</small></button>${PCM()?'<button onclick="lobby()">SPLIT SCREEN</button>':''}<div class=row><button onclick="SKS=null;skills()">SKILLS<small>${A.sp?A.sp+' point'+(A.sp>1?'s':'')+' to spend':'upgrades'}</small></button><button onclick="mastery()">MASTERY<small>survivors</small></button></div><div class=row><button onclick="armory()">ARMORY<small>guns & camos</small></button><button onclick="chals()">CHALLENGES<small>${chN(S.ac)}/6 done</small></button></div><div class=row><button onclick="lbOpen()">LEADERBOARDS<small>best waves</small></button><button onclick="olMenu()">ONLINE<small>${olTag()}</small></button></div><button onclick="options()">OPTIONS</button>${AU.c&&AU.c.state=='running'?'':'<div class=hint id=sndh>tap anywhere to turn on sound</div>'}</div></div>`)}
 function sl(k,lb){const v=Math.round(S[k]*100);return `<label class=sl><span>${lb}</span><input type=range min=0 max=100 value=${v} style="--v:${v}%" oninput="setVol('${k}',this)" onchange="sv();${k=='sv'?"sfx('buy')":''}"><output id=o${k}>${v}%</output></label>`}
 function setVol(k,el){S[k]=el.value/100;el.style.setProperty('--v',el.value+'%');const o=document.getElementById('o'+k);if(o)o.textContent=el.value+'%';auVol()}
 function options(fp){if(fp!=null)OPF=fp;if(!OPF)mode='menu';S.sw=cl(S.sw,1,DT('wave')?99:S.best);show(`<div class="p wide"><h2>OPTIONS</h2><div class=opt><div><h3>Audio</h3>${sl('mv','Music')}${sl('sv','Sound')}<div class=row><button onclick="auInit();sfx('wave')" data-q=1>Test sound</button></div><p class=note id=sst>${sndTxt()}</p><p class=note>No sound on iPhone? Check the silent switch and volume buttons.</p></div><div><h3>Screen</h3><div class=seg>${[['a','Auto'],['p','Vertical'],['l','Landscape']].map(o=>`<button class="${S.or==o[0]?'on':''}" onclick="setO('${o[0]}')">${o[1]}</button>`).join('')}</div><h3>After a wave</h3><div class=seg><button class="${S.qs?'on':''}" onclick="setQ(1)">Skip if empty</button><button class="${S.qs?'':'on'}" onclick="setQ(0)">Always 15s</button></div><p class=note>${S.qs?'Goes to the shop early when no items are left.':'Always waits the full 15 seconds before the shop.'}</p></div>`+
@@ -1270,24 +1578,24 @@ function setO(v){S.or=v;sv();rs();options()}
 function setQ(v){S.qs=v;sv();options()}
 function setD(v){S.df=v;sv();options()}
 function stepW(d){S.sw=cl(S.sw+d,1,DT('wave')?99:S.best);sv();options()}
-function pauseMenu(){if(mode!='play'&&mode!='pause')return;if(mode=='play')sfx('pause');mode='pause';L=R=null;mouse.d=0;duck(.3);OPF=1;show(`<div class=p><h2>PAUSED</h2><div class=sum><div><b>${wave}</b><small>Wave</small></div><div><b>${kills}</b><small>Kills</small></div><div><b>$${P.cash}</b><small>Cash</small></div></div>${MPn?'':chMini(P.ac)}<button class=go onclick="resume()">RESUME</button><button onclick="options(1)">OPTIONS</button><button class=red onclick="quitRun()">QUIT RUN<small>ends the run, keeps Zombie Pts</small></button></div>`)}
+function pauseMenu(){if(mode!='play'&&mode!='pause')return;if(mode=='play')sfx('pause');mode='pause';L=R=null;mouse.d=0;duck(.3);OPF=1;show(`<div class=p><h2>PAUSED</h2><div class=sum><div><b>${wave}</b><small>Wave</small></div><div><b>${kills}</b><small>Kills</small></div><div><b>$${P.cash}</b><small>Cash</small></div></div>${MPn?'':chMini(P.ac)}<button class=go onclick="resume()">RESUME</button><button onclick="options(1)">OPTIONS</button>${PTX?'<button class=red onclick="ptEnd()">BACK TO EDITOR<small>ends the playtest</small></button>':'<button class=red onclick="quitRun()">QUIT RUN<small>ends the run, keeps Zombie Pts</small></button>'}</div>`)}
 function resume(){if(mode!='pause')return;OPF=0;mode='play';ui.innerHTML='';duck(1);last=performance.now()}
 function quitRun(){OPF=0;duck(1);over(1)}
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&mode=='play')pauseMenu()});
 function plan(){IW=zPlan()}
 function nextBoss(){if(!BB.length){BB=[6,7,8,12,13];for(let i=BB.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[BB[i],BB[j]]=[BB[j],BB[i]]}if(BB[BB.length-1]==LB){const j=Math.random()*(BB.length-1)|0;[BB[BB.length-1],BB[j]]=[BB[j],BB[BB.length-1]]}}LB=BB.pop();return LB}
-function start(){WRC=WRP=null;TUT=null;livesInit();RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];GCC=[];CWIN=null;KN=null;RH=null;SVB=0;MPn=0;mapFix();plan();BB=[];build();P=mkP(sel,S.ac,'any',0);PL=[P];zs=[];bs=[];pt=[];wave=swEff()-1;kills=0;ET=0;PRE=0;if(CPR){cpApply();olRun();return}cpClear();lmRun();olRun();if(swEff()>1){PRE=1;shop()}else if(tutOK())tutStart();else nextWave()}
+function start(){WRC=WRP=null;TUT=null;livesInit();RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];GCC=[];CWIN=null;KN=null;RH=null;SVB=0;MPn=0;mapFix();plan();BB=[];build();P=mkP(sel,S.ac,'any',0);PL=[P];zs=[];bs=[];pt=[];wave=swEff()-1;kills=0;ET=0;PRE=0;if(CPR){cpApply();olRun();return}if(!cmIs(mapId))cpClear();lmRun();olRun();if(swEff()>1){PRE=1;shop()}else if(tutOK())tutStart();else nextWave()}
 function nextWave(){OPF=0;duck(1);if(!MPn&&!TUT&&wave>=1)cpSave();PRE=0;P=PL[0];wave++;for(const p of PL){if(p.sc0!=null&&p.cash<p.sc0)chEv(p,'spend',p.sc0-p.cash);p.sc0=null;if(!p.dead)chEv(p,'wave',wave);if(p.sw0==1)mapUnl(p,wave)}nzn='';for(const t in IW)if(IW[t]==wave)nzn=ZT[t].n;if(wave>S.best){S.best=wave;sv()}const bw=wave%10==0;const nz=zWaveCount(wave);toSp=zWaveN(bw?Math.floor(nz*.35):nz);spT=1;mode='play';ui.innerHTML='';banner=2.2;ep=[];pd=[];fr=[];rg=[];DR=[];FT=[];ET=0;for(const p of PL){p.dd=0;p.bn=0;if(p.dead||p.dn)respawn(p);p.shd=sPk(p,1)?1:0;if(sPk(p,7)){p.inv=Math.max(p.inv||0,3);FT.push({x:p.x,y:p.y-38,t:'HEROIC ENTRANCE',c:'#ffcf40',l:1.6})}}{const rp=WRP&&WRP.w==wave;bossQ=bw?(rp?WRP.b:nextBoss()):-1;WRC=rp?{w:wave,b:WRP.b,t:WRP.t,i:0,x:WRP.x,rp:1}:{w:wave,b:bossQ,t:[],i:0,x:null};WRP=null}if(GMD=='c'&&wave>=20){toSp=0;bossQ=-1;svSpawn()}music(bw?'boss':'game');sfx('wave');if(nzn)sfx('newz')}
-function shop(){if(DT('money'))for(const p of PL)p.cash=999999;if(mode!='shop'){if(!PRE&&!MPn&&!CPR)setTimeout(cpSave,0);if(!PRE){sfx('clear');for(const p of PL){P=p;gainXP(10+4*wave);chEv(p,'clear',1)}if(SVD){SVD=0;sv()}P=PL[0]}music('menu');duck(.85);for(const p of PL){p.rdy=0;p.sc=p.sc||0;p.sc0=p.cash;amFill(p)}}mode='shop';L=R=null;if(MPn)return mshop();const AC=pc(Math.round((S.df?800:500)*(1-.1*rk('arm')))),RC=pc(Math.round(30*(1-.1*rk('arm')))),ar=P.ar||0;show(`<div class="p sp"><h2>${PRE?'GET READY · WAVE '+(wave+1):'WAVE '+wave+' CLEARED'}</h2><div class=chips><span class=chip>$<b>${P.cash}</b></span><span class=chip><span class=hp>♥</span> <b>${P.hp}/${P.mx}</b></span>${ar?`<span class=chip><span class=arc>ARMOR</span> <b>${ar}/6</b></span>`:''}</div><div class=sg>`+WP.map((w,i)=>{const o=P.own.includes(i),can=P.cash>=pc(w.cost);return `<button data-q=1 class="${P.cur==i?'on':''} ${!o&&(!can||P.own.length>=INV)?'no':''}" onclick="buy(${i})"><canvas data-gun=${i} data-cm=${cmOf(P.ac,i)}></canvas>${wN(P.ci||0,i)}<small>${o?(P.cur==i?'equipped':'equip'):P.own.length>=INV?'slots full':'$'+pc(w.cost)}</small></button>`}).join('')+`<button data-q=1 class="${P.cash<pc(25)||P.hp>=P.mx?'no':''}" onclick="heal()"><span class=ico>+♥</span>Heal +1<small>$${pc(25)}</small></button><button data-q=1 class="${P.mx>=MXH(P)||P.cash<pc(250)?'no':''}" onclick="mhp()"><span class=ico>♥+</span>Max HP<small>${P.mx>=MXH(P)?'maxed ('+MXH(P)+')':'$'+pc(250)}</small></button><button data-q=1 class="${!ar?(P.cash<AC?'no':''):ar>=6||P.cash<30?'no':''}" onclick="armor()"><span class="ico arc">▣</span>${!ar?'Armor +6':ar<6?'Repair':'Armor'}<small>${!ar?'$'+AC:ar<6?'$'+(6-ar)*RC+' (6-'+(6-ar)+')':'full 6/6'}</small></button></div>${invHTML()}<button class=go onclick="nextWave()">START WAVE ${wave+1}</button></div>`)}
+function shop(){if(DT('money'))for(const p of PL)p.cash=999999;if(mode!='shop'){if(!PRE&&!MPn&&!CPR)setTimeout(cpSave,0);if(!PRE){sfx('clear');for(const p of PL){P=p;gainXP(10+4*wave);chEv(p,'clear',1)}if(SVD){SVD=0;sv()}P=PL[0]}music('menu');duck(.85);for(const p of PL){p.rdy=0;p.sc=p.sc||0;p.sc0=p.cash;amFill(p)}}mode='shop';L=R=null;if(MPn)return mshop();const AC=pc(Math.round((S.df?800:500)*(1-.1*rk('arm')))),RC=pc(Math.round(30*(1-.1*rk('arm')))),ar=P.ar||0;show(`<div class="p sp"><h2>${PRE?'GET READY · WAVE '+(wave+1):'WAVE '+wave+' CLEARED'}</h2><div class=chips><span class=chip>$<b>${P.cash}</b></span><span class=chip><span class=hp>♥</span> <b>${P.hp}/${P.mx}</b></span>${ar?`<span class=chip><span class=arc>ARMOR</span> <b>${ar}/6</b></span>`:''}</div><div class=sg>`+WP.map((w,i)=>{const o=P.own.includes(i),can=P.cash>=pc(w.cost);return `<button data-q=1 class="${P.cur==i?'on':''} ${!o&&(!can||P.own.length>=INV)?'no':''}" onclick="buy(${i})"><canvas data-gun=${i} data-cm=${cmOf(P.ac,i)}></canvas>${wN(P.ci||0,i)}<small>${o?(P.cur==i?'equipped':'equip'):P.own.length>=INV?'slots full':'$'+pc(w.cost)}</small></button>`}).join('')+`<button data-q=1 class="${P.cash<pc(25)||P.hp>=P.mx?'no':''}" onclick="heal()"><span class=ico>+♥</span>Heal +1<small>$${pc(25)}</small></button><button data-q=1 class="${P.mx>=MXH(P)||P.cash<pc(250)?'no':''}" onclick="mhp()"><span class=ico>♥+</span>Max HP<small>${P.mx>=MXH(P)?'maxed ('+MXH(P)+')':'$'+pc(250)}</small></button><button data-q=1 class="${!ar?(P.cash<AC?'no':''):ar>=6||P.cash<30?'no':''}" onclick="armor()"><span class="ico arc">▣</span>${!ar?'Armor +6':ar<6?'Repair':'Armor'}<small>${!ar?'$'+AC:ar<6?'$'+(6-ar)*RC+' (6-'+(6-ar)+')':'full 6/6'}</small></button></div>${invHTML()}<button class=go onclick="nextWave()">START WAVE ${wave+1}</button>${PTX?'<p class=note style="text-align:center;margin:8px 0 0"><button class=lnk onclick="ptEnd()">back to the editor</button></p>':''}</div>`)}
 function buy(i){const w=WP[i];if(!P.mg)amInit(P);if(P.own.includes(i)){P.cur=i;sfx('click')}else if(P.own.length>=INV)sfx('deny');else if(P.cash>=pc(w.cost)){const c=pc(w.cost);P.cash-=c;P.paid[i]=c;P.own.push(i);P.cur=i;const t=AMT[i];P.mg[i]=AMG(i,P.ci||0);P.am[t]=Math.min(AMI[t].max,P.am[t]+AMG(i,P.ci||0)*2);sfx('buy')}else sfx('deny');shop()}
 function arm(d){if(d>=2&&sPk(P,14))d--;if(d>0&&sPk(P,10)&&Math.random()<.2){FT.push({x:P.x,y:P.y-30,t:'PHASED',c:'#e8e8ff',l:.8});return 0}if(d>0&&P.shd){P.shd=0;FT.push({x:P.x,y:P.y-30,t:'PLATING BLOCKED',c:'#9fe8ff',l:1});sfx('armor');return 0}if(P.ar>0&&d>0){const a=Math.min(P.ar,d);P.ar-=a;d-=a;sfx('armor')}return d}
 function armor(){const AC=pc(Math.round((S.df?800:500)*(1-.1*rk('arm')))),RC=pc(Math.round(30*(1-.1*rk('arm'))));if(!P.ar){if(P.cash>=AC){P.cash-=AC;P.ar=6;sfx('buy')}else sfx('deny')}else if(P.ar<6){const k=Math.min(6-P.ar,Math.floor(P.cash/RC));if(k>0){P.cash-=k*RC;P.ar+=k;sfx('buy')}else sfx('deny')}else sfx('deny');shop()}
 function heal(){if(P.cash>=pc(25)&&P.hp<P.mx){P.cash-=pc(25);P.hp=Math.min(P.mx,P.hp+1);sfx('buy')}else sfx('deny');shop()}
 function mhp(){if(P.mx<MXH(P)&&P.cash>=pc(250)){P.cash-=pc(250);P.mx++;P.hp++;sfx('buy')}else sfx('deny');shop()}
-function over(q){if(!q&&GMD=='c'&&LIVES>1&&!CWIN&&mode=='play'){lifeDeath();return}cpClear();try{olScore()}catch(e){}mode='over';L=R=null;duck(1);sfx('over');music(null);setTimeout(()=>{if(mode=='over')music('menu')},2200);if(MPn)return overMP(q);const e=wave*8+kills;P.ac.pts=(P.ac.pts||0)+e;sv();show(`<div class=p>${CWIN?cwH():`<h2 style="color:${q?'var(--ac)':'var(--blood)'}">${q?'RUN ENDED':'YOU WERE EATEN'}</h2>`}<div class=sum><div><b>${wave}</b><small>Wave</small></div><div><b>${kills}</b><small>Kills</small></div><div><b>+${e}</b><small>Zombie Pts</small></div></div><div class=acct><span class=lv>LV ${P.ac.lv}</span><div class=nm><b>+${P.xg||0} XP${P.lu?' · LEVEL UP!':''}</b><div class=xpb><i style="width:${Math.min(100,P.ac.xp/xpNeed(P.ac.lv)*100)}%"></i></div><small class=note>${P.ac.xp}/${xpNeed(P.ac.lv)} XP${(P.xm||1)<1?' · '+Math.round((P.xm||1)*100)+'% XP rate (skipped waves)':''}</small></div></div>${runLog(P)}<div class=row><button onclick="menu()">MENU</button>${!q&&GMD=='c'&&!CWIN?'<button disabled style="opacity:.4;cursor:not-allowed" title="No lives left">CONTINUE · NO LIVES</button>':''}${CWIN?cwBtn(0):'<button class=go onclick="start()">AGAIN</button>'}</div></div>`)}
+function over(q){if(!q&&GMD=='c'&&LIVES>1&&!CWIN&&mode=='play'){lifeDeath();return}if(!cmIs(mapId))cpClear();try{olScore()}catch(e){}mode='over';L=R=null;duck(1);sfx('over');music(null);setTimeout(()=>{if(mode=='over')music('menu')},2200);if(PTX)return ptOver(q);if(MPn)return overMP(q);const e=wave*8+kills;P.ac.pts=(P.ac.pts||0)+e;sv();show(`<div class=p>${CWIN?cwH():`<h2 style="color:${q?'var(--ac)':'var(--blood)'}">${q?'RUN ENDED':'YOU WERE EATEN'}</h2>`}<div class=sum><div><b>${wave}</b><small>Wave</small></div><div><b>${kills}</b><small>Kills</small></div><div><b>+${e}</b><small>Zombie Pts</small></div></div><div class=acct><span class=lv>LV ${P.ac.lv}</span><div class=nm><b>+${P.xg||0} XP${P.lu?' · LEVEL UP!':''}</b><div class=xpb><i style="width:${Math.min(100,P.ac.xp/xpNeed(P.ac.lv)*100)}%"></i></div><small class=note>${P.ac.xp}/${xpNeed(P.ac.lv)} XP${(P.xm||1)<1?' · '+Math.round((P.xm||1)*100)+'% XP rate (skipped waves)':''}</small></div></div>${runLog(P)}<div class=row><button onclick="menu()">MENU</button>${!q&&GMD=='c'&&!CWIN?'<button disabled style="opacity:.4;cursor:not-allowed" title="No lives left">CONTINUE · NO LIVES</button>':''}${CWIN?cwBtn(0):'<button class=go onclick="start()">AGAIN</button>'}</div></div>`)}
 function spawnZ(tf){let t=tf,R=Math.hypot(W,H)/2+40,x,y,n=0;if(t==null){t=zPick();if(t==null)return null}
 do{const a=Math.random()*6.283;x=cl(P.x+Math.cos(a)*R,-20,WW+20);y=cl(P.y+Math.sin(a)*R,-20,WH+20)}while(n++<12&&(fdBad(x,y)||schWd(x,y)||(x>HS.nx0&&x<HS.nx1&&y>HS.ny0&&y<HS.ny1)||(x>0&&x<WW&&y>0&&y<WH&&WL.some(w=>x>w[0]-14&&x<w[0]+w[2]+14&&y>w[1]-14&&y<w[1]+w[3]+14))));
-if(schWd(x,y)&&HS.sp2){const p=HS.sp2[Math.random()*HS.sp2.length|0];x=p[0];y=p[1]}if(HS.sp){const far=HS.sp.filter(p=>Math.hypot(p[0]-P.x,p[1]-P.y)>R*.75),pool=far.length?far:HS.sp,p=pool[Math.random()*pool.length|0];x=p[0]+rnd(-14,14);y=p[1]+rnd(-14,14)}
+if(schWd(x,y)&&HS.sp2){const p=HS.sp2[Math.random()*HS.sp2.length|0];x=p[0];y=p[1]}if(HS.CZ){const p=cmSpawnAt(R);x=p[0];y=p[1]}else if(HS.sp){const far=HS.sp.filter(p=>Math.hypot(p[0]-P.x,p[1]-P.y)>R*.75),pool=far.length?far:HS.sp,p=pool[Math.random()*pool.length|0];x=p[0]+rnd(-14,14);y=p[1]+rnd(-14,14)}
 const z=mk(t,x,y);if(ZT[t].boss){const tr=Math.floor((wave-1)/20);z.hp=ZT[t].hp*Math.pow(1.8,tr)*(S.df?1.8:1)*BMP();z.mh=z.hp;z.spm=Math.pow(1.2,tr)}zs.push(z);return z}
 function btier(){return Math.floor((wave-1)/5)}
 function mk(t,x,y){const b=btier(),h=ZT[t].hp*(1+wave*.08)*(S.df?1.8:1)*Math.pow(1.2,b)*ZMP();return{x,y,t,hp:h,m0:h,spm:Math.min(2,Math.pow(1.1,b)),k:0,kx:0,ky:0}}
@@ -1510,11 +1818,11 @@ function freeV(s){const tk=v=>LBY.s.some(o=>o!==s&&o.ci==s.ci&&(o.v||0)==v);if(!
 function cycV(s,d){s.v=((s.v||0)+d+5)%5;s.rdy=0;sfx('click')}
 function cycCh(s,d){const u=unl(acOf(s)),i=u.indexOf(s.ci);s.ci=u[((i<0?0:i)+d+u.length)%u.length];s.v=0;freeV(s);s.rdy=0;sfx('click')}
 function cycAc(s,d){const l=[...ACS(),'G'];let i=l.indexOf(s.ac);for(let n=0;n<l.length;n++){i=(i+d+l.length)%l.length;const c=l[i];if(c=='G'||!LBY.s.some(o=>o!==s&&o.ac===c)){s.ac=c;break}}const u=unl(acOf(s));if(!u.includes(s.ci))s.ci=u[0];s.rdy=0;sfx('click')}
-function lbMap(d){const o=ORD(),acs=lobAcs();let i=o.indexOf(mapId);for(let n=0;n<o.length;n++){i=(i+d+o.length)%o.length;if(mapOK(o[i],acs))break}mapId=o[i];S.mp=mapId;sv();sfx('click')}
+function lbMap(d){const o=ORD(),acs=lobAcs();let i=o.indexOf(mapId);for(let n=0;n<o.length;n++){i=(i+d+o.length)%o.length;if(mapOK(o[i],acs))break}mapId=o[i];if(!cmIs(mapId))S.mp=mapId;sv();sfx('click')}
 function lbMode(g){setGM(g);mapFix(lobAcs());sfx('click');rL()}
 function lbA(i,k,d){const s=LBY.s[i];if(!s)return;if(k=='ch')cycCh(s,d);else if(k=='ac')cycAc(s,d);else if(k=='v'){s.v=d;s.rdy=0;sfx('click')}else if(k=='rdy'){s.rdy=s.rdy?0:1;sfx(s.rdy?'buy':'click')}else if(k=='out'){LBY.s.splice(i,1);sfx('click')}rL()}
 function rL(){const kmIn=LBY.s.some(s=>s.inp=='km');mapFix(lobAcs());
-show(`<div class="p wide lob"><h2>SPLIT SCREEN</h2><div class="seg lmode"><button data-q=1 class="${GMD=='c'?'on':''}" onclick="lbMode('c')">CAMPAIGN</button><button data-q=1 class="${GMD=='f'?'on':''}" onclick="lbMode('f')">FREE PLAY</button></div><div class="seg lmode">${[0,1,2].map(d=>`<button data-q=1 class="${DIF()==d?'on':''}" onclick="setDif(${d});mapFix(lobAcs());rL()">${DNm(d,GMD=='c')}</button>`).join('')}</div><div class=lmap>${GMD=='c'?'':'<button data-q=1 onclick="lbMap(-1);rL()">◀</button>'}<div><i style="background:${MT[mapId]}"></i><b>${mapNm(mapId)}</b>${GMD=='c'?`<small class=lbos>wave 20 boss: ${CH[MUN[mapId]].n}</small>`:''}</div>${GMD=='c'?'<button data-q=1 class=go style="width:auto;min-width:0;height:auto;padding:8px 14px;font-size:13px;line-height:1.2;white-space:nowrap" onclick="clbOpen()">CHOOSE MAP</button>':'<button data-q=1 onclick="lbMap(1);rL()">▶</button>'}</div><div class=lg>`+
+show(`<div class="p wide lob"><h2>SPLIT SCREEN</h2><div class="seg lmode"><button data-q=1 class="${GMD=='c'?'on':''}" onclick="lbMode('c')">CAMPAIGN</button><button data-q=1 class="${GMD=='f'?'on':''}" onclick="lbMode('f')">FREE PLAY</button></div><div class="seg lmode">${[0,1,2].map(d=>`<button data-q=1 class="${DIF()==d?'on':''}" onclick="setDif(${d});mapFix(lobAcs());rL()">${DNm(d,GMD=='c')}</button>`).join('')}</div><div class=lmap>${GMD=='c'?'':'<button data-q=1 onclick="lbMap(-1);rL()">◀</button>'}<div><i style="background:${MT[mapId]||'#4a6a4c'}"></i><b>${mapNm(mapId)}</b>${GMD=='c'?`<small class=lbos>wave 20 boss: ${CH[MUN[mapId]].n}</small>`:''}</div>${GMD=='c'?'<button data-q=1 class=go style="width:auto;min-width:0;height:auto;padding:8px 14px;font-size:13px;line-height:1.2;white-space:nowrap" onclick="clbOpen()">CHOOSE MAP</button>':'<button data-q=1 onclick="lbMap(1);rL()">▶</button>'}</div><div class=lg>`+
 [0,1,2,3].map(i=>{const s=LBY.s[i];if(!s)return `<div class="ls em" style="--pc:${PC[i]}"><b class=px>P${i+1}</b><p>Press <b>A</b> on a controller to join</p>${!kmIn?`<button data-q=1 onclick="joinL('km');rL()">Join with keyboard</button>`:''}</div>`;
 const A=acOf(s),u=unl(A);return `<div class="ls ${s.rdy?'rd':''}" style="--pc:${PC[i]}"><div class=lh><b class=px>P${i+1}</b><small>${s.inp=='km'?'Keyboard & mouse':'Controller '+(s.inp+1)}</small></div>
 <div class=lr><button data-q=1 onclick="lbA(${i},'ch',-1)">◀</button><div><canvas data-ch=${s.ci} data-v=${s.v||(slOn(A,s.ci)?9:0)}></canvas><span>${CH[s.ci].n}</span><small>♥ ${CH[s.ci].hp} · ${WP[CH[s.ci].w].n}</small></div><button data-q=1 onclick="lbA(${i},'ch',1)">▶</button></div>
@@ -1558,7 +1866,7 @@ PL.map((p,i)=>`<div class=ovr style="--pc:${PC[i]}"><b class=px>P${i+1}</b><canv
 function VL(n){const g=4,z=v=>cl(v/560,.6,1);if(n<=1)return[{x:0,y:0,w:W,h:H,z:Math.min(1,z(H))}].map(v=>(v.z=MPn?v.z:1,v));
 if(n==2){if(W>=H){const w=(W-g)/2;return[{x:0,y:0,w,h:H,z:z(H)},{x:w+g,y:0,w,h:H,z:z(H)}]}const h=(H-g)/2;return[{x:0,y:0,w:W,h,z:z(h)},{x:0,y:h+g,w:W,h,z:z(h)}]}
 const w=(W-g)/2,h=(H-g)/2;return[[0,0],[1,0],[0,1],[1,1]].map(([i,j])=>({x:i*(w+g),y:j*(h+g),w,h,z:z(h)}))}
-function draw(){if(!(MPn&&P&&PL.length&&mode!='menu'&&mode!='lobby')){drawW();return}
+function draw(){if(mode=='edit'){edFrame();return}if(!(MPn&&P&&PL.length&&mode!='menu'&&mode!='lobby')){drawW();return}
 const W0=W,H0=H,V=VL(PL.length);X.fillStyle='#070a08';X.fillRect(0,0,W,H);
 for(let i=0;i<PL.length;i++){const v=V[i];P=PL[i];P.vp=v;X.save();X.beginPath();X.rect(v.x,v.y,v.w,v.h);X.clip();X.translate(v.x,v.y);X.scale(v.z,v.z);W=v.w/v.z;H=v.h/v.z;drawW();X.restore();W=W0;H=H0;
 X.strokeStyle=PC[i];X.globalAlpha=.85;X.lineWidth=3;X.strokeRect(v.x+1.5,v.y+1.5,v.w-3,v.h-3);X.globalAlpha=1}
@@ -1625,12 +1933,12 @@ const MPD=['Three houses with garages and fenced backyards along a wrecked stree
 const CHD=['Just a regular guy who wanted to watch the big game. Good at a little bit of everything.','A maintenance robot that never got the shutdown order. Heavy plating, slow treads. Its pistol fires laser bolts.','A rancher who sleeps with a shotgun under the bed. Hits hard up close.','A track star and the fastest survivor alive, but she can only take a few hits.','A knight in full plate armor. Very tough and very slow, with a shotgun instead of a sword.','Yes, that Charles. The toughest survivor of all, but he lumbers along.','A lost tourist from another planet. Quick on his feet, and his SMG fires green laser bolts.','A masked hero in a cape. Fast, fearless and steady with an SMG.','A gunslinger who rode in from the Old West. Two pistols, one in each hand: same damage per shot, twice as many shots.','A highway patrol officer who stayed at his post when the traffic stopped moving. Tough, steady and never without his shotgun.','A pale little girl in a white dress who never left the old mansion. One of the fastest survivors, but she can only take a few hits.','The Headless Horseman, without his horse. He still rides into every fight shotgun first.','A grease-stained mechanic from the edge of the city. Keeps an SMG next to his wrench.','The park\'s ice cream man. Still rings the bell on his rounds, SMG in the freezer next to the rocket pops.','Zombville\'s fire chief. Turnout gear, a fire axe on his belt and a shotgun for everything else.','Hometown Market\'s fastest cashier. Knows every aisle by heart and keeps a pistol under register 3.','Hometown\'s mayor. Still wearing the sash from the ribbon cutting, and never far from his shotgun.'];
 function mapPrev(i){if(MPV[i])return MPV[i];if(typeof Image=='undefined'||!MPI[i])return null;const im=new Image();im.src=MPI[i];return MPV[i]=im}
 function play(){if(GMD=='c')return cMap();UIS='map';mode='menu';MPn=0;mapFix();const m=MP[mapId],ok=mapOK(mapId),O=ORD();
-show(`<div class="p wide msel"><h2>${GMD=='c'?'CAMPAIGN':'FREE PLAY'} · SELECT A MAP</h2>${difSel()}<div class=mname>${mapNm(mapId)}</div><div class=mview><button data-q=1 class=arr onclick="mapStep(-1)" aria-label="Previous map">◀</button><img class="mprev ${ok?'':'lk'}" alt="" src="${MPI[mapId]||''}"><button data-q=1 class=arr onclick="mapStep(1)" aria-label="Next map">▶</button></div>
-<div class=dots>${O.map(k=>`<i class="${k==mapId?'on':''} ${mapOK(k)?'':'lk'}"></i>`).join('')}</div><p class=mdesc>${MPD[mapId]||m.d}</p><p class=munl>${munT(mapId)}</p><div class=row><button onclick="modes()">BACK</button><button id=mgo class="go ${ok?'':'no'}" onclick="mapGo()">${ok?'CONFIRM':'🔒 LOCKED'}</button></div></div>`)}
+show(`<div class="p wide msel"><h2>${GMD=='c'?'CAMPAIGN':'FREE PLAY'} · SELECT A MAP</h2>${difSel()}<div class=mname>${mapNm(mapId)}</div><div class=mview><button data-q=1 class=arr onclick="mapStep(-1)" aria-label="Previous map">◀</button><img class="mprev ${ok?'':'lk'}" alt="" src="${mpImg(mapId)}"><button data-q=1 class=arr onclick="mapStep(1)" aria-label="Next map">▶</button></div>
+<div class=dots>${O.map(k=>`<i class="${k==mapId?'on':''} ${mapOK(k)?'':'lk'}${cmIs(k)?' cu':''}"></i>`).join('')}</div><p class=mdesc>${mpDesc(mapId)}</p><p class=munl>${munT(mapId)}</p><div class=row><button onclick="modes()">BACK</button><button id=mgo class="go ${ok?'':'no'}" onclick="mapGo()">${ok?'CONFIRM':'🔒 LOCKED'}</button></div></div>`)}
 function mapGo(){if(CMLB)return clbGo();if(!mapOK(mapId)){sfx('deny');return}survs()}
 // arrows update the screen in place: no rebuilding, nothing new allocated per tap
-function mapStep(d){const now=performance.now();if(now-(mapStep.t||0)<70)return;mapStep.t=now;{const O=ORD(),i=O.indexOf(mapId);mapId=O[((i<0?0:i)+d+O.length)%O.length]}S.mp=mapId;SVD=1;sfx('click');
-const p=ui.querySelector&&ui.querySelector('.msel');if(!p)return play();const m=MP[mapId];p.querySelector('.mname').textContent=mapNm(mapId);p.querySelector('.mdesc').textContent=MPD[mapId]||m.d;{const u=p.querySelector('.munl');if(u)u.innerHTML=munT(mapId)}{const O=ORD();p.querySelectorAll('.dots i').forEach((e,k)=>e.className=(O[k]==mapId?'on':'')+(mapOK(O[k])?'':' lk'))}const ok=mapOK(mapId),im=p.querySelector('.mprev');if(im){im.src=MPI[mapId]||'';im.className='mprev'+(ok?'':' lk')}const gb=p.querySelector('#mgo');if(gb){gb.className='go'+(ok?'':' no');gb.textContent=ok?'CONFIRM':'🔒 LOCKED'}}
+function mapStep(d){const now=performance.now();if(now-(mapStep.t||0)<70)return;mapStep.t=now;{const O=ORD(),i=O.indexOf(mapId);mapId=O[((i<0?0:i)+d+O.length)%O.length]}if(!cmIs(mapId))S.mp=mapId;SVD=1;sfx('click');
+const p=ui.querySelector&&ui.querySelector('.msel');if(!p)return play();const m=MP[mapId];p.querySelector('.mname').textContent=mapNm(mapId);p.querySelector('.mdesc').textContent=mpDesc(mapId);{const u=p.querySelector('.munl');if(u)u.innerHTML=munT(mapId)}{const O=ORD();p.querySelectorAll('.dots i').forEach((e,k)=>e.className=(O[k]==mapId?'on':'')+(mapOK(O[k])?'':' lk')+(cmIs(O[k])?' cu':''))}const ok=mapOK(mapId),im=p.querySelector('.mprev');if(im){im.src=mpImg(mapId);im.className='mprev'+(ok?'':' lk')}const gb=p.querySelector('#mgo');if(gb){gb.className='go'+(ok?'':' no');gb.textContent=ok?'CONFIRM':'🔒 LOCKED'}}
 function setMap(i){mapId=i;S.mp=i;sv();build();play()}
 function sDet(i){const c=CH[i],w=WP[c.w],u=S.ac.un.includes(i),lz=c.lv&&c.lv.includes(c.w);return `<div class=shead><canvas class=big data-ch=${i} data-lk=${u?0:1}></canvas><div><b class=sn>${c.n}</b><p class=sd>${CHD[i]||''}</p></div></div>
 <div class=st><span>Health</span><i style="--w:${Math.min(100,c.hp/10*100)}%"></i><b>${c.hp} ♥</b></div><div class=st><span>Speed</span><i style="--w:${Math.min(100,c.sp/1.4*100)}%"></i><b>${Math.round(c.sp*100)}%</b></div>
@@ -1640,7 +1948,7 @@ function sAct(i){const c=CH[i],u=S.ac.un.includes(i);return `<button onclick="pl
 function sCard(q,k){const uu=S.ac.un.includes(k);return `<button data-q=1 class="card ${k==SV?'on':''} ${!uu?'no':''}" onclick="viewS(${k})">${uu?'':'<span class=lock>🔒</span>'}<canvas data-ch=${k} data-lk=${uu?0:1}></canvas>${q.n}<small>${uu?(k==sel?'selected':'♥ '+q.hp):'wave 20'}</small></button>`}
 function survs(){UIS='surv';mode='menu';if(SV==null||!CH[SV])SV=sel;const i=SV;
 show(`<div class="p wide ssel"><h2>SELECT A SURVIVOR</h2><div class=scols><div class=g>${CH.map(sCard).join('')}</div><div class=sdet>${sDet(i)}</div></div>
-<p class=note id=sinfo>${MP[mapId].n} · ${DNm(DIF(),GMD=='c')} · ${GMD=='c'?'Campaign':'Free play'} · start wave ${swEff()} · ${S.ac.pts} Zombie Pts</p><div class=row id=sact>${sAct(i)}</div></div>`)}
+<p class=note id=sinfo>${mpName(mapId)} · ${DNm(DIF(),GMD=='c')} · ${GMD=='c'?'Campaign':'Free play'} · start wave ${swEff()} · ${S.ac.pts} Zombie Pts</p><div class=row id=sact>${sAct(i)}</div></div>`)}
 // tapping a survivor only refreshes the card highlight and the details box
 function viewS(i){const now=performance.now();if(now-(viewS.t||0)<60&&i===SV)return;viewS.t=now;SV=i;if(S.ac.un.includes(i))sel=i;sfx('click');
 const p=ui.querySelector&&ui.querySelector('.ssel');if(!p)return survs();p.querySelectorAll('.card').forEach((e,k)=>{const uu=S.ac.un.includes(k);e.classList.toggle('on',k==SV);const sm=e.querySelector('small');if(sm)sm.textContent=uu?(k==sel?'selected':'♥ '+CH[k].hp):'wave 20'});
@@ -1869,7 +2177,7 @@ const ok=t=>/^\d-\d$/.test(t);A.ms=ms;A.sl=sl;A.tt=ok(G[nc])?G[nc]:'';A.bd=ok(G[
 // ---------- survivors unlock by reaching wave 20 on their map (runs started at wave 1) ----------
 const UNM={2:0,1:1,4:2,3:3,8:4,7:5,6:6,5:7,9:8,10:9,11:10,12:11,13:12,14:13,15:14,16:15},MUN={};for(const c in UNM)MUN[UNM[c]]=+c;
 function mBest(A,m){return(A&&A.mw&&A.mw[m])||0}
-function mapUnl(p,w){const A=p&&p.ac;if(!A||A.g)return;A.mw=A.mw||[];if(w>(A.mw[mapId]||0)){A.mw[mapId]=w;SVD=1}}
+function mapUnl(p,w){const A=p&&p.ac;if(!A||A.g||cmIs(mapId))return;A.mw=A.mw||[];if(w>(A.mw[mapId]||0)){A.mw[mapId]=w;SVD=1}}
 function slh(cv,g){if(cv.dataset.lk!=1)return;try{const W2=cv.width,H2=cv.height,t=document.createElement('canvas');t.width=W2;t.height=H2;const q=t.getContext('2d');const tint=c=>{q.clearRect(0,0,W2,H2);q.globalCompositeOperation='source-over';q.drawImage(cv,0,0);q.globalCompositeOperation='source-atop';q.fillStyle=c;q.fillRect(0,0,W2,H2);q.globalCompositeOperation='source-over'};
 tint('#8fae92');const rim=document.createElement('canvas');rim.width=W2;rim.height=H2;rim.getContext('2d').drawImage(t,0,0);tint('#050706');g.clearRect(0,0,W2,H2);for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]])g.drawImage(rim,dx,dy);g.drawImage(t,0,0);t.width=rim.width=0}catch(e){}}
 
@@ -1890,20 +2198,20 @@ let GMD=S.gm=='c'?'c':'f';
 function cpOf(A){if(!A)return 0;if(A.cp==null){let n=0;while(n<OLDC.length&&(A.un||[]).includes(MUN[OLDC[n]]))n++;A.cp=n;A.cv=4}else{if(A.cv!==2&&A.cv!==3&&A.cv!==4){if(A.cp>=4)A.cp++;A.cv=2}if(A.cv===2){if(A.cp>=5)A.cp+=3;A.cv=3}if(A.cv===3){if(A.cp>=8)A.cp+=2;A.cv=4}}return A.cp}
 function mapOKA(A,m){return mOpen(A,GMD=='c'?DIF():0,m)}
 function lobAcs(){const L=typeof LBY!='undefined'&&LBY&&LBY.s?LBY.s.map(acOf).filter(Boolean):[];return L.length?L:[S.ac]}
-function mapOK(m,acs){return(acs||[S.ac]).some(A=>mapOKA(A,m))||!!(acs&&acs.length>1&&GMD=='c'&&mOpen(cMerge(acs),DIF(),m))}
-function ORD(){return GMD=='c'?CORD:MP.map((_,i)=>i)}
+function mapOK(m,acs){if(cmIs(m))return !!cmDocOf(m);return(acs||[S.ac]).some(A=>mapOKA(A,m))||!!(acs&&acs.length>1&&GMD=='c'&&mOpen(cMerge(acs),DIF(),m))}
+function ORD(){return GMD=='c'?CORD:MP.map((_,i)=>i).concat(cmFree())}
 function swEff(){return GMD=='c'?(DT('wave')?cl(S.sw,1,20):1):S.sw}
 function setGM(g){GMD=g;S.gm=g;SVD=1}
-function mapNm(m){return GMD=='c'?(CORD.indexOf(m)+1)+'. '+MP[m].n:MP[m].n}
+function mapNm(m){if(cmIs(m))return mpName(m);return GMD=='c'?(CORD.indexOf(m)+1)+'. '+MP[m].n:MP[m].n}
 function campFront(A){return cFront(A||S.ac,DIF())}
 function mapFix(acs){if(mapOK(mapId,acs))return;const O=ORD();let m=GMD=='c'?campFront((acs||[S.ac])[0]):O.find(i=>mapOK(i,acs));if(m==null||!mapOK(m,acs))m=O.find(i=>mapOK(i,acs));if(m==null)m=0;mapId=m;S.mp=m}
 function munT(m){const A=S.ac,ci=MUN[m],ok=mapOK(m),i=CORD.indexOf(m);
-if(GMD=='c')return cMunT(m);
+if(cmIs(m))return cmMunT(m);if(GMD=='c')return cMunT(m);
 if(!ok)return `🔒 Unlock it in the campaign first`;const b=mBest(A,m);return `Best wave here: ${b||'—'}`}
 function modes(){CMLB=0;UIS='mode';mode='menu';MPn=0;const A=S.ac,c=cBeat(A),nf=MP.filter((_,m)=>mapOKA(A,m)).length;
 show(`<div class="p wide mds"><h2>CHOOSE A MODE</h2><div class=mdg>
 <button data-q=1 class="mdb ${GMD=='c'?'on':''}" onclick="setGM('c');mapId=campFront();S.mp=mapId;CMV=null;play()"><b>CAMPAIGN</b><span class=mdp>${c>=CORD.length?'✓ COMPLETE':c+'/'+CORD.length+' maps beaten'}</span><small>Survive 20 waves on each map, then defeat the survivor holding out there. Beat them and they join you, and the next map opens up.</small></button>
-<button data-q=1 class="mdb ${GMD=='f'?'on':''}" onclick="setGM('f');play()"><b>FREE PLAY</b><span class=mdp>${nf}/${MP.length} maps unlocked</span><small>Endless waves on any map you've opened up in the campaign. Chase your best wave.</small></button>
+<button data-q=1 class="mdb ${GMD=='f'?'on':''}" onclick="setGM('f');play()"><b>FREE PLAY</b><span class=mdp>${nf}/${MP.length} maps unlocked${cmFree().length?' · '+cmFree().length+' custom':''}</span><small>Endless waves on any map you've opened up in the campaign. Chase your best wave.</small></button>
 </div><p class=note style="text-align:center;margin:6px 0 0"><button class=lnk data-q=1 onclick="tutAgain()">play the tutorial again</button></p><div class=row><button onclick="UIS='';menu()">BACK</button></div></div>`)}
 // ----- end of a campaign map -----
 function cwH(){const C=CWIN;return `<h2 style="color:var(--tox)">${MP[C.m].n.toUpperCase()} COMPLETE!</h2><div class=cwin><canvas data-ch=${C.ci}></canvas><div><b>${CH[C.ci].n} joined your survivors!</b><small>${C.nx!=null?'Next up: '+MP[C.nx].n+' ('+SEC[secOf(C.nx)].n+').':cBeat(S.ac)>=SORD.length?'You beat the whole campaign. Every map is open in free play.':'Pick your next map on the campaign map.'}</small></div></div>`}
@@ -4025,7 +4333,7 @@ function memMB(){let b=BGL?BGL.width*BGL.height*4:(BG&&BG.width>1?WW*WH*4:0);for
 const CPK='zd_cp';
 function cpGet(){try{const c=JSON.parse(localStorage[CPK]||'null');return c&&c.v==1?c:null}catch(e){return null}}
 function cpClear(){try{delete localStorage[CPK]}catch(e){}}
-function cpSave(){if(MPn||TUT||!P||GMD=='c'&&wave>=20)return;try{const p=P;localStorage[CPK]=JSON.stringify({v:1,t:Date.now(),an:S.ac.name,gm:GMD,m:mapId,ci:p.ci||0,d:DIF(),w:wave,k:kills,L:LIVES,IW,BB,LB,
+function cpSave(){if(MPn||TUT||!P||cmIs(mapId)||GMD=='c'&&wave>=20)return;try{const p=P;localStorage[CPK]=JSON.stringify({v:1,t:Date.now(),an:S.ac.name,gm:GMD,m:mapId,ci:p.ci||0,d:DIF(),w:wave,k:kills,L:LIVES,IW,BB,LB,
 p:{cash:p.cash,hp:p.hp,mx:p.mx,ar:p.ar||0,own:p.own,cur:p.cur,mg:p.mg,am:p.am,paid:p.paid,v:p.v||0}})}catch(e){}}
 function cpOK(){const c=cpGet();return c&&c.an==S.ac.name&&MP[c.m]&&CH[c.ci]?c:null}
 function cpResume(){const c=cpOK();if(!c){sfx('deny');return menu()}sfx('click');setGM(c.gm);if(c.gm=='c')S.dlc=c.d;else S.dlf=c.d;mapId=c.m;S.mp=c.m;sel=c.ci;CPR=c;try{start()}finally{CPR=null}}
@@ -4079,7 +4387,7 @@ async function olSync(force){if(!OLX||S.dev||!S.ol)return;const c=await olFetchS
 let OLT=0;function olAuto(){if(!OLX||!S.ol||S.olOff||OL.busy||Date.now()-OLT<60000)return;OLT=Date.now();OL.busy=1;olSync().then(r=>{if(r=='ask'&&mode=='menu'&&UIS=='')menu()},()=>{}).then(()=>{OL.busy=0})}
 // ----- leaderboards -----
 function olRun(){RUN0=Date.now();RUNW=wave+1}
-function olScore(){if(!OLX||S.olOff||S.dev||MPn||TUT||GMD!='f'||!P||P.ac!==S.ac||wave<2)return;const sc={name:olName(S.ac.name),map:mapId,mode:'f',diff:DIF(),wave,kills,survivor:P.ci||0,start:Math.min(RUNW,wave),secs:Math.round((Date.now()-RUN0)/1000)};
+function olScore(){if(!OLX||S.olOff||S.dev||MPn||TUT||cmIs(mapId)||GMD!='f'||!P||P.ac!==S.ac||wave<2)return;const sc={name:olName(S.ac.name),map:mapId,mode:'f',diff:DIF(),wave,kills,survivor:P.ci||0,start:Math.min(RUNW,wave),secs:Math.round((Date.now()-RUN0)/1000)};
 S.olq=(S.olq||[]).concat([sc]).slice(-10);sv();olFlush()}
 async function olFlush(){if(!OLX||!S.olq||!S.olq.length)return;try{const s=await olSess(true);if(!s)return;while(S.olq.length){const sc=S.olq[0];try{await sbRaw('/rest/v1/scores',{method:'POST',tok:s.at,prefer:'return=minimal',body:Object.assign({user_id:s.uid},sc)})}catch(e){if(!(e.status&&e.status<500))throw e}S.olq.shift();sv()}}catch(e){}}
 async function lbLoad(m,d,mine){const q=m<0?'':'&map=eq.'+m;return sbRaw('/rest/v1/leaderboard?select=user_id,name,map,wave,kills,survivor,created_at&mode=eq.f&diff=eq.'+d+q+(mine?'&user_id=eq.'+mine:'')+'&order=wave.desc,kills.desc,created_at.asc&limit='+(m<0?150:50))}
@@ -4448,6 +4756,521 @@ function aimRet(){if(mode!='play'||!P||P.dead||P.dn)return;const p=P,col=MPn?PC[
 // hide the system cursor over the game while the reticle stands in for it
 let CURS='';function aimCursor(){try{const c=mode=='play'&&MSE.on?'none':'';if(c!==CURS){CURS=c;C.style.cursor=c}}catch(e){}}
 
+// ---------- editor assets ----------
+// Only real game art is listed: every prop in OB and every highway vehicle kind in HWV. A prop added to OB later shows up
+// by itself under "Other"; give it a name and category by adding a line to EDPN below.
+const EDCAT=[['all','All'],['vehicles','Vehicles'],['buildings','Buildings & walls'],['street','Street'],['nature','Nature'],['spooky','Graveyard & spooky'],['supplies','Supplies & tools'],['furniture','Furniture'],['store','Shops'],['play','Park & playground'],['other','Other']];
+// prop key -> [name, category]
+const EDPN={bush:['Bush','nature'],flower:['Flowers','nature'],tuft:['Grass tuft','nature'],rock:['Rock','nature'],stump:['Stump','nature'],log:['Log','nature'],logb:['Fallen log','nature'],logv:['Log (long, upright)','nature'],pine:['Pine tree','nature'],dead:['Dead shrub','nature'],cactus:['Cactus','nature'],tumble:['Tumbleweed','nature'],hay:['Hay bale','nature'],shroom:['Mushrooms','nature'],crater:['Crater','nature'],rubble:['Rubble','nature'],hedge:['Hedge','nature'],planter:['Planter','nature'],fbed:['Flower bed','nature'],
+lamp:['Street lamp','street'],plight:['Parking lot light','street'],tlight:['Traffic light','street'],hydrant:['Fire hydrant','street'],mail:['Mailbox','street'],newsb:['Newspaper box','street'],bench:['Bench','street'],can:['Trash can','street'],trash:['Trash bin','street'],dumpster:['Dumpster','street'],cone:['Traffic cone','street'],psign:['No swimming sign','street'],stree:['Street tree','street'],umb:['Umbrella table','street'],picnic:['Picnic table','street'],pump:['Gas pump','street'],cart:['Shopping cart','street'],cartrow:['Row of carts','street'],corral:['Cart corral','street'],bike:['Bike rack','street'],bstop:['Bus stop','street'],fountd:['Drinking fountain','street'],jersey:['Concrete barrier','street'],stanch:['Rope barrier','street'],
+shed:['Small house','buildings'],gshed:['Groundskeeper shed','buildings'],mausol:['Mausoleum','buildings'],gazebo:['Gazebo','buildings'],wtower:['Water tower','buildings'],well:['Well','buildings'],booth:['Guard booth','buildings'],tent:['Tent','buildings'],mtent:['Army tent','buildings'],fence:['Iron fence','buildings'],wfence:['Wood fence','buildings'],sbag:['Sandbags','buildings'],sbagw:['Sandbag wall','buildings'],bars:['Cell bars','buildings'],flagpole:['Flagpole','buildings'],mflag:['Army flag','buildings'],pillar:['Pillar','buildings'],column:['Column','buildings'],turn:['Turnstile','buildings'],xray:['X-ray scanner','buildings'],mdet:['Metal detector','buildings'],hitch:['Hitching post','buildings'],doghouse:['Doghouse','buildings'],lockerx:['Lockers','buildings'],
+bus:['School bus','vehicles'],bus2:['School bus 2','vehicles'],cbus:['City bus','vehicles'],truck:['Box truck','vehicles'],forklift:['Forklift','vehicles'],mtruck:['Army truck','vehicles'],hmv:['Humvee','vehicles'],hmvx:['Burnt humvee','vehicles'],tank:['Tank','vehicles'],tankx:['Burnt tank','vehicles'],heli:['Helicopter','vehicles'],wagon:['Covered wagon','vehicles'],canoe:['Canoe','vehicles'],wheelb:['Wheelbarrow','vehicles'],
+cross:['Wooden cross','spooky'],g_round:['Round headstone','spooky'],g_cross:['Stone cross','spooky'],g_obelisk:['Obelisk','spooky'],g_slab:['Grave slab','spooky'],g_wide:['Wide headstone','spooky'],g_angel:['Angel headstone','spooky'],bigang:['Angel statue','spooky'],reaper:['Reaper statue','spooky'],statue:['Statue','spooky'],bones:['Bones','spooky'],skull:['Cow skull','spooky'],candle:['Candle','spooky'],cdl:['Candelabra','spooky'],urn:['Urn','spooky'],jack:['Jack-o\'-lantern','spooky'],scare:['Scarecrow','spooky'],cauld:['Cauldron','spooky'],stonec:['Mossy pillar','spooky'],wreath:['Wreath','spooky'],knight:['Suit of armor','spooky'],bust:['Bust','spooky'],doll:['Doll','spooky'],fntn:['Fountain','spooky'],fount:['Birdbath','spooky'],
+crate:['Crate','supplies'],barrel:['Barrel','supplies'],pallet:['Pallet','supplies'],box:['Cardboard box','supplies'],pbox:['Boxes on a pallet','supplies'],tire:['Tire','supplies'],tirestack:['Tire stack','supplies'],ammo:['Ammo crate','supplies'],fuel:['Fuel cans','supplies'],bags:['Trash bags','supplies'],toolbox:['Tool chest','supplies'],gear:['Gear locker','supplies'],hoserack:['Hose rack','supplies'],shovel:['Shovel','supplies'],broom:['Broom','supplies'],bucket:['Bucket','supplies'],cooler:['Cooler','supplies'],lantern:['Lantern','supplies'],rod:['Fishing rod','supplies'],tackle:['Tackle box','supplies'],canrack:['Canoe rack','supplies'],anvil:['Anvil','supplies'],forge:['Forge','supplies'],safe:['Safe','supplies'],panel:['Control panel','supplies'],conveyor:['Conveyor belt','supplies'],shelf:['Warehouse shelf','supplies'],footlk:['Footlocker','supplies'],paper:['Papers','supplies'],tile:['Fallen ceiling tile','supplies'],
+table:['Wooden table','furniture'],chair:['Chair','furniture'],stool:['Stool','furniture'],couch:['Couch','furniture'],bed:['Bed','furniture'],mbed:['Four-poster bed','furniture'],bunk:['Bunk bed','furniture'],wbunk:['Bunk bed (red)','furniture'],hbed:['Hospital bed','furniture'],crib:['Crib','furniture'],wardrobe:['Wardrobe','furniture'],cabinet:['Filing cabinet','furniture'],bookshelf:['Bookshelf','furniture'],wshelf:['Wide bookshelf','furniture'],piano:['Piano','furniture'],stove:['Wood stove','furniture'],fplace:['Fireplace','furniture'],tub:['Bathtub','furniture'],toilet:['Toilet','furniture'],msink:['Sink','furniture'],mirror:['Mirror','furniture'],gclock:['Grandfather clock','furniture'],trophy:['Trophy case','furniture'],vending:['Vending machine','furniture'],sdesk:['School desk','furniture'],sdeskx:['Knocked-over desk','furniture'],tdesk:['Teacher\'s desk','furniture'],ctable:['Cafeteria table','furniture'],mtable:['Long dining table','furniture'],rtable:['Saloon table','furniture'],wtable:['Work table','furniture'],pew:['Pew','furniture'],plant:['Potted plant','furniture'],ivp:['IV pole','furniture'],bchair:['Barber chair','furniture'],grill:['Grill','furniture'],trough:['Water trough','furniture'],rhorse:['Rocking horse','furniture'],
+counter:['Counter','store'],rdesk:['Reception desk','store'],rbooth:['Diner booth','store'],checkout:['Checkout','store'],gshelf:['Grocery shelf','store'],fridge:['Drinks fridge','store'],freezer:['Chest freezer','store'],ufrz:['Upright freezer','store'],produce:['Produce stand','store'],rack:['Clothes rack','store'],display:['Display case','store'],espresso:['Espresso machine','store'],
+swing:['Swing set','play'],slide:['Slide','play'],hoop:['Basketball hoop','play'],merry:['Merry-go-round','play'],jgym:['Jungle gym','play'],bigjg:['Big play structure','play'],jg2:['Play tower','play'],sptow:['Splash tower','play'],tramp:['Trampoline','play']};
+// top-down highway vehicles (they turn freely and take a colour)
+const EDVN={sedan:'Sedan',suv:'SUV',pickup:'Pickup truck',van:'Van',limo:'Limo',police:'Police car',amb:'Ambulance',fire:'Fire truck',bus:'School bus (top)',semi:'Semi truck',cab:'Semi cab',trailer:'Semi trailer',hmv:'Humvee (top)',mtruck:'Army truck (top)'};
+const EDVC=['#c0392b','#2f6fd0','#d8d8d4','#26262c','#8a8f96','#2f8a4a','#d68a1c','#6a4a9a','#a8a49a','#7a1f1f','#1f4f7a','#e0c040'];
+let EDAS=null;
+// the asset list: {id:'p:crate'|'v:sedan', t:'p'|'v', k, n, cat}
+function edAssets(){if(EDAS)return EDAS;const L=[];for(const k of Object.keys(EDVN))if(HWV(k))L.push({id:'v:'+k,t:'v',k,n:EDVN[k],cat:'vehicles'});
+for(const k of Object.keys(OB)){if(!cmOB(k))continue;const e=Object.prototype.hasOwnProperty.call(EDPN,k)?EDPN[k]:[k.replace(/_/g,' '),'other'];L.push({id:'p:'+k,t:'p',k,n:e[0],cat:e[1]})}
+const ci=c=>{const i=EDCAT.findIndex(x=>x[0]==c);return i<0?99:i};L.sort((a,b)=>ci(a.cat)-ci(b.cat)||a.n.localeCompare(b.n));return EDAS=L}
+function edAsset(o){const own=(T,k)=>Object.prototype.hasOwnProperty.call(T,k);return o.veh?{t:'v',k:o.veh,n:own(EDVN,o.veh)?EDVN[o.veh]:String(o.veh)}:{t:'p',k:o.k,n:own(EDPN,o.k)?EDPN[o.k][0]:String(o.k)}}
+// sprites drawn once into small canvases: props anchored at their base, vehicles centred and unturned
+const EDSP={};
+function edSprite(o){const v=o.vr!=null?Math.round(o.vr*10)/10:Math.round(cmH(o.x,o.y,3)*10)/10,key=o.veh?'v|'+o.veh+'|'+(o.c||'')+'|'+(o.dmg?1:0)+(o.burn?1:0):'p|'+o.k+'|'+v;
+if(EDSP[key])return EDSP[key];let s=null;
+try{if(o.veh){const q=cmVeh({veh:o.veh,x:0,y:0,r:0,c:o.c,dmg:o.dmg,burn:o.burn});if(q){const pad=6,c=document.createElement('canvas');c.width=q.L+pad*2;c.height=q.W+pad*2;const g=c.getContext('2d');q.x=c.width/2;q.y=c.height/2;hwDraw(g,q);s={c,ax:c.width/2,ay:c.height/2,w:q.L,h:q.W}}}
+else{const B=cmOB(o.k);if(B){const c=document.createElement('canvas');c.width=B.w+4;c.height=B.h+4;const g=c.getContext('2d');B.f(g,c.width/2,c.height-2,v);s={c,ax:c.width/2,ay:c.height-2,w:B.w,h:B.h}}}}catch(e){s=null}
+return EDSP[key]=s}
+// a thumbnail image (data URL) for the browser grid
+const EDTH={};
+function edThumb(a){if(EDTH[a.id])return EDTH[a.id];const S_=56,c=document.createElement('canvas');c.width=S_;c.height=S_;const g=c.getContext('2d');g.imageSmoothingEnabled=false;
+const s=edSprite(a.t=='v'?{veh:a.k,x:0,y:0,c:EDVC[0]}:{k:a.k,x:0,y:0,vr:.6});if(s){const k=Math.min(2,(S_-6)/s.c.width,(S_-6)/s.c.height),w=s.c.width*k,h=s.c.height*k;g.drawImage(s.c,(S_-w)/2,(S_-h)/2,w,h)}
+let u='';try{u=c.toDataURL()}catch(e){}return EDTH[a.id]=u}
+// ---------- undo / redo ----------
+// An entry is {n: name, undo(), redo()}, pushed after its change is already made. Each entry gets an id, so "saved"
+// just remembers the id on top of the undo list: undoing back to that point makes the map clean again.
+let EDH={u:[],r:[],id:0,max:400};
+function hReset(){EDH={u:[],r:[],id:0,max:400}}
+function hTop(){const e=EDH.u[EDH.u.length-1];return e?e.id:0}
+function hPush(e){e.id=++EDH.id;EDH.u.push(e);if(EDH.u.length>EDH.max)EDH.u.shift();EDH.r.length=0;edChanged(e)}
+function hUndo(){const e=EDH.u.pop();if(!e)return null;e.undo();EDH.r.push(e);edChanged(e);return e}
+function hRedo(){const e=EDH.r.pop();if(!e)return null;e.redo();EDH.u.push(e);edChanged(e);return e}
+// several entries as one step
+function hGroup(n,L){return{n,undo(){for(let i=L.length-1;i>=0;i--)L[i].undo()},redo(){for(const e of L)e.redo()}}}
+// ---------- editor drawing ----------
+const EDCS=16; // tiles per side of a cached terrain chunk
+function edChunk(cx,cy){const E=ED,T=E.d.tile,S_=EDCS*T,k=cx+','+cy;let c=E.ch.get(k);if(!c){c={cv:document.createElement('canvas'),dirty:1};c.cv.width=c.cv.height=S_;E.ch.set(k,c)}
+if(c.dirty){const g=c.cv.getContext('2d');g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,S_,S_);g.setTransform(1,0,0,1,-cx*S_,-cy*S_);cmGround(g,E.d,cx*EDCS,cy*EDCS,(cx+1)*EDCS,(cy+1)*EDCS,1);g.setTransform(1,0,0,1,0,0);c.dirty=0;c.lo=null}return c.cv}
+// a quarter-size copy for zoomed-out views (much cheaper to draw many of)
+// a smaller picture of a chunk (f = 1/2 or 1/4 size) with its walls, props and vehicles baked in, for zoomed-out views; rebuilt after a change
+function edChunkLo(cx,cy,f){const E=ED,cv=edChunk(cx,cy),c=E.ch.get(cx+','+cy),L_=c.lo||(c.lo={});if(L_[f]&&L_[f].v===E.ver)return L_[f].c;const S_=cv.width,l=L_[f]?L_[f].c:document.createElement('canvas');l.width=l.height=S_*f;const q=l.getContext('2d');
+q.setTransform(1,0,0,1,0,0);q.clearRect(0,0,l.width,l.height);q.imageSmoothingEnabled=true;try{q.imageSmoothingQuality='high'}catch(e){}q.drawImage(cv,0,0,l.width,l.height);q.setTransform(f,0,0,f,-cx*S_*f,-cy*S_*f);
+const x0=cx*S_,y0=cy*S_,x1=x0+S_,y1=y0+S_,d=E.d;for(const w of d.walls)if(w.x<x1&&w.x+w.w>x0&&w.y<y1&&w.y+w.h>y0)edWallLook(q,w,1);
+if(E.loV!==E.ver){E.loL=d.obj.map((o,i)=>{const sp=edSprite(o),r=sp?Math.max(sp.c.width,sp.c.height):30;return{o,b:cmBase(o),i,r}}).sort((a,b)=>a.b-b.b||a.i-b.i);E.loV=E.ver}
+for(const{o,r}of E.loL)if(o.x-r<x1&&o.x+r>x0&&o.y-r<y1&&o.y+r>y0)edObjLook(q,o,1);
+q.setTransform(1,0,0,1,0,0);L_[f]={c:l,v:E.ver};return l}
+// a changed tile repaints its chunk and its neighbours' (shorelines look across tile edges)
+function edTileDirty(i){const E=ED,d=E.d,tx=i%d.w,ty=(i/d.w)|0;for(const[a,b]of[[0,0],[1,0],[-1,0],[0,1],[0,-1]]){const x=tx+a,y=ty+b;if(x<0||y<0||x>=d.w||y>=d.h)continue;const c=E.ch.get(Math.floor(x/EDCS)+','+Math.floor(y/EDCS));if(c)c.dirty=1}E.mmDirty=1;E.need=1}
+function edAllDirty(){if(!ED)return;for(const c of ED.ch.values()){c.cv.width=0;c.cv.height=0;for(const k in c.lo||{}){c.lo[k].c.width=0;c.lo[k].c.height=0}}ED.ch.clear();ED.mmDirty=1;ED.need=1}
+// local box of an object's sprite around its anchor (x,y), before turning
+function edBox(o){const s=edSprite(o);if(s)return{x0:-s.ax,y0:-s.ay,x1:s.c.width-s.ax,y1:s.c.height-s.ay};return{x0:-12,y0:-24,x1:12,y1:0}}
+// is world point (x,y) on object o (pad = extra margin in world px)?
+function edOnObj(o,x,y,pad){const b=edBox(o),a=-(o.r||0)*Math.PI/180,dx=x-o.x,dy=y-o.y,lx=dx*Math.cos(a)-dy*Math.sin(a),ly=dx*Math.sin(a)+dy*Math.cos(a);return lx>=b.x0-pad&&lx<=b.x1+pad&&ly>=b.y0-pad&&ly<=b.y1+pad}
+// collision boxes of the whole map, rebuilt only after a change
+function edColl(){const E=ED;if(E.collV!==E.ver){E.collC=cmColl(E.d);E.collV=E.ver}return E.collC}
+function edWallLook(g,w,a){const s=CMWI[w.s];if(!s||s.hid){g.fillStyle='rgba(170,110,255,'+(.35*a)+')';g.fillRect(w.x,w.y,w.w,w.h);g.strokeStyle='rgba(200,160,255,'+a+')';g.lineWidth=1/ED.cam.z;g.strokeRect(w.x,w.y,w.w,w.h);if(!s){g.strokeStyle='#ff3a5a';g.beginPath();g.moveTo(w.x,w.y);g.lineTo(w.x+w.w,w.y+w.h);g.stroke()}return}
+g.globalAlpha=a;s.f(g,w.x,w.y,w.w,w.h);g.globalAlpha=1}
+function edObjLook(g,o,a){const s=edSprite(o);g.save();g.translate(o.x,o.y);if(o.r)g.rotate(o.r*Math.PI/180);g.globalAlpha=a;
+if(s)g.drawImage(s.c,-s.ax,-s.ay);else{g.fillStyle='rgba(255,40,70,.75)';g.fillRect(-12,-24,24,24);g.fillStyle='#fff';g.font='bold 16px monospace';g.textAlign='center';g.fillText('?',0,-6)}g.restore()}
+// world -> screen (css px)
+function edSX(x){return(x-ED.cam.x)*ED.cam.z}
+function edSY(y){return(y-ED.cam.y)*ED.cam.z}
+function edFrame(){const E=ED;if(!E||!E.cv||!E.vis)return;const cv=E.cv,dpr=Math.min(2,globalThis.devicePixelRatio||1),w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;
+if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);E.need=1;edLay()}
+if(E.need){E.need=0;edDraw(E.g,dpr,w,h)}if(E.mmNeed||E.mmDirty){E.mmNeed=0;edMini()}}
+function edDraw(g,dpr,w,h){const E=ED,d=E.d,T=d.tile,z=E.cam.z,MW=d.w*T,MH=d.h*T,vx0=E.cam.x,vy0=E.cam.y,vx1=vx0+w/z,vy1=vy0+h/z,px=1/z;
+g.setTransform(1,0,0,1,0,0);g.fillStyle='#0b100c';g.fillRect(0,0,g.canvas.width,g.canvas.height);
+g.setTransform(dpr*z,0,0,dpr*z,-vx0*z*dpr,-vy0*z*dpr);g.imageSmoothingEnabled=z<.99;
+g.fillStyle='#16211a';g.fillRect(0,0,MW,MH);
+const lo=z<.5&&!(E.drag&&(E.drag.t=='move'||E.drag.t=='size'))?(z<.25?.25:.5):0;const CS=EDCS*T;for(let cy=Math.max(0,Math.floor(vy0/CS));cy<=Math.min(Math.ceil(d.h/EDCS)-1,Math.floor(vy1/CS));cy++)for(let cx=Math.max(0,Math.floor(vx0/CS));cx<=Math.min(Math.ceil(d.w/EDCS)-1,Math.floor(vx1/CS));cx++)g.drawImage(lo?edChunkLo(cx,cy,lo):edChunk(cx,cy),cx*CS,cy*CS,CS+px*.5,CS+px*.5);
+g.imageSmoothingEnabled=false;
+// grid
+if(E.grid&&z*T>=6){const tx0=Math.max(0,Math.floor(vx0/T)),tx1=Math.min(d.w,Math.ceil(vx1/T)),ty0=Math.max(0,Math.floor(vy0/T)),ty1=Math.min(d.h,Math.ceil(vy1/T)),y0=ty0*T,y1=ty1*T,x0=tx0*T,x1=tx1*T;
+for(let x=tx0;x<=tx1;x++){g.fillStyle=x%4?'rgba(0,0,0,.16)':'rgba(0,0,0,.34)';g.fillRect(x*T,y0,px,y1-y0)}for(let y=ty0;y<=ty1;y++){g.fillStyle=y%4?'rgba(0,0,0,.16)':'rgba(0,0,0,.34)';g.fillRect(x0,y*T,x1-x0,px)}}
+// walls
+const inV=(x0,y0,x1,y1)=>x1>=vx0&&x0<=vx1&&y1>=vy0&&y0<=vy1;
+if(!lo)for(const q of d.walls)if(inV(q.x,q.y,q.x+q.w,q.y+q.h))edWallLook(g,q,E.drag&&E.drag.t=='move'&&E.drag.o===q?.85:1);
+// props and vehicles, back to front
+const L=[];if(!lo)for(let i=0;i<d.obj.length;i++){const o=d.obj[i],s=edSprite(o),r=s?Math.max(s.c.width,s.c.height):30;if(inV(o.x-r,o.y-r,o.x+r,o.y+r))L.push({o,b:cmBase(o),i})}
+L.sort((a,b)=>a.b-b.b||a.i-b.i);const k=dpr*z,ox=-vx0*k,oy=-vy0*k;for(const{o}of L){const sp=edSprite(o);if(!sp){edObjLook(g,o,1);continue}if(!o.r){g.drawImage(sp.c,o.x-sp.ax,o.y-sp.ay);continue}const a=o.r*Math.PI/180,c=Math.cos(a)*k,s_=Math.sin(a)*k;g.setTransform(c,s_,-s_,c,ox+o.x*k,oy+o.y*k);g.drawImage(sp.c,-sp.ax,-sp.ay);g.setTransform(k,0,0,k,ox,oy)}
+// collision
+if(E.coll){const C=edColl();g.lineWidth=px;for(const c of C){if(!inV(c[0],c[1],c[0]+c[2],c[1]+c[3]))continue;const col=c[4]==2?'70,160,255':c[4]==1?'255,170,40':'255,60,60';g.fillStyle='rgba('+col+',.32)';g.fillRect(c[0],c[1],c[2],c[3]);g.strokeStyle='rgba('+col+',.9)';g.strokeRect(c[0],c[1],c[2],c[3])}}
+// spawn zones
+for(const q of d.zones){if(!inV(q.x,q.y,q.x+q.w,q.y+q.h))continue;const on=q.on!==false;g.fillStyle=on?'rgba(216,64,58,.18)':'rgba(150,150,150,.12)';g.fillRect(q.x,q.y,q.w,q.h);g.setLineDash([6*px,4*px]);g.lineWidth=2*px;g.strokeStyle=on?'#ff6a5a':'#9a9a9a';g.strokeRect(q.x,q.y,q.w,q.h);g.setLineDash([])}
+// map edge
+g.lineWidth=2*px;g.strokeStyle='#ffcf40';g.strokeRect(0,0,MW,MH);
+// tool previews in world space
+edPreview(g,px);
+// selection outline
+const sel=E.sel;if(sel)edOutline(g,sel,'#ffcf40',2*px,1);const hv=E.hov;if(hv&&(!sel||hv.o!==sel.o))edOutline(g,hv,'rgba(255,255,255,.7)',px,0);
+// screen space: markers and labels stay the same size at every zoom
+g.setTransform(dpr,0,0,dpr,0,0);g.font='16px VT323, monospace';g.textBaseline='middle';
+for(const q of d.zones){const sx=edSX(q.x),sy=edSY(q.y);if(sx>w||sy>h||edSX(q.x+q.w)<0||edSY(q.y+q.h)<0)continue;g.fillStyle=q.on!==false?'#ff8a7a':'#b0b0b0';g.textAlign='left';g.fillText(q.on!==false?'SPAWN ZONE':'SPAWN ZONE (OFF)',sx+5,sy+10)}
+for(const q of d.spawns){const sx=edSX(q.x),sy=edSY(q.y);if(sx<-20||sy<-20||sx>w+20||sy>h+20)continue;edSkull(g,sx,sy,q.on!==false)}
+{const sx=edSX(d.start.x),sy=edSY(d.start.y);g.fillStyle='rgba(0,0,0,.45)';g.beginPath();g.arc(sx,sy+2,13,0,7);g.fill();g.fillStyle='#4ab0ff';g.beginPath();g.arc(sx,sy,12,0,7);g.fill();g.strokeStyle='#0a1a2a';g.lineWidth=2;g.stroke();g.fillStyle='#fff';g.textAlign='center';g.font='13px "Press Start 2P", monospace';g.fillText('P',sx+1,sy+1)}
+if(sel)edHandles(g,sel)}
+function edSkull(g,x,y,on){g.fillStyle='rgba(0,0,0,.45)';g.beginPath();g.arc(x,y+2,11,0,7);g.fill();g.fillStyle=on?'#d8403a':'#7a7a7a';g.beginPath();g.arc(x,y,10,0,7);g.fill();g.fillStyle=on?'#f4ead0':'#d0d0d0';g.fillRect(x-5,y-5,10,7);g.fillRect(x-3,y+2,6,3);g.fillStyle=on?'#4a0c0c':'#555';g.fillRect(x-4,y-3,3,3);g.fillRect(x+1,y-3,3,3);g.fillRect(x-1,y+2,1,2);g.fillRect(x+1,y+2,1,2)}
+function edSelRect(s){const o=s.o;if(s.t=='w'||s.t=='z')return{x0:o.x,y0:o.y,x1:o.x+o.w,y1:o.y+o.h};return null}
+function edOutline(g,s,col,lw,full){const o=s.o;g.strokeStyle=col;g.lineWidth=lw;
+if(s.t=='o'){const b=edBox(o);g.save();g.translate(o.x,o.y);if(o.r)g.rotate(o.r*Math.PI/180);g.strokeRect(b.x0,b.y0,b.x1-b.x0,b.y1-b.y0);g.restore();if(full&&!o.veh){const f=cmFoot(o);if(f){g.setLineDash([4*lw,3*lw]);g.strokeStyle='rgba(255,207,64,.7)';g.strokeRect(f[0],f[1],f[2],f[3]);g.setLineDash([])}}return}
+const r=edSelRect(s);if(r){g.strokeRect(r.x0,r.y0,r.x1-r.x0,r.y1-r.y0);return}
+const z=ED.cam.z,rr=(s.t=='p'?15:13)/z;g.beginPath();g.arc(o.x,o.y,rr,0,7);g.stroke()}
+// resize handles of the selected wall or zone (screen space)
+function edHandleList(s){const r=s&&edSelRect(s);if(!r)return[];const xm=(r.x0+r.x1)/2,ym=(r.y0+r.y1)/2;return[['nw',r.x0,r.y0],['n',xm,r.y0],['ne',r.x1,r.y0],['e',r.x1,ym],['se',r.x1,r.y1],['s',xm,r.y1],['sw',r.x0,r.y1],['w',r.x0,ym]]}
+function edHandles(g,s){for(const[,x,y]of edHandleList(s)){const sx=edSX(x),sy=edSY(y);g.fillStyle='#16111c';g.fillRect(sx-5,sy-5,10,10);g.fillStyle='#ffcf40';g.fillRect(sx-4,sy-4,8,8)}}
+// what the current tool would do under the mouse
+function edPreview(g,px){const E=ED,d=E.d,T=d.tile,m=E.mouse,t=E.tool,D_=E.drag;if(!m.in&&!D_)return;
+if(t=='brush'||t=='erase'||t=='fill'||t=='pick'||(t=='rect'&&!D_)){const n=t=='brush'||t=='erase'?E.brush:1,o=Math.floor((n-1)/2),tx=Math.floor(m.wx/T)-o,ty=Math.floor(m.wy/T)-o;g.lineWidth=2*px;g.strokeStyle=t=='erase'||(D_&&D_.er)?'#ff6a5a':'#ffcf40';g.fillStyle=t=='erase'?'rgba(255,90,80,.18)':'rgba(255,207,64,.14)';g.fillRect(tx*T,ty*T,n*T,n*T);g.strokeRect(tx*T,ty*T,n*T,n*T);return}
+if(D_&&(D_.t=='rect'||D_.t=='wall'||D_.t=='cut'||D_.t=='zone')){const r=D_.r;if(!r)return;
+if(D_.t=='rect'){g.fillStyle=D_.er?'rgba(255,90,80,.25)':'rgba(255,207,64,.22)';g.fillRect(r.x,r.y,r.w,r.h);g.lineWidth=2*px;g.strokeStyle=D_.er?'#ff6a5a':'#ffcf40';g.strokeRect(r.x,r.y,r.w,r.h)}
+else if(D_.t=='wall'){edWallLook(g,{x:r.x,y:r.y,w:r.w,h:r.h,s:E.wall},.8);g.lineWidth=px;g.strokeStyle='#ffcf40';g.strokeRect(r.x,r.y,r.w,r.h)}
+else if(D_.t=='cut'){g.fillStyle='rgba(255,60,60,.25)';g.fillRect(r.x,r.y,r.w,r.h);g.setLineDash([5*px,4*px]);g.lineWidth=2*px;g.strokeStyle='#ff5a4a';g.strokeRect(r.x,r.y,r.w,r.h);g.setLineDash([])}
+else{g.fillStyle='rgba(216,64,58,.22)';g.fillRect(r.x,r.y,r.w,r.h);g.setLineDash([6*px,4*px]);g.lineWidth=2*px;g.strokeStyle='#ff6a5a';g.strokeRect(r.x,r.y,r.w,r.h);g.setLineDash([])}
+const lab=Math.round(r.w)+' × '+Math.round(r.h);g.save();g.setTransform(1,0,0,1,0,0);const dpr=g.canvas.width/E.cv.clientWidth;g.scale(dpr,dpr);g.font='16px VT323, monospace';g.textAlign='left';g.textBaseline='bottom';const sx=edSX(r.x+r.w)+6,sy=edSY(r.y+r.h)+18;g.fillStyle='rgba(0,0,0,.6)';g.fillRect(sx-3,sy-17,g.measureText(lab).width+6,17);g.fillStyle='#ffcf40';g.fillText(lab,sx,sy);g.restore();return}
+if(t=='place'&&E.asset&&!D_){const a=E.asset,p=edSnapPt(m.wx,m.wy),o=a.t=='v'?{veh:a.k,x:p.x,y:p.y,r:E.rot,c:E.vcol}:{k:a.k,x:p.x,y:p.y,r:E.rot,vr:E.pvr};edObjLook(g,o,.6);const f=a.t=='p'&&cmFoot(o);if(f){g.lineWidth=px;g.strokeStyle='rgba(255,170,40,.9)';g.strokeRect(f[0],f[1],f[2],f[3])}return}
+if((t=='wall'||t=='zone')&&!D_){const p=edSnapPt(m.wx,m.wy);g.fillStyle='#ffcf40';g.fillRect(p.x-3*px,p.y-3*px,6*px,6*px)}}
+// ----- minimap -----
+function edMiniTex(){const E=ED,d=E.d,c=E.mmc||(E.mmc=document.createElement('canvas'));c.width=d.w;c.height=d.h;const q=c.getContext('2d'),im=q.createImageData(d.w,d.h),px=im.data,col={};
+const rgb=h=>{if(col[h])return col[h];const n=parseInt(h.slice(1),16);return col[h]=[(n>>16)&255,(n>>8)&255,n&255]};const gd=(CMTI[d.ground]||CMTER[0]).mc;
+for(let i=0;i<d.w*d.h;i++){const t=CMTI[d.pal[d.ter[i]]];let c_=rgb(t?t.mc:gd);const o=d.ovl[i];if(o){const q_=CMOI[d.opal[o]];if(q_){const b=rgb(q_.mc);c_=[(c_[0]+b[0]*2)/3,(c_[1]+b[1]*2)/3,(c_[2]+b[2]*2)/3]}}px[i*4]=c_[0];px[i*4+1]=c_[1];px[i*4+2]=c_[2];px[i*4+3]=255}q.putImageData(im,0,0);E.mmDirty=0}
+function edMini(){const E=ED,c=E.mm;if(!c||!E.vis)return;if(E.mmDirty||!E.mmc)edMiniTex();const d=E.d,T=d.tile,MW=d.w*T,MH=d.h*T,dpr=Math.min(2,globalThis.devicePixelRatio||1);
+const cw=Math.round(E.mmw*dpr),ch=Math.round(E.mmh*dpr);if(c.width!==cw||c.height!==ch){c.width=cw;c.height=ch}const g=c.getContext('2d'),k=cw/MW;g.setTransform(1,0,0,1,0,0);g.imageSmoothingEnabled=false;g.drawImage(E.mmc,0,0,cw,ch);
+g.fillStyle='rgba(30,20,16,.9)';for(const w of d.walls){const s=CMWI[w.s];g.fillStyle=s&&s.fl==2?'rgba(200,210,225,.9)':s&&s.hid?'rgba(170,110,255,.8)':'rgba(30,20,16,.95)';g.fillRect(w.x*k,w.y*k,Math.max(1,w.w*k),Math.max(1,w.h*k))}
+g.fillStyle='#ffe27a';for(const o of d.obj)g.fillRect(o.x*k-1,o.y*k-1,2,2);
+for(const z_ of d.zones){g.strokeStyle=z_.on!==false?'#ff5a4a':'#999';g.lineWidth=1;g.strokeRect(z_.x*k,z_.y*k,z_.w*k,z_.h*k)}
+g.fillStyle='#ff5a4a';for(const s of d.spawns)g.fillRect(s.x*k-2,s.y*k-2,4,4);g.fillStyle='#4ab0ff';g.fillRect(d.start.x*k-3,d.start.y*k-3,6,6);
+const vw=E.cv.clientWidth/E.cam.z,vh=E.cv.clientHeight/E.cam.z;g.strokeStyle='#ffcf40';g.lineWidth=Math.max(1,dpr);g.strokeRect(E.cam.x*k,E.cam.y*k,vw*k,vh*k)}
+// ----- thumbnails (Workshop list and Free Play) -----
+// the real map painted small, the same way the game paints it, letterboxed into 4:3
+function edMakeThumb(d){const T=d.tile,MW=d.w*T,MH=d.h*T,k=Math.min(1,960/MW,720/MH),a=document.createElement('canvas');a.width=Math.ceil(MW*k);a.height=Math.ceil(MH*k);const g=a.getContext('2d');g.scale(k,k);
+try{cmGround(g,d,0,0,d.w,d.h,0);for(const w of d.walls)cmWallDraw(g,w);const O=d.obj.map((o,i)=>({o,b:cmBase(o),i})).sort((x,y)=>x.b-y.b||x.i-y.i);for(const{o}of O){const s=edSprite(o);if(!s)continue;g.save();g.translate(o.x,o.y);if(o.r)g.rotate(o.r*Math.PI/180);g.drawImage(s.c,-s.ax,-s.ay);g.restore()}}catch(e){}
+const o=document.createElement('canvas');o.width=400;o.height=300;const q=o.getContext('2d');q.fillStyle='#0a0f0b';q.fillRect(0,0,400,300);const s=Math.min(400/a.width,300/a.height),w=a.width*s,h=a.height*s;q.imageSmoothingEnabled=true;try{q.imageSmoothingQuality='high'}catch(e){}q.drawImage(a,(400-w)/2,(300-h)/2,w,h);
+a.width=a.height=0;let u='';try{u=o.toDataURL('image/jpeg',.82)}catch(e){}o.width=o.height=0;return u}
+// ---------- the map editor ----------
+// Desktop mouse and keyboard. While it is open mode=='edit': the game's loop calls edFrame() instead of drawing the world,
+// and key presses come to edKey(). The map being edited is ED.d (a doc, see world/map-schema.js); every change goes through
+// the one history in editor/history.js.
+let ED=null;
+const EDT=[ // tools: id, name, key, left panel tab, hint
+['select','Select & move','V','','Click to select, drag to move. Drag empty ground to pan. R turns, Delete removes.'],
+['brush','Paint','B','terrain','Drag to paint. Right-drag erases. [ and ] change the brush size.'],
+['erase','Eraser','E','terrain','Drag to erase back to the default ground (or erase overlays when an overlay is picked).'],
+['fill','Fill','F','terrain','Click to fill a connected area of the same ground.'],
+['rect','Rectangle','U','terrain','Drag a rectangle to fill it. Right-drag erases a rectangle.'],
+['pick','Eyedropper','I','terrain','Click a tile to pick its ground. Shift+click picks its overlay.'],
+['place','Place prop','P','assets','Click to place the picked prop or vehicle. R turns it first. Right-click or Esc stops placing.'],
+['wall','Walls','W','walls','Drag to draw a wall. Right-drag (or Alt+drag) cuts a gap in walls.'],
+['start','Player start','S','spawns','Click where the player starts.'],
+['spawn','Spawn point','Z','spawns','Click to add a zombie spawn point.'],
+['zone','Spawn zone','X','spawns','Drag to add a zone: zombies appear anywhere inside it.']];
+const EDI={ // 16px icons
+select:'<path d="M3 1v13l3-3 2.5 4.5 2-1L8 10h4.5z"/>',brush:'<path d="M13.5 1L15 2.5 9 8.5 7.5 7zM6.5 8L8 9.5C8 12.5 5 15 1.5 15c1-1 1-2 1-3 0-2.2 1.6-4 4-4z"/>',
+erase:'<path d="M9.5 1.5l5 5L8 13H4.5L1.5 10zM3 10.5L5 12.5h2l1.3-1.3-3.5-3.5z"/>',fill:'<path d="M7 1L1 7l6 6 6-6zM7 3.6L3.6 7h6.8z M14 9.5s-2 2.6-2 3.7a2 2 0 004 0c0-1.1-2-3.7-2-3.7z" fill-rule="evenodd"/>',
+rect:'<path d="M1 3h14v10H1zm2 2v6h10V5z" fill-rule="evenodd"/>',pick:'<path d="M11.5 1a2.1 2.1 0 013 3l-2 2 1 1-1.4 1.4-1-1L5 13.5H2.5V11l6.1-6.1-1-1L9 2.5l1 1z"/>',
+place:'<path d="M2 2h12v12H2zm2 2v8h8V4z M4 4h2l6 6v2h-2L4 6z" fill-rule="evenodd"/>',wall:'<path d="M1 2h6v3H1zm8 0h6v3H9zM1 7h3v3H1zm5 0h5v3H6zm7 0h2v3h-2zM1 12h6v3H1zm8 0h6v3H9z"/>',
+start:'<path d="M3 1h2v14H3zm3 1h9l-2.5 3L15 8H6z"/>',spawn:'<path d="M8 1C4.5 1 2 3.6 2 7c0 1.8.8 3.2 2 4v3h8v-3c1.2-.8 2-2.2 2-4 0-3.4-2.5-6-6-6zM4.8 6h2.4v3H4.8zm4 0h2.4v3H8.8zM7 11h2v2H7z" fill-rule="evenodd"/>',
+zone:'<path d="M1 1h4v2H3v2H1zm10 0h4v4h-2V3h-2zM1 11h2v2h2v2H1zm12 0h2v4h-4v-2h2zM7 1h2v2H7zM1 7h2v2H1zm12 0h2v2h-2zM7 13h2v2H7z"/>',
+undo:'<path d="M6 2L1 6.5 6 11V8h4a2.5 2.5 0 010 5H7v2h3a4.5 4.5 0 000-9H6z"/>',redo:'<path d="M10 2l5 4.5-5 4.5V8H6a2.5 2.5 0 000 5h3v2H6a4.5 4.5 0 010-9h4z"/>',
+grid:'<path d="M1 1h14v14H1zm2 2v3h3V3zm5 0v3h5V3zM3 8v5h3V8zm5 0v5h5V8z" fill-rule="evenodd"/>',coll:'<path d="M1 1h14v14H1zm2 2v1.6L4.6 3zm4.4 0L3 7.4v2.8L10.2 3zm5.6 1.6L4.6 13h2.8L13 7.4zm0 5.6L10.2 13H13z" fill-rule="evenodd"/>',
+snap:'<path d="M2 2h4v7a2 2 0 004 0V2h4v7A6 6 0 012 9zm1 1v2h2V3zm8 0v2h2V3z" fill-rule="evenodd"/>',check:'<path d="M8 1l7.5 14H.5zM7 6v4.5h2V6zm0 6v2h2v-2z" fill-rule="evenodd"/>',
+save:'<path d="M1 1h11l3 3v11H1zm3 0v4h7V1zm0 8v5h8V9z" fill-rule="evenodd"/>',play:'<path d="M3 1l12 7-12 7z"/>',back:'<path d="M10 1L3 8l7 7 1.5-1.5L6 8l5.5-5.5z"/>',
+left:'<path d="M10 1L3 8l7 7V1z"/>',right:'<path d="M6 1l7 7-7 7V1z"/>'};
+function edIco(k){return `<svg class=edi viewBox="0 0 16 16" aria-hidden="true">${EDI[k]||''}</svg>`}
+function edEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c])}
+// ----- opening and closing -----
+// src: 'saved' when the map is already in storage
+function edOpen(d,src,dirty){if(ED)edTeardown();hReset();
+ED={d,src:src||'saved',cam:{x:0,y:0,z:1},tool:'select',tab:'terrain',ter:'grass',terK:'t',brush:1,asset:null,rot:0,pvr:Math.random(),vcol:EDVC[0],wall:'wall',wth:8,
+sel:null,hov:null,snap:1,step:16,grid:1,coll:0,pl:1,pr:1,drag:null,mouse:{x:0,y:0,wx:0,wy:0,in:0},ch:new Map(),ver:0,collV:-1,collC:null,mark:0,probs:cmLint(d),q:'',cat:'all',
+need:1,mmDirty:1,mmNeed:1,vis:1,space:0,cvx:0,cvy:0,mmw:200,mmh:150,dt:0,tip:''};
+if(dirty)ED.mark=-1;mode='edit';UIS='';ui.innerHTML='';L=R=null;mouse.d=0;keys={};
+try{edDom()}catch(e){ED.cv=null;ED.root=null}edFit();edUI()}
+// headless (tests) or real: remove the editor's page parts
+function edTeardown(){const E=ED;if(!E)return;clearTimeout(E.dt);if(E.root&&E.root.remove)E.root.remove();for(const c of E.ch.values()){c.cv.width=0;c.cv.height=0}E.ch.clear();ED=null}
+function edIsDirty(){return !!ED&&hTop()!==ED.mark}
+// back to the Workshop; asks first when there are unsaved changes
+function edBack(){if(!ED)return;if(edIsDirty())return edModal('Unsaved changes',`<p>Save the changes to <b>${edEsc(ED.d.name)}</b> before closing?</p>`,[['Cancel','',()=>0],['Close without saving','red',()=>edClose(1)],['Save','go',()=>edSave().then(ok=>{if(ok)edClose()})]]);edClose()}
+function edClose(discard){if(!ED)return;if(discard||!edIsDirty())msWrite([['del','kv','draft']]).catch(()=>{});edTeardown();mode='menu';if(cmIs(mapId)){mapId=MP[S.mp]?S.mp:0;try{build()}catch(e){}}workshop()}
+// ----- page layout -----
+function edDom(){const E=ED,r=document.createElement('div');r.id='ed';r.className='ed';
+r.innerHTML=`<div class=edtop id=edtop></div><div class=edmid><div class=edl id=edl></div><button class="edcol edcl" data-a=pl title="Hide or show the left panel">${edIco('left')}</button><div class=edc id=edc><canvas id=edcv></canvas><canvas id=edmm title="Minimap: click or drag to move the view"></canvas><div class=edtoast id=edtoast></div></div><button class="edcol edcr" data-a=pr title="Hide or show the right panel">${edIco('right')}</button><div class=edr id=edr></div></div><div class=edst id=edst></div><div class=edmod id=edmod></div>`;
+GM.appendChild(r);E.root=r;E.cv=r.querySelector('#edcv');E.g=E.cv.getContext('2d');E.mm=r.querySelector('#edmm');
+r.addEventListener('click',edClick);r.addEventListener('change',edChange);r.addEventListener('input',edInput);r.addEventListener('keydown',e=>{if(e.key=='Enter'&&e.target.tagName=='INPUT'&&e.target.blur)e.target.blur()});
+const cv=E.cv;cv.addEventListener('pointerdown',edDown);cv.addEventListener('pointermove',edMove);cv.addEventListener('pointerup',edUp);cv.addEventListener('pointercancel',edUp);
+cv.addEventListener('pointerleave',()=>{if(!ED)return;ED.mouse.in=0;ED.hov=null;ED.need=1;edStatus()});cv.addEventListener('wheel',edWheel,{passive:false});cv.addEventListener('contextmenu',e=>e.preventDefault());
+const mm=E.mm;mm.addEventListener('pointerdown',e=>{E.mmd=1;try{mm.setPointerCapture(e.pointerId)}catch(_){}edMiniGo(e)});mm.addEventListener('pointermove',e=>{if(E.mmd)edMiniGo(e)});mm.addEventListener('pointerup',()=>{E.mmd=0});
+edLay()}
+// where the canvas sits inside #game (pointer positions come from gp(), which knows about screen rotation)
+function edLay(){const E=ED;if(!E||!E.cv)return;let x=0,y=0,el=E.cv;while(el&&el!==GM){x+=el.offsetLeft||0;y+=el.offsetTop||0;el=el.offsetParent}E.cvx=x;E.cvy=y;
+const d=E.d,MW=d.w*d.tile,MH=d.h*d.tile,mw=cl((E.cv.clientWidth||800)*.26,110,200),k=Math.min(mw/MW,mw*.75/MH);E.mmw=Math.round(MW*k);E.mmh=Math.round(MH*k);if(E.mm){E.mm.style.width=E.mmw+'px';E.mm.style.height=E.mmh+'px'}E.mmNeed=1;E.need=1}
+function edLocal(e){const q=gp(e);return{x:q.x-ED.cvx,y:q.y-ED.cvy}}
+function edMiniGo(e){const E=ED,q=gp(e);let ox=0,oy=0,el=E.mm;while(el&&el!==GM){ox+=el.offsetLeft||0;oy+=el.offsetTop||0;el=el.offsetParent}
+const d=E.d,k=E.mmw/(d.w*d.tile),wx=(q.x-ox)/k,wy=(q.y-oy)/k;edCenter(wx,wy)}
+function edVW(){return ED.cv?ED.cv.clientWidth||800:800}
+function edVH(){return ED.cv?ED.cv.clientHeight||600:600}
+function edCenter(x,y){const E=ED;E.cam.x=x-edVW()/2/E.cam.z;E.cam.y=y-edVH()/2/E.cam.z;E.need=1;E.mmNeed=1}
+function edFit(){const E=ED,d=E.d,MW=d.w*d.tile,MH=d.h*d.tile;E.cam.z=cl(Math.min((edVW()-40)/MW,(edVH()-40)/MH),.08,4);edCenter(MW/2,MH/2)}
+function edZoom(f,sx,sy){const E=ED;if(sx==null){sx=edVW()/2;sy=edVH()/2}const wx=E.cam.x+sx/E.cam.z,wy=E.cam.y+sy/E.cam.z;E.cam.z=cl(E.cam.z*f,.08,4);E.cam.x=wx-sx/E.cam.z;E.cam.y=wy-sy/E.cam.z;E.need=1;E.mmNeed=1;edStatus()}
+// ----- panels -----
+function edUI(){if(!ED||!ED.root)return;edTop();edLeft();edRight();edStatus();const r=ED.root;r.classList.toggle('nol',!ED.pl);r.classList.toggle('nor',!ED.pr);setTimeout(()=>{if(ED)edLay()},0)}
+function edTB(a,ico,tip,on,dis,txt){return `<button data-a="${a}" class="${on?'on':''}" title="${edEsc(tip)}"${dis?' disabled':''}>${edIco(ico)}${txt?'<span>'+txt+'</span>':''}</button>`}
+function edTop(){const E=ED,el=E.root.querySelector('#edtop'),dirty=edIsDirty(),pc=E.probs.filter(p=>p.lv!='info').length;
+el.innerHTML=`${edTB('back','back','Back to the Map Workshop',0,0,'Workshop')}<b class=edname title="Map settings" data-a=mapset>${edEsc(E.d.name)}${dirty?' <i class=eddot title="Unsaved changes">●</i>':''}</b><span class=edsep></span>`+
+EDT.map(t=>edTB('tool:'+t[0],t[0],t[1]+' ('+t[2]+')',E.tool==t[0])).join('')+`<span class=edsep></span>${edTB('undo','undo','Undo'+(EDH.u.length?': '+EDH.u[EDH.u.length-1].n:'')+' (Ctrl+Z)',0,!EDH.u.length)}${edTB('redo','redo','Redo'+(EDH.r.length?': '+EDH.r[EDH.r.length-1].n:'')+' (Ctrl+Y)',0,!EDH.r.length)}<span class=edsep></span>`+
+`${edTB('grid','grid','Grid (Shift+G)',E.grid)}${edTB('coll','coll','Show collision: red stops bullets, orange is solid props, blue is see-through like fences and water (Shift+C)',E.coll)}${edTB('snap','snap','Snap to a '+E.step+'px grid (Shift+S)',E.snap)}<span class=edsep></span>`+
+`${edTB('probs','check','Problems with the map',0,0,pc?String(pc):'✓')}<span class=edgrow></span>${edTB('save','save','Save (Ctrl+S)',0,0,'Save')}<button data-a=playtest class=edgo title="Play this map with the real game, then come back here">${edIco('play')}<span>Playtest</span></button>`}
+function edTerSw(t,ov){const k=(ov?'o:':'t:')+t.id;if(EDTH[k])return EDTH[k];const c=document.createElement('canvas');c.width=c.height=32;const g=c.getContext('2d');if(ov){CMTI.concrete.f(g,0,0,3,5);t.f(g,0,0,3,5)}else t.f(g,0,0,3,5);let u='';try{u=c.toDataURL()}catch(e){}return EDTH[k]=u}
+function edLeft(){const E=ED,el=E.root.querySelector('#edl');const tabs=[['terrain','Terrain'],['assets','Props'],['walls','Walls'],['spawns','Spawns']];
+let h=`<div class=edtabs>${tabs.map(t=>`<button data-a="tab:${t[0]}" class="${E.tab==t[0]?'on':''}">${t[1]}</button>`).join('')}</div><div class=edpane>`;
+if(E.tab=='terrain'){const tool=['brush','erase','fill','rect','pick'].includes(E.tool)?E.tool:'brush';
+h+=`<div class=edtools>${['brush','erase','fill','rect','pick'].map(id=>{const t=EDT.find(x=>x[0]==id);return edTB('tool:'+id,id,t[1]+' ('+t[2]+')',E.tool==id,0,t[1])}).join('')}</div>`;
+h+=`<h4>Ground</h4><div class=edsw>${CMTER.map(t=>`<button data-a="ter:${t.id}" class="${E.terK=='t'&&E.ter==t.id?'on':''}" title="${edEsc(t.n)}${t.walk===0?' (blocks walking)':''}"><img alt="" src="${edTerSw(t)}"><span>${edEsc(t.n)}</span></button>`).join('')}</div>`;
+h+=`<h4>Overlays</h4><div class=edsw>${CMOVL.map(t=>`<button data-a="ovl:${t.id}" class="${E.terK=='o'&&E.ter==t.id?'on':''}" title="${edEsc(t.n)}"><img alt="" src="${edTerSw(t,1)}"><span>${edEsc(t.n)}</span></button>`).join('')}</div>`;
+h+=`<h4>Brush size</h4><div class=edrow><button data-a=bs- title="Smaller ([)">−</button><input type=range min=1 max=9 value="${E.brush}" data-f=brush aria-label="Brush size"><button data-a=bs+ title="Bigger (])">+</button><b class=edval>${E.brush}×${E.brush}</b></div>`;
+h+=`<p class=edhint>${E.tool=='erase'?(E.terK=='o'?'The eraser removes overlays.':'The eraser puts back the default ground ('+edEsc((CMTI[E.d.ground]||CMTER[0]).n)+') and removes overlays.'):'Water blocks walking. Bullets still fly over it.'}</p>`;}
+else if(E.tab=='assets'){const A=edAssets(),q=E.q.trim().toLowerCase(),cats=EDCAT.filter(c=>c[0]=='all'||A.some(a=>a.cat==c[0]));
+h+=`<input type=search data-f=q placeholder="Search props and vehicles" value="${edEsc(E.q)}" autocomplete=off><select data-f=cat aria-label="Category">${cats.map(c=>`<option value="${c[0]}"${E.cat==c[0]?' selected':''}>${c[1]}</option>`).join('')}</select>`;
+const a=E.asset;if(a){h+=`<div class=edcur><img alt="" src="${edThumb(a)}"><div><b>${edEsc(a.n)}</b><small>Rotation ${Math.round(E.rot)}° · R / Shift+R turns</small></div></div>`;if(a.t=='v')h+=`<div class=edcols>${EDVC.map(c=>`<button data-a="vcol:${c}" class="${E.vcol==c?'on':''}" style="--c:${c}" title="${c}"></button>`).join('')}</div>`}
+h+=`<div class=edag id=edag>${edGrid()}</div>`}
+else if(E.tab=='walls'){h+=`<div class=edtools>${edTB('tool:wall','wall','Draw walls (W)',E.tool=='wall',0,'Draw walls')}</div><h4>Style</h4><div class=edlist>${CMWALL.map(s=>`<button data-a="wst:${s.id}" class="${E.wall==s.id?'on':''}"><i class=edws style="${edWallSw(s)}"></i><span>${edEsc(s.n)}<small>${s.fl==2?'blocks walking, bullets fly through':s.hid?'blocks walking and bullets, not drawn in the game':'blocks walking and bullets'}</small></span></button>`).join('')}</div>
+<h4>Thickness</h4><div class=edrow><input type=number min=4 max=64 step=2 value="${E.wth}" data-f=wth aria-label="Wall thickness"><span class=edval>px</span></div><p class=edhint>Drag along a line for a wall of this thickness, or drag a box for a block. Right-drag (or Alt+drag) cuts a gap, for doors. Props with a solid base get their own collision automatically.</p>`}
+else{h+=`<div class=edlist>${[['start','Player start','Where the run begins.'],['spawn','Spawn point','Zombies come out here.'],['zone','Spawn zone','Zombies appear anywhere inside.']].map(t=>`<button data-a="tool:${t[0]}" class="${E.tool==t[0]?'on':''}">${edIco(t[0])}<span>${t[1]} (${EDT.find(x=>x[0]==t[0])[2]})<small>${t[2]}</small></span></button>`).join('')}</div>
+<p class=edhint>Zombies come from the spawn points and zones that are on, choosing ones out of the player's sight. With none, they come from off-screen around the player, like on the built-in maps.</p><p class=edhint>${E.d.spawns.length} spawn point${E.d.spawns.length==1?'':'s'} · ${E.d.zones.length} zone${E.d.zones.length==1?'':'s'}</p>`}
+el.innerHTML=h+'</div>'}
+function edWallSw(s){const c={wall:'#7a695c',brick:'#9a4632',concrete:'#8c9099',wood:'#8a5a2c',fence:'repeating-linear-gradient(45deg,#aab1bd 0 2px,transparent 2px 6px)',hidden:'rgba(170,110,255,.5)'}[s.id]||'#7a695c';return 'background:'+c}
+function edGrid(){const E=ED,q=E.q.trim().toLowerCase(),L=edAssets().filter(a=>(E.cat=='all'||a.cat==E.cat)&&(!q||a.n.toLowerCase().includes(q)||a.k.toLowerCase().includes(q)));
+if(!L.length)return `<p class=edhint>Nothing matches “${edEsc(E.q)}”.</p>`;return L.map(a=>`<button data-a="asset:${a.id}" class="${E.asset&&E.asset.id==a.id?'on':''}" title="${edEsc(a.n)}"><img alt="" loading=lazy src="${edThumb(a)}"><span>${edEsc(a.n)}</span></button>`).join('')}
+function edNum(lb,f,v,st){return `<label class=edf><span>${lb}</span><input type=number data-f="${f}" value="${Math.round(v*10)/10}" step="${st||1}"></label>`}
+function edRight(){const E=ED,el=E.root.querySelector('#edr'),s=E.sel,d=E.d;let h='';
+if(s&&s.t=='o'){const o=s.o,a=edAsset(o),f=!o.veh&&cmFoot(o),known=o.veh?cmHW(o.veh):cmOB(o.k);
+h=`<h3>${a.t=='v'?'Vehicle':'Prop'}</h3><div class=edcur><img alt="" src="${known?edThumb({id:(a.t=='v'?'v:':'p:')+a.k,t:a.t,k:a.k}):''}"><div><b>${edEsc(a.n)}</b><small>${known?'':'⚠ unknown: not shown in the game'}</small></div></div>${edNum('X','x',o.x)}${edNum('Y','y',o.y)}
+<label class=edf><span>Turn</span><input type=number data-f=r value="${Math.round(o.r||0)}" step=15></label><div class=edrow><button data-a=rot- title="Shift+R">↺ 15°</button><button data-a=rot+ title="R">↻ 15°</button><button data-a=rot0>0°</button></div>`;
+if(o.veh)h+=`<h4>Colour</h4><div class=edcols>${EDVC.map(c=>`<button data-a="ocol:${c}" class="${o.c==c?'on':''}" style="--c:${c}" title="${c}"></button>`).join('')}</div><label class=edck><input type=checkbox data-f=dmg${o.dmg?' checked':''}> Damaged</label><label class=edck><input type=checkbox data-f=burn${o.burn?' checked':''}> Burnt out</label><p class=edhint>Vehicles are solid along their whole body.</p>`;
+else h+=`<p class=edhint>${f?'Solid: its base ('+Math.round(f[2])+'×'+Math.round(f[3])+') blocks walking and bullets.':'Not solid: players and zombies walk through it.'}</p>`;
+h+=`<button class="red edwide" data-a=del>Delete (Del)</button>`}
+else if(s&&s.t=='w'){const o=s.o;h=`<h3>Wall</h3>${edNum('X','x',o.x)}${edNum('Y','y',o.y)}${edNum('Width','w',o.w)}${edNum('Height','h',o.h)}<label class=edf><span>Style</span><select data-f=s>${CMWALL.map(w=>`<option value="${w.id}"${o.s==w.id?' selected':''}>${edEsc(w.n)}</option>`).join('')}${CMWI[o.s]?'':`<option selected>${edEsc(o.s)} (unknown)</option>`}</select></label><p class=edhint>Drag the yellow squares to resize.</p><button class="red edwide" data-a=del>Delete (Del)</button>`}
+else if(s&&s.t=='s'){const o=s.o;h=`<h3>Spawn point</h3>${edNum('X','x',o.x)}${edNum('Y','y',o.y)}<label class=edck><input type=checkbox data-f=on${o.on!==false?' checked':''}> On</label><p class=edhint>Turned-off spawns stay on the map but no zombies come out of them.</p><button class="red edwide" data-a=del>Delete (Del)</button>`}
+else if(s&&s.t=='z'){const o=s.o;h=`<h3>Spawn zone</h3>${edNum('X','x',o.x)}${edNum('Y','y',o.y)}${edNum('Width','w',o.w)}${edNum('Height','h',o.h)}<label class=edck><input type=checkbox data-f=on${o.on!==false?' checked':''}> On</label><p class=edhint>Each zombie picks a random free spot inside the zone.</p><button class="red edwide" data-a=del>Delete (Del)</button>`}
+else if(s&&s.t=='p'){h=`<h3>Player start</h3>${edNum('X','x',d.start.x)}${edNum('Y','y',d.start.y)}<p class=edhint>Split-screen players start right next to this spot.</p>`}
+else{const T=d.tile;h=`<h3>Map</h3><label class=edf><span>Name</span><input data-f=name maxlength=40 value="${edEsc(d.name)}"></label><label class=edf><span>About</span><textarea data-f=desc maxlength=240 rows=3>${edEsc(d.desc)}</textarea></label>
+<h4>Size (tiles of ${T}px)</h4><div class=edrow><input type=number data-f=nw min=${CMMIN[0]} max=${CMMAX} value="${d.w}" aria-label="Width in tiles"><span>×</span><input type=number data-f=nh min=${CMMIN[1]} max=${CMMAX} value="${d.h}" aria-label="Height in tiles"><button data-a=resize>Apply</button></div><p class=edhint>${d.w*T}×${d.h*T} px. Resizing keeps the top-left corner in place.</p>
+<label class=edf><span>Default ground</span><select data-f=ground>${CMTER.map(t=>`<option value="${t.id}"${d.ground==t.id?' selected':''}>${edEsc(t.n)}</option>`).join('')}${CMTI[d.ground]?'':`<option selected>${edEsc(d.ground)} (unknown)</option>`}</select></label>
+<p class=edhint>${d.obj.length} props & vehicles · ${d.walls.length} walls · ${d.spawns.length} spawn points · ${d.zones.length} zones</p>
+<div class=edrow><button data-a=savecopy title="Save a copy and keep editing the copy">Save as copy</button><button data-a=export title="Download this map as a JSON file">Export JSON</button></div>
+<h4>Problems <button class=edmini data-a=check>check again</button></h4><div class=edprobs>${E.probs.length?E.probs.map((p,i)=>`<button data-a="prob:${i}" class="edp ${p.lv}"${p.x==null?' disabled':''}><b>${p.lv=='err'?'✖':p.lv=='warn'?'⚠':'ℹ'}</b><span>${edEsc(p.m)}</span></button>`).join(''):'<p class=edhint>✓ No problems found.</p>'}</div>`}
+el.innerHTML=h}
+function edStatus(){const E=ED;if(!E||!E.root)return;const el=E.root.querySelector('#edst'),m=E.mouse,d=E.d,T=d.tile,t=EDT.find(x=>x[0]==E.tool),dirty=edIsDirty();
+el.innerHTML=`<span class=edxy>${m.in?`X ${Math.round(m.wx)} Y ${Math.round(m.wy)} · tile ${Math.floor(m.wx/T)}, ${Math.floor(m.wy/T)}`:'—'}</span><span class=edtl><b>${t[1]}</b> ${edEsc(E.tip||t[4])}</span><span>${d.w}×${d.h} tiles · ${Math.round(E.cam.z*100)}%</span><span class="${dirty?'eduns':'edok'}">${dirty?'● Unsaved changes':'✓ Saved'}</span>`}
+function edToast(t){const E=ED;if(!E||!E.root)return;const el=E.root.querySelector('#edtoast');el.textContent=t;el.classList.add('on');clearTimeout(E.tt);E.tt=setTimeout(()=>{el.classList.remove('on')},1800)}
+// a small dialog over the editor; buttons: [label, class, fn]
+function edModal(title,body,btns){const E=ED;if(!E||!E.root){const b=btns&&btns[btns.length-1];if(b)b[2]();return}const el=E.root.querySelector('#edmod');E.mb=btns;
+el.innerHTML=`<div class=edbox role=dialog aria-modal=true><h3>${edEsc(title)}</h3><div class=edbody>${body}</div><div class=edrow>${btns.map((b,i)=>`<button data-a="mb:${i}" class="${b[1]}">${edEsc(b[0])}</button>`).join('')}</div></div>`;el.classList.add('on');
+const f=el.querySelector('button.go')||el.querySelector('button');if(f&&f.focus)f.focus()}
+function edModalOff(){const E=ED;if(!E||!E.root)return;const el=E.root.querySelector('#edmod');el.classList.remove('on');el.innerHTML='';E.mb=null}
+function edModalOn(){return !!(ED&&ED.mb)}
+// ----- clicks and fields in the panels -----
+function edClick(e){const b=e.target.closest&&e.target.closest('[data-a]');if(!b||b.disabled)return;const a=b.dataset.a,E=ED;if(!E)return;
+if(a.startsWith('mb:')){const fn=E.mb&&E.mb[+a.slice(3)];edModalOff();if(fn)fn[2]();return}
+if(a.startsWith('tool:'))return edTool(a.slice(5));
+if(a.startsWith('tab:')){E.tab=a.slice(4);const def={terrain:'brush',assets:E.asset?'place':'select',walls:'wall',spawns:E.tool=='start'||E.tool=='spawn'||E.tool=='zone'?E.tool:'zone'}[E.tab];return edTool(def,1)}
+if(a.startsWith('ter:')||a.startsWith('ovl:')){E.terK=a[0]=='t'?'t':'o';E.ter=a.slice(4);if(!['brush','erase','fill','rect'].includes(E.tool))E.tool='brush';return edUI()}
+if(a.startsWith('asset:')){E.asset=edAssets().find(x=>x.id==a.slice(6))||null;E.pvr=Math.random();if(E.asset&&E.asset.t=='v'&&!E.vcol)E.vcol=EDVC[0];E.sel=null;return edTool('place',1)}
+if(a.startsWith('vcol:')){E.vcol=a.slice(5);E.need=1;return edLeft()}
+if(a.startsWith('ocol:')&&E.sel&&E.sel.t=='o'){edSet(E.sel.o,{c:a.slice(5)},'Change colour');return}
+if(a.startsWith('wst:')){E.wall=a.slice(4);if(E.tool!='wall')return edTool('wall');return edLeft()}
+if(a.startsWith('prob:')){const p=E.probs[+a.slice(5)];if(p&&p.x!=null){if(E.cam.z<.5)E.cam.z=1;edCenter(p.x,p.y);edPickAt(p.x,p.y);edToast(p.m.slice(0,80))}return}
+switch(a){case 'back':return edBack();case 'undo':return edUndo();case 'redo':return edRedo();case 'grid':E.grid^=1;E.need=1;return edTop();case 'coll':E.coll^=1;E.need=1;return edTop();case 'snap':E.snap^=1;return edTop();
+case 'probs':case 'check':E.probs=cmLint(E.d);E.sel=null;E.pr=1;edUI();return edToast(E.probs.filter(p=>p.lv!='info').length?'Problems are listed on the right':'No problems found');
+case 'mapset':E.sel=null;E.pr=1;return edUI();case 'save':return edSave();case 'savecopy':return edSave(1);case 'export':return edExport();case 'playtest':return edPlaytest();
+case 'pl':E.pl^=1;return edUI();case 'pr':E.pr^=1;return edUI();case 'bs-':E.brush=cl(E.brush-1,1,9);return edLeft();case 'bs+':E.brush=cl(E.brush+1,1,9);return edLeft();
+case 'del':return edDelete();case 'rot-':return edRotate(-15);case 'rot+':return edRotate(15);case 'rot0':if(E.sel&&E.sel.t=='o')edSet(E.sel.o,{r:0},'Turn');return;
+case 'resize':{const f=E.root.querySelector('[data-f=nw]'),g=E.root.querySelector('[data-f=nh]');return edResize(+f.value,+g.value)}}}
+function edInput(e){const f=e.target.dataset&&e.target.dataset.f,E=ED;if(!f||!E)return;if(f=='q'){E.q=e.target.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid()}else if(f=='brush'){E.brush=cl(+e.target.value,1,9);const v=E.root.querySelector('.edval');if(v)v.textContent=E.brush+'×'+E.brush;E.need=1}}
+function edChange(e){const t=e.target,f=t.dataset&&t.dataset.f,E=ED;if(!f||!E)return;const s=E.sel,num=+t.value,ok=isFinite(num)&&t.value!=='';
+if(f=='cat'){E.cat=t.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid();return}if(f=='q'||f=='brush'||f=='nw'||f=='nh')return;
+if(f=='wth'){E.wth=cl(ok?Math.round(num):8,4,64);t.value=E.wth;return}
+if(f=='name'){const v=String(t.value).replace(/[<>]/g,'').trim().slice(0,40)||'Untitled map';if(v!==E.d.name)edSet(E.d,{name:v},'Rename map');return}
+if(f=='desc'){const v=String(t.value).replace(/[<>]/g,'').slice(0,240);if(v!==E.d.desc)edSet(E.d,{desc:v},'Change description');return}
+if(f=='ground'){if(CMTI[t.value]&&t.value!==E.d.ground)edSet(E.d,{ground:t.value},'Change default ground');return}
+if(!s){return}const o=s.t=='p'?E.d.start:s.o;
+if(f=='on')return edSet(o,{on:t.checked},t.checked?'Turn spawn on':'Turn spawn off');
+if(f=='dmg'||f=='burn')return edSet(o,{[f]:t.checked?1:0},'Change vehicle');
+if(f=='s')return edSet(o,{s:t.value},'Change wall style');
+if(!ok){edRight();return}
+if(f=='x'||f=='y')return edSet(o,{[f]:Math.round(num*10)/10},'Move');
+if(f=='r')return edSet(o,{r:((Math.round(num)%360)+360)%360},'Turn');
+if(f=='w'||f=='h')return edSet(o,{[f]:Math.max(s.t=='z'?16:2,Math.round(num*10)/10)},'Resize')}
+// ----- tools -----
+function edTool(id,keepTab){const E=ED,t=EDT.find(x=>x[0]==id);if(!t)return;E.tool=id;E.tip='';if(t[3])E.tab=t[3];if(id!='select'&&id!='place')E.hov=null;if(id=='place'&&!E.asset)E.tab='assets';E.drag=null;E.need=1;if(E.cv)E.cv.style.cursor=id=='select'?'default':id=='place'?'copy':'crosshair';edUI()}
+function edSnap(v){const E=ED;return E.snap?Math.round(v/E.step)*E.step:Math.round(v)}
+function edSnapPt(x,y){return{x:edSnap(x),y:edSnap(y)}}
+// any change: redraw, refresh panels, keep a crash-safe draft
+function edChanged(e){const E=ED;if(!E)return;E.ver++;E.need=1;E.mmNeed=1;if(e&&e.t)E.mmDirty=1;if(E.sel&&!edAlive(E.sel))E.sel=null;edUI();clearTimeout(E.dt);E.dt=setTimeout(edDraft,2500);clearTimeout(E.lt);E.lt=setTimeout(edRelint,500)}
+function edRelint(){const E=ED;if(!E)return;const a=JSON.stringify(E.probs);E.probs=cmLint(E.d);if(JSON.stringify(E.probs)!==a){edTop();if(!E.sel)edRight()}}
+function edAlive(s){const d=ED.d;return s.t=='p'||(s.t=='o'?d.obj:s.t=='w'?d.walls:s.t=='s'?d.spawns:d.zones).includes(s.o)}
+function edDraft(){const E=ED;if(!E)return Promise.resolve();if(!edIsDirty())return msWrite([['del','kv','draft']]).catch(()=>{});let json;try{json=cmWrite(E.d)}catch(e){return Promise.resolve()}return msWrite([['put','kv',{k:'draft',id:E.d.id,name:E.d.name,src:E.src,t:Date.now(),json}]]).catch(()=>{})}
+function edUndo(){const e=hUndo();if(e)edToast('Undo: '+e.n)}
+function edRedo(){const e=hRedo();if(e)edToast('Redo: '+e.n)}
+// change some fields of a map object, as one undo step
+function edSet(o,ch,n){const b={};let same=1;for(const k in ch){b[k]=o[k];if(o[k]!==ch[k])same=0}if(same){edRight();return}Object.assign(o,ch);hPush({n,undo(){Object.assign(o,b)},redo(){Object.assign(o,ch)}})}
+function edAdd(arr,o,n){arr.push(o);hPush({n,undo(){const k=arr.indexOf(o);if(k>=0)arr.splice(k,1)},redo(){arr.push(o)}})}
+function edDelete(){const E=ED,s=E.sel;if(!s||s.t=='p')return;const d=E.d,arr=s.t=='o'?d.obj:s.t=='w'?d.walls:s.t=='s'?d.spawns:d.zones,o=s.o,i=arr.indexOf(o);if(i<0)return;arr.splice(i,1);E.sel=null;E.hov=null;
+const n='Delete '+(s.t=='o'?edAsset(o).n:s.t=='w'?'wall':s.t=='s'?'spawn point':'spawn zone');hPush({n,undo(){arr.splice(Math.min(i,arr.length),0,o)},redo(){const k=arr.indexOf(o);if(k>=0)arr.splice(k,1)}})}
+function edRotate(a){const E=ED,s=E.sel;if(E.tool=='place'&&!s){E.rot=((E.rot+a)%360+360)%360;E.need=1;return edLeft()}if(!s||s.t!='o')return;edSet(s.o,{r:(((s.o.r||0)+a)%360+360)%360},'Turn')}
+// ----- terrain painting -----
+function edStroke(n){return{n,mt:new Map(),mo:new Map()}}
+function edSetT(S_,i,lay,v){const d=ED.d,a=lay=='o'?d.ovl:d.ter;if(a[i]===v)return;const m=lay=='o'?S_.mo:S_.mt;if(!m.has(i))m.set(i,a[i]);a[i]=v;edTileDirty(i)}
+// what a paint at tile i writes (er = erase)
+function edPaintTile(S_,i,er){const E=ED,d=E.d;if(er){if(E.terK=='o')edSetT(S_,i,'o',0);else{edSetT(S_,i,'t',cmPi(d,d.ground));edSetT(S_,i,'o',0)}return}
+if(E.terK=='o')edSetT(S_,i,'o',cmOi(d,E.ter));else edSetT(S_,i,'t',cmPi(d,E.ter))}
+function edBrushAt(S_,tx,ty,n,er){const d=ED.d,o=Math.floor((n-1)/2);for(let y=ty-o;y<ty-o+n;y++)for(let x=tx-o;x<tx-o+n;x++)if(x>=0&&y>=0&&x<d.w&&y<d.h)edPaintTile(S_,y*d.w+x,er)}
+function edLineAt(S_,x0,y0,x1,y1,n,er){const dx=Math.abs(x1-x0),dy=Math.abs(y1-y0),sx=x0<x1?1:-1,sy=y0<y1?1:-1;let e=dx-dy,x=x0,y=y0;for(let k=0;k<4096;k++){edBrushAt(S_,x,y,n,er);if(x==x1&&y==y1)break;const e2=e*2;if(e2>-dy){e-=dy;x+=sx}if(e2<dx){e+=dx;y+=sy}}}
+function edStrokeEnd(S_){if(!S_.mt.size&&!S_.mo.size)return;const d=ED.d,pack=(m,arr)=>{const i=Int32Array.from(m.keys()),b=Uint8Array.from(m.values()),a=new Uint8Array(i.length);for(let k=0;k<i.length;k++)a[k]=d[arr][i[k]];return{i,b,a,arr}},P_=[pack(S_.mt,'ter'),pack(S_.mo,'ovl')];
+const put=w=>{const D_=ED.d;for(const p of P_){const A=D_[p.arr];for(let k=0;k<p.i.length;k++){A[p.i[k]]=p[w][k];edTileDirty(p.i[k])}}};hPush({n:S_.n,t:1,undo(){put('b')},redo(){put('a')}})}
+function edFill(tx,ty,er){const E=ED,d=E.d;if(tx<0||ty<0||tx>=d.w||ty>=d.h)return;const lay=E.terK=='o'?'o':'t',a=lay=='o'?d.ovl:d.ter,i0=ty*d.w+tx,src=a[i0],S_=edStroke(er?'Erase area':'Fill');
+const seen=new Uint8Array(d.w*d.h),st=[i0];seen[i0]=1;while(st.length){const i=st.pop();edPaintTile(S_,i,er);const x=i%d.w,y=(i/d.w)|0;for(const[nx,ny]of[[x+1,y],[x-1,y],[x,y+1],[x,y-1]]){if(nx<0||ny<0||nx>=d.w||ny>=d.h)continue;const n=ny*d.w+nx;if(seen[n]||a[n]!==src)continue;seen[n]=1;st.push(n)}}edStrokeEnd(S_)}
+function edPick(tx,ty,ov){const E=ED,d=E.d;if(tx<0||ty<0||tx>=d.w||ty>=d.h)return;const i=ty*d.w+tx;if(ov){const o=d.opal[d.ovl[i]];if(!o)return edToast('No overlay on that tile');E.terK='o';E.ter=o}else{E.terK='t';E.ter=d.pal[d.ter[i]]}edToast('Picked '+(((E.terK=='o'?CMOI:CMTI)[E.ter]||{n:E.ter}).n));edTool(E.prevT&&E.prevT!='pick'?E.prevT:'brush')}
+// ----- walls -----
+// remove the box r from every wall it touches (walls are split into the pieces that are left)
+function edCut(r){const d=ED.d,rm=[],ad=[];for(const w of d.walls){if(r.x>=w.x+w.w||r.x+r.w<=w.x||r.y>=w.y+w.h||r.y+r.h<=w.y)continue;rm.push(w);
+const P_=[[w.x,w.y,w.w,r.y-w.y],[w.x,r.y+r.h,w.w,w.y+w.h-(r.y+r.h)],[w.x,Math.max(w.y,r.y),r.x-w.x,Math.min(w.y+w.h,r.y+r.h)-Math.max(w.y,r.y)],[r.x+r.w,Math.max(w.y,r.y),w.x+w.w-(r.x+r.w),Math.min(w.y+w.h,r.y+r.h)-Math.max(w.y,r.y)]];
+for(const p of P_)if(p[2]>=2&&p[3]>=2)ad.push({id:cmUid('w'),x:p[0],y:p[1],w:p[2],h:p[3],s:w.s})}if(!rm.length)return 0;
+const at=rm.map(w=>d.walls.indexOf(w));const apply=()=>{for(const w of rm){const k=d.walls.indexOf(w);if(k>=0)d.walls.splice(k,1)}d.walls.push(...ad)},back=()=>{for(const w of ad){const k=d.walls.indexOf(w);if(k>=0)d.walls.splice(k,1)}rm.forEach((w,j)=>d.walls.splice(Math.min(at[j],d.walls.length),0,w))};
+apply();ED.sel=null;hPush({n:'Cut walls',undo:back,redo:apply});return 1}
+// the box a wall drag makes: a line of the chosen thickness when it is mostly along one axis, else the box itself
+function edWallBox(x0,y0,x1,y1){const E=ED,t=E.wth,dx=x1-x0,dy=y1-y0;if(Math.abs(dy)<t*1.5&&Math.abs(dx)>=Math.abs(dy))return{x:Math.min(x0,x1),y:y0-t/2,w:Math.abs(dx),h:t};if(Math.abs(dx)<t*1.5)return{x:x0-t/2,y:Math.min(y0,y1),w:t,h:Math.abs(dy)};return{x:Math.min(x0,x1),y:Math.min(y0,y1),w:Math.abs(dx),h:Math.abs(dy)}}
+function edBoxOf(x0,y0,x1,y1){return{x:Math.min(x0,x1),y:Math.min(y0,y1),w:Math.abs(x1-x0),h:Math.abs(y1-y0)}}
+// ----- picking things under the mouse -----
+function edHit(x,y){const E=ED,d=E.d,z=E.cam.z,rp=14/z;if(Math.hypot(x-d.start.x,y-d.start.y)<rp)return{t:'p',o:d.start};
+for(let i=d.spawns.length-1;i>=0;i--){const s=d.spawns[i];if(Math.hypot(x-s.x,y-s.y)<12/z)return{t:'s',o:s}}
+const L=d.obj.map((o,i)=>({o,b:cmBase(o),i})).sort((a,b)=>b.b-a.b||b.i-a.i);for(const{o}of L)if(edOnObj(o,x,y,2/z))return{t:'o',o};
+const m=4/z;for(let i=d.walls.length-1;i>=0;i--){const w=d.walls[i];if(x>=w.x-m&&x<=w.x+w.w+m&&y>=w.y-m&&y<=w.y+w.h+m)return{t:'w',o:w}}
+for(let i=d.zones.length-1;i>=0;i--){const q=d.zones[i];if(x>=q.x&&x<=q.x+q.w&&y>=q.y&&y<=q.y+q.h)return{t:'z',o:q}}return null}
+function edPickAt(x,y){const h=edHit(x,y);if(h){ED.sel=h;edTool('select')}}
+function edHandleAt(sx,sy){for(const[k,x,y]of edHandleList(ED.sel))if(Math.abs(edSX(x)-sx)<=7&&Math.abs(edSY(y)-sy)<=7)return k;return null}
+// ----- mouse -----
+function edDown(e){const E=ED;if(!E||edModalOn())return;try{if(document.activeElement&&document.activeElement.blur&&document.activeElement!==document.body)document.activeElement.blur()}catch(_){}
+try{E.cv.setPointerCapture(e.pointerId)}catch(_){}const p=edLocal(e),wx=E.cam.x+p.x/E.cam.z,wy=E.cam.y+p.y/E.cam.z,d=E.d,T=d.tile,tx=Math.floor(wx/T),ty=Math.floor(wy/T),b=e.button,t=E.tool;E.mouse={x:p.x,y:p.y,wx,wy,in:1};
+const pan=()=>{E.drag={t:'pan',sx:p.x,sy:p.y,cx:E.cam.x,cy:E.cam.y};E.cv.style.cursor='grabbing'};
+if(b==1||(b==0&&E.space))return pan();
+if(b==2){if(t=='brush'||t=='erase'){const S_=edStroke('Erase');edBrushAt(S_,tx,ty,E.brush,1);E.drag={t:'paint',S:S_,er:1,lx:tx,ly:ty};return}
+if(t=='rect'){E.drag={t:'rect',x0:tx,y0:ty,er:1,r:null};return}if(t=='wall'){const q=edSnapPt(wx,wy);E.drag={t:'cut',x0:q.x,y0:q.y,r:null};return}
+if(t=='place'||t=='start'||t=='spawn'||t=='zone')return edTool('select');return pan()}
+if(b!=0)return;
+if(t=='select'){if(E.sel){const hk=edHandleAt(p.x,p.y);if(hk){const o=E.sel.o;E.drag={t:'size',o,k:hk,b:{x:o.x,y:o.y,w:o.w,h:o.h}};return}}
+const h=edHit(wx,wy);if(h){E.sel=h;const o=h.o;E.drag={t:'move',o,s:h,dx:o.x-wx,dy:o.y-wy,b:{x:o.x,y:o.y},m:0};edUI();E.need=1;return}
+if(E.sel){E.sel=null;edUI()}return pan()}
+if(t=='brush'||t=='erase'){const S_=edStroke(t=='erase'?'Erase':'Paint '+(((E.terK=='o'?CMOI:CMTI)[E.ter]||{n:E.ter}).n).toLowerCase());edBrushAt(S_,tx,ty,E.brush,t=='erase');E.drag={t:'paint',S:S_,er:t=='erase',lx:tx,ly:ty};return}
+if(t=='fill')return edFill(tx,ty,0);if(t=='rect'){E.drag={t:'rect',x0:tx,y0:ty,er:0,r:null};return}if(t=='pick')return edPick(tx,ty,e.shiftKey);
+if(t=='place'){const a=E.asset;if(!a)return edToast('Pick a prop or vehicle on the left first');const q=edSnapPt(wx,wy);const o=a.t=='v'?{id:cmUid('v'),veh:a.k,x:q.x,y:q.y,r:E.rot,c:E.vcol}:{id:cmUid('p'),k:a.k,x:q.x,y:q.y,r:E.rot,vr:Math.round(E.pvr*100)/100};E.pvr=Math.random();edAdd(d.obj,o,'Place '+a.n);return}
+if(t=='wall'){const q=edSnapPt(wx,wy);E.drag={t:e.altKey?'cut':'wall',x0:q.x,y0:q.y,r:null};return}
+if(t=='start'){const q=edSnapPt(wx,wy);return edSet(d.start,{x:q.x,y:q.y},'Move player start')}
+if(t=='spawn'){const q=edSnapPt(wx,wy),o={id:cmUid('s'),x:q.x,y:q.y,on:true};edAdd(d.spawns,o,'Add spawn point');return}
+if(t=='zone'){const q=edSnapPt(wx,wy);E.drag={t:'zone',x0:q.x,y0:q.y,r:null};return}}
+function edMove(e){const E=ED;if(!E)return;const p=edLocal(e),wx=E.cam.x+p.x/E.cam.z,wy=E.cam.y+p.y/E.cam.z,T=E.d.tile,D_=E.drag;E.mouse={x:p.x,y:p.y,wx,wy,in:1};E.need=1;
+if(D_){if(D_.t=='pan'){E.cam.x=D_.cx-(p.x-D_.sx)/E.cam.z;E.cam.y=D_.cy-(p.y-D_.sy)/E.cam.z;E.mmNeed=1}
+else if(D_.t=='paint'){const tx=Math.floor(wx/T),ty=Math.floor(wy/T);if(tx!=D_.lx||ty!=D_.ly){edLineAt(D_.S,D_.lx,D_.ly,tx,ty,E.brush,D_.er);D_.lx=tx;D_.ly=ty}}
+else if(D_.t=='rect'){const tx=Math.floor(wx/T),ty=Math.floor(wy/T);D_.r={x:Math.min(tx,D_.x0)*T,y:Math.min(ty,D_.y0)*T,w:(Math.abs(tx-D_.x0)+1)*T,h:(Math.abs(ty-D_.y0)+1)*T}}
+else if(D_.t=='wall'){const q=edSnapPt(wx,wy);D_.r=edWallBox(D_.x0,D_.y0,q.x,q.y)}
+else if(D_.t=='cut'||D_.t=='zone'){const q=edSnapPt(wx,wy);D_.r=edBoxOf(D_.x0,D_.y0,q.x,q.y)}
+else if(D_.t=='move'){const o=D_.o,nx=edSnap(wx+D_.dx),ny=edSnap(wy+D_.dy);if(nx!==o.x||ny!==o.y){o.x=nx;o.y=ny;D_.m=1;E.mmNeed=1}}
+else if(D_.t=='size'){const o=D_.o,b=D_.b,k=D_.k,q=edSnapPt(wx,wy),mn=D_.o.on!==undefined&&ED.sel&&ED.sel.t=='z'?16:2;let x0=b.x,y0=b.y,x1=b.x+b.w,y1=b.y+b.h;if(k.includes('w'))x0=Math.min(q.x,x1-mn);if(k.includes('e'))x1=Math.max(q.x,x0+mn);if(k.includes('n'))y0=Math.min(q.y,y1-mn);if(k.includes('s'))y1=Math.max(q.y,y0+mn);o.x=x0;o.y=y0;o.w=x1-x0;o.h=y1-y0;D_.m=1}}
+else if(E.tool=='select'){const h=E.sel&&edHandleAt(p.x,p.y);E.cv.style.cursor=h?(h=='n'||h=='s'?'ns-resize':h=='e'||h=='w'?'ew-resize':h=='nw'||h=='se'?'nwse-resize':'nesw-resize'):'default';const hv=h?null:edHit(wx,wy);if((hv&&hv.o)!==(E.hov&&E.hov.o))E.hov=hv;if(!h&&hv)E.cv.style.cursor='move'}
+edStatus()}
+function edUp(e){const E=ED;if(!E)return;const D_=E.drag;E.drag=null;if(!D_)return;const d=E.d,T=d.tile;
+if(D_.t=='pan'){if(E.cv)E.cv.style.cursor=E.tool=='select'?'default':E.tool=='place'?'copy':'crosshair';return}
+if(D_.t=='paint')return edStrokeEnd(D_.S);
+if(D_.t=='rect'){const r=D_.r||{x:D_.x0*T,y:D_.y0*T,w:T,h:T},S_=edStroke(D_.er?'Erase rectangle':'Fill rectangle');for(let y=r.y/T;y<(r.y+r.h)/T;y++)for(let x=r.x/T;x<(r.x+r.w)/T;x++)if(x>=0&&y>=0&&x<d.w&&y<d.h)edPaintTile(S_,y*d.w+x,D_.er);return edStrokeEnd(S_)}
+if(D_.t=='wall'){const r=D_.r;if(!r||r.w<2||r.h<2)return edToast('Drag to draw a wall');const w={id:cmUid('w'),x:r.x,y:r.y,w:r.w,h:r.h,s:E.wall};edAdd(d.walls,w,'Draw wall');return}
+if(D_.t=='cut'){const r=D_.r;if(!r||r.w<1||r.h<1)return;if(!edCut(r))edToast('No wall there to cut');return}
+if(D_.t=='zone'){const r=D_.r;if(!r||r.w<16||r.h<16)return edToast('Drag a bigger box to make a spawn zone');const z={id:cmUid('z'),x:r.x,y:r.y,w:r.w,h:r.h,on:true};edAdd(d.zones,z,'Add spawn zone');E.sel={t:'z',o:z};return edUI()}
+if(D_.t=='move'){if(!D_.m)return;const o=D_.o,a={x:o.x,y:o.y},b=D_.b;hPush({n:'Move '+(D_.s.t=='o'?edAsset(o).n:D_.s.t=='w'?'wall':D_.s.t=='s'?'spawn point':D_.s.t=='z'?'spawn zone':'player start'),undo(){Object.assign(o,b)},redo(){Object.assign(o,a)}});return}
+if(D_.t=='size'){if(!D_.m)return;const o=D_.o,a={x:o.x,y:o.y,w:o.w,h:o.h},b=D_.b;hPush({n:'Resize',undo(){Object.assign(o,b)},redo(){Object.assign(o,a)}})}}
+function edWheel(e){if(!ED||edModalOn())return;e.preventDefault();const p=edLocal(e),k=e.ctrlKey?.01:.0015;edZoom(Math.exp(-cl(e.deltaY,-300,300)*k),p.x,p.y)}
+// ----- keys (the game's keydown listener sends everything here while the editor is open) -----
+function edKey(e){const E=ED;if(!E)return;const k=e.key,kl=k.toLowerCase(),c=e.ctrlKey||e.metaKey,tg=e.target&&e.target.tagName,typing=tg=='INPUT'||tg=='TEXTAREA'||tg=='SELECT';
+const stop=()=>{if(e.preventDefault)e.preventDefault()};
+if(edModalOn()){if(k=='Escape'){stop();const b=E.mb&&E.mb[0];edModalOff();if(b&&b[0]=='Cancel')b[2]()}return}
+if(c&&kl=='s'){stop();if(typing&&e.target.blur)e.target.blur();return edSave()}
+if(typing){if(k=='Escape'&&e.target.blur)e.target.blur();return}
+if(c&&kl=='z'){stop();return e.shiftKey?edRedo():edUndo()}if(c&&kl=='y'){stop();return edRedo()}if(c)return;
+if(k==' '){stop();E.space=1;if(E.cv)E.cv.style.cursor='grab';return}
+if(k=='Escape'){if(E.drag){const D_=E.drag;E.drag=null;if(D_.t=='move')Object.assign(D_.o,D_.b);if(D_.t=='size')Object.assign(D_.o,D_.b);if(D_.t=='paint')edStrokeEnd(D_.S);E.need=1;return}if(E.tool!='select')return edTool('select');if(E.sel){E.sel=null;edUI()}return}
+if(k=='Delete'||k=='Backspace'){stop();return edDelete()}
+if(e.shiftKey&&kl=='g'){E.grid^=1;E.need=1;return edTop()}if(e.shiftKey&&kl=='c'){E.coll^=1;E.need=1;return edTop()}if(e.shiftKey&&kl=='s'){E.snap^=1;edToast(E.snap?'Snap on':'Snap off');return edTop()}
+if(kl=='r'){stop();return edRotate(e.shiftKey?-15:15)}
+if(k=='['||k==']'){E.brush=cl(E.brush+(k==']'?1:-1),1,9);E.need=1;return edLeft()}
+if(k=='+'||k=='='){return edZoom(1.25)}if(k=='-'||k=='_'){return edZoom(1/1.25)}if(k=='0'){return edFit()}
+if(k.startsWith('Arrow')){stop();const dx=k=='ArrowLeft'?-1:k=='ArrowRight'?1:0,dy=k=='ArrowUp'?-1:k=='ArrowDown'?1:0,s=E.sel;
+if(s){const o=s.t=='p'?E.d.start:s.o,st=e.shiftKey?E.step:1;return edSet(o,{x:o.x+dx*st,y:o.y+dy*st},'Nudge')}E.cam.x+=dx*80/E.cam.z;E.cam.y+=dy*80/E.cam.z;E.need=1;E.mmNeed=1;return}
+if(!e.shiftKey&&!e.altKey){const t=EDT.find(x=>x[2].toLowerCase()==kl);if(t){if(t[0]=='pick')E.prevT=E.tool;return edTool(t[0])}}}
+function edKeyUp(e){if(!ED)return;if(e.key==' '){ED.space=0;if(ED.cv&&!ED.drag)ED.cv.style.cursor=ED.tool=='select'?'default':ED.tool=='place'?'copy':'crosshair'}}
+// ----- map size -----
+function edResize(nw,nh){const E=ED,d=E.d,T=d.tile;nw=cl(Math.round(nw)||d.w,CMMIN[0],CMMAX);nh=cl(Math.round(nh)||d.h,CMMIN[1],CMMAX);if(nw==d.w&&nh==d.h){edRight();return}
+const MW=nw*T,MH=nh*T,gone={obj:d.obj.filter(o=>o.x>MW||o.y>MH),walls:d.walls.filter(w=>w.x>=MW||w.y>=MH),spawns:d.spawns.filter(s=>s.x>MW||s.y>MH),zones:d.zones.filter(z=>z.x>=MW||z.y>=MH)};
+const n=gone.obj.length+gone.walls.length+gone.spawns.length+gone.zones.length,cut=d.w*d.h-Math.min(d.w,nw)*Math.min(d.h,nh)>0&&(nw<d.w||nh<d.h);
+const go=()=>edResizeNow(nw,nh,gone);if(!n&&!cut)return go();
+const parts=[];if(gone.obj.length)parts.push(gone.obj.length+' prop'+(gone.obj.length>1?'s':''));if(gone.walls.length)parts.push(gone.walls.length+' wall'+(gone.walls.length>1?'s':''));if(gone.spawns.length)parts.push(gone.spawns.length+' spawn point'+(gone.spawns.length>1?'s':''));if(gone.zones.length)parts.push(gone.zones.length+' spawn zone'+(gone.zones.length>1?'s':''));
+edModal('Make the map smaller?',`<p>The map becomes ${nw}×${nh} tiles. Ground painted beyond that is cut off${parts.length?', and these are removed: <b>'+parts.join(', ')+'</b>':''}.</p><p>You can undo this.</p>`,[['Cancel','',()=>{edRight()}],['Resize','red',go]])}
+function edResizeNow(nw,nh,gone){const E=ED,d=E.d,T=d.tile,MW=nw*T,MH=nh*T,b={w:d.w,h:d.h,ter:d.ter,ovl:d.ovl,start:{x:d.start.x,y:d.start.y}},gi=d.pal.indexOf(d.ground)>=0?d.pal.indexOf(d.ground):cmPi(d,d.ground);
+const nt=new Uint8Array(nw*nh).fill(gi),no=new Uint8Array(nw*nh);for(let y=0;y<Math.min(d.h,nh);y++)for(let x=0;x<Math.min(d.w,nw);x++){nt[y*nw+x]=d.ter[y*d.w+x];no[y*nw+x]=d.ovl[y*d.w+x]}
+const rem=[];for(const k of['obj','walls','spawns','zones'])for(const o of gone[k])rem.push({k,o,i:d[k].indexOf(o)});rem.sort((a,c)=>a.i-c.i);
+const clips=[];for(const w of d.walls.concat(d.zones))if(!rem.some(r=>r.o===w)&&(w.x+w.w>MW||w.y+w.h>MH))clips.push({o:w,b:{w:w.w,h:w.h},a:{w:Math.min(w.w,MW-w.x),h:Math.min(w.h,MH-w.y)}});
+const a={w:nw,h:nh,ter:nt,ovl:no,start:{x:cl(d.start.x,8,MW-8),y:cl(d.start.y,8,MH-8)}};
+const apply=s=>{d.w=s.w;d.h=s.h;d.ter=s.ter;d.ovl=s.ovl;d.start.x=s.start.x;d.start.y=s.start.y};
+const redo=()=>{apply(a);for(let j=rem.length-1;j>=0;j--){const r=rem[j],k=d[r.k].indexOf(r.o);if(k>=0)d[r.k].splice(k,1)}for(const c of clips)Object.assign(c.o,c.a);ED.sel=null;edAllDirty();edLay()},
+undo=()=>{apply(b);for(const r of rem)d[r.k].splice(Math.min(r.i,d[r.k].length),0,r.o);for(const c of clips)Object.assign(c.o,c.b);edAllDirty();edLay()};
+redo();hPush({n:'Resize map',t:1,undo,redo});edFit()}
+// ----- saving -----
+async function edSave(copy){const E=ED;if(!E||E.saving)return 0;E.saving=1;edToast('Saving…');let ok=0;
+try{let d=E.d;if(copy){d=cmClone(E.d);d.id=cmUid('m');d.name=(E.d.name.slice(0,33)+' (copy)');d.created=new Date().toISOString()}d.updated=new Date().toISOString();
+const json=cmWrite(d),thumb=edMakeThumb(d);await msWrite([['put','maps',{id:d.id,json}],['put','meta',{id:d.id,name:d.name,desc:d.desc,w:d.w,h:d.h,created:d.created,updated:d.updated,thumb}],['del','kv','draft']]);
+if(!ED)return 1;if(copy){hReset();E.d=d;edAllDirty()}E.mark=hTop();E.src='saved';E.probs=cmLint(E.d);ok=1;cmLoadAll().catch(()=>{});edToast(copy?'Saved a copy: you are now editing it':msMem()?'Saved for this visit only (export to keep it)':'Saved')}
+catch(err){edModal('Could not save',`<p>${edEsc(err&&err.message||err)}</p><p>Your changes are still here. Use Export JSON to keep a copy on your computer.</p>`,[['OK','',()=>0],['Export JSON','go',edExport]])}
+finally{if(ED){ED.saving=0;edUI()}}return ok}
+function edExport(){const E=ED;if(!E)return;cmDownload(E.d.name,cmWrite(E.d));edToast('Exported')}
+// download a map file
+function cmDownload(name,json){try{const b=new Blob([JSON.stringify(json,null,1)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=(String(name||'map').replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'-')||'map')+'.zombdash-map.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}catch(e){}}
+// ----- playtest -----
+function edPlaytest(){const E=ED,u=(S.ac.un||[0]).filter(i=>CH[i]).sort((a,b)=>a-b),ci=u.includes(E.ptc!=null?E.ptc:sel)?(E.ptc!=null?E.ptc:sel):u[0],pr=E.probs.filter(p=>p.lv=='err');
+edModal('Playtest',`<p>Plays this map in the real game. Nothing you earn is kept, and Esc → Back to editor returns here with everything as you left it.</p>${pr.length?`<p class=edwarn>⚠ ${edEsc(pr[0].m)}</p>`:''}
+<label class=edf><span>Survivor</span><select id=edptc>${u.map(i=>`<option value=${i}${i==ci?' selected':''}>${edEsc(CH[i].n)}</option>`).join('')}</select></label>
+<label class=edf><span>Start at wave</span><select id=edptw>${[1,5,9,10,15,19,20].map(w=>`<option${w==(E.ptw||1)?' selected':''}>${w}</option>`).join('')}</select></label>
+<label class=edf><span>Difficulty</span><select id=edptd>${[0,1,2].map(i=>`<option value=${i}${i==(E.ptd!=null?E.ptd:S.dlf)?' selected':''}>${DNm(i,0)}</option>`).join('')}</select></label>`,
+[['Cancel','',()=>0],['Start','go',()=>{const q=id=>{const el=E.root&&E.root.querySelector('#'+id);return el?+el.value:null};E.ptc=q('edptc')??ci;E.ptw=q('edptw')||1;E.ptd=q('edptd')??S.dlf;edModalOff();ptStart({ci:E.ptc,w:E.ptw,dif:E.ptd})}]])}
+function edHide(){const E=ED;if(!E)return;E.vis=0;if(E.root)E.root.style.display='none'}
+function edShow(){const E=ED;if(!E)return;E.vis=1;mode='edit';if(E.root)E.root.style.display='';E.need=1;E.mmNeed=1;edUI()}
+// leaving the page with unsaved changes: the browser asks first (and the draft is kept)
+addEventListener('beforeunload',e=>{if(ED&&edIsDirty()){edDraft();e.preventDefault();e.returnValue=''}});
+// ---------- playtest ----------
+// The editor's map is copied to CMPTD and played as map key CMPTK in Free Play. While it runs, sv() is switched off; at the end
+// the account (S.ac), best wave and settings the playtest changed are put back exactly as they were, then saved.
+let PTX=null;
+function ptStart(o){const E=ED;if(!E||PTX)return;
+PTX={o,ac:JSON.stringify(S.ac),best:S.best,pts:S.pts,un:JSON.stringify(S.un||[0]),tut:S.tut,gm:GMD,sw:S.sw,dlf:S.dlf,sel};
+sv.off=1;CMPTD=cmClone(E.d);edHide();GMD='f';S.sw=o.w;S.dlf=o.dif;sel=o.ci;mapId=CMPTK;keys={};mouse.d=0;
+try{start()}catch(err){ptEnd();edModal('The playtest could not start',`<p>${edEsc(err&&err.message||err)}</p>`,[['OK','go',()=>0]])}}
+function ptAgain(){if(!PTX)return;const o=PTX.o;S.sw=o.w;S.dlf=o.dif;sel=o.ci;mapId=CMPTK;start()}
+// back to the editor, with everything put back
+function ptEnd(){if(!PTX)return;const X_=PTX;PTX=null;
+const A=S.ac;for(const k of Object.keys(A))delete A[k];Object.assign(A,JSON.parse(X_.ac));S.best=X_.best;S.pts=X_.pts;S.un=JSON.parse(X_.un);if(X_.tut===undefined)delete S.tut;else S.tut=X_.tut;
+GMD=X_.gm;S.sw=X_.sw;S.dlf=X_.dlf;sel=X_.sel;sv.off=0;sv();SVD=0;
+mode='edit';ui.innerHTML='';L=R=null;mouse.d=0;keys={};zs=[];bs=[];pt=[];ep=[];CMPTD=null;music('menu');duck(1);edShow()}
+// the end-of-run screen during a playtest (over() hands over to this)
+function ptOver(q){const o=PTX.o;show(`<div class=p><h2 style="color:${q?'var(--ac)':'var(--blood)'}">${q?'PLAYTEST ENDED':'YOU WERE EATEN'}</h2><div class=sum><div><b>${wave}</b><small>Wave</small></div><div><b>${kills}</b><small>Kills</small></div><div><b>${o.w}</b><small>Started at</small></div></div><p class=note>This was a playtest: nothing earned is kept.</p><div class=row><button onclick="ptEnd()">BACK TO EDITOR</button><button class=go onclick="ptAgain()">PLAY AGAIN</button></div></div>`)}
+// ---------- map workshop ----------
+let WSQ='',WSD=null;
+function wsTouch(){try{return !!(globalThis.matchMedia&&!matchMedia('(pointer:fine)').matches)}catch(e){return 0}}
+function wsAgo(t){const s=(Date.now()-Date.parse(t))/1000;if(!isFinite(s))return '';if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+' min ago';if(s<86400)return Math.floor(s/3600)+' h ago';if(s<86400*30)return Math.floor(s/86400)+' days ago';try{return new Date(t).toLocaleDateString()}catch(e){return ''}}
+function wsImg(u){return typeof u=='string'&&/^data:image\/(png|jpeg);base64,[A-Za-z0-9+/=]+$/.test(u)?u:''}
+async function workshop(msg){mode='menu';UIS='ws';MPn=0;music('menu');duck(1);if(!CMLOK)show(`<div class="p wide ws"><h2>MAP WORKSHOP</h2><p class=note>Loading your maps…</p></div>`);
+try{await cmLoadAll()}catch(e){}try{WSD=await msGet('kv','draft')}catch(e){WSD=null}if(UIS!='ws'||mode!='menu')return;wsDraw(msg)}
+function wsDraw(msg){const touch=wsTouch(),D_=WSD&&WSD.json?WSD:null;
+show(`<div class="p wide ws"><h2>MAP WORKSHOP</h2>${msg?`<p class=wsmsg>${msg}</p>`:''}
+${D_?`<div class=cpb><b>Unsaved changes found</b><small>Your changes to “${edEsc(D_.name)}” from ${wsAgo(new Date(D_.t).toISOString())} were never saved.</small><div class=row><button onclick="wsDraft(0)">DISCARD</button><button class=go onclick="wsDraft(1)"${touch?' disabled':''}>RECOVER</button></div></div>`:''}
+${msMem()?'<div class=cpb><b>This browser can\'t store maps</b><small>Maps made now last until the page is closed. Use EXPORT to keep a map as a file.</small></div>':''}
+${touch?'<p class=note>Making and editing maps needs a mouse and keyboard. You can still play, import, export and delete maps here.</p>':''}
+<div class=wsbar><input type=search id=wsq placeholder="Search your maps" value="${edEsc(WSQ)}" oninput="wsSearch(this.value)" autocomplete=off><button class=go onclick="wsNew()"${touch?' disabled':''}>NEW MAP</button><button onclick="wsImport()">IMPORT</button></div>
+<div class=wsl id=wsl>${wsList()}</div><div class=row><button onclick="UIS='';menu()">BACK</button></div></div>`)}
+function wsSearch(v){WSQ=v;const el=document.getElementById('wsl');if(el)el.innerHTML=wsList()}
+function wsList(){const q=WSQ.trim().toLowerCase(),touch=wsTouch();if(!CML.length)return `<div class=wsemp><b>No maps yet</b><p class=note>Press NEW MAP to start one, or IMPORT a map file someone sent you.</p></div>`;
+const L=CML.map((e,i)=>({e,i})).filter(({e})=>!q||String(e.meta.name||'').toLowerCase().includes(q)||String(e.meta.desc||'').toLowerCase().includes(q));if(!L.length)return `<p class=note>No map matches “${edEsc(WSQ)}”.</p>`;
+return L.map(({e,i})=>{const m=e.meta,ok=!!e.doc,img=wsImg(m.thumb),pr=ok?e.warnings.length:0;
+return `<div class="wsc${ok?'':' bad'}">${img?`<img class=wst alt="" src="${img}">`:'<i class=wst></i>'}<div class=wsi><b>${edEsc(m.name||'Untitled map')}</b><small>${m.w}×${m.h} tiles · edited ${wsAgo(m.updated)}</small>${ok?(pr?`<small class=wsw>⚠ ${edEsc(e.warnings[0])}</small>`:`<small>${edEsc(m.desc||'')}</small>`):`<small class=wsw>✖ Can't open: ${edEsc(e.errors[0]||'unknown problem')}</small>`}
+<div class=wsa>${ok?`<button class=go onclick="wsEdit(${i})"${touch?' disabled':''}>EDIT</button><button onclick="wsPlay(${i})">PLAY</button>`:''}<span class=wslk>${ok?`<button class=lnk onclick="wsRename(${i})">rename</button><button class=lnk onclick="wsDup(${i})">duplicate</button>`:''}<button class=lnk onclick="wsExport(${i})">export</button><button class=lnk onclick="wsDel(${i})">delete</button></span></div></div></div>`}).join('')}
+// ----- new map -----
+function wsNew(){const g=CMTER.map(t=>`<option value="${t.id}"${t.id=='grass'?' selected':''}>${edEsc(t.n)}</option>`).join('');
+show(`<div class="p wide ws wsn"><h2>NEW MAP</h2><label class=wsf><span>Name</span><input id=wsn maxlength=40 value="My map" autocomplete=off></label><label class=wsf><span>About (optional)</span><input id=wsd maxlength=240 autocomplete=off placeholder="What happens on this map?"></label>
+<div class=wsrow><label class=wsf><span>Width (tiles)</span><input type=number id=wsw min=${CMMIN[0]} max=${CMMAX} value=72></label><label class=wsf><span>Height (tiles)</span><input type=number id=wsh min=${CMMIN[1]} max=${CMMAX} value=56></label></div>
+<div class="seg wsps">${[['SMALL',48,36],['MEDIUM',72,56],['LARGE',100,80],['HUGE',128,128]].map(p=>`<button data-q=1 onclick="wsSize(${p[1]},${p[2]})">${p[0]}<small>${p[1]}×${p[2]}</small></button>`).join('')}</div>
+<p class=note>Each tile is ${CMTILE}px. MEDIUM is about the size of the Suburb; you can change the size later.</p>
+<label class=wsf><span>Ground</span><select id=wsg>${g}</select></label><p class=note id=wserr></p>
+<div class=row><button onclick="workshop()">CANCEL</button><button class=go onclick="wsCreate()">CREATE</button></div></div>`);try{const n=document.getElementById('wsn');if(n&&n.select){n.focus();n.select()}}catch(e){}}
+function wsSize(w,h){const a=document.getElementById('wsw'),b=document.getElementById('wsh');if(a)a.value=w;if(b)b.value=h;sfx('click')}
+function wsVal(id){const e=document.getElementById(id);return e?e.value:''}
+async function wsCreate(){const w=+wsVal('wsw'),h=+wsVal('wsh'),er=document.getElementById('wserr');
+if(!(w>=CMMIN[0]&&w<=CMMAX&&h>=CMMIN[1]&&h<=CMMAX)){if(er)er.textContent='Width must be '+CMMIN[0]+'–'+CMMAX+' and height '+CMMIN[1]+'–'+CMMAX+' tiles.';sfx('deny');return}
+const d=cmNew({name:String(wsVal('wsn')).replace(/[<>]/g,'').trim()||'Untitled map',desc:String(wsVal('wsd')).replace(/[<>]/g,'').trim(),w,h,ground:wsVal('wsg')});sfx('click');
+try{await wsStore(d)}catch(e){if(er)er.textContent='Could not save the new map: '+(e&&e.message||e);return}edOpen(d,'saved')}
+// write a map (doc) and its list entry
+function wsStore(d){d.updated=new Date().toISOString();let thumb='';try{thumb=edMakeThumb(d)}catch(e){}return msWrite([['put','maps',{id:d.id,json:cmWrite(d)}],['put','meta',{id:d.id,name:d.name,desc:d.desc,w:d.w,h:d.h,created:d.created,updated:d.updated,thumb}]]).then(()=>cmLoadAll())}
+// ----- the actions on a map -----
+function wsEdit(i){const e=CML[i];if(!e||!e.doc)return;sfx('click');edOpen(cmClone(e.doc),'saved')}
+function wsPlay(i){const e=CML[i];if(!e||!e.doc)return;setGM('f');mapId=e.key;sfx('click');play()}
+function wsRename(i){const e=CML[i];if(!e||!e.doc)return;show(`<div class="p ws"><h2>RENAME MAP</h2><label class=wsf><span>Name</span><input id=wsrn maxlength=40 value="${edEsc(e.doc.name)}" autocomplete=off></label><div class=row><button onclick="workshop()">CANCEL</button><button class=go onclick="wsRenameOk(${i})">RENAME</button></div></div>`);try{const n=document.getElementById('wsrn');n.focus();n.select()}catch(_){}}
+async function wsRenameOk(i){const e=CML[i];if(!e||!e.doc)return workshop();const v=String(wsVal('wsrn')).replace(/[<>]/g,'').trim().slice(0,40);if(!v){sfx('deny');return}
+const d=cmClone(e.doc);d.name=v;try{await wsStore(d)}catch(err){return workshop('Could not rename: '+edEsc(err&&err.message||err))}workshop('Renamed to “'+edEsc(v)+'”.')}
+async function wsDup(i){const e=CML[i];if(!e||!e.doc)return;const d=cmClone(e.doc);d.id=cmUid('m');d.name=(e.doc.name.slice(0,33)+' (copy)');d.created=new Date().toISOString();try{await wsStore(d)}catch(err){return workshop('Could not duplicate: '+edEsc(err&&err.message||err))}workshop('Made “'+edEsc(d.name)+'”.')}
+// export the stored file exactly as it is (works even for maps that can't be opened)
+async function wsExport(i){const e=CML[i];if(!e)return;let rec=null;try{rec=await msGet('maps',e.id)}catch(_){}if(!rec||!rec.json){sfx('deny');return workshop('There is no map data to export for “'+edEsc(e.meta.name)+'”.')}cmDownload(e.meta.name,rec.json);sfx('click')}
+function wsDel(i){const e=CML[i];if(!e)return;show(`<div class="p ws"><h2>DELETE MAP?</h2><p>“${edEsc(e.meta.name)}” will be deleted from this device. This can't be undone. EXPORT it first if you might want it back.</p><div class=row><button onclick="workshop()">CANCEL</button><button class=red onclick="wsDelOk(${i})">DELETE</button></div></div>`)}
+async function wsDelOk(i){const e=CML[i];if(!e)return workshop();const ops=[['del','maps',e.id],['del','meta',e.id]];if(WSD&&WSD.id===e.id)ops.push(['del','kv','draft']);try{await msWrite(ops)}catch(err){return workshop('Could not delete: '+edEsc(err&&err.message||err))}sfx('click');workshop('Deleted “'+edEsc(e.meta.name)+'”.')}
+// ----- import -----
+function wsImport(){let f;try{f=document.createElement('input');f.type='file';f.accept='.json,application/json';f.onchange=()=>{const x=f.files&&f.files[0];if(x)wsImportFile(x)};f.click()}catch(e){}}
+async function wsImportFile(file){if(file.size>40*1024*1024)return workshop('That file is too big to be a map.');let txt='';try{txt=await file.text()}catch(e){return workshop('Could not read the file.')}return wsImportText(txt)}
+async function wsImportText(txt){const r=cmRead(txt);
+if(!r.doc){show(`<div class="p wide ws"><h2>CAN'T IMPORT</h2><p>The file was not imported, and nothing was changed:</p><ul class=wsul>${r.errors.slice(0,8).map(x=>`<li>${edEsc(x)}</li>`).join('')}</ul><div class=row><button class=go onclick="workshop()">OK</button></div></div>`);sfx('deny');return null}
+const d=r.doc,note=[];if(CML.some(e=>e.id===d.id)){d.id=cmUid('m');d.name=d.name.slice(0,29)+' (imported)';note.push('A map with the same id is already here, so this one was added as a separate map.')}
+try{await wsStore(d)}catch(err){workshop('Could not save the imported map: '+edEsc(err&&err.message||err));return null}
+workshop('Imported “'+edEsc(d.name)+'”.'+(note.length?' '+note.join(' '):'')+(r.warnings.length?' ⚠ '+edEsc(r.warnings.slice(0,3).join(' ')):''));return d}
+// ----- crash-safe draft -----
+async function wsDraft(keep){const D_=WSD;WSD=null;if(!keep||!D_){try{await msWrite([['del','kv','draft']])}catch(e){}return workshop()}
+const r=cmRead(D_.json);if(!r.doc)return workshop('The unsaved changes could not be opened: '+edEsc(r.errors[0]));edOpen(r.doc,CML.some(e=>e.id===r.doc.id)?'saved':'new',1)}
 function loop(t){clFrame(t);aimCursor();dtFrame();zdFrame();requestAnimationFrame(loop);try{if(innerWidth!==LW||innerHeight!==LH){LW=innerWidth;LH=innerHeight;rs()}loopBody(t)}catch(e){showErr(e)}}
 function loopBody(t){const dt=Math.min(.05,(t-last)/1000||0);last=t;padPoll();if(mode=='splash'||mode=='intro'){padUI();CT+=dt;PZ.style.display='none';SB.innerHTML='';sbk='';drawCut(dt);return}padUI();if(mode=='play')upd(dt);if(SVD&&t-SVT>5000&&mode!='play'||SVD&&t-SVT>20000){SVD=0;SVT=t;sv()}for(const p of PL){if(p.hp<(p.php??p.hp)&&mode!='menu'&&mode!='lobby')sfx('hurt');p.php=p.hp}smk(dt);const kk=mode+MPn+(P?P.own+'|'+P.cur:'');if(kk!=sbk){sbk=kk;PZ.style.display=mode=='play'&&!MPn?'flex':'none';SB.innerHTML=mode=='play'&&!MPn?P.own.map((i,k)=>`<button data-q=1 class="${i==P.cur?'on':''}" onclick="eq(${i});sfx('click')">${k+1}<small>${CH[P.ci||0].dw&&i==0?'Duals':WP[i].n}</small></button>`).join('')+`<button data-q=1 onclick="amRel(P)">R<small>Reload</small></button>`:''}draw()}
 C.addEventListener('pointerdown',e=>{if(mode!='play')return;const q=gp(e);
@@ -4457,7 +5280,7 @@ if(q.x<W/2&&!L)L=s;else if(q.x>=W/2&&!R)R=s});
 C.addEventListener('pointermove',e=>{const q=gp(e);mouse.x=q.x;mouse.y=q.y;for(const s of[L,R])if(s&&s.id==e.pointerId){s.x=q.x;s.y=q.y}});
 function up(e){mouse.d=0;if(L&&L.id==e.pointerId)L=null;if(R&&R.id==e.pointerId)R=null}
 C.addEventListener('pointerup',up);C.addEventListener('pointercancel',up);
-addEventListener('keydown',e=>{const kq=e.key.toLowerCase();if(mode=='splash'||mode=='intro'){introTap();return}if((!e.target||e.target.tagName!='INPUT')&&uiKey(kq)){if(e.preventDefault)e.preventDefault();return}if(mode=='lobby'){if(!e.target||e.target.tagName!='INPUT'){lobbyKey(kq);if(e.preventDefault&&(kq==' '||kq.startsWith('arrow')))e.preventDefault()}return}if(kq=='escape'||kq=='p'){if(mode=='play')pauseMenu();else if(mode=='pause')resume();return}keys[kq]=1;const n=e.key=='0'?9:e.key=='-'?10:+e.key-1;if(mode=='play'){const p=PL.find(p=>p.inp=='km'||p.inp=='any');if(p&&n>=0&&n<p.own.length)p.cur=p.own[n];if(p&&kq=='r')amRel(p)}});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=0);
+addEventListener('keydown',e=>{const kq=e.key.toLowerCase();if(mode=='edit'){edKey(e);return}if(mode=='splash'||mode=='intro'){introTap();return}if((!e.target||e.target.tagName!='INPUT')&&uiKey(kq)){if(e.preventDefault)e.preventDefault();return}if(mode=='lobby'){if(!e.target||e.target.tagName!='INPUT'){lobbyKey(kq);if(e.preventDefault&&(kq==' '||kq.startsWith('arrow')))e.preventDefault()}return}if(kq=='escape'||kq=='p'){if(mode=='play')pauseMenu();else if(mode=='pause')resume();return}keys[kq]=1;const n=e.key=='0'?9:e.key=='-'?10:+e.key-1;if(mode=='play'){const p=PL.find(p=>p.inp=='km'||p.inp=='any');if(p&&n>=0&&n<p.own.length)p.cur=p.own[n];if(p&&kq=='r')amRel(p)}});addEventListener('keyup',e=>{if(mode=='edit')edKeyUp(e);keys[e.key.toLowerCase()]=0});
 document.addEventListener('contextmenu',e=>e.preventDefault());
 const CB=document.createElement('canvas');CB.width=320;CB.height=180;const CX=CB.getContext('2d');
 let CT=0,IA={},DM=[];

@@ -12,7 +12,7 @@ The game ships as **one self-contained file**, `index.html` (what GitHub Pages s
 | `src/css/game.css` | All the styles for menus and the HUD. |
 | `src/js/early-error-screen.js` | Tiny script that shows a "Startup error" box if the game fails to load. |
 | `src/js/modules.txt` | **Load order** of the game modules. |
-| `src/js/**` | The game, split into 85 modules (listed below). |
+| `src/js/**` | The game, split into 94 modules (listed below). The Map Workshop is in `src/js/editor/`, the custom map format and loader in `src/js/world/`. |
 | `src/assets/sprites/` | `zombies.png` (zombie atlas) and `survivors.png` (player atlas). Frame positions are in `ZS` / `PS` in `render/sprites.js`. |
 | `src/assets/thumbs/map-NN.jpg` | Map preview pictures; `NN` is the map's number in `MP`. |
 | `src/assets/sounds/` | Recorded reload sounds (everything else is synthesized in `audio/sound.js`). |
@@ -58,8 +58,48 @@ node tests/run.js spawn ammo # only suites whose name contains a word
 | Skill tree | `SKB` in `ui/core-ui.js` |
 | Online accounts / leaderboards | `online/supabase.js` and `docs/supabase-setup.sql` |
 | Test code and its switches | `dev/test-code.js`, `dev/test-switches.js`, `dev/balance-editor.js` |
+| Terrain types for custom maps (add one with `cmAddTer`) | `CMTER` in `world/map-schema.js` |
+| Blood / burn overlays, wall styles for custom maps | `CMOVL`, `CMWALL` in `world/map-schema.js` |
+| Names and categories in the editor's prop browser | `EDPN` (props), `EDVN` (vehicles), `EDCAT` in `editor/assets.js` |
 
 Values changed in the in-game **GAME BALANCE** menu only live on that device; use its *Copy changes as a list* button and ask Claude to make them permanent in these files.
+
+## Custom maps (the Map Workshop)
+
+**CREATE** on the main menu opens the Map Workshop (`editor/workshop.js`): your maps with thumbnails, search, new, edit, play, rename, duplicate, export, import and delete. The editor itself (`editor/editor.js`) is for mouse and keyboard; maps made with it play everywhere, split screen included.
+
+* **Maps are data.** A custom map is a JSON file (format below). `cmRead` checks and loads one, `cmWrite` writes one, and `cmBuild` (`world/custom-maps.js`) turns it into a playable map the same way a `mapXxx()` function does: it sets `WW`/`WH`, paints `BG` with the real props (`OB`) and vehicles (`hwDraw`), fills `WL` (walls, water, solid props, `hwCol` for vehicles) and sets `HS` (player start, `HS.CZ` = spawn points and zones, which `spawnZ` uses).
+* **Where they live.** On the device, in IndexedDB (`zombdash-maps`, see `world/map-store.js`), never in `S` or the online saves. Without IndexedDB they last until the page closes and the Workshop says so. The editor keeps a crash-safe draft of unsaved changes, offered back in the Workshop.
+* **In the game.** Custom maps get no slot in `MP`. While the game runs, each saved map has a map key from 1000 up (`CMKEY`) and the playtest map is 900 (`CMPTK`); `mapId` holds that key and `build()` hands it to `cmBuild`. `cmIs(m)` tells them apart. Free Play lists them after the built-in maps (`ORD`). Custom maps never touch `S.mp`, the leaderboards, the crash checkpoint or the per-map records.
+* **Playtest** (`editor/playtest.js`) plays the edited map with the real game (`start()`), with saving switched off (`sv.off`); afterwards the account, best wave and settings are put back exactly, so a playtest earns nothing.
+* **Problems.** `cmLint` lists what the editor warns about: a blocked player start, spawns inside walls or unable to reach the player, unknown props or terrain.
+
+### Custom map files
+
+Anything that writes this JSON makes a map; import it with **IMPORT** in the Workshop. Pixels for positions, tiles of 32px for the size.
+
+```json
+{
+  "format": "zombdash-map", "version": 1,
+  "name": "Gas Station", "description": "Pumps, a shop and a parking lot.",
+  "tileSize": 32, "width": 40, "height": 30,
+  "ground": "grass",
+  "terrain": { "legend": { "g": "grass", "a": "asphalt", "w": "water" },
+               "rows": ["gggggaaaaa…", "…"] },
+  "overlay": { "legend": { "b": "blood", "x": "burn" }, "rows": ["....b…", "…"] },
+  "props":    [ { "kind": "crate", "x": 400, "y": 300, "rot": 0 } ],
+  "vehicles": [ { "kind": "sedan", "x": 640, "y": 480, "rot": 90, "color": "#c0392b", "damaged": true } ],
+  "walls":    [ { "x": 0, "y": 0, "w": 200, "h": 8, "style": "brick" } ],
+  "playerStart": { "x": 640, "y": 560 },
+  "zombieSpawns": { "points": [ { "x": 40, "y": 40, "enabled": true } ],
+                    "zones":  [ { "x": 900, "y": 600, "w": 200, "h": 150, "enabled": true } ] }
+}
+```
+
+* `width` × `height` is 20×15 up to 128×128 tiles. `terrain.rows` has `height` strings of `width` characters, each a key of its `legend`; leave `terrain` out for plain `ground` everywhere. `overlay` is optional, `.` means nothing.
+* Terrain: `grass dirt asphalt concrete sidewalk sand gravel mud water wood tile` (water blocks walking, bullets fly over it). Overlays: `blood burn`. Wall styles: `wall brick concrete wood` (stop bullets), `fence` (see-through), `hidden` (an invisible blocker).
+* A prop's `kind` is a key of `OB` (the editor's prop browser shows them all), its `x`,`y` is the middle of its base; props with a collision size in `OB` are solid. A vehicle's `kind` is a key of `HWV` (`sedan suv pickup van limo police amb fire bus semi cab trailer hmv mtruck`), its `x`,`y` is its centre. `rot` is in degrees.
+* `id`s are optional (they are added). Fields the game doesn't know are kept and written back. A file with mistakes is refused with a list of what's wrong, and nothing is changed.
 
 ## Modules (in load order)
 
@@ -120,8 +160,22 @@ Values changed in the in-game **GAME BALANCE** menu only live on that device; us
 | File | What's in it |
 |---|---|
 | `world/map-list-and-pathfinding.js` | The map list (MP), build() to load a map, zombie pathfinding flow field, wall push-out |
+| `world/map-schema.js` | Custom map format: terrain (CMTER), overlays, wall styles, cmRead / cmWrite, collision (cmColl), problem checks (cmLint) |
+| `world/map-store.js` | Custom map storage on the device (IndexedDB) |
+| `world/custom-maps.js` | Custom maps in the game: map keys, the Free Play list (CML), cmBuild(), spawning from zones |
 | `world/wall-index.js` | Fast wall lookup grid |
 | `world/vehicles.js` | Vehicle drawing and walk-behind handling |
+
+### Map Workshop (`src/js/editor/`)
+
+| File | What's in it |
+|---|---|
+| `editor/assets.js` | The prop browser: names and categories for OB props and HWV vehicles, sprite and thumbnail cache |
+| `editor/history.js` | The one undo/redo history |
+| `editor/editor-view.js` | Drawing the editor: cached terrain chunks, props, walls, spawns, overlays, minimap, map thumbnails |
+| `editor/editor.js` | The editor: layout, panels, tools, mouse and keys, save, resize, playtest options |
+| `editor/playtest.js` | Playtest with the real game, keeping nothing it earns |
+| `editor/workshop.js` | The Map Workshop screen: list, new, open, rename, duplicate, delete, import / export, unsaved-changes recovery |
 
 ### Menus and screens (`src/js/ui/`)
 

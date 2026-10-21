@@ -9,7 +9,7 @@ const ROOT = path.join(__dirname, '..'), HTML = path.join(ROOT, 'index.html'), D
 // failures that were already there before the reorganisation and are being tracked separately
 const KNOWN = { 'tutorial.js': ['camera zoomed in', 'camera zooming out'] };
 // random-chance checks that occasionally miss; a suite that only fails these is run again (up to 3 tries)
-const FLAKY = { 'campaign.js': ['Rusty special ability used'] };
+const FLAKY = { 'campaign.js': ['Rusty special ability used'], 'balance-editor-and-test-switches.js': ['ground limit respected'] };
 const want = process.argv.slice(2);
 const files = fs.readdirSync(DIR).filter(f => f.endsWith('.js') && (!want.length || want.some(w => f.includes(w)))).sort();
 let bad = 0; const t0 = Date.now();

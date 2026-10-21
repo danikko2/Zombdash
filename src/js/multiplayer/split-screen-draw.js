@@ -3,7 +3,7 @@
 function VL(n){const g=4,z=v=>cl(v/560,.6,1);if(n<=1)return[{x:0,y:0,w:W,h:H,z:Math.min(1,z(H))}].map(v=>(v.z=MPn?v.z:1,v));
 if(n==2){if(W>=H){const w=(W-g)/2;return[{x:0,y:0,w,h:H,z:z(H)},{x:w+g,y:0,w,h:H,z:z(H)}]}const h=(H-g)/2;return[{x:0,y:0,w:W,h,z:z(h)},{x:0,y:h+g,w:W,h,z:z(h)}]}
 const w=(W-g)/2,h=(H-g)/2;return[[0,0],[1,0],[0,1],[1,1]].map(([i,j])=>({x:i*(w+g),y:j*(h+g),w,h,z:z(h)}))}
-function draw(){if(!(MPn&&P&&PL.length&&mode!='menu'&&mode!='lobby')){drawW();return}
+function draw(){if(mode=='edit'){edFrame();return}if(!(MPn&&P&&PL.length&&mode!='menu'&&mode!='lobby')){drawW();return}
 const W0=W,H0=H,V=VL(PL.length);X.fillStyle='#070a08';X.fillRect(0,0,W,H);
 for(let i=0;i<PL.length;i++){const v=V[i];P=PL[i];P.vp=v;X.save();X.beginPath();X.rect(v.x,v.y,v.w,v.h);X.clip();X.translate(v.x,v.y);X.scale(v.z,v.z);W=v.w/v.z;H=v.h/v.z;drawW();X.restore();W=W0;H=H0;
 X.strokeStyle=PC[i];X.globalAlpha=.85;X.lineWidth=3;X.strokeRect(v.x+1.5,v.y+1.5,v.w-3,v.h-3);X.globalAlpha=1}
