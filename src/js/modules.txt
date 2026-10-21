@@ -90,6 +90,8 @@ editor/assets.js
 editor/history.js
 editor/editor-view.js
 editor/editor.js
+editor/selection.js
+editor/panels.js
 editor/playtest.js
 editor/workshop.js
 core/main-loop.js

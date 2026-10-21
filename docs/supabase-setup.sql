@@ -39,6 +39,12 @@ create policy "anyone reads scores" on public.scores for select using (true);
 create policy "add own scores"      on public.scores for insert with check (auth.uid() = user_id);
 create index if not exists scores_board on public.scores (mode, diff, map, wave desc, kills desc);
 
+-- custom maps made in the Map Workshop: map 63 plus the map's own id in cmap (added Oct 2026)
+alter table public.scores add column if not exists cmap text;
+alter table public.scores drop constraint if exists scores_cmap_ok;
+alter table public.scores add constraint scores_cmap_ok check ((map = 63) = (cmap is not null) and (cmap is null or char_length(cmap) between 1 and 40));
+create index if not exists scores_board_custom on public.scores (mode, diff, cmap, wave desc, kills desc) where cmap is not null;
+
 -- no more than 30 scores per player per hour
 create or replace function public.score_rate() returns trigger
 language plpgsql security definer set search_path = public as $$
@@ -52,9 +58,10 @@ drop trigger if exists score_rate on public.scores;
 create trigger score_rate before insert on public.scores for each row execute function public.score_rate();
 
 -- 3) Leaderboard: each player's best run per map + difficulty
+-- (custom maps each get their own board: one row per player per custom map id)
 create or replace view public.leaderboard with (security_invoker = true) as
-select distinct on (user_id, mode, map, diff)
-  user_id, name, mode, map, diff, wave, kills, survivor, created_at
+select distinct on (user_id, mode, map, cmap, diff)
+  user_id, name, mode, map, diff, wave, kills, survivor, created_at, cmap
 from public.scores
-order by user_id, mode, map, diff, wave desc, kills desc, created_at asc;
+order by user_id, mode, map, cmap, diff, wave desc, kills desc, created_at asc;
 grant select on public.leaderboard to anon, authenticated;

@@ -209,7 +209,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:22px;background:var(--ac);
 #ed button.edgo{background:linear-gradient(180deg,#a8ec6e,#5fb034);color:#0f2108}
 .edmid{flex:1;display:flex;min-height:0;position:relative}
 .edl,.edr{flex:none;width:250px;overflow-y:auto;overflow-x:hidden;background:linear-gradient(180deg,#18221a,#111813);scrollbar-width:thin;scrollbar-color:#34483a transparent}
-.edl{box-shadow:2px 0 0 var(--ink);z-index:1}.edr{box-shadow:-2px 0 0 var(--ink);padding:10px 12px;z-index:1}
+.edl{box-shadow:2px 0 0 var(--ink);z-index:1}.edr{box-shadow:-2px 0 0 var(--ink);z-index:1}.edr .edpane{padding:10px 12px 16px}
 #ed.nol .edl,#ed.nor .edr{display:none}
 #ed .edcol{position:absolute;top:44px;z-index:4;min-height:26px;padding:2px 4px;opacity:.9}.edcl{left:256px}.edcr{right:256px}#ed.nol .edcl{left:6px}#ed.nor .edcr{right:6px}#ed.nol .edcl .edi,#ed.nor .edcr .edi{transform:scaleX(-1)}
 .edc{flex:1;position:relative;min-width:0;overflow:hidden;background:#0b100c}
@@ -238,3 +238,19 @@ input[type=range]::-moz-range-thumb{width:18px;height:22px;background:var(--ac);
 .edbox{width:min(92%,440px);background:linear-gradient(180deg,#223024,#121a14);padding:14px 16px;box-shadow:0 0 0 3px var(--ink),0 0 0 5px var(--bd),0 10px 0 5px rgba(0,0,0,.4)}.edbox p{color:var(--fg);font-size:18px;line-height:1.1}.edbox .edrow{justify-content:flex-end;margin-top:14px}.edbox .edf{grid-template-columns:110px 1fr}#ed .edwarn{color:#ffb86a}
 @media(max-width:1180px){.edtop button>span{display:none}.edtop button.edgo>span,.edtop button[data-a=save]>span{display:inline}}
 @media(max-width:900px){.edl,.edr{width:210px}.edcl{left:216px}.edcr{right:216px}.edxy{min-width:0}}
+/* ---------- map editor step 2: right panel tabs, layers, save state ---------- */
+.edtabs.edtabs3{grid-template-columns:1.15fr .85fr 1.15fr}#ed .edtabs3 button{font-size:15px;white-space:nowrap;gap:3px}.edbadge{display:inline-block;min-width:16px;padding:1px 3px;background:#d8741c;color:#1f1205;font-weight:400;line-height:1;font-size:13px}.edr{width:270px}.edcr{right:276px}#ed .edtabs button.edwarnb{color:#ffb86a}
+#ed button.edsave{background:linear-gradient(180deg,#ffb04a,#d8741c);color:#1f1205;box-shadow:0 0 0 1px var(--ink),0 0 0 2px #ffb04a}
+#ed button.edsaved{background:transparent;box-shadow:0 0 0 1px #34483a;color:var(--tox)}
+.edseg{gap:4px}#ed .edseg button{flex:1;justify-content:center;font-size:16px}
+.edlys{display:flex;flex-direction:column;gap:3px;margin:6px 0}
+.edly{display:flex;align-items:stretch;gap:3px;background:rgba(0,0,0,.25);box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+.edly.on{background:rgba(155,232,96,.14);box-shadow:inset 3px 0 0 var(--tox)}.edly.hid .edlyn{opacity:.55}
+#ed .edlyb{width:26px;min-width:26px;padding:0;justify-content:center;font-size:13px;background:transparent;box-shadow:none}
+#ed .edlyn{flex:1;min-width:0;justify-content:flex-start;text-align:left;background:transparent;box-shadow:none;padding:4px 6px;flex-direction:column;align-items:flex-start;gap:0;font-size:16px;line-height:1}
+#ed .edlyn small{font-size:13px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+#ed .edord button{flex:1;justify-content:center;padding:3px 2px;font-size:15px}
+.edst .edsl{color:var(--ac)}
+#ed .edwide.on{background:linear-gradient(180deg,#1f6a7a,#164c58);box-shadow:0 0 0 1px #4ae0ff}
+#ed input[type=checkbox]:indeterminate{accent-color:#ffcf40}
+@media(max-width:900px){.edr{width:220px}.edcr{right:226px}}

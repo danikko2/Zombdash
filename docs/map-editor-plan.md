@@ -1,15 +1,15 @@
 # Zombdash map editor: plan and handoff (agreed Oct 20, 2026)
 
-The full wish list is the "Map Workshop" prompt the owner attaches. This file records how it fits the game and what **step 1** covers. Read `docs/ARCHITECTURE.md` too.
+The full wish list is the "Map Workshop" prompt the owner attaches. This file records how it fits the game and what each step covers (steps 1 and 2 are done). Read `docs/ARCHITECTURE.md` too.
 
 ## Working on this repo
-- **Where the code lives:** the source is in `src/`, split into 94 modules whose load order is in `src/js/modules.txt`.
+- **Where the code lives:** the source is in `src/`, split into 96 modules whose load order is in `src/js/modules.txt`.
   - `tools/build.js` builds `index.html`, which GitHub Pages serves at https://danikko2.github.io/Zombdash/.
   - A GitHub Action rebuilds `index.html` whenever `src/` changes.
 - **Don't edit `index.html` by hand.** Before starting, run `node tools/build.js --check`. If it fails, someone edited `index.html` directly, and that change has to be moved into `src/` first.
 - **Publishing each change:**
   1. Run `node tools/build.js`.
-  2. Run `node tests/run.js` (21 suites, about 4 minutes). Two exceptions are expected:
+  2. Run `node tests/run.js` (22 suites, about 4½ minutes). Two exceptions are expected:
      - `tutorial.js` camera zoom is a known failure.
      - The `campaign.js` Rusty check is flaky and retried automatically.
      - The `balance-editor-and-test-switches.js` ground-limit check fails about 1 run in 20 on the original game too (a kill can add two drops when one slot is left), so it is retried automatically as well.
@@ -67,7 +67,7 @@ The full wish list is the "Map Workshop" prompt the owner attaches. This file re
    - **Decisions made while building it:**
      - Tiles are 32px; maps are 20×15 to 128×128 tiles. The file format is JSON with terrain as rows of letters, so maps are easy to write by hand.
      - Custom maps don't get a slot in `MP`: in a running game they have map keys from 1000 (playtest: 900), and `S.mp` never holds one.
-     - Free Play runs on custom maps earn XP, Zombie Pts and challenge progress like any Free Play run, but skip the leaderboards, the crash checkpoint and the per-map best waves. **Open question for the owner:** should custom maps earn XP at all, since a map can be built to be easy?
+     - Free Play runs on custom maps earn XP, Zombie Pts and challenge progress like any Free Play run. (Since step 2 they also get leaderboards, the crash checkpoint and best waves: see step 2.)
      - Playtest is a sandbox: survivor, start wave and difficulty are picked in a small dialog, and nothing the run earns is kept.
      - Wall styles: wall, brick, concrete, wood (stop bullets), chain-link fence (see-through) and an invisible blocker. Water blocks walking but not bullets.
      - Props turn in 15° steps; a turned solid prop collides with the box around its turned base.
@@ -75,7 +75,24 @@ The full wish list is the "Map Workshop" prompt the owner attaches. This file re
      - Unsaved changes are kept as a draft in IndexedDB and offered back in the Workshop.
      - On touch-only devices the Workshop still plays, imports, exports and deletes maps; editing needs a mouse and keyboard.
    - **Not in step 1:** shipping maps to everyone from `src/maps/*.json` (the loader is ready for it; `tools/build.js` needs to embed the files). A 128×128 map with ~2,000 props takes about 2 seconds to load into a run.
-2. **Step 2:** multi-select, drag-box selection, copy/paste/duplicate, layers (hide/lock/reorder), properties panel, collision shapes independent of sprites, polish.
+2. **Step 2:**
+   - **Multi-select:** Shift+click adds or removes, dragging a box selects what is fully inside it; move, turn, delete and change the layer of the whole selection.
+   - **Copy / paste / duplicate:** Ctrl+C, Ctrl+X, Ctrl+V (at the mouse), Ctrl+D (one grid step away) for props, vehicles, walls, spawn points and zones, and mixed groups.
+   - **Layers:** the defaults (Terrain, Roads & paths, Buildings, Walls & collision, Environmental props, Interior props, Vehicles, Zombie spawns); add, rename, delete (with a warning and a choice to move or delete what's on it), reorder, hide, lock, move things between layers. Layer order is the draw order in the editor and in the game; hiding is editor-only.
+   - **Properties panel:** position, turn, layer, draw order, solid, collision shape, lock, hide; with several selected, only the values they share show (others say "mixed").
+   - **Collision shapes:** Auto (the picture's), box or circle per prop or vehicle, edited with handles on the map, shown with a coloured overlay, and used for real collision and zombie paths.
+   - **Problems panel:** no player start, start or spawn inside a wall, spawns zombies can't walk from, things outside the map, missing props / vehicles / terrain; clicking one goes to it.
+   - **Polish:** tooltips with shortcuts, a saved / unsaved indicator, a warning before leaving with unsaved changes, Esc cancels the current drag or tool, and keys never move a player while the editor is open.
+   - **Custom maps in the records (owner's request):** Free Play runs on custom maps now get leaderboards, the crash checkpoint and per-map best waves. Playtests still get none of them.
+   - **Status: done (Oct 21, 2026).** `tests/suites/map-editor.js` covers steps 1 and 2 (236 checks). The format is now version 2; version 1 files and saved maps are upgraded on load, keeping everything.
+   - **Decisions made while building it:**
+     - **Circles are approximated:** the game's collision is boxes only, so a circle shape becomes a stack of thin upright boxes inside the circle (about 8px tall each). Box shapes stay upright too, even on a turned prop; turning the prop turns the shape's position around it, and a quarter turn swaps its width and height.
+     - Roads & paths is a second tile layer over Terrain; blood and burn overlays always go with Terrain. Terrain and Roads stay the two bottom layers and can't be deleted.
+     - Locked things can still be clicked (so they can be unlocked from the properties panel) but not moved, turned, deleted or box-selected. A locked layer can't be painted, and nothing is pasted into it.
+     - A group turned with the "↺ group 90°" / "↻ group 90°" buttons turns a quarter at a time around its middle; walls and zones swap width and height.
+     - **Leaderboards for custom maps need a one-time server change:** the owner must run the current `docs/supabase-setup.sql` in Supabase (it adds the `cmap` column; safe to run again). Until then custom-map scores are refused by the server and nothing else changes. Custom maps share board `map = 63` and are told apart by the map's id, so everyone who imported the same file shares a board; "All maps" leaves them out.
+     - A crash checkpoint on a custom map remembers the map's id and is only offered while that map is on the device.
+
 3. **Step 3:** campaign slots.
 4. **Step 4:** editing existing maps as a base.
 5. **Step 5:** gameplay pieces the owner picks (loot crates, doors, traps…).
