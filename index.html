@@ -1354,7 +1354,7 @@ const X_=(x,y,c)=>{g.strokeStyle=c;g.lineWidth=2;g.beginPath();g.moveTo(x+4,y+4)
 for(let ty=Math.max(0,ty0);ty<Math.min(d.h,ty1);ty++)for(let tx=Math.max(0,tx0);tx<Math.min(d.w,tx1);tx++){const i=ty*d.w+tx,x=tx*T,y=ty*T,t=CMTI[d.pal[d.ter[i]]];
 if(vb){(t||gd).f(g,x,y,tx,ty);if(!t&&miss)X_(x,y,'#ff3a5a')}else{g.fillStyle=(tx+ty)%2?'#1a231c':'#151d17';g.fillRect(x,y,T,T)}
 const ri=d.rtr?d.rtr[i]:0;if(ri&&vr){const rt=CMTI[d.rpal[ri]];if(rt)rt.f(g,x,y,tx,ty);else if(miss)X_(x,y,'#ff9a3a')}
-const tp=top(i);if(tp&&tp.liq)cmShore(g,d,tx,ty,x,y,lq);if(vb){const o=d.ovl[i];if(o){const q=CMOI[d.opal[o]];if(q)q.f(g,x,y,tx,ty)}}}}
+const tp=top(i);if(tp&&tp.liq)cmShore(g,d,tx,ty,x,y,lq);if(vb){const o=d.ovl[i];if(o){const q=CMOI[d.opal[o]];if(q)q.f(g,x,y,tx,ty,d)}}}}
 
 // ----- wall styles -----
 // fl is the game's wall flag: 0 = wall (stops bullets), 1 = solid but not a building wall, 2 = see-through (bullets fly through).
@@ -1382,7 +1382,7 @@ function cmLayers(){return CMLAY.map(([id,n,k])=>({id,n,k,hid:0,lock:0}))}
 function cmLy(d,id){return d.layers.find(l=>l.id===id)||null}
 // the layer something goes on by default; kind: 'o' prop or vehicle, 'w' wall, 's' spawn point, 'z' spawn zone
 function cmKindLy(kind,o){if(kind=='w')return'walls';if(kind=='s'||kind=='z')return'spawns';if(o&&o.veh)return'vehicles';
-const c=o&&typeof EDPN!='undefined'&&cmOwn(EDPN,o.k)?EDPN[o.k][1]:'';return{buildings:'buildings',vehicles:'vehicles',furniture:'interior',store:'interior'}[c]||'env'}
+const c=o&&typeof EDPN!='undefined'&&cmOwn(EDPN,o.k)?EDPN[o.k][1]:'';return{buildings:'buildings',vehicles:'vehicles',furniture:'interior',store:'interior',kitchen:'interior',living:'interior',bedroom:'interior',bath:'interior',garage:'interior'}[c]||'env'}
 // that layer if this map has it, else the top object layer (null when the map has none)
 function cmDefLy(d,kind,o){const id=cmKindLy(kind,o),l=cmLy(d,id);if(l&&l.k=='o')return id;const ol=d.layers.filter(q=>q.k=='o');return ol.length?ol[ol.length-1].id:null}
 
@@ -1453,7 +1453,7 @@ const out=Object.assign({},d.extra||{},{format:'zombdash-map',version:CMVER,id:d
 const rd=cmSparse(d,d.rtr,d.rpal,CMTI);if(rd)out.roads=rd;else delete out.roads;
 const ov=cmSparse(d,d.ovl,d.opal,CMOI);if(ov)out.overlay=ov;else delete out.overlay;
 out.layers=d.layers.map(l=>{const q={id:l.id,name:l.n,kind:l.k=='t'?'tiles':'objects'};if(l.hid)q.editorHidden=true;if(l.lock)q.locked=true;return q});
-out.props=d.obj.filter(o=>!o.veh).map(o=>{const p={id:o.id,kind:o.k,x:cmR1(o.x),y:cmR1(o.y)};if(o.r)p.rot=cmR1(o.r);if(o.vr!=null)p.var=Math.round(o.vr*100)/100;return cmWObj(o,p,1)});
+out.props=d.obj.filter(o=>!o.veh).map(o=>{const p={id:o.id,kind:o.k,x:cmR1(o.x),y:cmR1(o.y)};if(o.r)p.rot=cmR1(o.r);if(o.vr!=null)p.var=Math.round(o.vr*100)/100;if(o.c)p.color=o.c;return cmWObj(o,p,1)});
 out.vehicles=d.obj.filter(o=>o.veh).map(o=>{const p={id:o.id,kind:o.veh,x:cmR1(o.x),y:cmR1(o.y),rot:cmR1(o.r||0)};if(o.c)p.color=o.c;if(o.dmg)p.damaged=true;if(o.burn)p.burnt=true;return cmWObj(o,p,1)});
 out.walls=d.walls.map(w=>cmWObj(w,{id:w.id,x:cmR1(w.x),y:cmR1(w.y),w:cmR1(w.w),h:cmR1(w.h),style:w.s||'wall'},0));
 if(d.start)out.playerStart={x:cmR1(d.start.x),y:cmR1(d.start.y)};else delete out.playerStart;
@@ -1520,7 +1520,7 @@ if(s&&s.type=='rect'&&num(s.x)&&num(s.y)&&num(s.w)&&num(s.h)&&s.w>0&&s.h>0)o.sh=
 else if(s&&s.type=='circle'&&num(s.x)&&num(s.y)&&num(s.r)&&s.r>0)o.sh={t:'c',x:s.x,y:s.y,r:s.r};else{bad(nm,i,'has a "shape" that is not {"type":"rect","x","y","w","h"} or {"type":"circle","x","y","r"}.');return 0}}
 if(p.locked)o.lk=true;if(p.editorHidden)o.hd=true;return 1};
 list(j.props,'props').forEach((p,i)=>{if(!p||typeof p.kind!='string'||!num(p.x)||!num(p.y))return bad('props',i,'needs "kind", "x" and "y".');if(p.rot!=null&&!num(p.rot))return bad('props',i,'has a "rot" that is not a number.');
-const o={id:uid(p.id,'p'),k:p.kind,x:p.x,y:p.y,r:p.rot||0};if(num(p.var))o.vr=cl(p.var,0,1);if(!obj(p,o,'props',i,'o',1))return;d.obj.push(o);if(!cmOB(p.kind))unk[p.kind]=(unk[p.kind]||0)+1});
+const o={id:uid(p.id,'p'),k:p.kind,x:p.x,y:p.y,r:p.rot||0};if(num(p.var))o.vr=cl(p.var,0,1);if(typeof p.color=='string'&&/^#[0-9a-f]{6}$/i.test(p.color))o.c=p.color.toLowerCase();if(!obj(p,o,'props',i,'o',1))return;d.obj.push(o);if(!cmOB(p.kind))unk[p.kind]=(unk[p.kind]||0)+1});
 list(j.vehicles,'vehicles').forEach((p,i)=>{if(!p||typeof p.kind!='string'||!num(p.x)||!num(p.y))return bad('vehicles',i,'needs "kind", "x" and "y".');if(p.rot!=null&&!num(p.rot))return bad('vehicles',i,'has a "rot" that is not a number.');
 const o={id:uid(p.id,'v'),veh:p.kind,x:p.x,y:p.y,r:p.rot||0};if(typeof p.color=='string'&&/^#[0-9a-f]{3,8}$/i.test(p.color))o.c=p.color;if(p.damaged)o.dmg=1;if(p.burnt)o.burn=1;if(!obj(p,o,'vehicles',i,'o',1))return;d.obj.push(o);if(!cmHW(p.kind))unk[p.kind+' (vehicle)']=(unk[p.kind+' (vehicle)']||0)+1});
 for(const k in unk)Wn.push('Unknown '+(k.endsWith(' (vehicle)')?'vehicle "'+k.slice(0,-10)+'"':'prop "'+k+'"')+' ('+unk[k]+' placed): it is kept in the file but not shown in the game.');
@@ -1571,6 +1571,59 @@ for(const id of d.rpal)if(id&&!CMTI[id])R.push({lv:'warn',m:'Missing road terrai
 for(const id of d.opal)if(id&&!CMOI[id])R.push({lv:'warn',m:'Missing overlay "'+id+'": not shown.'});
 {const w=d.walls.find(w=>!CMWI[w.s]);if(w)R.push({lv:'warn',m:'Missing wall style "'+w.s+'": drawn as a plain wall.',x:w.x,y:w.y,ref:{t:'w',o:w}})}
 return R}
+// ---------- carpet ----------
+// A berber (loop-pile) carpet: little loops in four shades, dark flecks, a faint chevron in the rows and a slow mottle,
+// like a real carpet seen from above. Each colour is drawn once into a 128px square that repeats seamlessly; a tile
+// shows the quarter of it that matches its position, so a room of carpet never shows a repeating 32px grid.
+const CMCPC={};
+function cmRGB(h){const n=parseInt(h.slice(1),16);return[(n>>16)&255,(n>>8)&255,n&255]}
+// k<1 darkens, k>1 lightens towards white
+function cmShadeRGB(c,k){return k<1?c.map(v=>v*k):c.map(v=>v+(255-v)*Math.min(1,(k-1)*1.4))}
+function cmCarpet(hex){if(CMCPC[hex])return CMCPC[hex];const N=128,c=document.createElement('canvas');c.width=c.height=N;const q=c.getContext('2d');CMCPC[hex]=c;
+const base=cmRGB(hex),im=q.createImageData(N,N),a=im.data,P=(x,y,col)=>{x=(x+N)%N;y=(y+N)%N;const k=(y*N+x)*4;a[k]=col[0];a[k+1]=col[1];a[k+2]=col[2];a[k+3]=255};
+const H=(x,y,s)=>cmH(x%N,y%N,s),TAU=Math.PI*2;
+for(let y=0;y<N;y+=2)for(let x0=0;x0<N;x0+=2){const x=x0+((y>>1)&1);
+// slow mottle and a faint chevron (both repeat every 128px / 32px so the square tiles seamlessly)
+const m=Math.sin(TAU*(x+y)/64)*.5+Math.sin(TAU*(2*x-y)/128)*.5,zz=((x+Math.abs((y%32)-16))%16)<8?1.035:.975;
+const r=H(x,y,71);let k=r<.06?.66:r<.24?.85:r<.62?1:r<.9?1.07:1.15;k*=(1+m*.05)*zz;
+const s=cmShadeRGB(base,k),lt=cmShadeRGB(base,k*1.05),dk=cmShadeRGB(base,k*.89);
+P(x,y,lt);P(x+1,y,s);P(x,y+1,s);P(x+1,y+1,dk);
+// the gap between loops shows through now and then
+if(H(x,y,72)<.22)P(x+(H(x,y,73)<.5?1:0),y+1,cmShadeRGB(base,.76))}
+// dark tufts: short streaks, a few per square
+for(let i=0;i<46;i++){const x=Math.floor(H(i,3,74)*N),y=Math.floor(H(i,5,75)*N),col=cmShadeRGB(base,.58+H(i,7,76)*.12),L=2+Math.floor(H(i,9,77)*2);if(H(i,11,78)<.5)for(let j=0;j<L;j++)P(x+j,y+(j>1?1:0),col);else for(let j=0;j<L;j++)P(x+(j>1?1:0),y+j,col)}
+// light loops that catch the light
+for(let i=0;i<60;i++){const x=Math.floor(H(i,13,79)*N),y=Math.floor(H(i,17,80)*N);P(x,y,cmShadeRGB(base,1.24))}
+q.putImageData(im,0,0);return c}
+const CMCARPET=[['carpet_grey','Grey carpet','r','#8f8a84'],['carpet_dkgrey','Dark grey carpet','k','#57554f'],['carpet_tan','Tan carpet','e','#b39a76'],['carpet_black','Black carpet','q','#2c2b2b'],
+['carpet_red','Red carpet','h','#8c2c2a'],['carpet_green','Green carpet','j','#3e6a46'],['carpet_blue','Blue carpet','u','#3a5a8e']];
+for(const[id,n,ch,col]of CMCARPET)cmAddTer({id,n,ch,mc:col,carpet:col,f(g,x,y,tx,ty){g.drawImage(cmCarpet(col),(tx&3)*32,(ty&3)*32,32,32,x,y,32,32)}});
+// ---------- farm soil ----------
+// tilled rows for crops: ridges and furrows running across the map
+cmAddTer({id:'soil',n:'Farm soil',ch:'f',mc:'#5a4128',f(g,x,y,tx,ty){g.fillStyle='#5a4128';g.fillRect(x,y,32,32);for(let r=0;r<4;r++){const py=y+r*8;g.fillStyle='#6e5234';g.fillRect(x,py,32,4);g.fillStyle='#7d6040';g.fillRect(x,py,32,1);g.fillStyle='#45311e';g.fillRect(x,py+6,32,2)}
+cmSpeck(g,x,y,tx,ty,6,['#86694a','#3e2c1a','#6a4e32'],2,1,81);if(cmH(tx,ty,82)<.3){g.fillStyle='#4f8a3a';const sx=x+3+Math.floor(cmH(tx,ty,83)*24),sy=y+1+Math.floor(cmH(tx,ty,84)*3)*8;g.fillRect(sx,sy+1,1,2);g.fillRect(sx+2,sy,1,3)}}});
+// ---------- road markings ----------
+// Overlays, so they paint on top of any ground or road tile. A marking joins up with the same marking next to it: paint a
+// row of tiles and you get one long line (a corner or a T where rows meet). A tile on its own looks two tiles along to
+// see which way its line runs, so painting every other tile gives a line of separate stripes.
+// d / i: the map and this tile's index (left out for the editor's swatches, which show a straight line).
+function cmMarkDirs(id,tx,ty,d){if(!d)return{L:1,R:1,U:0,D:0,h:1,v:0,solo:0};const same=(a,b)=>{const x=tx+a,y=ty+b;if(x<0||y<0||x>=d.w||y>=d.h)return false;const o=d.ovl[y*d.w+x];return !!o&&d.opal[o]===id};
+const L=same(-1,0),R=same(1,0),U=same(0,-1),D=same(0,1);let h=L||R,v=U||D,solo=0;if(!h&&!v){solo=1;const v2=same(0,-2)||same(0,2),h2=same(-2,0)||same(2,0);if(v2&&!h2)v=1;else h=1}return{L,R,U,D,h,v,solo}}
+// one line: across the tile (hz) or down it, from a to b along it, at offset o (thickness t) across it
+function cmMarkSeg(g,x,y,hz,a,b,o,t){if(b<=a)return;hz?g.fillRect(x+a,y+o,b-a,t):g.fillRect(x+o,y+a,t,b-a)}
+function cmMarkLine(g,x,y,tx,ty,d,id,col,dk,dash,lines){const M=cmMarkDirs(id,tx,ty,d);g.fillStyle=col;
+const draw=(hz,lo,hi)=>{for(const[o,t]of lines){if(dash)cmMarkSeg(g,x,y,hz,8,24,o,t);else if(M.solo)cmMarkSeg(g,x,y,hz,5,27,o,t);else cmMarkSeg(g,x,y,hz,lo?0:13,hi?32:19,o,t)}};
+if(M.h)draw(1,M.L,M.R);if(M.v)draw(0,M.U,M.D);
+// worn paint: a few darker pixels on the line
+g.fillStyle=dk;for(let k=0;k<3;k++){const u=4+Math.floor(cmH(tx,ty,85+k)*24),w=lines[Math.floor(cmH(ty,tx,88+k)*lines.length)];if(dash&&(u<8||u>23))continue;if(M.h&&(dash||M.solo||u>=(M.L?0:13)&&u<(M.R?32:19)))g.fillRect(x+u,y+w[0]+Math.floor(cmH(tx,ty,91+k)*w[1]),1,1);else if(M.v&&!M.h)g.fillRect(x+w[0]+Math.floor(cmH(tx,ty,91+k)*w[1]),y+u,1,1)}}
+const CMYEL=['#e3b92b','#a8841c'],CMWHT=['#e8e8e0','#b4b4aa'];
+cmAddOvl({id:'yline',n:'Yellow line',ch:'y',mc:'#e3b92b',mk:1,f(g,x,y,tx,ty,d){cmMarkLine(g,x,y,tx,ty,d,'yline',CMYEL[0],CMYEL[1],0,[[12,2],[18,2]])}});
+cmAddOvl({id:'ydash',n:'Yellow dashed line',ch:'i',mc:'#e3b92b',mk:1,f(g,x,y,tx,ty,d){cmMarkLine(g,x,y,tx,ty,d,'ydash',CMYEL[0],CMYEL[1],1,[[14,3]])}});
+cmAddOvl({id:'wline',n:'White line',ch:'l',mc:'#e8e8e0',mk:1,f(g,x,y,tx,ty,d){cmMarkLine(g,x,y,tx,ty,d,'wline',CMWHT[0],CMWHT[1],0,[[14,3]])}});
+cmAddOvl({id:'wdash',n:'White dashed line',ch:'e',mc:'#e8e8e0',mk:1,f(g,x,y,tx,ty,d){cmMarkLine(g,x,y,tx,ty,d,'wdash',CMWHT[0],CMWHT[1],1,[[14,3]])}});
+// crosswalk: wide white bars across the direction the crossing runs (a row of tiles across a road)
+cmAddOvl({id:'xwalk',n:'Crosswalk',ch:'z',mc:'#e8e8e0',mk:1,f(g,x,y,tx,ty,d){const M=cmMarkDirs('xwalk',tx,ty,d),hz=!!M.h;g.fillStyle=CMWHT[0];
+for(let k=0;k<2;k++)hz?g.fillRect(x+3+k*16,y+3,10,26):g.fillRect(x+3,y+3+k*16,26,10);cmSpeck(g,x+2,y+2,tx,ty,3,[CMWHT[1]],1,1,94)}});
 // ---------- custom map storage ----------
 // Custom maps stay out of the save object S and out of the online saves. Database "zombdash-maps" holds three stores:
 //   maps: {id, json}   the map file exactly as Export writes it (see cmWrite)
@@ -1616,8 +1669,8 @@ async function cmLoadAll(){const [metas,maps]=await Promise.all([msAll('meta'),m
 for(const m of metas||[]){const rec=byId[m.id],r=rec?cmRead(rec.json):{doc:null,errors:['The map data is missing.'],warnings:[]};L.push({id:m.id,key:cmKeyOf(m.id),meta:m,doc:r.doc,errors:r.errors,warnings:r.warnings})}
 L.sort((a,b)=>String(a.meta.name||'').localeCompare(String(b.meta.name||''),undefined,{sensitivity:'base'}));CML=L;CMLOK=1;return L}
 // paint a whole custom map (ground, walls, props, vehicles) into g; used for the game's background and for thumbnails
-function cmProp(g,o){const B=cmOB(o.k);if(!B)return;const v=o.vr!=null?o.vr:cmH(o.x,o.y,3),r=o.r||0;if(!r){B.f(g,o.x,o.y,v);return}
-const L=vRec.L,n=L?L.length:0;g.save();g.translate(o.x,o.y);g.rotate(r*Math.PI/180);try{B.f(g,0,0,v)}finally{g.restore()}
+function cmProp(g,o){const B=cmOB(o.k);if(!B)return;const v=o.vr!=null?o.vr:cmH(o.x,o.y,3),r=o.r||0;if(!r){B.f(g,o.x,o.y,v,o.c);return}
+const L=vRec.L,n=L?L.length:0;g.save();g.translate(o.x,o.y);g.rotate(r*Math.PI/180);try{B.f(g,0,0,v,o.c)}finally{g.restore()}
 // a turned sprite has no straight base line, so walk-behind uses its pixels instead
 if(L)for(let i=n;i<L.length;i++)delete L[i].base}
 function cmCar(g,o){const v=cmVeh(o);if(!v)return;const r=Math.hypot(v.L,v.W)/2+6;vDraw(g,v.x-r,v.y-r,r*2,r*2,q=>hwDraw(q,v))}
@@ -4361,6 +4414,183 @@ for(const v of V){const r=Math.hypot(v.L,v.W)/2+6;vDraw(g,v.x-r,v.y-r,r*2,r*2,q=
 sign(g,OX+OR+130,MY-MR-SW-28,'MAIN ST',90);sign(g,OX-OR-60,EY+RR+30,'OAK ST',80);sign(g,500,EY-RR-48,'ELM ST',80);sign(g,1560,SY_+RR+28,'MAPLE ST',90);
 paintDec(g,D)}
 
+// ---------- props with a colour ----------
+// obc() is ob() for a prop that takes a colour: pal is its list of [hex, name] (the first is the default), and the
+// drawing gets K = the chosen colour in five shades (b base, l light, ll lighter, d dark, dd darker, x darkest).
+// The editor shows pal as swatches and also takes any other colour; a map stores it as the prop's "color".
+const PKC={},PCOK=/^#[0-9a-f]{6}$/i;
+function pcHex(c){return'#'+c.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('')}
+function pcSh(h,k){const n=parseInt(h.slice(1),16),c=[(n>>16)&255,(n>>8)&255,n&255];return pcHex(k<1?c.map(v=>v*k):c.map(v=>v+(255-v)*Math.min(1,(k-1)*1.4)))}
+function pcK(h){return PKC[h]||(PKC[h]={b:h,l:pcSh(h,1.1),ll:pcSh(h,1.24),d:pcSh(h,.8),dd:pcSh(h,.64),x:pcSh(h,.46)})}
+function pcCol(col,pal){return typeof col=='string'&&PCOK.test(col)?col.toLowerCase():pal[0][0]}
+const obc=(w,h,c,pal,fn)=>({w,h,c,pc:pal,f:(g,x,y,v,col)=>S2(g,x,y,w,h,q=>fn(q,v,pcK(pcCol(col,pal))))});
+// colour choices
+const PCAB=[['#a8774a','Oak'],['#e8e4da','White'],['#d8cfb4','Cream'],['#c49a62','Light wood'],['#7a5232','Walnut'],['#4a3324','Espresso'],['#8a8f96','Grey'],['#3a4a6a','Navy'],['#7f9a7a','Sage'],['#2c2c30','Black'],['#a8342c','Red'],['#5a8aa8','Blue']];
+const PFAB=[['#7a7a82','Grey'],['#4a4a52','Charcoal'],['#c8b48e','Beige'],['#7a5236','Brown'],['#3a4a7a','Navy'],['#4a6ab0','Blue'],['#4a7a4a','Green'],['#a83a32','Red'],['#6a4a8a','Purple'],['#c89a2a','Mustard'],['#e0dcd2','White'],['#2a2a2e','Black']];
+const PAPP=[['#eceae4','White'],['#b8bcc2','Stainless'],['#2e3036','Black'],['#e2d6b8','Almond'],['#c0392b','Red'],['#9ad0b8','Mint'],['#4a7ab8','Blue']];
+const PMET=[['#b8322a','Red'],['#7c828c','Grey'],['#2e3036','Black'],['#2f5faa','Blue'],['#3a7a4a','Green'],['#d8a82a','Yellow'],['#d86a2a','Orange']];
+const PTIL=[['#e6e6e0','White'],['#a8acb0','Grey'],['#7aa8c8','Blue'],['#8ab89a','Green'],['#d8cbb0','Beige'],['#3a3a40','Black'],['#d8a8b0','Pink']];
+const PBRK=[['#9a4a32','Red brick'],['#7a4a32','Brown brick'],['#8a8a8a','Grey stone'],['#d8d4cc','White brick'],['#b08a62','Tan stone'],['#4a4a4e','Dark stone']];
+// ---------- shared pieces ----------
+const PSTEEL='#cfd3da',PCTOP=['#d9d3c7','#ebe6dc','#b8b1a3','#c4bdaf','#e6e1d6'];
+// a stone countertop x,y,w,h with a front lip
+function pcTop(q,x,y,w,h){R_(q,PCTOP[0],x,y,w,h);R_(q,PCTOP[1],x,y,w,2);R_(q,PCTOP[2],x,y+h-2,w,2);for(let i=0;i<w/3;i++)R_(q,PCTOP[3+i%2],x+1+(i*13+5)%(w-2),y+2+(i*7)%Math.max(1,h-4),1,1)}
+// a wooden / painted top x,y,w,h in colour K
+function pcWood(q,x,y,w,h,K){R_(q,K.b,x,y,w,h);R_(q,K.l,x,y,w,1);R_(q,K.d,x,y+h-1,w,1);if(w>14)R_(q,K.d,x+3,y+2+(w%3),Math.min(w-8,10),1)}
+// a cabinet front: n doors (or drawers when dr) across x..x+w, y..y+h
+function pcDoors(q,x,y,w,h,n,K,dr){R_(q,K.b,x,y,w,h);const dw=w/n;for(let k=0;k<n;k++){const dx=x+Math.round(k*dw),ww=Math.round((k+1)*dw)-Math.round(k*dw);if(k)R_(q,K.dd,dx,y,1,h);R_(q,K.l,dx+(k?1:0),y,ww-(k?1:0),1);
+if(dr)R_(q,PSTEEL,dx+Math.floor(ww/2)-2,y+Math.floor(h/2),4,1);else R_(q,PSTEEL,dx+(k%2?2:ww-3),y+2,1,Math.max(1,Math.min(3,h-4)))}}
+// a counter piece W wide (sprite 26 high): stone top, a cabinet front, a dark kick at the floor
+function pcCounter(q,W,K,n){pcTop(q,1,1,W-2,16);pcDoors(q,1,17,W-2,6,n||Math.max(1,Math.round((W-2)/16)),K);R_(q,K.x,1,23,W-2,2)}
+// drawers in rows (rows x cols) filling x..x+w, y..y+h
+function pcDrawers(q,x,y,w,h,rows,cols,K){R_(q,K.b,x,y,w,h);const rh=h/rows,cw=w/cols;for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const dx=x+Math.round(c*cw),dy=y+Math.round(r*rh),ww=Math.round((c+1)*cw)-Math.round(c*cw),hh=Math.round((r+1)*rh)-Math.round(r*rh);
+R_(q,K.l,dx+1,dy+1,ww-2,1);R_(q,K.dd,dx,dy+hh-1,ww,1);if(c)R_(q,K.dd,dx,dy,1,hh);R_(q,PSTEEL,dx+Math.floor(ww/2)-1,dy+Math.floor(hh/2),3,1)}}
+// a dining chair seen from above at x,y (8x9), back on side s ('t','b','l','r')
+function pcChair(q,x,y,s,K){R_(q,K.b,x,y,8,8);R_(q,K.l,x+1,y+1,6,2);s=='t'?R_(q,K.dd,x,y,8,2):s=='b'?R_(q,K.dd,x,y+6,8,2):s=='l'?R_(q,K.dd,x,y,2,8):R_(q,K.dd,x+6,y,2,8)}
+// sofa seen from above: x,y,w,h, back along the top, arms at both ends, n seat cushions
+function pcSofa(q,x,y,w,h,n,K){R_(q,K.d,x,y,w,h);R_(q,K.dd,x,y,w,7);R_(q,K.b,x+1,y+1,w-2,4);R_(q,K.dd,x,y,6,h);R_(q,K.dd,x+w-6,y,6,h);R_(q,K.b,x+1,y+2,4,h-3);R_(q,K.b,x+w-5,y+2,4,h-3);
+const sw=(w-12)/n;for(let k=0;k<n;k++){const sx=x+6+Math.round(k*sw),ww=Math.round((k+1)*sw)-Math.round(k*sw);R_(q,K.b,sx+1,y+8,ww-2,h-10);R_(q,K.l,sx+1,y+8,ww-2,2);R_(q,K.d,sx+1,y+h-3,ww-2,1)}}
+// a flat TV screen x,y,w,h (front view) with a glare streak
+function pcScreen(q,x,y,w,h){R_(q,'#16171c',x,y,w,h);R_(q,'#26303e',x+1,y+1,w-2,h-2);R_(q,'#3a4a62',x+2,y+2,w-4,Math.max(1,h-6));for(let i=0;i<Math.min(w,h)-4;i+=2)R_(q,'#55688a',x+w-6-i-Math.floor(w/5),y+2+i,2,2);R_(q,'#7ab0e8',x+w-3,y+h-2,1,1)}
+// brick courses over x,y,w,h in colour K (mortar lighter or darker than the brick)
+function pcBricks(q,x,y,w,h,K){const light=K.b==='#d8d4cc',m=light?'#a8a49c':'#c9bfb2';R_(q,m,x,y,w,h);for(let r=0,yy=y;yy<y+h;r++,yy+=4)for(let xx=x-(r%2?5:0);xx<x+w;xx+=10){const a=Math.max(x,xx),b=Math.min(x+w,xx+9);if(b>a){R_(q,(r*3+xx)%7==0?K.d:(r+xx)%5==0?K.l:K.b,a,yy,b-a,Math.min(3,y+h-yy))}}}
+// ---------- the props ----------
+Object.assign(OB,{
+// kitchen
+kc_base:obc(34,26,[32,22],PCAB,(q,v,K)=>pcCounter(q,34,K,2)),
+kc_long:obc(66,26,[64,22],PCAB,(q,v,K)=>{pcCounter(q,66,K,4);R_(q,K.dd,33,17,1,6)}),
+kc_corner:obc(34,34,[32,30],PCAB,(q,v,K)=>{pcTop(q,1,1,32,24);R_(q,PCTOP[2],1,23,32,2);pcDoors(q,1,25,32,6,2,K);R_(q,K.x,1,31,32,2);R_(q,PCTOP[3],27,3,4,18)}),
+kc_sink:obc(50,26,[48,22],PCAB,(q,v,K)=>{pcCounter(q,50,K,3);for(const bx of[8,26]){R_(q,'#9aa1aa',bx,3,15,11);R_(q,'#6f7782',bx+1,4,13,9);R_(q,'#87909b',bx+1,4,13,2);R_(q,'#3a3f46',bx+6,9,2,2)}R_(q,PSTEEL,23,2,3,6);R_(q,'#9aa1aa',22,2,5,2);R_(q,'#e8eef4',24,3,1,1)}),
+kc_range:obc(30,28,[28,22],PAPP,(q,v,K)=>{R_(q,K.b,1,1,28,5);R_(q,K.l,1,1,28,1);for(let i=0;i<4;i++)R_(q,'#2a2c32',4+i*6,3,3,2);R_(q,'#26272b',1,6,28,12);q.strokeStyle='#5a5d64';q.lineWidth=1.5;for(const[a,b]of[[8,9],[21,9],[8,15],[21,15]]){q.beginPath();q.arc(a,b,2.6,0,7);q.stroke()}
+R_(q,K.b,1,18,28,8);R_(q,K.l,1,18,28,1);R_(q,PSTEEL,4,19,22,1);R_(q,'#2a2c32',5,21,20,4);R_(q,'#4a3a32',6,22,18,2);R_(q,K.x,1,26,28,1);if(v>.6)R_(q,'#ff6a2a',20,15,3,1)}),
+kfridge:obc(30,36,[28,28],PAPP,(q,v,K)=>{R_(q,K.l,1,1,28,13);R_(q,K.ll,1,1,28,2);R_(q,K.d,1,12,28,2);R_(q,K.b,1,14,28,20);R_(q,K.l,1,14,28,1);R_(q,K.dd,1,21,28,1);R_(q,K.d,24,16,2,4);R_(q,K.d,24,23,2,9);R_(q,K.x,1,33,28,2);
+if(v>.5){R_(q,'#e8c040',6,17,3,3);R_(q,'#d84a4a',11,25,3,3);R_(q,'#fff',7,26,4,5)}}),
+kfridge2:obc(40,36,[38,28],PAPP,(q,v,K)=>{R_(q,K.l,1,1,38,13);R_(q,K.ll,1,1,38,2);R_(q,K.d,1,12,38,2);R_(q,K.b,1,14,38,20);R_(q,K.l,1,14,38,1);R_(q,K.dd,20,14,1,13);R_(q,K.dd,1,27,38,1);R_(q,K.d,17,16,2,9);R_(q,K.d,22,16,2,9);R_(q,K.d,12,29,16,1);
+R_(q,'#2a2c32',5,17,7,7);R_(q,'#4a4e58',6,18,5,2);R_(q,'#7ab0e8',8,22,1,1);R_(q,K.x,1,33,38,2)}),
+kcab_s:obc(20,24,[18,14],PCAB,(q,v,K)=>{pcWood(q,1,1,18,8,K);pcDoors(q,1,9,18,13,1,K);R_(q,K.x,1,22,18,1)}),
+kcab_m:obc(34,24,[32,14],PCAB,(q,v,K)=>{pcWood(q,1,1,32,8,K);pcDoors(q,1,9,32,13,2,K);R_(q,K.x,1,22,32,1)}),
+kcab_w:obc(52,24,[50,14],PCAB,(q,v,K)=>{pcWood(q,1,1,50,8,K);pcDoors(q,1,9,32,13,2,K);pcDrawers(q,33,9,18,13,3,1,K);R_(q,K.dd,33,9,1,13);R_(q,K.x,1,22,50,1)}),
+kpantry:obc(28,40,[26,14],PCAB,(q,v,K)=>{pcWood(q,1,1,26,8,K);pcDoors(q,1,9,26,29,2,K);R_(q,K.dd,1,23,26,1);R_(q,PSTEEL,11,26,1,3);R_(q,PSTEEL,16,26,1,3);R_(q,K.x,1,38,26,1)}),
+kisland:obc(56,36,[54,28],PCAB,(q,v,K)=>{pcTop(q,1,1,54,24);pcDoors(q,4,25,48,8,3,K);R_(q,K.x,4,33,48,2);if(v>.5){R_(q,'#f0e8d8',8,6,10,7);R_(q,'#c0392b',30,8,5,5);R_(q,'#e8a030',37,9,4,4)}}),
+kisland_b:obc(76,48,[74,28],PCAB,(q,v,K)=>{for(const sx of[12,32,52]){R_(q,'#3a3d46',sx+3,7,2,6);R_(q,K.dd,sx,1,10,8);R_(q,K.d,sx+1,2,8,5)}pcTop(q,1,12,74,26);R_(q,PCTOP[4],1,12,74,4);pcDoors(q,4,38,68,7,4,K);R_(q,K.x,4,45,68,2);
+R_(q,'#9aa1aa',44,20,16,10);R_(q,'#6f7782',45,21,14,8);R_(q,PSTEEL,51,17,3,5);if(v>.4){R_(q,'#f0e8d8',10,20,12,8);R_(q,'#3f8a42',26,22,4,4)}}),
+ktable_s:obc(42,30,[26,20],PCAB,(q,v,K)=>{pcChair(q,1,10,'l',K);pcChair(q,33,10,'r',K);q.fillStyle=K.d;q.beginPath();q.arc(21,15,12,0,7);q.fill();q.fillStyle=K.b;q.beginPath();q.arc(21,14,11,0,7);q.fill();q.fillStyle=K.l;q.beginPath();q.arc(18,11,4,0,7);q.fill();if(v>.5){R_(q,'#f0ece2',16,13,6,5);R_(q,'#c0392b',24,10,3,3)}}),
+ktable:obc(50,46,[34,26],PCAB,(q,v,K)=>{pcChair(q,21,1,'t',K);pcChair(q,21,37,'b',K);pcChair(q,1,19,'l',K);pcChair(q,41,19,'r',K);pcWood(q,9,9,32,28,K);R_(q,K.dd,9,36,32,1);R_(q,K.l,10,10,30,2);if(v>.4){R_(q,'#f0ece2',13,14,7,6);R_(q,'#f0ece2',30,26,7,6);R_(q,'#3f8a42',23,20,4,4)}}),
+ktable_l:obc(78,46,[60,26],PCAB,(q,v,K)=>{for(const cx of[15,35,55]){pcChair(q,cx,1,'t',K);pcChair(q,cx,37,'b',K)}pcChair(q,1,19,'l',K);pcChair(q,69,19,'r',K);pcWood(q,9,9,60,28,K);R_(q,K.dd,9,36,60,1);R_(q,K.l,10,10,58,2);if(v>.4){for(const cx of[16,36,56]){R_(q,'#f0ece2',cx,12,7,5);R_(q,'#f0ece2',cx,28,7,5)}R_(q,'#e8c040',37,21,4,4)}}),
+// living room
+sofa2:obc(46,28,[44,22],PFAB,(q,v,K)=>pcSofa(q,1,1,44,25,2,K)),
+sofa3:obc(68,28,[66,22],PFAB,(q,v,K)=>pcSofa(q,1,1,66,25,3,K)),
+sofa_l:obc(68,56,[66,52],PFAB,(q,v,K)=>{pcSofa(q,1,1,66,25,3,K);R_(q,K.d,1,20,24,34);R_(q,K.dd,1,20,6,34);R_(q,K.b,2,22,4,30);R_(q,K.b,8,22,16,30);R_(q,K.l,8,22,16,2);R_(q,K.d,8,51,16,2);R_(q,K.dd,1,52,24,2);R_(q,K.d,7,20,18,2);R_(q,K.dd,24,26,1,28)}),
+armch:obc(30,30,[28,24],PFAB,(q,v,K)=>{R_(q,K.d,1,1,28,27);R_(q,K.dd,1,1,28,8);R_(q,K.b,2,2,26,4);R_(q,K.dd,1,1,6,27);R_(q,K.dd,23,1,6,27);R_(q,K.b,2,3,4,23);R_(q,K.b,24,3,4,23);R_(q,K.b,8,9,14,17);R_(q,K.l,8,9,14,2);R_(q,K.d,8,25,14,1)}),
+recl:obc(30,40,[28,34],PFAB,(q,v,K)=>{R_(q,K.d,1,1,28,27);R_(q,K.dd,1,1,28,10);R_(q,K.b,2,2,26,6);R_(q,K.l,3,2,24,2);R_(q,K.dd,1,1,6,27);R_(q,K.dd,23,1,6,27);R_(q,K.b,2,3,4,23);R_(q,K.b,24,3,4,23);R_(q,K.b,8,11,14,17);R_(q,K.l,8,11,14,2);
+R_(q,K.dd,7,28,16,10);R_(q,K.b,8,29,14,7);R_(q,K.l,8,29,14,1);R_(q,K.x,28,16,1,6)}),
+tvs_s:obc(44,22,[42,14],PCAB,(q,v,K)=>{pcWood(q,1,1,42,8,K);R_(q,K.b,1,9,42,11);R_(q,K.x,4,11,16,7);R_(q,'#2a2c32',6,14,12,3);R_(q,'#3aff7a',16,15,1,1);pcDoors(q,22,10,20,9,1,K);R_(q,K.dd,1,19,42,1)}),
+tvs_w:obc(68,22,[66,14],PCAB,(q,v,K)=>{pcWood(q,1,1,66,8,K);pcDoors(q,1,9,20,11,1,K);R_(q,K.b,21,9,26,11);R_(q,K.dd,21,9,1,11);R_(q,K.dd,46,9,1,11);R_(q,K.x,23,10,22,9);R_(q,K.b,23,14,22,1);R_(q,'#2a2c32',25,11,12,3);R_(q,'#16171c',27,16,16,2);R_(q,'#3a8ad8',35,12,1,1);pcDoors(q,47,9,20,11,1,K);R_(q,K.x,1,20,66,1)}),
+tvs_tv:obc(68,36,[66,14],PCAB,(q,v,K)=>{R_(q,'#2a2c32',30,18,8,4);pcScreen(q,9,1,50,18);pcWood(q,1,21,66,6,K);pcDoors(q,1,27,20,7,1,K);R_(q,K.b,21,27,26,7);R_(q,K.x,23,28,22,5);R_(q,'#2a2c32',25,29,12,2);pcDoors(q,47,27,20,7,1,K);R_(q,K.x,1,34,66,1)}),
+tv_flat:ob(46,28,[22,6],(q,v)=>{pcScreen(q,1,1,44,22);R_(q,'#2a2c32',20,23,6,2);R_(q,'#2a2c32',13,25,20,2)}),
+tv_big:ob(66,40,[34,6],(q,v)=>{pcScreen(q,1,1,64,34);R_(q,'#2a2c32',29,35,8,2);R_(q,'#2a2c32',17,37,32,2)}),
+tv_crt:obc(30,30,[26,12],[['#6a6e78','Grey'],['#7a5232','Wood'],['#2e3036','Black'],['#d8d0bc','Beige']],(q,v,K)=>{q.strokeStyle='#8a8f96';q.lineWidth=1;q.beginPath();q.moveTo(13,6);q.lineTo(7,1);q.moveTo(17,6);q.lineTo(24,1);q.stroke();R_(q,K.dd,2,6,26,22);R_(q,K.b,2,6,26,21);R_(q,K.l,2,6,26,1);
+R_(q,'#16171c',4,8,17,15);R_(q,'#2e4a3a',5,9,15,13);R_(q,'#4a7a5a',6,10,5,3);R_(q,'#3a5a46',5,9,15,1);R_(q,K.d,22,9,4,13);R_(q,'#2a2c32',23,10,2,2);R_(q,'#2a2c32',23,14,2,2);R_(q,K.x,3,27,24,1)}),
+bfplace:obc(72,58,[68,16],PBRK,(q,v,K)=>{pcBricks(q,6,1,60,44,K);R_(q,'#5a3a22',2,15,68,4);R_(q,'#7a5232',2,15,68,1);R_(q,'#3a2416',2,19,68,1);R_(q,'#e8e0c8',10,10,3,5);R_(q,'#ffcf40',11,8,1,2);R_(q,'#3a2a1e',54,8,8,7);R_(q,'#e8e0c8',56,10,4,3);
+q.fillStyle=K.dd;q.beginPath();q.moveTo(22,45);q.lineTo(22,30);q.arc(36,30,14,Math.PI,0);q.lineTo(50,45);q.fill();q.fillStyle='#16111c';q.beginPath();q.moveTo(24,45);q.lineTo(24,31);q.arc(36,31,12,Math.PI,0);q.lineTo(48,45);q.fill();
+R_(q,'#5a3a22',27,41,18,3);R_(q,'#7a5232',29,39,14,2);q.fillStyle='#e85a1a';q.beginPath();q.moveTo(28,40);q.lineTo(31,28);q.lineTo(34,35);q.lineTo(37,25);q.lineTo(40,34);q.lineTo(43,29);q.lineTo(44,40);q.fill();q.fillStyle='#ffb02a';q.beginPath();q.moveTo(31,40);q.lineTo(34,32);q.lineTo(37,36);q.lineTo(39,31);q.lineTo(41,40);q.fill();R_(q,'#fff2a0',35,37,3,2);
+R_(q,'#8a8a86',2,45,68,11);R_(q,'#a8a8a2',2,45,68,2);R_(q,'#6a6a66',2,54,68,2);for(let i=8;i<66;i+=12)R_(q,'#7a7a76',i,47,1,7)}),
+// bedroom
+nstand:obc(22,24,[20,12],PCAB,(q,v,K)=>{pcWood(q,1,1,20,9,K);R_(q,'#c8b88e',7,1,8,2);R_(q,'#efe4c4',5,2,12,6);R_(q,'#fff6d8',6,3,6,2);R_(q,'#c8b88e',5,7,12,1);pcDrawers(q,1,10,20,11,2,1,K);R_(q,K.x,1,21,20,1)}),
+nstand2:obc(22,24,[20,12],PCAB,(q,v,K)=>{pcWood(q,1,1,20,9,K);R_(q,'#2a2c32',3,3,7,5);R_(q,'#ff4a3a',4,5,5,1);R_(q,'#3a6fb5',12,3,7,5);R_(q,'#e8e4d8',12,4,7,1);pcDrawers(q,1,10,20,11,1,1,K);R_(q,K.x,1,21,20,1)}),
+dress_s:obc(36,26,[34,14],PCAB,(q,v,K)=>{pcWood(q,1,1,34,8,K);if(v>.4){R_(q,'#6a3a5a',4,3,7,4);R_(q,'#e8d070',5,3,5,1)}R_(q,'#3f8a42',26,2,4,4);pcDrawers(q,1,9,34,15,3,1,K);R_(q,K.x,1,24,34,1)}),
+dress_w:obc(60,26,[58,14],PCAB,(q,v,K)=>{pcWood(q,1,1,58,8,K);if(v>.4){R_(q,'#e8e4d8',6,3,8,4);R_(q,'#c8a050',44,2,6,5)}pcDrawers(q,1,9,58,15,3,2,K);R_(q,K.x,1,24,58,1)}),
+dress_m:obc(60,44,[58,14],PCAB,(q,v,K)=>{R_(q,K.dd,14,1,32,20);R_(q,K.b,15,2,30,18);R_(q,'#a8c8d8',17,4,26,14);R_(q,'#d0e4ee',19,5,6,10);R_(q,'#8ab0c4',35,12,6,5);pcWood(q,1,19,58,8,K);pcDrawers(q,1,27,58,15,3,2,K);R_(q,K.x,1,42,58,1)}),
+dress_t:obc(30,40,[28,14],PCAB,(q,v,K)=>{pcWood(q,1,1,28,8,K);pcDrawers(q,1,9,28,29,5,1,K);R_(q,K.x,1,38,28,1)}),
+// bathroom
+shower:obc(38,40,[36,36],PTIL,(q,v,K)=>{R_(q,K.d,1,1,36,38);for(let y=5;y<35;y+=6)for(let x=5;x<33;x+=6){R_(q,K.b,x,y,5,5);R_(q,K.l,x,y,5,1)}R_(q,K.dd,1,1,36,4);R_(q,K.dd,1,1,3,38);R_(q,K.dd,34,1,3,38);R_(q,K.l,1,1,36,1);
+R_(q,'#8a909a',17,5,4,4);R_(q,PSTEEL,18,6,2,2);R_(q,'#5a6068',18,20,3,3);R_(q,'#2a2e34',19,21,1,1);R_(q,'#a8d4ea',4,35,30,3);R_(q,'#d8f0fa',6,35,10,1);R_(q,PSTEEL,26,34,1,4);R_(q,'#7aa8c0',4,38,30,1)}),
+shower_w:obc(58,40,[56,36],PTIL,(q,v,K)=>{R_(q,K.d,1,1,56,38);for(let y=5;y<37;y+=6)for(let x=4;x<54;x+=6){R_(q,K.b,x,y,5,5);R_(q,K.l,x,y,5,1)}R_(q,K.dd,1,1,56,4);R_(q,K.dd,1,1,3,38);R_(q,K.dd,54,1,3,38);R_(q,K.l,1,1,56,1);
+R_(q,K.dd,40,5,14,9);R_(q,K.b,41,6,12,6);for(const sx of[12,28]){R_(q,'#8a909a',sx,5,4,4);R_(q,PSTEEL,sx+1,6,2,2)}R_(q,'#5a6068',27,26,4,2);R_(q,'#2a2e34',28,26,2,1);R_(q,'#a8d4ea',4,35,30,3);R_(q,'#d8f0fa',6,35,12,1);R_(q,'#7aa8c0',4,38,30,1)}),
+// garage
+gcab_t:obc(34,42,[32,14],PMET,(q,v,K)=>{R_(q,K.l,1,1,32,6);R_(q,K.ll,1,1,32,1);R_(q,K.b,1,7,32,32);R_(q,K.dd,16,7,1,32);R_(q,K.l,1,7,32,1);R_(q,PSTEEL,13,18,2,9);R_(q,PSTEEL,18,18,2,9);for(let i=0;i<4;i++){R_(q,K.d,4,10+i*2,8,1);R_(q,K.d,21,10+i*2,8,1)}R_(q,'#2a2c32',1,39,32,2)}),
+gcab_w:obc(68,42,[66,14],PMET,(q,v,K)=>{R_(q,K.l,1,1,16,6);R_(q,K.b,1,7,16,32);R_(q,PSTEEL,13,18,2,9);R_(q,K.l,51,1,16,6);R_(q,K.b,51,7,16,32);R_(q,PSTEEL,53,18,2,9);
+R_(q,K.b,18,1,32,12);R_(q,K.l,18,1,32,1);R_(q,K.dd,34,1,1,12);R_(q,PSTEEL,31,8,2,3);R_(q,PSTEEL,36,8,2,3);R_(q,'#7a5232',17,20,34,4);R_(q,'#9a6a3c',17,20,34,1);
+if(v>.3){R_(q,'#3a3d46',21,16,10,4);R_(q,'#c0392b',36,17,8,3)}pcDrawers(q,18,24,32,15,3,2,K);R_(q,'#2a2c32',1,39,66,2)}),
+gbench:obc(60,34,[58,14],PMET,(q,v,K)=>{R_(q,'#b08a5a',3,1,54,12);for(let y=3;y<12;y+=3)for(let x=5;x<56;x+=4)R_(q,'#8a6a42',x,y,1,1);R_(q,'#5a5d64',8,3,2,7);R_(q,'#8a5a32',7,9,4,2);R_(q,'#c0392b',20,3,3,8);R_(q,'#3a3d46',30,3,9,2);R_(q,'#3a3d46',34,3,2,7);R_(q,'#e8b830',46,4,6,6);
+R_(q,'#9a6a3c',1,13,58,5);R_(q,'#b8844a',1,13,58,1);R_(q,'#6a6e78',42,10,8,4);R_(q,'#4a4e58',44,12,4,2);pcDrawers(q,2,18,18,13,3,1,K);R_(q,'#3a3d46',54,18,3,13);R_(q,'#3a3d46',22,28,32,2);R_(q,'#2a2c32',1,31,58,1)}),
+gchest:obc(28,32,[26,12],PMET,(q,v,K)=>{R_(q,K.l,2,1,24,4);R_(q,K.ll,2,1,24,1);pcDrawers(q,2,5,24,22,6,1,K);for(let i=0;i<6;i++)R_(q,PSTEEL,5,7+i*3.6|0,18,1);R_(q,'#2a2c32',3,27,4,4);R_(q,'#2a2c32',21,27,4,4);R_(q,K.dd,2,26,24,1)})
+});
+// Leaves and grass take a colour (obc in maps/props/home-props.js), so a forest can be green, autumn or enchanted purple.
+const PLEAF=[['#3f8a42','Green'],['#2f6b46','Dark green'],['#7ab84a','Light green'],['#d8742a','Orange'],['#b83a2a','Red'],['#d8b42a','Yellow'],['#6a4a8a','Purple'],['#3a6a6a','Teal']];
+const PAUT=[PLEAF[3],PLEAF[4],PLEAF[5],PLEAF[0],PLEAF[1],PLEAF[2],PLEAF[6],PLEAF[7]];
+const PCON=[PLEAF[1],PLEAF[0],['#2a4a3e','Blue spruce'],PLEAF[3],PLEAF[7],['#e8ece8','Snowy']];
+const PGRS=[['#4f9a3c','Green'],['#7aa83a','Light green'],['#b8a44a','Dry'],['#8a7a3a','Dead'],['#3f7a52','Dark green']];
+const PBARK=[['#5a4a3c','Grey-brown'],['#3a302a','Dark'],['#8a8a84','Bleached'],['#6b4a2a','Brown']];
+const fH=(a,b)=>{const v=Math.sin(a*12.9898+b*78.233+3.7)*43758.5453;return v-Math.floor(v)};
+// a round leafy canopy from blobs [[cx,cy,r],...]: dark edge, lighter layers towards the top left, and hanging leaf strokes
+function fpCan(q,B,K,seed){const lay=(c,dx,dy,k)=>{q.fillStyle=c;q.beginPath();for(const[x,y,r]of B){q.moveTo(x+dx+r*k,y+dy);q.arc(x+dx,y+dy,r*k,0,7)}q.fill()};
+lay(K.x,0,0,1);lay(K.dd,-.5,-1,.93);lay(K.d,-1.5,-2.5,.78);lay(K.b,-2.5,-4.5,.56);lay(K.l,-3.5,-6,.3);
+for(let i=0;i<B.length*7;i++){const[x,y,r]=B[i%B.length],a=fH(i,seed)*6.283,d=Math.sqrt(fH(seed,i))*r*.8,px=Math.round(x+Math.cos(a)*d),py=Math.round(y+Math.sin(a)*d);
+if(py>y-r*.2){R_(q,K.x,px,py,1,3);R_(q,K.dd,px+1,py+1,1,2)}else R_(q,K.ll,px,py,2,1)}}
+// a trunk x..x+w down to the base at y+h, with a dark side and a little root flare
+function fpTrunk(q,x,y,w,h,c){c=c||['#6b4a2a','#4a3220','#8a6440'];R_(q,c[0],x,y,w,h);R_(q,c[1],x+w-Math.max(2,w>>2),y,Math.max(2,w>>2),h);R_(q,c[2],x+1,y,Math.max(1,w>>3),h);R_(q,c[0],x-2,y+h-3,w+4,3);R_(q,c[1],x-2,y+h-1,w+4,1)}
+// a conifer: n tiers of branches from the top (cx,top) down to bottom, trunk below
+function fpCone(q,cx,top,bot,maxw,n,K){const th=(bot-top)/((n-1)*.82+1.25);for(let k=0;k<n;k++){const y0=top+k*th*.82,hw=maxw/2*(k+1.2)/(n+.2),y1=y0+th*1.25;
+q.fillStyle=K.x;q.beginPath();q.moveTo(cx,y0-1);q.lineTo(cx+hw+1,y1+1);q.lineTo(cx-hw-1,y1+1);q.fill();q.fillStyle=K.d;q.beginPath();q.moveTo(cx,y0);q.lineTo(cx+hw,y1);q.lineTo(cx-hw,y1);q.fill();
+q.fillStyle=K.b;q.beginPath();q.moveTo(cx,y0+1);q.lineTo(cx-hw+2,y1-1);q.lineTo(cx-1,y1-1);q.fill();R_(q,K.dd,cx-hw+2,y1-2,hw*2-4,2);R_(q,K.l,cx-hw*.5,y0+th*.6,Math.max(2,hw*.35),1)}}
+// a lying trunk from x0 to x1, top y, thickness t, bark colour set B
+function fpLog(q,x0,x1,y,t,B,seed){R_(q,B[1],x0,y,x1-x0,t);R_(q,B[0],x0,y+1,x1-x0,t-4);R_(q,B[2],x0,y+1,x1-x0,3);R_(q,'#2a1e14',x0,y+t-2,x1-x0,2);
+for(let x=x0+2;x<x1-2;x+=3+Math.floor(fH(x,seed)*4)){const yy=y+3+Math.floor(fH(seed,x)*(t-8)),L=2+Math.floor(fH(x,seed+1)*5);R_(q,B[1],x,yy,L,1)}}
+function fpMoss(q,x,y,w){for(let i=0;i<w;i+=3){const h=1+Math.floor(fH(i,x)*3);R_(q,'#4f6e2e',x+i,y-h+1,3,h+1);R_(q,'#6e9040',x+i,y-h+1,2,1)}}
+function fpFungus(q,x,y,s){R_(q,'#a88a5a',x,y+s-1,s*2,2);R_(q,'#d8c49a',x,y,s*2,s);R_(q,'#efe2c0',x+1,y,s,1)}
+function fpBlades(q,x0,w,base,hmin,hmax,n,K,seed){for(let i=0;i<n;i++){const x=x0+Math.floor(fH(i,seed)*w),h=hmin+Math.floor(fH(seed,i)*(hmax-hmin)),lean=(fH(i,seed+3)-.5)*.5,c=[K.d,K.b,K.dd,K.l][i%4];
+for(let t=0;t<h;t++)R_(q,t>h-3?K.ll:c,Math.round(x+lean*t*t/h),base-t,t<h*.5?2:1,1)}}
+// a plain soil strip for crop rows
+function fpRow(q,x,y,w){R_(q,'#4a3622',x,y,w,4);R_(q,'#6e5234',x,y,w,1)}
+Object.assign(OB,{
+// trees
+oak:obc(66,76,[10,6],PLEAF,(q,v,K)=>{fpTrunk(q,29,48,8,26);fpCan(q,[[33,30,22],[16,38,13],[50,38,13],[22,19,13],[44,19,13],[33,44,14]],K,1)}),
+oak_b:obc(106,118,[18,8],PLEAF,(q,v,K)=>{fpTrunk(q,45,70,16,46);R_(q,'#4a3220',40,112,4,4);R_(q,'#4a3220',62,112,4,4);fpCan(q,[[53,46,34],[24,58,20],[82,58,20],[30,28,20],[76,28,20],[53,22,22],[53,70,20]],K,2)}),
+maple:obc(60,72,[8,6],PAUT,(q,v,K)=>{fpTrunk(q,27,50,6,20);fpCan(q,[[30,28,20],[15,34,11],[45,34,11],[30,13,12],[30,44,12]],K,3)}),
+birch:obc(46,84,[8,6],[PLEAF[2],PLEAF[0],PLEAF[5],PLEAF[3],PLEAF[1]],(q,v,K)=>{R_(q,'#e8e6dc',20,26,6,56);R_(q,'#b8b6ac',24,26,2,56);for(let y=30;y<80;y+=5+((y*7)%4))R_(q,'#26262c',20+((y*3)%3),y,3,1);R_(q,'#e8e6dc',18,79,10,3);
+q.strokeStyle='#d8d6cc';q.lineWidth=2;q.beginPath();q.moveTo(23,44);q.lineTo(14,34);q.moveTo(23,40);q.lineTo(32,30);q.stroke();fpCan(q,[[23,20,13],[12,27,9],[34,27,9],[23,9,9],[16,36,7],[31,35,7]],K,4)}),
+spruce:obc(54,106,[12,8],PCON,(q,v,K)=>{fpTrunk(q,24,92,6,12);fpCone(q,27,2,94,50,6,K)}),
+pine_g:obc(88,146,[18,10],PCON,(q,v,K)=>{fpTrunk(q,39,126,10,18);fpCone(q,44,2,128,84,8,K)}),
+willow:obc(86,90,[12,8],PLEAF,(q,v,K)=>{fpTrunk(q,39,52,8,36);fpCan(q,[[43,30,26],[22,38,16],[64,38,16],[43,16,17]],K,5);for(let x=10;x<77;x+=3){if(x>34&&x<52&&(x/3)%2)continue;const top=40+Math.abs(x-43)*.12,len=12+Math.floor(fH(x,6)*18);R_(q,K.x,x,top,2,len+1);R_(q,(x/3)%2?K.d:K.b,x,top,1,len);R_(q,K.l,x,top+len-3,1,2)}}),
+deadtree:obc(74,90,[12,8],PBARK,(q,v,K)=>{q.strokeStyle=K.dd;q.lineCap='round';const br=(x,y,a,L,w,d)=>{const x2=x+Math.cos(a)*L,y2=y+Math.sin(a)*L;q.lineWidth=w;q.beginPath();q.moveTo(x,y);q.lineTo(x2,y2);q.stroke();if(d>0){br(x2,y2,a-.45-fH(d,L)*.3,L*.7,Math.max(1,w*.62),d-1);br(x2,y2,a+.4+fH(L,d)*.3,L*.66,Math.max(1,w*.6),d-1)}};
+br(37,86,-1.57,30,8,3);q.strokeStyle=K.b;br(36,86,-1.6,28,3,0);R_(q,K.dd,30,84,14,4);R_(q,K.x,32,60,3,2);R_(q,K.b,34,72,1,8)}),
+sapling:obc(26,38,0,PLEAF,(q,v,K)=>{R_(q,'#6b4a2a',12,20,2,16);R_(q,'#4a3220',10,35,6,2);fpCan(q,[[13,14,9],[7,19,6],[19,19,6]],K,7)}),
+// ground cover
+tgrass:obc(30,26,0,PGRS,(q,v,K)=>fpBlades(q,3,24,24,9,22,16,K,8)),
+tgrass_w:obc(68,30,0,PGRS,(q,v,K)=>fpBlades(q,3,62,28,8,24,40,K,9)),
+reeds:ob(26,38,0,q=>{for(let i=0;i<6;i++){const x=4+i*3+(i%2),h=22+((i*7)%10);R_(q,i%2?'#4f8a3a':'#3f7a2a',x,36-h,1,h);if(i%2==0){R_(q,'#6a4228',x-1,36-h-1,3,8);R_(q,'#8a5a32',x-1,36-h-1,1,6);R_(q,'#4f8a3a',x,36-h-4,1,3)}}for(let i=0;i<4;i++){R_(q,'#5aa04a',3+i*6,30-i%2*6,1,7);R_(q,'#5aa04a',4+i*6,28-i%2*6,2,1)}R_(q,'#3f7a2a',2,35,22,2)}),
+fern:obc(34,24,0,PGRS.concat([PLEAF[1]]),(q,v,K)=>{const L=[[-1.2,13],[-.7,15],[-.25,14],[.25,14],[.7,15],[1.2,13],[-1.5,9],[1.5,9]];L.forEach(([a,len],k)=>{for(let t=0;t<len;t++){const x=Math.round(17+Math.sin(a)*t),y=Math.round(22-Math.cos(a)*t*.8-t*t*.01);R_(q,K.d,x,y,1,1);if(t>1&&t%2==0){R_(q,k%2?K.b:K.l,x-2,y,2,1);R_(q,K.b,x+1,y,2,1)}}});R_(q,K.dd,15,21,4,2)}),
+// fallen trees, rotting
+bigfall:obc(160,48,[146,24],PBARK.slice(3).concat(PBARK.slice(0,3)),(q,v,K)=>{const B=[K.b,K.dd,K.l];
+q.strokeStyle=K.dd;q.lineWidth=3;q.beginPath();q.moveTo(140,24);q.lineTo(152,10);q.moveTo(146,26);q.lineTo(158,22);q.moveTo(132,40);q.lineTo(142,46);q.stroke();q.lineWidth=1;q.beginPath();q.moveTo(152,10);q.lineTo(156,4);q.moveTo(150,12);q.lineTo(145,5);q.stroke();
+fpLog(q,12,146,20,24,B,11);R_(q,K.dd,140,22,8,20);
+q.fillStyle='#b89a6a';q.beginPath();q.moveTo(14,20);q.lineTo(6,22);q.lineTo(10,26);q.lineTo(3,30);q.lineTo(9,34);q.lineTo(4,39);q.lineTo(14,44);q.fill();q.fillStyle='#3a2a1a';q.beginPath();q.ellipse(14,32,5,9,0,0,7);q.fill();q.fillStyle='#8a6a44';q.fillRect(9,25,2,14);
+for(const[x,w]of[[24,22],[60,16],[96,26]])fpMoss(q,x,21,w);for(const[x,y,rx]of[[44,30,6],[82,33,5],[118,29,4]]){q.fillStyle='#8a6a44';q.beginPath();q.ellipse(x,y,rx+1,3.5,0,0,7);q.fill();q.fillStyle='#24180e';q.beginPath();q.ellipse(x,y,rx,2.5,0,0,7);q.fill()}
+for(const[x,s]of[[34,3],[38,2],[70,3],[106,2],[110,3]])fpFungus(q,x,38,s);R_(q,'#c04a3a',90,17,3,2);R_(q,'#efe2c0',91,17,1,1);R_(q,'#7a8a4a',52,42,10,2)}),
+fallroot:obc(144,64,[112,22],PBARK.slice(3).concat(PBARK.slice(0,3)),(q,v,K)=>{const B=[K.b,K.dd,K.l];q.strokeStyle=K.dd;q.lineWidth=2;q.beginPath();q.moveTo(126,44);q.lineTo(138,30);q.lineTo(142,24);q.moveTo(132,50);q.lineTo(142,58);q.moveTo(134,40);q.lineTo(140,40);q.stroke();
+fpLog(q,40,132,40,20,B,12);R_(q,K.dd,128,42,6,16);fpMoss(q,60,41,18);fpMoss(q,96,41,10);fpFungus(q,76,54,3);fpFungus(q,84,55,2);
+q.lineCap='round';for(let i=0;i<16;i++){const a=i/16*6.283+fH(i,13)*.3,r2=26+fH(i,14)*9,b=a+(fH(i,15)-.5)*.6;q.strokeStyle=i%3?'#5a4128':'#6b4a2a';q.lineWidth=i%2?2:3;q.beginPath();q.moveTo(26+Math.cos(a)*18,34+Math.sin(a)*19);q.quadraticCurveTo(26+Math.cos(a)*(r2-4),34+Math.sin(a)*(r2-4),26+Math.cos(b)*r2,34+Math.sin(b)*r2);q.stroke()}
+q.fillStyle='#33241a';q.beginPath();q.ellipse(26,34,23,25,0,0,7);q.fill();q.fillStyle='#4e3922';q.beginPath();q.ellipse(25,33,21,23,0,0,7);q.fill();
+for(const[x,y,rx,ry]of[[19,25,8,6],[31,38,7,5],[22,43,6,4],[33,24,5,4]]){q.fillStyle='#6a4f32';q.beginPath();q.ellipse(x,y,rx,ry,.4,0,7);q.fill()}
+q.strokeStyle='#2a1c12';q.lineWidth=1;for(let i=0;i<6;i++){const x=12+fH(i,16)*26,y=16+fH(i,17)*32;q.beginPath();q.moveTo(x,y);q.lineTo(x+3+fH(i,18)*4,y+1+fH(i,19)*3);q.stroke()}
+for(const[x,y]of[[14,30],[27,17],[36,32],[24,49],[16,40]]){R_(q,'#8a6a44',x,y,3,3);R_(q,'#3e2c1a',x+1,y+1,1,1)}R_(q,'#8a8f96',30,44,4,3);R_(q,'#7c8089',17,20,3,2);R_(q,'#a8adb7',31,44,2,1)}),
+rotlog:obc(78,34,[70,18],PBARK.slice(3).concat(PBARK.slice(0,3)),(q,v,K)=>{fpLog(q,8,76,10,22,[K.b,K.dd,K.l],14);R_(q,K.dd,72,12,4,18);q.fillStyle='#8a6a44';q.beginPath();q.ellipse(9,21,7,11,0,0,7);q.fill();q.fillStyle='#24180e';q.beginPath();q.ellipse(9,21,5,9,0,0,7);q.fill();q.fillStyle='#3a2a1a';q.fillRect(7,24,4,4);
+fpMoss(q,20,11,20);fpMoss(q,52,11,10);fpFungus(q,30,26,3);fpFungus(q,56,27,2);R_(q,'#c04a3a',46,7,4,3);R_(q,'#efe2c0',47,7,1,1);R_(q,'#e8e0c8',47,10,2,2);R_(q,'#2a1e14',36,18,10,1);R_(q,'#2a1e14',44,18,1,4)}),
+logpile:obc(54,36,[48,20],PBARK.slice(3).concat(PBARK.slice(0,3)),(q,v,K)=>{const end=(x,y,r)=>{q.fillStyle=K.dd;q.beginPath();q.arc(x,y,r+1,0,7);q.fill();q.fillStyle=K.b;q.beginPath();q.arc(x,y,r,0,7);q.fill();q.fillStyle='#c8a070';q.beginPath();q.arc(x,y,r-2,0,7);q.fill();if(r>5){q.strokeStyle='#a88050';q.lineWidth=1;q.beginPath();q.arc(x,y,r-4,0,7);q.stroke()}R_(q,'#8a6440',x-1,y-1,2,2)};
+for(const x of[12,27,42])end(x,26,7);for(const x of[19.5,34.5])end(x,13,7);end(27,4,3.5)}),
+// farm crops (not solid: walk through them, or turn Solid on)
+corn_r:ob(68,52,0,q=>{fpRow(q,2,46,64);for(let i=0;i<5;i++){const cx=7+i*13,o=(i*7)%3,ry=48;R_(q,'#4f8a2a',cx,ry-40-o,3,40+o);R_(q,'#6aa83a',cx-6,ry-20,6,2);R_(q,'#6aa83a',cx+3,ry-27,6,2);R_(q,'#6aa83a',cx-5,ry-33,5,2);R_(q,'#3f7a2a',cx+3,ry-19,5,9);R_(q,'#f0d050',cx+4,ry-18,3,7);R_(q,'#d8b870',cx-1,ry-43-o,5,3);R_(q,'#3f7a2a',cx+1,ry-6,1,4)}}),
+wheat:ob(68,34,0,q=>{for(let x=3;x<65;x+=2){const top=6+Math.floor(fH(x,15)*8),lean=Math.round((fH(15,x)-.5)*2);R_(q,x%4?'#c8a83a':'#b0902a',x,top+5,1,30-top-5);R_(q,'#e0c25a',x+lean,top,2,6);R_(q,'#a8882a',x+lean,top+1,1,1);R_(q,'#a8882a',x+lean+1,top+3,1,1)}R_(q,'#9a7a2a',2,31,64,2)}),
+cabbage:ob(68,24,0,q=>{fpRow(q,2,18,64);for(let i=0;i<4;i++){const cx=10+i*16,cy=13;q.fillStyle='#3f7a32';q.beginPath();q.arc(cx,cy,8,0,7);q.fill();q.fillStyle='#5a9a4a';q.beginPath();q.arc(cx,cy-1,7,0,7);q.fill();q.fillStyle='#9ad06a';q.beginPath();q.arc(cx,cy-1,4,0,7);q.fill();R_(q,'#c0e890',cx-2,cy-3,2,2);R_(q,'#4a8a3a',cx-6,cy,4,1);R_(q,'#4a8a3a',cx+3,cy+2,4,1)}}),
+pumpkin:ob(64,32,0,q=>{q.strokeStyle='#3f7a2a';q.lineWidth=2;q.beginPath();q.moveTo(3,24);q.bezierCurveTo(16,10,30,30,44,16);q.bezierCurveTo(52,10,58,20,61,14);q.stroke();for(const[x,y]of[[10,15],[26,22],[38,12],[54,12]]){q.fillStyle='#3f7a2a';q.beginPath();q.arc(x,y,5,0,7);q.fill();q.fillStyle='#5a9a3a';q.beginPath();q.arc(x-1,y-1,3,0,7);q.fill()}
+for(const[x,y,r]of[[18,22,7],[44,24,5],[33,25,4]]){q.fillStyle='#c85a1a';q.beginPath();q.ellipse(x,y,r*1.3,r,0,0,7);q.fill();q.fillStyle='#e8782a';q.beginPath();q.ellipse(x-1,y-1,r*1.15,r*.85,0,0,7);q.fill();R_(q,'#c85a1a',x-1,y-r+1,1,r*2-2);R_(q,'#c85a1a',x+Math.round(r*.6),y-r+2,1,r*2-4);R_(q,'#f0a050',x-Math.round(r*.7),y-2,2,2);R_(q,'#5a7a2a',x-1,y-r-2,3,3)}}),
+tomato:ob(64,40,0,q=>{fpRow(q,2,34,60);for(let i=0;i<3;i++){const cx=12+i*20;R_(q,'#8a6a42',cx,4,2,32);for(const[dx,dy,r]of[[-4,10,6],[4,14,6],[-3,20,6],[4,25,5],[0,6,4]]){q.fillStyle='#2f6b2a';q.beginPath();q.arc(cx+dx,dy,r,0,7);q.fill();q.fillStyle='#4a8a3a';q.beginPath();q.arc(cx+dx-1,dy-1,r-2,0,7);q.fill()}
+for(const[dx,dy]of[[-5,13],[5,18],[-2,24],[3,9],[6,27]]){R_(q,'#b82a1a',cx+dx,dy,3,3);R_(q,'#e84a3a',cx+dx,dy,2,2);R_(q,'#ffb0a0',cx+dx,dy,1,1)}}}),
+carrot_r:ob(64,22,0,q=>{fpRow(q,2,16,60);for(let cx=6;cx<60;cx+=9){R_(q,'#5aa83a',cx-3,8,2,6);R_(q,'#5aa83a',cx,4,2,10);R_(q,'#5aa83a',cx+3,8,2,6);R_(q,'#7ac04a',cx,4,2,3);R_(q,'#e8782a',cx-1,13,5,4);R_(q,'#c85a1a',cx-1,16,5,1)}}),
+sunflow:ob(58,56,0,q=>{fpRow(q,2,50,54);for(const[cx,top]of[[11,10],[29,4],[47,12]]){R_(q,'#4a8a2a',cx,top+8,2,52-top-8);R_(q,'#5aa03a',cx-7,top+22,7,3);R_(q,'#5aa03a',cx+2,top+28,7,3);q.fillStyle='#f0c020';for(let k=0;k<10;k++){const a=k/10*6.283;q.beginPath();q.ellipse(cx+1+Math.cos(a)*6,top+Math.sin(a)*6,3,1.6,a,0,7);q.fill()}
+q.fillStyle='#5a3a1a';q.beginPath();q.arc(cx+1,top,4.5,0,7);q.fill();R_(q,'#3a2410',cx-1,top-1,1,1);R_(q,'#3a2410',cx+2,top+1,1,1);R_(q,'#7a5a2a',cx,top-3,2,1)}})
+});
 // ---------- Hometown bosses: Penny the cashier (15) and the Mayor (16) ----------
 var GCI=[],GCC=[];
 function grIn(q){const R=HS.ST;return!!R&&q.x>R[0]&&q.x<R[2]&&q.y>R[1]&&q.y<R[3]}
@@ -4880,7 +5110,10 @@ let CURS='';function aimCursor(){try{const c=mode=='play'&&MSE.on?'none':'';if(c
 // ---------- editor assets ----------
 // Only real game art is listed: every prop in OB and every highway vehicle kind in HWV. A prop added to OB later shows up
 // by itself under "Other"; give it a name and category by adding a line to EDPN below.
-const EDCAT=[['all','All'],['vehicles','Vehicles'],['buildings','Buildings & walls'],['street','Street'],['nature','Nature'],['spooky','Graveyard & spooky'],['supplies','Supplies & tools'],['furniture','Furniture'],['store','Shops'],['play','Park & playground'],['other','Other']];
+const EDCAT=[['all','All'],['vehicles','Vehicles'],['buildings','Buildings & walls'],['street','Street'],['nature','Nature'],['spooky','Graveyard & spooky'],['supplies','Supplies & tools'],['kitchen','Kitchen'],['living','Living room'],['bedroom','Bedroom'],['bath','Bathroom'],['garage','Garage'],['furniture','Furniture'],['store','Shops'],['play','Park & playground'],['farm','Farm & crops'],['other','Other']];
+// the colours a thing can take, as [hex, name] (null: it has one look); vehicles use EDVC
+function edPalOf(o){if(o.veh)return EDVC.map(x=>[x,x]);const B=cmOB(o.k);return B&&B.pc||null}
+function edColOf(o){const P=edPalOf(o);return o.c||(P?P[0][0]:'')}
 // prop key -> [name, category]
 const EDPN={bush:['Bush','nature'],flower:['Flowers','nature'],tuft:['Grass tuft','nature'],rock:['Rock','nature'],stump:['Stump','nature'],log:['Log','nature'],logb:['Fallen log','nature'],logv:['Log (long, upright)','nature'],pine:['Pine tree','nature'],dead:['Dead shrub','nature'],cactus:['Cactus','nature'],tumble:['Tumbleweed','nature'],hay:['Hay bale','nature'],shroom:['Mushrooms','nature'],crater:['Crater','nature'],rubble:['Rubble','nature'],hedge:['Hedge','nature'],planter:['Planter','nature'],fbed:['Flower bed','nature'],
 lamp:['Street lamp','street'],plight:['Parking lot light','street'],tlight:['Traffic light','street'],hydrant:['Fire hydrant','street'],mail:['Mailbox','street'],newsb:['Newspaper box','street'],bench:['Bench','street'],can:['Trash can','street'],trash:['Trash bin','street'],dumpster:['Dumpster','street'],cone:['Traffic cone','street'],psign:['No swimming sign','street'],stree:['Street tree','street'],umb:['Umbrella table','street'],picnic:['Picnic table','street'],pump:['Gas pump','street'],cart:['Shopping cart','street'],cartrow:['Row of carts','street'],corral:['Cart corral','street'],bike:['Bike rack','street'],bstop:['Bus stop','street'],fountd:['Drinking fountain','street'],jersey:['Concrete barrier','street'],stanch:['Rope barrier','street'],
@@ -4890,7 +5123,17 @@ cross:['Wooden cross','spooky'],g_round:['Round headstone','spooky'],g_cross:['S
 crate:['Crate','supplies'],barrel:['Barrel','supplies'],pallet:['Pallet','supplies'],box:['Cardboard box','supplies'],pbox:['Boxes on a pallet','supplies'],tire:['Tire','supplies'],tirestack:['Tire stack','supplies'],ammo:['Ammo crate','supplies'],fuel:['Fuel cans','supplies'],bags:['Trash bags','supplies'],toolbox:['Tool chest','supplies'],gear:['Gear locker','supplies'],hoserack:['Hose rack','supplies'],shovel:['Shovel','supplies'],broom:['Broom','supplies'],bucket:['Bucket','supplies'],cooler:['Cooler','supplies'],lantern:['Lantern','supplies'],rod:['Fishing rod','supplies'],tackle:['Tackle box','supplies'],canrack:['Canoe rack','supplies'],anvil:['Anvil','supplies'],forge:['Forge','supplies'],safe:['Safe','supplies'],panel:['Control panel','supplies'],conveyor:['Conveyor belt','supplies'],shelf:['Warehouse shelf','supplies'],footlk:['Footlocker','supplies'],paper:['Papers','supplies'],tile:['Fallen ceiling tile','supplies'],
 table:['Wooden table','furniture'],chair:['Chair','furniture'],stool:['Stool','furniture'],couch:['Couch','furniture'],bed:['Bed','furniture'],mbed:['Four-poster bed','furniture'],bunk:['Bunk bed','furniture'],wbunk:['Bunk bed (red)','furniture'],hbed:['Hospital bed','furniture'],crib:['Crib','furniture'],wardrobe:['Wardrobe','furniture'],cabinet:['Filing cabinet','furniture'],bookshelf:['Bookshelf','furniture'],wshelf:['Wide bookshelf','furniture'],piano:['Piano','furniture'],stove:['Wood stove','furniture'],fplace:['Fireplace','furniture'],tub:['Bathtub','furniture'],toilet:['Toilet','furniture'],msink:['Sink','furniture'],mirror:['Mirror','furniture'],gclock:['Grandfather clock','furniture'],trophy:['Trophy case','furniture'],vending:['Vending machine','furniture'],sdesk:['School desk','furniture'],sdeskx:['Knocked-over desk','furniture'],tdesk:['Teacher\'s desk','furniture'],ctable:['Cafeteria table','furniture'],mtable:['Long dining table','furniture'],rtable:['Saloon table','furniture'],wtable:['Work table','furniture'],pew:['Pew','furniture'],plant:['Potted plant','furniture'],ivp:['IV pole','furniture'],bchair:['Barber chair','furniture'],grill:['Grill','furniture'],trough:['Water trough','furniture'],rhorse:['Rocking horse','furniture'],
 counter:['Counter','store'],rdesk:['Reception desk','store'],rbooth:['Diner booth','store'],checkout:['Checkout','store'],gshelf:['Grocery shelf','store'],fridge:['Drinks fridge','store'],freezer:['Chest freezer','store'],ufrz:['Upright freezer','store'],produce:['Produce stand','store'],rack:['Clothes rack','store'],display:['Display case','store'],espresso:['Espresso machine','store'],
-swing:['Swing set','play'],slide:['Slide','play'],hoop:['Basketball hoop','play'],merry:['Merry-go-round','play'],jgym:['Jungle gym','play'],bigjg:['Big play structure','play'],jg2:['Play tower','play'],sptow:['Splash tower','play'],tramp:['Trampoline','play']};
+swing:['Swing set','play'],slide:['Slide','play'],hoop:['Basketball hoop','play'],merry:['Merry-go-round','play'],jgym:['Jungle gym','play'],bigjg:['Big play structure','play'],jg2:['Play tower','play'],sptow:['Splash tower','play'],tramp:['Trampoline','play'],
+kc_base:['Counter','kitchen'],kc_long:['Counter (long)','kitchen'],kc_corner:['Corner counter','kitchen'],kc_sink:['Kitchen sink','kitchen'],kc_range:['Stove & oven','kitchen'],kfridge:['Refrigerator','kitchen'],kfridge2:['French-door fridge','kitchen'],
+kcab_s:['Cabinet (small)','kitchen'],kcab_m:['Cabinet','kitchen'],kcab_w:['Cabinet (wide)','kitchen'],kpantry:['Pantry cabinet (tall)','kitchen'],kisland:['Kitchen island','kitchen'],kisland_b:['Big island with stools','kitchen'],
+ktable_s:['Kitchen table (round, 2 chairs)','kitchen'],ktable:['Kitchen table (4 chairs)','kitchen'],ktable_l:['Dining table (6 chairs)','kitchen'],
+sofa2:['Loveseat','living'],sofa3:['Sofa','living'],sofa_l:['Sectional sofa','living'],armch:['Armchair','living'],recl:['Recliner','living'],tvs_s:['TV stand (small)','living'],tvs_w:['Media console','living'],tvs_tv:['TV stand with TV','living'],
+tv_flat:['Flat TV','living'],tv_big:['Big flat TV','living'],tv_crt:['Old TV','living'],bfplace:['Brick fireplace','living'],
+nstand:['Nightstand with lamp','bedroom'],nstand2:['Nightstand','bedroom'],dress_s:['Dresser (small)','bedroom'],dress_w:['Dresser (wide)','bedroom'],dress_m:['Dresser with mirror','bedroom'],dress_t:['Chest of drawers (tall)','bedroom'],
+shower:['Shower stall','bath'],shower_w:['Walk-in shower','bath'],gcab_t:['Garage cabinet (tall)','garage'],gcab_w:['Garage cabinet set','garage'],gbench:['Workbench','garage'],gchest:['Rolling tool chest','garage'],
+oak:['Oak tree','nature'],oak_b:['Big oak tree','nature'],maple:['Maple tree','nature'],birch:['Birch tree','nature'],spruce:['Spruce tree','nature'],pine_g:['Giant pine','nature'],willow:['Weeping willow','nature'],deadtree:['Big dead tree','nature'],sapling:['Young tree','nature'],
+tgrass:['Long grass','nature'],tgrass_w:['Long grass (wide)','nature'],reeds:['Cattails','nature'],fern:['Fern','nature'],bigfall:['Big fallen tree (rotting)','nature'],fallroot:['Fallen tree with roots','nature'],rotlog:['Rotting hollow log','nature'],logpile:['Log pile','nature'],
+corn_r:['Corn row','farm'],wheat:['Wheat','farm'],cabbage:['Cabbage row','farm'],pumpkin:['Pumpkin patch','farm'],tomato:['Tomato plants','farm'],carrot_r:['Carrot row','farm'],sunflow:['Sunflowers','farm']};
 // top-down highway vehicles (they turn freely and take a colour)
 const EDVN={sedan:'Sedan',suv:'SUV',pickup:'Pickup truck',van:'Van',limo:'Limo',police:'Police car',amb:'Ambulance',fire:'Fire truck',bus:'School bus (top)',semi:'Semi truck',cab:'Semi cab',trailer:'Semi trailer',hmv:'Humvee (top)',mtruck:'Army truck (top)'};
 const EDVC=['#c0392b','#2f6fd0','#d8d8d4','#26262c','#8a8f96','#2f8a4a','#d68a1c','#6a4a9a','#a8a49a','#7a1f1f','#1f4f7a','#e0c040'];
@@ -4902,10 +5145,10 @@ const ci=c=>{const i=EDCAT.findIndex(x=>x[0]==c);return i<0?99:i};L.sort((a,b)=>
 function edAsset(o){const own=(T,k)=>Object.prototype.hasOwnProperty.call(T,k);return o.veh?{t:'v',k:o.veh,n:own(EDVN,o.veh)?EDVN[o.veh]:String(o.veh)}:{t:'p',k:o.k,n:own(EDPN,o.k)?EDPN[o.k][0]:String(o.k)}}
 // sprites drawn once into small canvases: props anchored at their base, vehicles centred and unturned
 const EDSP={};
-function edSprite(o){const v=o.vr!=null?Math.round(o.vr*10)/10:Math.round(cmH(o.x,o.y,3)*10)/10,key=o.veh?'v|'+o.veh+'|'+(o.c||'')+'|'+(o.dmg?1:0)+(o.burn?1:0):'p|'+o.k+'|'+v;
+function edSprite(o){const v=o.vr!=null?Math.round(o.vr*10)/10:Math.round(cmH(o.x,o.y,3)*10)/10,key=o.veh?'v|'+o.veh+'|'+(o.c||'')+'|'+(o.dmg?1:0)+(o.burn?1:0):'p|'+o.k+'|'+v+'|'+(o.c||'');
 if(EDSP[key])return EDSP[key];let s=null;
 try{if(o.veh){const q=cmVeh({veh:o.veh,x:0,y:0,r:0,c:o.c,dmg:o.dmg,burn:o.burn});if(q){const pad=6,c=document.createElement('canvas');c.width=q.L+pad*2;c.height=q.W+pad*2;const g=c.getContext('2d');q.x=c.width/2;q.y=c.height/2;hwDraw(g,q);s={c,ax:c.width/2,ay:c.height/2,w:q.L,h:q.W}}}
-else{const B=cmOB(o.k);if(B){const c=document.createElement('canvas');c.width=B.w+4;c.height=B.h+4;const g=c.getContext('2d');B.f(g,c.width/2,c.height-2,v);s={c,ax:c.width/2,ay:c.height-2,w:B.w,h:B.h}}}}catch(e){s=null}
+else{const B=cmOB(o.k);if(B){const c=document.createElement('canvas');c.width=B.w+4;c.height=B.h+4;const g=c.getContext('2d');B.f(g,c.width/2,c.height-2,v,o.c);s={c,ax:c.width/2,ay:c.height-2,w:B.w,h:B.h}}}}catch(e){s=null}
 return EDSP[key]=s}
 // a thumbnail image (data URL) for the browser grid
 const EDTH={};
@@ -4937,7 +5180,7 @@ if(E.loV!==E.ver){E.loL=cmDrawList(d,1).map(it=>{if(it.w)return{o:it.o,w:1,r:0};
 for(const{o,w,r}of E.loL){if(w){if(o.x<x1&&o.x+o.w>x0&&o.y<y1&&o.y+o.h>y0)edWallLook(q,o,1)}else if(o.x-r<x1&&o.x+r>x0&&o.y-r<y1&&o.y+r>y0)edObjLook(q,o,1)}
 q.setTransform(1,0,0,1,0,0);L_[f]={c:l,v:E.ver};return l}
 // a changed tile repaints its chunk and its neighbours' (shorelines look across tile edges)
-function edTileDirty(i){const E=ED,d=E.d,tx=i%d.w,ty=(i/d.w)|0;for(const[a,b]of[[0,0],[1,0],[-1,0],[0,1],[0,-1]]){const x=tx+a,y=ty+b;if(x<0||y<0||x>=d.w||y>=d.h)continue;const c=E.ch.get(Math.floor(x/EDCS)+','+Math.floor(y/EDCS));if(c)c.dirty=1}E.mmDirty=1;E.need=1}
+function edTileDirty(i){const E=ED,d=E.d,tx=i%d.w,ty=(i/d.w)|0;for(const[a,b]of[[0,0],[1,0],[-1,0],[0,1],[0,-1],[2,0],[-2,0],[0,2],[0,-2]]){const x=tx+a,y=ty+b;if(x<0||y<0||x>=d.w||y>=d.h)continue;const c=E.ch.get(Math.floor(x/EDCS)+','+Math.floor(y/EDCS));if(c)c.dirty=1}E.mmDirty=1;E.need=1}
 function edAllDirty(){if(!ED)return;for(const c of ED.ch.values()){c.cv.width=0;c.cv.height=0;for(const k in c.lo||{}){c.lo[k].c.width=0;c.lo[k].c.height=0}}ED.ch.clear();ED.mmDirty=1;ED.need=1}
 // local box of an object's sprite around its anchor (x,y), before turning
 function edBox(o){const s=edSprite(o);if(s)return{x0:-s.ax,y0:-s.ay,x1:s.c.width-s.ax,y1:s.c.height-s.ay};return{x0:-12,y0:-24,x1:12,y1:0}}
@@ -5008,7 +5251,7 @@ else if(D_.t=='wall'){edWallLook(g,{x:r.x,y:r.y,w:r.w,h:r.h,s:E.wall},.8);g.line
 else if(D_.t=='cut'){g.fillStyle='rgba(255,60,60,.25)';g.fillRect(r.x,r.y,r.w,r.h);g.setLineDash([5*px,4*px]);g.lineWidth=2*px;g.strokeStyle='#ff5a4a';g.strokeRect(r.x,r.y,r.w,r.h);g.setLineDash([])}
 else{g.fillStyle='rgba(216,64,58,.22)';g.fillRect(r.x,r.y,r.w,r.h);g.setLineDash([6*px,4*px]);g.lineWidth=2*px;g.strokeStyle='#ff6a5a';g.strokeRect(r.x,r.y,r.w,r.h);g.setLineDash([])}
 const lab=Math.round(r.w)+' × '+Math.round(r.h);g.save();g.setTransform(1,0,0,1,0,0);const dpr=g.canvas.width/E.cv.clientWidth;g.scale(dpr,dpr);g.font='16px VT323, monospace';g.textAlign='left';g.textBaseline='bottom';const sx=edSX(r.x+r.w)+6,sy=edSY(r.y+r.h)+18;g.fillStyle='rgba(0,0,0,.6)';g.fillRect(sx-3,sy-17,g.measureText(lab).width+6,17);g.fillStyle='#ffcf40';g.fillText(lab,sx,sy);g.restore();return}
-if(t=='place'&&E.asset&&!D_){const a=E.asset,p=edSnapPt(m.wx,m.wy),o=a.t=='v'?{veh:a.k,x:p.x,y:p.y,r:E.rot,c:E.vcol}:{k:a.k,x:p.x,y:p.y,r:E.rot,vr:E.pvr};edObjLook(g,o,.6);const f=a.t=='p'&&cmFoot(o);if(f){g.lineWidth=px;g.strokeStyle='rgba(255,170,40,.9)';g.strokeRect(f[0],f[1],f[2],f[3])}return}
+if(t=='place'&&E.asset&&!D_){const a=E.asset,p=edSnapPt(m.wx,m.wy),o=a.t=='v'?{veh:a.k,x:p.x,y:p.y,r:E.rot,c:E.vcol}:{k:a.k,x:p.x,y:p.y,r:E.rot,vr:E.pvr,c:E.pcol[a.k]};edObjLook(g,o,.6);const f=a.t=='p'&&cmFoot(o);if(f){g.lineWidth=px;g.strokeStyle='rgba(255,170,40,.9)';g.strokeRect(f[0],f[1],f[2],f[3])}return}
 if((t=='wall'||t=='zone')&&!D_){const p=edSnapPt(m.wx,m.wy);g.fillStyle='#ffcf40';g.fillRect(p.x-3*px,p.y-3*px,6*px,6*px)}}
 // ----- minimap -----
 function edMiniTex(){const E=ED,d=E.d,c=E.mmc||(E.mmc=document.createElement('canvas'));c.width=d.w;c.height=d.h;const q=c.getContext('2d'),im=q.createImageData(d.w,d.h),px=im.data,col={};
@@ -5061,7 +5304,7 @@ function edEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;
 // ----- opening and closing -----
 // src: 'saved' when the map is already in storage
 function edOpen(d,src,dirty){if(ED)edTeardown();hReset();
-ED={d,src:src||'saved',cam:{x:0,y:0,z:1},tool:'select',tab:'terrain',ter:'grass',terK:'t',brush:1,asset:null,rot:0,pvr:Math.random(),vcol:EDVC[0],wall:'wall',wth:8,
+ED={d,src:src||'saved',cam:{x:0,y:0,z:1},tool:'select',tab:'terrain',ter:'grass',terK:'t',brush:1,asset:null,rot:0,pvr:Math.random(),vcol:EDVC[0],pcol:{},wall:'wall',wth:8,
 sel:[],she:0,al:'',pt:'t',rt:'props',dlV:-1,dl:null,hov:null,snap:1,step:16,grid:1,coll:0,pl:1,pr:1,drag:null,mouse:{x:0,y:0,wx:0,wy:0,in:0},ch:new Map(),ver:0,collV:-1,collC:null,mark:0,probs:cmLint(d),q:'',cat:'all',
 need:1,mmDirty:1,mmNeed:1,vis:1,space:0,cvx:0,cvy:0,mmw:200,mmh:150,dt:0,tip:''};
 if(dirty)ED.mark=-1;mode='edit';UIS='';ui.innerHTML='';L=R=null;mouse.d=0;keys={};
@@ -5100,19 +5343,22 @@ el.innerHTML=`${edTB('back','back','Back to the Map Workshop',0,0,'Workshop')}<b
 EDT.map(t=>edTB('tool:'+t[0],t[0],t[1]+' ('+t[2]+')',E.tool==t[0])).join('')+`<span class=edsep></span>${edTB('undo','undo','Undo'+(EDH.u.length?': '+EDH.u[EDH.u.length-1].n:'')+' (Ctrl+Z)',0,!EDH.u.length)}${edTB('redo','redo','Redo'+(EDH.r.length?': '+EDH.r[EDH.r.length-1].n:'')+' (Ctrl+Y)',0,!EDH.r.length)}<span class=edsep></span>`+
 `${edTB('grid','grid','Grid (Shift+G)',E.grid)}${edTB('coll','coll','Show collision: red stops bullets, orange is solid props, blue is see-through like fences and water (Shift+C)',E.coll)}${edTB('snap','snap','Snap to a '+E.step+'px grid (Shift+S)',E.snap)}<span class=edsep></span>`+
 `${edTB('probs','check','Problems with the map: click one to go to it',0,0,pc?String(pc):'✓')}<span class=edgrow></span><button data-a=save class="${dirty?'edsave':'edsaved'}" title="${dirty?'Unsaved changes: save them (Ctrl+S)':'Everything is saved (Ctrl+S saves)'}">${edIco('save')}<span>${dirty?'Save ●':'Saved ✓'}</span></button><button data-a=playtest class=edgo title="Play this map with the real game, then come back here">${edIco('play')}<span>Playtest</span></button>`}
-function edTerSw(t,ov){const k=(ov?'o:':'t:')+t.id;if(EDTH[k])return EDTH[k];const c=document.createElement('canvas');c.width=c.height=32;const g=c.getContext('2d');if(ov){CMTI.concrete.f(g,0,0,3,5);t.f(g,0,0,3,5)}else t.f(g,0,0,3,5);let u='';try{u=c.toDataURL()}catch(e){}return EDTH[k]=u}
+function edTerSw(t,ov){const k=(ov?'o:':'t:')+t.id;if(EDTH[k])return EDTH[k];const c=document.createElement('canvas');c.width=c.height=32;const g=c.getContext('2d');if(ov){(t.mk?CMTI.asphalt:CMTI.concrete).f(g,0,0,3,5);t.f(g,0,0,3,5)}else t.f(g,0,0,3,5);let u='';try{u=c.toDataURL()}catch(e){}return EDTH[k]=u}
 function edLeft(){const E=ED,el=E.root.querySelector('#edl');const tabs=[['terrain','Terrain'],['assets','Props'],['walls','Walls'],['spawns','Spawns']];
 let h=`<div class=edtabs>${tabs.map(t=>`<button data-a="tab:${t[0]}" class="${E.tab==t[0]?'on':''}">${t[1]}</button>`).join('')}</div><div class=edpane>`;
 if(E.tab=='terrain'){const tool=['brush','erase','fill','rect','pick'].includes(E.tool)?E.tool:'brush';
 h+=`<div class=edtools>${['brush','erase','fill','rect','pick'].map(id=>{const t=EDT.find(x=>x[0]==id);return edTB('tool:'+id,id,t[1]+' ('+t[2]+')',E.tool==id,0,t[1])}).join('')}</div>`;
 {const tl=cmLy(E.d,E.pt=='r'?'roads':'terrain');h+=`<h4>Paint on</h4><div class="edrow edseg"><button data-a="pt:t" class="${E.pt=='t'?'on':''}" title="The ground under everything">${edEsc(cmLy(E.d,'terrain').n)}</button><button data-a="pt:r" class="${E.pt=='r'?'on':''}" title="Tiles painted over the ground: erasing shows the ground again">${edEsc(cmLy(E.d,'roads').n)}</button></div>${tl.lock||tl.hid?`<p class=edhint>⚠ This layer is ${tl.lock?'locked':'hidden'}: ${tl.lock?'unlock':'show'} it in the Layers panel to paint.</p>`:''}`}
 h+=`<h4>Ground</h4><div class=edsw>${CMTER.map(t=>`<button data-a="ter:${t.id}" class="${E.terK=='t'&&E.ter==t.id?'on':''}" title="${edEsc(t.n)}${t.walk===0?' (blocks walking)':''}"><img alt="" src="${edTerSw(t)}"><span>${edEsc(t.n)}</span></button>`).join('')}</div>`;
-h+=`<h4>Overlays</h4><div class=edsw>${CMOVL.map(t=>`<button data-a="ovl:${t.id}" class="${E.terK=='o'&&E.ter==t.id?'on':''}" title="${edEsc(t.n)}"><img alt="" src="${edTerSw(t,1)}"><span>${edEsc(t.n)}</span></button>`).join('')}</div>`;
+const ovb=t=>`<button data-a="ovl:${t.id}" class="${E.terK=='o'&&E.ter==t.id?'on':''}" title="${edEsc(t.n)}${t.mk?': joins up with the same marking next to it':''}"><img alt="" src="${edTerSw(t,1)}"><span>${edEsc(t.n)}</span></button>`;
+h+=`<h4>Road markings</h4><div class=edsw>${CMOVL.filter(t=>t.mk).map(ovb).join('')}</div>`;
+h+=`<h4>Overlays</h4><div class=edsw>${CMOVL.filter(t=>!t.mk).map(t=>`<button data-a="ovl:${t.id}" class="${E.terK=='o'&&E.ter==t.id?'on':''}" title="${edEsc(t.n)}"><img alt="" src="${edTerSw(t,1)}"><span>${edEsc(t.n)}</span></button>`).join('')}</div>`;
 h+=`<h4>Brush size</h4><div class=edrow><button data-a=bs- title="Smaller ([)">−</button><input type=range min=1 max=9 value="${E.brush}" data-f=brush aria-label="Brush size"><button data-a=bs+ title="Bigger (])">+</button><b class=edval>${E.brush}×${E.brush}</b></div>`;
-h+=`<p class=edhint>${E.tool=='erase'?(E.terK=='o'?'The eraser removes overlays.':E.pt=='r'?'The eraser removes road tiles, showing the ground below.':'The eraser puts back the default ground ('+edEsc((CMTI[E.d.ground]||CMTER[0]).n)+') and removes overlays.'):'Water blocks walking, on either layer. Bullets still fly over it. Overlays always go on the Terrain layer.'}</p>`;}
+h+=`<p class=edhint>${E.tool=='erase'?(E.terK=='o'?'The eraser removes overlays.':E.pt=='r'?'The eraser removes road tiles, showing the ground below.':'The eraser puts back the default ground ('+edEsc((CMTI[E.d.ground]||CMTER[0]).n)+') and removes overlays.'):(E.terK=='o'&&CMOI[E.ter]&&CMOI[E.ter].mk?'Road markings paint on top of any ground or road. Paint a row of tiles and the line joins up; a tile on its own makes one stripe. One marking or overlay per tile.':'Water blocks walking, on either layer. Bullets still fly over it. Overlays and road markings always go on the Terrain layer and show on top of roads.')}</p>`;}
 else if(E.tab=='assets'){const A=edAssets(),q=E.q.trim().toLowerCase(),cats=EDCAT.filter(c=>c[0]=='all'||A.some(a=>a.cat==c[0]));
 h+=`<input type=search data-f=q placeholder="Search props and vehicles" value="${edEsc(E.q)}" autocomplete=off><select data-f=cat aria-label="Category">${cats.map(c=>`<option value="${c[0]}"${E.cat==c[0]?' selected':''}>${c[1]}</option>`).join('')}</select>`;
-const a=E.asset;if(a){h+=`<div class=edcur><img alt="" src="${edThumb(a)}"><div><b>${edEsc(a.n)}</b><small>Rotation ${Math.round(E.rot)}° · R / Shift+R turns</small></div></div>`;if(a.t=='v')h+=`<div class=edcols>${EDVC.map(c=>`<button data-a="vcol:${c}" class="${E.vcol==c?'on':''}" style="--c:${c}" title="${c}"></button>`).join('')}</div>`}
+const a=E.asset;if(a){h+=`<div class=edcur><img alt="" src="${edThumb(a)}"><div><b>${edEsc(a.n)}</b><small>Rotation ${Math.round(E.rot)}° · R / Shift+R turns</small></div></div>`;if(a.t=='v')h+=`<div class=edcols>${EDVC.map(c=>`<button data-a="vcol:${c}" class="${E.vcol==c?'on':''}" style="--c:${c}" title="${c}"></button>`).join('')}</div><label class=edf title="Any colour"><span>Custom</span><input type=color data-f=vcolnew value="${/^#[0-9a-f]{6}$/i.test(E.vcol)?E.vcol:EDVC[0]}"></label>`;
+else{const P=edPalOf({k:a.k});if(P){const cur=E.pcol[a.k]||P[0][0];h+=`<h4>Colour</h4><div class=edcols>${P.map(([c,n])=>`<button data-a="pcol:${c}" class="${cur==c?'on':''}" style="--c:${c}" title="${edEsc(n)}"></button>`).join('')}</div><label class=edf title="Any colour"><span>Custom</span><input type=color data-f=pcolnew value="${cur}"></label><p class=edhint>New ones get this colour. Change a placed one in its properties.</p>`}}}
 h+=`<div class=edag id=edag>${edGrid()}</div>`}
 else if(E.tab=='walls'){h+=`<div class=edtools>${edTB('tool:wall','wall','Draw walls (W)',E.tool=='wall',0,'Draw walls')}</div><h4>Style</h4><div class=edlist>${CMWALL.map(s=>`<button data-a="wst:${s.id}" class="${E.wall==s.id?'on':''}"><i class=edws style="${edWallSw(s)}"></i><span>${edEsc(s.n)}<small>${s.fl==2?'blocks walking, bullets fly through':s.hid?'blocks walking and bullets, not drawn in the game':'blocks walking and bullets'}</small></span></button>`).join('')}</div>
 <h4>Thickness</h4><div class=edrow><input type=number min=4 max=64 step=2 value="${E.wth}" data-f=wth aria-label="Wall thickness"><span class=edval>px</span></div><p class=edhint>Drag along a line for a wall of this thickness, or drag a box for a block. Right-drag (or Alt+drag) cuts a gap, for doors. Props with a solid base get their own collision automatically.</p>`}
@@ -5121,7 +5367,7 @@ else{h+=`<div class=edlist>${[['start','Player start','Where the run begins.'],[
 el.innerHTML=h+'</div>'}
 function edWallSw(s){const c={wall:'#7a695c',brick:'#9a4632',concrete:'#8c9099',wood:'#8a5a2c',fence:'repeating-linear-gradient(45deg,#aab1bd 0 2px,transparent 2px 6px)',hidden:'rgba(170,110,255,.5)'}[s.id]||'#7a695c';return 'background:'+c}
 function edGrid(){const E=ED,q=E.q.trim().toLowerCase(),L=edAssets().filter(a=>(E.cat=='all'||a.cat==E.cat)&&(!q||a.n.toLowerCase().includes(q)||a.k.toLowerCase().includes(q)));
-if(!L.length)return `<p class=edhint>Nothing matches “${edEsc(E.q)}”.</p>`;return L.map(a=>`<button data-a="asset:${a.id}" class="${E.asset&&E.asset.id==a.id?'on':''}" title="${edEsc(a.n)}"><img alt="" loading=lazy src="${edThumb(a)}"><span>${edEsc(a.n)}</span></button>`).join('')}
+if(!L.length)return `<p class=edhint>Nothing matches “${edEsc(E.q)}”.</p>`;return L.map(a=>`<button data-a="asset:${a.id}" class="${E.asset&&E.asset.id==a.id?'on':''}" title="${edEsc(a.n)}${a.t=='v'||edPalOf({k:a.k})?' (comes in colours)':''}"><img alt="" loading=lazy src="${edThumb(a)}"><span>${edEsc(a.n)}</span></button>`).join('')}
 function edStatus(){const E=ED;if(!E||!E.root)return;const el=E.root.querySelector('#edst'),m=E.mouse,d=E.d,T=d.tile,t=EDT.find(x=>x[0]==E.tool),dirty=edIsDirty();
 const al=E.al&&cmLy(d,E.al),tl=al&&al.k=='o'?al.n:'Auto';
 el.innerHTML=`<span class=edxy>${m.in?`X ${Math.round(m.wx)} Y ${Math.round(m.wy)} · tile ${Math.floor(m.wx/T)}, ${Math.floor(m.wy/T)}`:'—'}</span>${E.sel.length?`<span class=edsl>${E.sel.length} selected</span>`:''}<span class=edtl><b>${t[1]}</b> ${edEsc(E.tip||t[4])}</span><span title="Where new things go (pick a layer in the Layers panel, L)">New → ${edEsc(tl)}</span><span>${d.w}×${d.h} tiles · ${Math.round(E.cam.z*100)}%</span><span class="${dirty?'eduns':'edok'}">${dirty?'● Unsaved changes':'✓ Saved'}</span>`}
@@ -5141,6 +5387,7 @@ if(a.startsWith('tab:')){E.tab=a.slice(4);const def={terrain:'brush',assets:E.as
 if(a.startsWith('ter:')||a.startsWith('ovl:')){E.terK=a[0]=='t'?'t':'o';E.ter=a.slice(4);if(E.terK=='o')E.pt='t';if(!['brush','erase','fill','rect'].includes(E.tool))E.tool='brush';return edUI()}
 if(a.startsWith('asset:')){E.asset=edAssets().find(x=>x.id==a.slice(6))||null;E.pvr=Math.random();if(E.asset&&E.asset.t=='v'&&!E.vcol)E.vcol=EDVC[0];E.sel=[];return edTool('place',1)}
 if(a.startsWith('vcol:')){E.vcol=a.slice(5);E.need=1;return edLeft()}
+if(a.startsWith('pcol:')){if(E.asset)E.pcol[E.asset.k]=a.slice(5);E.need=1;return edLeft()}
 if(a.startsWith('wst:')){E.wall=a.slice(4);if(E.tool!='wall')return edTool('wall');return edLeft()}
 if(edPanelClick(a))return;
 switch(a){case 'back':return edBack();case 'undo':return edUndo();case 'redo':return edRedo();case 'grid':E.grid^=1;E.need=1;return edTop();case 'coll':E.coll^=1;E.need=1;return edTop();case 'snap':E.snap^=1;return edTop();
@@ -5152,6 +5399,7 @@ case 'resize':{const f=E.root.querySelector('[data-f=nw]'),g=E.root.querySelecto
 function edInput(e){const f=e.target.dataset&&e.target.dataset.f,E=ED;if(!f||!E)return;if(f=='q'){E.q=e.target.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid()}else if(f=='brush'){E.brush=cl(+e.target.value,1,9);const v=E.root.querySelector('.edval');if(v)v.textContent=E.brush+'×'+E.brush;E.need=1}}
 function edChange(e){const t=e.target,f=t.dataset&&t.dataset.f,E=ED;if(!f||!E)return;const num=+t.value,ok=isFinite(num)&&t.value!=='';
 if(f=='cat'){E.cat=t.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid();return}if(f=='q'||f=='brush'||f=='nw'||f=='nh')return;
+if(f=='vcolnew'||f=='pcolnew'){const v=String(t.value).toLowerCase();if(/^#[0-9a-f]{6}$/.test(v)){if(f=='vcolnew')E.vcol=v;else if(E.asset)E.pcol[E.asset.k]=v;E.need=1;edLeft()}return}
 if(f=='wth'){E.wth=cl(ok?Math.round(num):8,4,64);t.value=E.wth;return}
 if(f=='name'){const v=String(t.value).replace(/[<>]/g,'').trim().slice(0,40)||'Untitled map';if(v!==E.d.name)edSet(E.d,{name:v},'Rename map');return}
 if(f=='desc'){const v=String(t.value).replace(/[<>]/g,'').slice(0,240);if(v!==E.d.desc)edSet(E.d,{desc:v},'Change description');return}
@@ -5226,7 +5474,7 @@ E.drag={t:'move',h,L:L.map(s=>({o:s.o,b:{x:s.o.x,y:s.o.y}})),ax:h.o.x,ay:h.o.y,d
 if(E.sel.length)edSelect([]);E.drag={t:'box',x0:wx,y0:wy,r:null,add:0};return}
 if(t=='brush'||t=='erase'){if(!edPaintOK())return;const S_=edStroke(t=='erase'?'Erase':'Paint '+(((E.terK=='o'?CMOI:CMTI)[E.ter]||{n:E.ter}).n).toLowerCase()+(E.pt=='r'&&E.terK!='o'?' road':''));edBrushAt(S_,tx,ty,E.brush,t=='erase');E.drag={t:'paint',S:S_,er:t=='erase',lx:tx,ly:ty};return}
 if(t=='fill'){if(!edPaintOK())return;return edFill(tx,ty,0)}if(t=='rect'){if(!edPaintOK())return;E.drag={t:'rect',x0:tx,y0:ty,er:0,r:null};return}if(t=='pick')return edPick(tx,ty,e.shiftKey);
-if(t=='place'){const a=E.asset;if(!a)return edToast('Pick a prop or vehicle on the left first');const q=edSnapPt(wx,wy);const o=a.t=='v'?{id:cmUid('v'),veh:a.k,x:q.x,y:q.y,r:E.rot,c:E.vcol}:{id:cmUid('p'),k:a.k,x:q.x,y:q.y,r:E.rot,vr:Math.round(E.pvr*100)/100};
+if(t=='place'){const a=E.asset;if(!a)return edToast('Pick a prop or vehicle on the left first');const q=edSnapPt(wx,wy);const o=a.t=='v'?{id:cmUid('v'),veh:a.k,x:q.x,y:q.y,r:E.rot,c:E.vcol}:{id:cmUid('p'),k:a.k,x:q.x,y:q.y,r:E.rot,vr:Math.round(E.pvr*100)/100};if(a.t=='p'&&E.pcol[a.k]&&edPalOf(o))o.c=E.pcol[a.k];
 const ly=edTargetLy('o',o);if(!ly)return;o.ly=ly;E.pvr=Math.random();edAdd(d.obj,o,'Place '+a.n);return}
 if(t=='wall'){const q=edSnapPt(wx,wy);if(!e.altKey&&!edTargetLy('w'))return;E.drag={t:e.altKey?'cut':'wall',x0:q.x,y0:q.y,r:null};return}
 if(t=='start'){const q=edSnapPt(wx,wy);if(!d.start){const st={x:q.x,y:q.y};d.start=st;hPush({n:'Place player start',undo(){d.start=null},redo(){d.start=st}});return}return edSet(d.start,{x:q.x,y:q.y},'Move player start')}
@@ -5500,7 +5748,9 @@ h+=`<button class="edwide${E.she?' on':''}" data-a=she title="Drag the shape and
 if(s.t=='c')h+=`<p class=edhint>The game only has boxes, so a circle becomes a stack of thin boxes. Shift+C shows exactly what collides.</p>`}
 else if(one)h+=`<p class=edhint>${one.o.veh?'Auto: the vehicle\'s whole body is solid.':cmFoot(one.o)?'Auto: the base of the picture is solid.':'Auto: a strip along the bottom of the picture is solid.'} Pick Box or Circle to draw your own shape.</p>`}}
 // kind-specific settings
-const V=O.filter(s=>s.o.veh);if(V.length&&V.length==S.length){const c=edShared(V,s=>s.o.c);h+=`<h4>Colour</h4><div class=edcols>${EDVC.map(x=>`<button data-a="ocol:${x}" class="${c===x?'on':''}" style="--c:${x}" title="${x}"${EDDIS}></button>`).join('')}</div>`+edPChk('Damaged','dmg',edShared(V,s=>!!s.o.dmg))+edPChk('Burnt out','burn',edShared(V,s=>!!s.o.burn))}
+const V=O.filter(s=>s.o.veh),CO=O.filter(s=>edPalOf(s.o));if(CO.length&&CO.length==S.length){const c=edShared(CO,s=>edColOf(s.o)),P=edPalOf(CO[0].o);
+h+=`<h4>Colour</h4><div class=edcols>${P.map(([x,n])=>`<button data-a="ocol:${x}" class="${c===x?'on':''}" style="--c:${x}" title="${edEsc(n)}"${EDDIS}></button>`).join('')}</div><label class=edf title="Pick any colour"><span>Custom</span><input type=color data-f=ocol value="${c&&/^#[0-9a-f]{6}$/i.test(c)?c:P[0][0]}"${EDDIS}></label>${c===undefined?'<p class=edhint>Mixed colours: a pick colours all of them.</p>':''}`}
+if(V.length&&V.length==S.length)h+=edPChk('Damaged','dmg',edShared(V,s=>!!s.o.dmg))+edPChk('Burnt out','burn',edShared(V,s=>!!s.o.burn));
 if(only('w')){const st=edShared(S,s=>s.o.s);h+=`<label class=edf><span>Style</span><select data-f=s${EDDIS}>${st===undefined?'<option value="" selected>— mixed —</option>':''}${CMWALL.map(w=>`<option value="${w.id}"${st===w.id?' selected':''}>${edEsc(w.n)}</option>`).join('')}${st&&!CMWI[st]?`<option selected>${edEsc(st)} (missing)</option>`:''}</select></label>`}
 if(S.every(s=>s.t=='s'||s.t=='z'))h+=edPChk('On','on',edShared(S,s=>s.o.on!==false),'Turned-off spawns stay on the map, but no zombies come out of them');
 if(one&&one.t=='z')h+=`<p class=edhint>Each zombie picks a random free spot inside the zone.</p>`;if(one&&one.t=='p')h+=`<p class=edhint>Split-screen players start right next to this spot. Delete removes it (the run then starts in the middle of the map).</p>`;
@@ -5559,7 +5809,10 @@ case 'hd':return edSetFlag(S,'hd',t.checked,t.checked?'Hide in the editor':'Show
 case 'on':{const L=free.filter(s=>s.t=='s'||s.t=='z');if(!need(L))return;return edMut(t.checked?'Turn spawn on':'Turn spawn off',L.map(s=>s.o),()=>{for(const s of L)s.o.on=t.checked})}
 case 's':{const L=free.filter(s=>s.t=='w');if(!t.value||!need(L))return;return edMut('Change wall style',L.map(s=>s.o),()=>{for(const s of L)s.o.s=t.value})}
 case 'dmg':case 'burn':{const L=O.filter(s=>s.o.veh);if(!need(L))return;return edMut('Change vehicle',L.map(s=>s.o),()=>{for(const s of L){if(t.checked)s.o[f]=1;else delete s.o[f]}})}
+case 'ocol':{const v=String(t.value).toLowerCase();if(/^#[0-9a-f]{6}$/.test(v))edSetCol(free,v);else edRight();return}
 case 'lyname':return edLyRename(E.al,t.value)}}
+// colour every selected thing that takes a colour (one undo step)
+function edSetCol(free,c){const L=free.filter(s=>s.t=='o'&&edPalOf(s.o));if(L.length)edMut('Change colour',L.map(s=>s.o),()=>{for(const s of L)s.o.c=c})}
 // buttons in the right panel (edClick hands the ones it doesn't know to this); returns 1 when handled
 function edPanelClick(a){const E=ED,free=edFree();
 if(a.startsWith('rt:')){E.rt=a.slice(3);if(E.rt=='probs')E.probs=cmLint(E.d);edRight();return 1}
@@ -5568,7 +5821,7 @@ if(a.startsWith('lysel:')){const id=a.slice(6),l=id&&cmLy(E.d,id);E.al=id;if(l&&
 if(a.startsWith('ord:')){const v=a.slice(4);edOrder(v=='front'||v=='back'?v:+v);return 1}
 if(a.startsWith('turng:')){edTurnGroup(+a.slice(6));return 1}
 if(a.startsWith('prob:')){edGoProb(+a.slice(5));return 1}
-if(a.startsWith('ocol:')){const L=free.filter(s=>s.t=='o'&&s.o.veh);if(L.length)edMut('Change colour',L.map(s=>s.o),()=>{for(const s of L)s.o.c=a.slice(5)});return 1}
+if(a.startsWith('ocol:')){edSetCol(free,a.slice(5));return 1}
 switch(a){case 'lyadd':edLyAdd();return 1;case 'lyup':if(E.al)edLyMove(E.al,1);return 1;case 'lydown':if(E.al)edLyMove(E.al,-1);return 1;case 'lydel':if(E.al)edLyDel(E.al);return 1;
 case 'lymovesel':if(E.al)edLyMoveSel(E.al);return 1;case 'lyunhide':edLyUnhide();return 1;
 case 'she':E.she=E.she?0:1;E.need=1;edRight();if(E.she)edToast('Drag the shape or its handles; Esc when done');return 1;

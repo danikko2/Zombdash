@@ -52,7 +52,7 @@ const X_=(x,y,c)=>{g.strokeStyle=c;g.lineWidth=2;g.beginPath();g.moveTo(x+4,y+4)
 for(let ty=Math.max(0,ty0);ty<Math.min(d.h,ty1);ty++)for(let tx=Math.max(0,tx0);tx<Math.min(d.w,tx1);tx++){const i=ty*d.w+tx,x=tx*T,y=ty*T,t=CMTI[d.pal[d.ter[i]]];
 if(vb){(t||gd).f(g,x,y,tx,ty);if(!t&&miss)X_(x,y,'#ff3a5a')}else{g.fillStyle=(tx+ty)%2?'#1a231c':'#151d17';g.fillRect(x,y,T,T)}
 const ri=d.rtr?d.rtr[i]:0;if(ri&&vr){const rt=CMTI[d.rpal[ri]];if(rt)rt.f(g,x,y,tx,ty);else if(miss)X_(x,y,'#ff9a3a')}
-const tp=top(i);if(tp&&tp.liq)cmShore(g,d,tx,ty,x,y,lq);if(vb){const o=d.ovl[i];if(o){const q=CMOI[d.opal[o]];if(q)q.f(g,x,y,tx,ty)}}}}
+const tp=top(i);if(tp&&tp.liq)cmShore(g,d,tx,ty,x,y,lq);if(vb){const o=d.ovl[i];if(o){const q=CMOI[d.opal[o]];if(q)q.f(g,x,y,tx,ty,d)}}}}
 
 // ----- wall styles -----
 // fl is the game's wall flag: 0 = wall (stops bullets), 1 = solid but not a building wall, 2 = see-through (bullets fly through).
@@ -80,7 +80,7 @@ function cmLayers(){return CMLAY.map(([id,n,k])=>({id,n,k,hid:0,lock:0}))}
 function cmLy(d,id){return d.layers.find(l=>l.id===id)||null}
 // the layer something goes on by default; kind: 'o' prop or vehicle, 'w' wall, 's' spawn point, 'z' spawn zone
 function cmKindLy(kind,o){if(kind=='w')return'walls';if(kind=='s'||kind=='z')return'spawns';if(o&&o.veh)return'vehicles';
-const c=o&&typeof EDPN!='undefined'&&cmOwn(EDPN,o.k)?EDPN[o.k][1]:'';return{buildings:'buildings',vehicles:'vehicles',furniture:'interior',store:'interior'}[c]||'env'}
+const c=o&&typeof EDPN!='undefined'&&cmOwn(EDPN,o.k)?EDPN[o.k][1]:'';return{buildings:'buildings',vehicles:'vehicles',furniture:'interior',store:'interior',kitchen:'interior',living:'interior',bedroom:'interior',bath:'interior',garage:'interior'}[c]||'env'}
 // that layer if this map has it, else the top object layer (null when the map has none)
 function cmDefLy(d,kind,o){const id=cmKindLy(kind,o),l=cmLy(d,id);if(l&&l.k=='o')return id;const ol=d.layers.filter(q=>q.k=='o');return ol.length?ol[ol.length-1].id:null}
 
@@ -151,7 +151,7 @@ const out=Object.assign({},d.extra||{},{format:'zombdash-map',version:CMVER,id:d
 const rd=cmSparse(d,d.rtr,d.rpal,CMTI);if(rd)out.roads=rd;else delete out.roads;
 const ov=cmSparse(d,d.ovl,d.opal,CMOI);if(ov)out.overlay=ov;else delete out.overlay;
 out.layers=d.layers.map(l=>{const q={id:l.id,name:l.n,kind:l.k=='t'?'tiles':'objects'};if(l.hid)q.editorHidden=true;if(l.lock)q.locked=true;return q});
-out.props=d.obj.filter(o=>!o.veh).map(o=>{const p={id:o.id,kind:o.k,x:cmR1(o.x),y:cmR1(o.y)};if(o.r)p.rot=cmR1(o.r);if(o.vr!=null)p.var=Math.round(o.vr*100)/100;return cmWObj(o,p,1)});
+out.props=d.obj.filter(o=>!o.veh).map(o=>{const p={id:o.id,kind:o.k,x:cmR1(o.x),y:cmR1(o.y)};if(o.r)p.rot=cmR1(o.r);if(o.vr!=null)p.var=Math.round(o.vr*100)/100;if(o.c)p.color=o.c;return cmWObj(o,p,1)});
 out.vehicles=d.obj.filter(o=>o.veh).map(o=>{const p={id:o.id,kind:o.veh,x:cmR1(o.x),y:cmR1(o.y),rot:cmR1(o.r||0)};if(o.c)p.color=o.c;if(o.dmg)p.damaged=true;if(o.burn)p.burnt=true;return cmWObj(o,p,1)});
 out.walls=d.walls.map(w=>cmWObj(w,{id:w.id,x:cmR1(w.x),y:cmR1(w.y),w:cmR1(w.w),h:cmR1(w.h),style:w.s||'wall'},0));
 if(d.start)out.playerStart={x:cmR1(d.start.x),y:cmR1(d.start.y)};else delete out.playerStart;
@@ -218,7 +218,7 @@ if(s&&s.type=='rect'&&num(s.x)&&num(s.y)&&num(s.w)&&num(s.h)&&s.w>0&&s.h>0)o.sh=
 else if(s&&s.type=='circle'&&num(s.x)&&num(s.y)&&num(s.r)&&s.r>0)o.sh={t:'c',x:s.x,y:s.y,r:s.r};else{bad(nm,i,'has a "shape" that is not {"type":"rect","x","y","w","h"} or {"type":"circle","x","y","r"}.');return 0}}
 if(p.locked)o.lk=true;if(p.editorHidden)o.hd=true;return 1};
 list(j.props,'props').forEach((p,i)=>{if(!p||typeof p.kind!='string'||!num(p.x)||!num(p.y))return bad('props',i,'needs "kind", "x" and "y".');if(p.rot!=null&&!num(p.rot))return bad('props',i,'has a "rot" that is not a number.');
-const o={id:uid(p.id,'p'),k:p.kind,x:p.x,y:p.y,r:p.rot||0};if(num(p.var))o.vr=cl(p.var,0,1);if(!obj(p,o,'props',i,'o',1))return;d.obj.push(o);if(!cmOB(p.kind))unk[p.kind]=(unk[p.kind]||0)+1});
+const o={id:uid(p.id,'p'),k:p.kind,x:p.x,y:p.y,r:p.rot||0};if(num(p.var))o.vr=cl(p.var,0,1);if(typeof p.color=='string'&&/^#[0-9a-f]{6}$/i.test(p.color))o.c=p.color.toLowerCase();if(!obj(p,o,'props',i,'o',1))return;d.obj.push(o);if(!cmOB(p.kind))unk[p.kind]=(unk[p.kind]||0)+1});
 list(j.vehicles,'vehicles').forEach((p,i)=>{if(!p||typeof p.kind!='string'||!num(p.x)||!num(p.y))return bad('vehicles',i,'needs "kind", "x" and "y".');if(p.rot!=null&&!num(p.rot))return bad('vehicles',i,'has a "rot" that is not a number.');
 const o={id:uid(p.id,'v'),veh:p.kind,x:p.x,y:p.y,r:p.rot||0};if(typeof p.color=='string'&&/^#[0-9a-f]{3,8}$/i.test(p.color))o.c=p.color;if(p.damaged)o.dmg=1;if(p.burnt)o.burn=1;if(!obj(p,o,'vehicles',i,'o',1))return;d.obj.push(o);if(!cmHW(p.kind))unk[p.kind+' (vehicle)']=(unk[p.kind+' (vehicle)']||0)+1});
 for(const k in unk)Wn.push('Unknown '+(k.endsWith(' (vehicle)')?'vehicle "'+k.slice(0,-10)+'"':'prop "'+k+'"')+' ('+unk[k]+' placed): it is kept in the file but not shown in the game.');

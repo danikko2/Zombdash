@@ -12,7 +12,7 @@ The game ships as **one self-contained file**, `index.html` (what GitHub Pages s
 | `src/css/game.css` | All the styles for menus and the HUD. |
 | `src/js/early-error-screen.js` | Tiny script that shows a "Startup error" box if the game fails to load. |
 | `src/js/modules.txt` | **Load order** of the game modules. |
-| `src/js/**` | The game, split into 96 modules (listed below). The Map Workshop is in `src/js/editor/`, the custom map format and loader in `src/js/world/`. |
+| `src/js/**` | The game, split into 99 modules (listed below). The Map Workshop is in `src/js/editor/`, the custom map format and loader in `src/js/world/`. |
 | `src/assets/sprites/` | `zombies.png` (zombie atlas) and `survivors.png` (player atlas). Frame positions are in `ZS` / `PS` in `render/sprites.js`. |
 | `src/assets/thumbs/map-NN.jpg` | Map preview pictures; `NN` is the map's number in `MP`. |
 | `src/assets/sounds/` | Recorded reload sounds (everything else is synthesized in `audio/sound.js`). |
@@ -60,6 +60,9 @@ node tests/run.js spawn ammo # only suites whose name contains a word
 | Test code and its switches | `dev/test-code.js`, `dev/test-switches.js`, `dev/balance-editor.js` |
 | Terrain types for custom maps (add one with `cmAddTer`) | `CMTER` in `world/map-schema.js` |
 | Blood / burn overlays, wall styles for custom maps | `CMOVL`, `CMWALL` in `world/map-schema.js` |
+| Carpet colours, farm soil, road markings | `CMCARPET`, `cmAddOvl(...)` in `world/terrain-more.js` |
+| House props (kitchen, living room, bedroom, bathroom, garage) and their colour choices | `maps/props/home-props.js` (`PCAB`, `PFAB`, `PAPP`, `PMET`, `PTIL`, `PBRK`) |
+| Forest and farm props, leaf / grass colours | `maps/props/forest-props.js` (`PLEAF`, `PGRS`, `PBARK`) |
 | Names and categories in the editor's prop browser | `EDPN` (props), `EDVN` (vehicles), `EDCAT` in `editor/assets.js` |
 
 Values changed in the in-game **GAME BALANCE** menu only live on that device; use its *Copy changes as a list* button and ask Claude to make them permanent in these files.
@@ -121,8 +124,8 @@ Anything that writes this JSON makes a map; import it with **IMPORT** in the Wor
 ```
 
 * `width` × `height` is 20×15 up to 128×128 tiles. `terrain.rows` has `height` strings of `width` characters, each a key of its `legend`; leave `terrain` out for plain `ground` everywhere. `overlay` is optional, `.` means nothing.
-* Terrain: `grass dirt asphalt concrete sidewalk sand gravel mud water wood tile` (water blocks walking, bullets fly over it). Overlays: `blood burn`. Wall styles: `wall brick concrete wood` (stop bullets), `fence` (see-through), `hidden` (an invisible blocker).
-* A prop's `kind` is a key of `OB` (the editor's prop browser shows them all), its `x`,`y` is the middle of its base; props with a collision size in `OB` are solid. A vehicle's `kind` is a key of `HWV` (`sedan suv pickup van limo police amb fire bus semi cab trailer hmv mtruck`), its `x`,`y` is its centre. `rot` is in degrees.
+* Terrain: `grass dirt asphalt concrete sidewalk sand gravel mud water wood tile soil carpet_grey carpet_dkgrey carpet_tan carpet_black carpet_red carpet_green carpet_blue` (water blocks walking, bullets fly over it). Overlays: `blood burn`, and the road markings `yline ydash wline wdash xwalk` (a marking joins up with the same marking on the next tile; one overlay per tile). Wall styles: `wall brick concrete wood` (stop bullets), `fence` (see-through), `hidden` (an invisible blocker).
+* A prop's `kind` is a key of `OB` (the editor's prop browser shows them all), its `x`,`y` is the middle of its base; props with a collision size in `OB` are solid. A vehicle's `kind` is a key of `HWV` (`sedan suv pickup van limo police amb fire bus semi cab trailer hmv mtruck`), its `x`,`y` is its centre. `rot` is in degrees. Props that come in colours (the editor shows swatches for them) take `"color": "#rrggbb"`; left out, they use their first colour.
 * `roads` is optional, like `overlay` (`.` means no road there, the terrain shows).
 * `layers` lists the layers bottom to top: `id` (letters, digits, `_`, `-`), `name`, `kind` (`tiles` only for `terrain` and `roads`). Optional `editorHidden` / `locked`. Leave `layers` out to get the defaults.
 * Every prop, vehicle, wall and spawn can have: `layer` (an object layer's id; left out = the layer of its kind), `order` (draw order within the layer, higher is on top), `solid` (`true`/`false`, left out = the default), `shape` (`{"type":"rect","x","y","w","h"}` or `{"type":"circle","x","y","r"}`, offsets from its `x`,`y`; props and vehicles only), `locked`, `editorHidden`.
@@ -183,6 +186,8 @@ Anything that writes this JSON makes a map; import it with **IMPORT** in the Wor
 | `maps/graveyard-details.js` | Graveyard extras |
 | `maps/hometown-market.js` | Hometown Market map |
 | `maps/main-street.js` | Hometown Main Street map |
+| `maps/props/home-props.js` | House props for custom maps (kitchen, living room, bedroom, bathroom, garage), `obc()` for props that come in colours |
+| `maps/props/forest-props.js` | Forest and farm props for custom maps: trees, long grass, ferns, reeds, crops, big rotting fallen trees |
 
 ### World systems (`src/js/world/`)
 
@@ -190,6 +195,7 @@ Anything that writes this JSON makes a map; import it with **IMPORT** in the Wor
 |---|---|
 | `world/map-list-and-pathfinding.js` | The map list (MP), build() to load a map, zombie pathfinding flow field, wall push-out |
 | `world/map-schema.js` | Custom map format: terrain (CMTER), overlays, wall styles, layers (CMLAY), cmRead / cmWrite with the v1 → v2 upgrade, collision and shapes (cmColl), draw order (cmDrawList), problem checks (cmLint) |
+| `world/terrain-more.js` | More custom-map terrain: loop-pile carpet in seven colours, farm soil, road markings that join up |
 | `world/map-store.js` | Custom map storage on the device (IndexedDB) |
 | `world/custom-maps.js` | Custom maps in the game: map keys, the Free Play list (CML), cmBuild(), painting in draw order, spawning from zones |
 | `world/wall-index.js` | Fast wall lookup grid |

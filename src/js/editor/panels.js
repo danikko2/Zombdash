@@ -37,7 +37,9 @@ h+=`<button class="edwide${E.she?' on':''}" data-a=she title="Drag the shape and
 if(s.t=='c')h+=`<p class=edhint>The game only has boxes, so a circle becomes a stack of thin boxes. Shift+C shows exactly what collides.</p>`}
 else if(one)h+=`<p class=edhint>${one.o.veh?'Auto: the vehicle\'s whole body is solid.':cmFoot(one.o)?'Auto: the base of the picture is solid.':'Auto: a strip along the bottom of the picture is solid.'} Pick Box or Circle to draw your own shape.</p>`}}
 // kind-specific settings
-const V=O.filter(s=>s.o.veh);if(V.length&&V.length==S.length){const c=edShared(V,s=>s.o.c);h+=`<h4>Colour</h4><div class=edcols>${EDVC.map(x=>`<button data-a="ocol:${x}" class="${c===x?'on':''}" style="--c:${x}" title="${x}"${EDDIS}></button>`).join('')}</div>`+edPChk('Damaged','dmg',edShared(V,s=>!!s.o.dmg))+edPChk('Burnt out','burn',edShared(V,s=>!!s.o.burn))}
+const V=O.filter(s=>s.o.veh),CO=O.filter(s=>edPalOf(s.o));if(CO.length&&CO.length==S.length){const c=edShared(CO,s=>edColOf(s.o)),P=edPalOf(CO[0].o);
+h+=`<h4>Colour</h4><div class=edcols>${P.map(([x,n])=>`<button data-a="ocol:${x}" class="${c===x?'on':''}" style="--c:${x}" title="${edEsc(n)}"${EDDIS}></button>`).join('')}</div><label class=edf title="Pick any colour"><span>Custom</span><input type=color data-f=ocol value="${c&&/^#[0-9a-f]{6}$/i.test(c)?c:P[0][0]}"${EDDIS}></label>${c===undefined?'<p class=edhint>Mixed colours: a pick colours all of them.</p>':''}`}
+if(V.length&&V.length==S.length)h+=edPChk('Damaged','dmg',edShared(V,s=>!!s.o.dmg))+edPChk('Burnt out','burn',edShared(V,s=>!!s.o.burn));
 if(only('w')){const st=edShared(S,s=>s.o.s);h+=`<label class=edf><span>Style</span><select data-f=s${EDDIS}>${st===undefined?'<option value="" selected>— mixed —</option>':''}${CMWALL.map(w=>`<option value="${w.id}"${st===w.id?' selected':''}>${edEsc(w.n)}</option>`).join('')}${st&&!CMWI[st]?`<option selected>${edEsc(st)} (missing)</option>`:''}</select></label>`}
 if(S.every(s=>s.t=='s'||s.t=='z'))h+=edPChk('On','on',edShared(S,s=>s.o.on!==false),'Turned-off spawns stay on the map, but no zombies come out of them');
 if(one&&one.t=='z')h+=`<p class=edhint>Each zombie picks a random free spot inside the zone.</p>`;if(one&&one.t=='p')h+=`<p class=edhint>Split-screen players start right next to this spot. Delete removes it (the run then starts in the middle of the map).</p>`;
@@ -96,7 +98,10 @@ case 'hd':return edSetFlag(S,'hd',t.checked,t.checked?'Hide in the editor':'Show
 case 'on':{const L=free.filter(s=>s.t=='s'||s.t=='z');if(!need(L))return;return edMut(t.checked?'Turn spawn on':'Turn spawn off',L.map(s=>s.o),()=>{for(const s of L)s.o.on=t.checked})}
 case 's':{const L=free.filter(s=>s.t=='w');if(!t.value||!need(L))return;return edMut('Change wall style',L.map(s=>s.o),()=>{for(const s of L)s.o.s=t.value})}
 case 'dmg':case 'burn':{const L=O.filter(s=>s.o.veh);if(!need(L))return;return edMut('Change vehicle',L.map(s=>s.o),()=>{for(const s of L){if(t.checked)s.o[f]=1;else delete s.o[f]}})}
+case 'ocol':{const v=String(t.value).toLowerCase();if(/^#[0-9a-f]{6}$/.test(v))edSetCol(free,v);else edRight();return}
 case 'lyname':return edLyRename(E.al,t.value)}}
+// colour every selected thing that takes a colour (one undo step)
+function edSetCol(free,c){const L=free.filter(s=>s.t=='o'&&edPalOf(s.o));if(L.length)edMut('Change colour',L.map(s=>s.o),()=>{for(const s of L)s.o.c=c})}
 // buttons in the right panel (edClick hands the ones it doesn't know to this); returns 1 when handled
 function edPanelClick(a){const E=ED,free=edFree();
 if(a.startsWith('rt:')){E.rt=a.slice(3);if(E.rt=='probs')E.probs=cmLint(E.d);edRight();return 1}
@@ -105,7 +110,7 @@ if(a.startsWith('lysel:')){const id=a.slice(6),l=id&&cmLy(E.d,id);E.al=id;if(l&&
 if(a.startsWith('ord:')){const v=a.slice(4);edOrder(v=='front'||v=='back'?v:+v);return 1}
 if(a.startsWith('turng:')){edTurnGroup(+a.slice(6));return 1}
 if(a.startsWith('prob:')){edGoProb(+a.slice(5));return 1}
-if(a.startsWith('ocol:')){const L=free.filter(s=>s.t=='o'&&s.o.veh);if(L.length)edMut('Change colour',L.map(s=>s.o),()=>{for(const s of L)s.o.c=a.slice(5)});return 1}
+if(a.startsWith('ocol:')){edSetCol(free,a.slice(5));return 1}
 switch(a){case 'lyadd':edLyAdd();return 1;case 'lyup':if(E.al)edLyMove(E.al,1);return 1;case 'lydown':if(E.al)edLyMove(E.al,-1);return 1;case 'lydel':if(E.al)edLyDel(E.al);return 1;
 case 'lymovesel':if(E.al)edLyMoveSel(E.al);return 1;case 'lyunhide':edLyUnhide();return 1;
 case 'she':E.she=E.she?0:1;E.need=1;edRight();if(E.she)edToast('Drag the shape or its handles; Esc when done');return 1;

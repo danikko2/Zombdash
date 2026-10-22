@@ -20,6 +20,7 @@ maps/military-base.js
 maps/campground.js
 world/map-list-and-pathfinding.js
 world/map-schema.js
+world/terrain-more.js
 world/map-store.js
 world/custom-maps.js
 ui/core-ui.js
@@ -74,6 +75,8 @@ campaign/sections.js
 campaign/map-screens.js
 maps/hometown-market.js
 maps/main-street.js
+maps/props/home-props.js
+maps/props/forest-props.js
 bosses/penny-and-mayor.js
 system/phones-checkpoints-crashlog.js
 online/supabase.js

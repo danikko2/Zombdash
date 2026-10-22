@@ -3,7 +3,7 @@
 The full wish list is the "Map Workshop" prompt the owner attaches. This file records how it fits the game and what each step covers (steps 1 and 2 are done). Read `docs/ARCHITECTURE.md` too.
 
 ## Working on this repo
-- **Where the code lives:** the source is in `src/`, split into 96 modules whose load order is in `src/js/modules.txt`.
+- **Where the code lives:** the source is in `src/`, split into 99 modules whose load order is in `src/js/modules.txt`.
   - `tools/build.js` builds `index.html`, which GitHub Pages serves at https://danikko2.github.io/Zombdash/.
   - A GitHub Action rebuilds `index.html` whenever `src/` changes.
 - **Don't edit `index.html` by hand.** Before starting, run `node tools/build.js --check`. If it fails, someone edited `index.html` directly, and that change has to be moved into `src/` first.
@@ -93,6 +93,7 @@ The full wish list is the "Map Workshop" prompt the owner attaches. This file re
      - **Leaderboards for custom maps need a one-time server change:** the owner must run the current `docs/supabase-setup.sql` in Supabase (it adds the `cmap` column; safe to run again). Until then custom-map scores are refused by the server and nothing else changes. Custom maps share board `map = 63` and are told apart by the map's id, so everyone who imported the same file shares a board; "All maps" leaves them out.
      - A crash checkpoint on a custom map remembers the map's id and is only offered while that map is on the device.
 
+   - **Added after step 2 (Oct 22, 2026, owner's request):** carpet terrain in grey, dark grey, tan, black, red, green and blue (a loop-pile texture drawn from the owner's carpet photo), farm soil, road markings (yellow line, yellow dashed, white line, white dashed, crosswalk) that join up with their neighbours, 40 house props (kitchen counters, sinks, stoves, fridges, cabinets in several sizes, islands, kitchen tables, nightstands, dressers, TV stands, TVs, a brick fireplace, showers, garage cabinets, couches), 24 forest and farm props (oak, big oak, maple, birch, spruce, giant pine, willow, big dead tree, young tree, long grass, ferns, cattails, big rotting fallen trees, crop rows) and **prop colours**: props that come in colours show swatches plus a custom colour picker, stored as the prop's `color`. Built-in maps are unchanged.
 3. **Step 3:** campaign slots.
 4. **Step 4:** editing existing maps as a base.
 5. **Step 5:** gameplay pieces the owner picks (loot crates, doors, traps…).

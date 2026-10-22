@@ -305,6 +305,42 @@ for(let f=0;f<60;f++){for(const p of PL){p.hp=p.mx=99}tick(1)}ok(PL.every(p=>p.x
 menu();ok(/>PLAY<\\/button><button onclick="workshop\\(\\)">CREATE/.test(ui.innerHTML),'main menu: CREATE right under PLAY');
 for(let m=0;m<MP.length;m++){mapId=m;build();if(!(WW>0&&WL.length>0&&!HS.CZ)){ok(0,'built-in map '+m+' still builds');break}}ok(1,'every built-in map still builds as before');
 {mapId=2;sel=0;S.sw=1;start();wave=5;P.ac=S.ac;RUN0=Date.now()-60000;RUNW=1;const r=olRow();ok(r&&r.map===2&&!('cmap' in r),'a built-in map\\'s score row is unchanged');over(1)}
+// ---------- more terrain, road markings, house / forest props and prop colours ----------
+{const C=['carpet_grey','carpet_dkgrey','carpet_tan','carpet_black','carpet_red','carpet_green','carpet_blue'];ok(C.every(id=>CMTI[id]&&CMTI[id].carpet)&&CMTI.soil,'terrain: carpet in grey, dark grey, tan, black, red, green and blue, and farm soil');
+ok(['yline','ydash','wline','wdash','xwalk'].every(id=>CMOI[id]&&CMOI[id].mk),'road markings: yellow line, yellow dashed, white line, white dashed, crosswalk');
+const d=cmNew({w:20,h:16});for(let i=0;i<C.length;i++)d.ter[i]=cmPi(d,C[i]);d.ter[40]=cmPi(d,'soil');for(let x=2;x<10;x++){d.ter[5*20+x]=cmPi(d,'asphalt');d.ovl[5*20+x]=cmOi(d,'yline')}for(let y=8;y<12;y++)d.ovl[y*20+3]=cmOi(d,'wdash');d.ovl[14*20+5]=cmOi(d,'wline');d.ovl[12*20+5]=cmOi(d,'wline');d.ovl[14*20+12]=cmOi(d,'xwalk');
+const j=cmWrite(d),r=cmRead(JSON.stringify(j));ok(r.doc&&!r.errors.length&&!r.warnings.length&&same(cmWrite(r.doc),j),'carpet, soil and markings save and load unchanged');
+ok(Object.values(j.terrain.legend).includes('carpet_blue')&&Object.values(j.overlay.legend).includes('yline'),'they are written by name in the legends');
+const M=(id,x,y)=>cmMarkDirs(id,x,y,d);ok(M('yline',5,5).h&&M('yline',5,5).L&&M('yline',5,5).R&&!M('yline',5,5).v,'a row of line tiles joins up sideways');ok(M('yline',2,5).R&&!M('yline',2,5).L,'the end of a line stops in the middle of its tile');
+ok(M('wdash',3,9).v&&!M('wdash',3,9).h,'a column of tiles runs up and down');ok(M('wline',5,14).solo&&M('wline',5,14).v,'a tile on its own follows another one two tiles away (every other tile makes stripes)');ok(M('xwalk',12,14).solo&&M('xwalk',12,14).h,'a lone tile with nothing near lies across');
+let crash='';try{CMPTD=d;mapId=CMPTK;build();CMPTD=null}catch(e){crash=e.message}ok(!crash&&!WL.some(w=>w[4]==2),'a map with carpet and markings builds; neither blocks walking '+crash)}
+const NEWP=['kc_base','kc_long','kc_corner','kc_sink','kc_range','kfridge','kfridge2','kcab_s','kcab_m','kcab_w','kpantry','kisland','kisland_b','ktable_s','ktable','ktable_l','sofa2','sofa3','sofa_l','armch','recl','tvs_s','tvs_w','tvs_tv','tv_flat','tv_big','tv_crt','bfplace','nstand','nstand2','dress_s','dress_w','dress_m','dress_t','shower','shower_w','gcab_t','gcab_w','gbench','gchest',
+'oak','oak_b','maple','birch','spruce','pine_g','willow','deadtree','sapling','tgrass','tgrass_w','reeds','fern','bigfall','fallroot','rotlog','logpile','corn_r','wheat','cabbage','pumpkin','tomato','carrot_r','sunflow'];
+ok(NEWP.every(k=>cmOB(k)),'all '+NEWP.length+' new props are real props');
+ok(NEWP.every(k=>EDPN[k]&&EDCAT.some(c=>c[0]==EDPN[k][1])&&EDPN[k][1]!='other'),'each has a name and a category in the prop browser');
+ok(['kitchen','living','bedroom','bath','garage','farm'].every(c=>edAssets().some(a=>a.cat==c)),'new browser categories: kitchen, living room, bedroom, bathroom, garage, farm & crops');
+{const pal=NEWP.filter(k=>cmOB(k).pc);ok(pal.length>=50&&pal.every(k=>cmOB(k).pc.length>=2&&cmOB(k).pc.every(([c,n])=>/^#[0-9a-f]{6}$/.test(c)&&n)),'most of them come in colours ('+pal.length+'), each with named colour choices');
+ok(['sofa3','kfridge','kcab_m','dress_w','gcab_t','shower','bfplace','oak','tgrass','tvs_w'].every(k=>cmOB(k).pc),'couches, appliances, cabinets, dressers, garage cabinets, showers, the fireplace, trees and grass take a colour')}
+ok(cmKindLy('o',{k:'kfridge'})=='interior'&&cmKindLy('o',{k:'sofa3'})=='interior'&&cmKindLy('o',{k:'shower'})=='interior'&&cmKindLy('o',{k:'gbench'})=='interior'&&cmKindLy('o',{k:'oak'})=='env'&&cmKindLy('o',{k:'wheat'})=='env','house props go on Interior props, forest and farm props on Environmental props');
+{let bad='';for(const k of NEWP){const B=cmOB(k);for(const c of(B.pc||[[undefined]]))try{B.f(document.createElement('canvas').getContext('2d'),50,50,.5,c[0])}catch(e){bad=k+': '+e.message}}ok(!bad,'every new prop draws in every colour '+bad)}
+// colours in the map file
+{const d=cmNew({w:24,h:18});d.obj.push({id:'f1',k:'kfridge',x:200,y:200,r:0,ly:'interior',c:'#c0392b'},{id:'s1',k:'sofa3',x:300,y:300,r:0,ly:'interior'},{id:'t1',k:'oak',x:500,y:400,r:0,ly:'env',c:'#d8742a'});const j=cmWrite(d);
+ok(j.props[0].color=='#c0392b'&&!('color' in j.props[1])&&j.props[2].color=='#d8742a','a prop\\'s colour is saved as "color" (left out when it has the default)');
+const r=cmRead(JSON.stringify(j));ok(r.doc&&r.doc.obj[0].c=='#c0392b'&&!r.doc.obj[1].c&&same(cmWrite(r.doc),j),'and loads back');
+const jj=JSON.parse(JSON.stringify(j));jj.props[1].color='blue';jj.props[0].color='#C0392B';const r2=cmRead(JSON.stringify(jj));ok(r2.doc&&!r2.doc.obj[1].c&&r2.doc.obj[0].c=='#c0392b','a colour that is not #rrggbb is ignored; capitals are fine');
+CMPTD=d;mapId=CMPTK;build();CMPTD=null;{const c=OB.kfridge.c;ok(WL.some(w=>w[0]==200-c[0]/2&&w[1]==200-c[1]&&w[4]==1),'new furniture is solid in the game')}
+ok(edSprite(d.obj[0])!==edSprite({k:'kfridge',x:200,y:200,c:'#2e3036'})&&edSprite(d.obj[0])===edSprite({k:'kfridge',x:200,y:200,c:'#c0392b'}),'the editor draws each colour separately (and reuses the same one)');
+ok(edColOf(d.obj[1])==OB.sofa3.pc[0][0]&&edColOf(d.obj[0])=='#c0392b'&&!edPalOf({k:'crate'})&&edPalOf({veh:'sedan'}).length==EDVC.length,'colour helpers: default colour, chosen colour, props without colours')}
+// colours in the editor
+{const d=cmNew({name:'Colours',w:30,h:20});edOpen(d,'saved');ED.asset=edAssets().find(a=>a.id=='p:sofa3');ED.pcol.sofa3='#4a7a4a';ED.tool='place';const cam=ED.cam,sx=(x,y)=>({button:0,clientX:(x-cam.x)*cam.z,clientY:(y-cam.y)*cam.z,pointerId:1});
+edDown(sx(320,320));edUp(sx(320,320));const s=d.obj[d.obj.length-1];ok(s&&s.k=='sofa3'&&s.c=='#4a7a4a','placing: new props get the colour picked on the left');
+ED.asset=edAssets().find(a=>a.id=='p:crate');edDown(sx(500,320));edUp(sx(500,320));const cr=d.obj[d.obj.length-1];ok(cr.k=='crate'&&!cr.c,'props without colours get none');
+ED.tool='select';edSelect([{t:'o',o:s}]);edPanelClick('ocol:#a83a32');ok(s.c=='#a83a32'&&/colour/i.test(EDH.u[EDH.u.length-1].n),'properties: a colour swatch recolours it (one undo step)');edUndo();ok(s.c=='#4a7a4a','undo the colour');
+edPropChange('ocol',{value:'#123456'});ok(s.c=='#123456','properties: any custom colour');edPropChange('ocol',{value:'nope'});ok(s.c=='#123456','a bad custom colour is ignored');
+edSelect([{t:'o',o:s},{t:'o',o:cr}]);edPanelClick('ocol:#e0dcd2');ok(s.c=='#e0dcd2'&&!cr.c,'with several selected, only the ones that take a colour change');
+s.lk=true;edSelect([{t:'o',o:s}]);edPanelClick('ocol:#2a2a2e');ok(s.c=='#e0dcd2','a locked prop keeps its colour');delete s.lk;
+edSelect([{t:'o',o:s}]);edCopy();ED.mouse={x:0,y:0,wx:600,wy:500,in:1};edPaste();ok(d.obj[d.obj.length-1].c=='#e0dcd2','copies keep their colour');
+edClose(1)}
 console.log('TOTAL fails '+fails+' of '+n);
 `;
 const AF=Object.getPrototypeOf(async function(){}).constructor;

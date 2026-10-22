@@ -13,7 +13,7 @@ if(E.loV!==E.ver){E.loL=cmDrawList(d,1).map(it=>{if(it.w)return{o:it.o,w:1,r:0};
 for(const{o,w,r}of E.loL){if(w){if(o.x<x1&&o.x+o.w>x0&&o.y<y1&&o.y+o.h>y0)edWallLook(q,o,1)}else if(o.x-r<x1&&o.x+r>x0&&o.y-r<y1&&o.y+r>y0)edObjLook(q,o,1)}
 q.setTransform(1,0,0,1,0,0);L_[f]={c:l,v:E.ver};return l}
 // a changed tile repaints its chunk and its neighbours' (shorelines look across tile edges)
-function edTileDirty(i){const E=ED,d=E.d,tx=i%d.w,ty=(i/d.w)|0;for(const[a,b]of[[0,0],[1,0],[-1,0],[0,1],[0,-1]]){const x=tx+a,y=ty+b;if(x<0||y<0||x>=d.w||y>=d.h)continue;const c=E.ch.get(Math.floor(x/EDCS)+','+Math.floor(y/EDCS));if(c)c.dirty=1}E.mmDirty=1;E.need=1}
+function edTileDirty(i){const E=ED,d=E.d,tx=i%d.w,ty=(i/d.w)|0;for(const[a,b]of[[0,0],[1,0],[-1,0],[0,1],[0,-1],[2,0],[-2,0],[0,2],[0,-2]]){const x=tx+a,y=ty+b;if(x<0||y<0||x>=d.w||y>=d.h)continue;const c=E.ch.get(Math.floor(x/EDCS)+','+Math.floor(y/EDCS));if(c)c.dirty=1}E.mmDirty=1;E.need=1}
 function edAllDirty(){if(!ED)return;for(const c of ED.ch.values()){c.cv.width=0;c.cv.height=0;for(const k in c.lo||{}){c.lo[k].c.width=0;c.lo[k].c.height=0}}ED.ch.clear();ED.mmDirty=1;ED.need=1}
 // local box of an object's sprite around its anchor (x,y), before turning
 function edBox(o){const s=edSprite(o);if(s)return{x0:-s.ax,y0:-s.ay,x1:s.c.width-s.ax,y1:s.c.height-s.ay};return{x0:-12,y0:-24,x1:12,y1:0}}
@@ -84,7 +84,7 @@ else if(D_.t=='wall'){edWallLook(g,{x:r.x,y:r.y,w:r.w,h:r.h,s:E.wall},.8);g.line
 else if(D_.t=='cut'){g.fillStyle='rgba(255,60,60,.25)';g.fillRect(r.x,r.y,r.w,r.h);g.setLineDash([5*px,4*px]);g.lineWidth=2*px;g.strokeStyle='#ff5a4a';g.strokeRect(r.x,r.y,r.w,r.h);g.setLineDash([])}
 else{g.fillStyle='rgba(216,64,58,.22)';g.fillRect(r.x,r.y,r.w,r.h);g.setLineDash([6*px,4*px]);g.lineWidth=2*px;g.strokeStyle='#ff6a5a';g.strokeRect(r.x,r.y,r.w,r.h);g.setLineDash([])}
 const lab=Math.round(r.w)+' × '+Math.round(r.h);g.save();g.setTransform(1,0,0,1,0,0);const dpr=g.canvas.width/E.cv.clientWidth;g.scale(dpr,dpr);g.font='16px VT323, monospace';g.textAlign='left';g.textBaseline='bottom';const sx=edSX(r.x+r.w)+6,sy=edSY(r.y+r.h)+18;g.fillStyle='rgba(0,0,0,.6)';g.fillRect(sx-3,sy-17,g.measureText(lab).width+6,17);g.fillStyle='#ffcf40';g.fillText(lab,sx,sy);g.restore();return}
-if(t=='place'&&E.asset&&!D_){const a=E.asset,p=edSnapPt(m.wx,m.wy),o=a.t=='v'?{veh:a.k,x:p.x,y:p.y,r:E.rot,c:E.vcol}:{k:a.k,x:p.x,y:p.y,r:E.rot,vr:E.pvr};edObjLook(g,o,.6);const f=a.t=='p'&&cmFoot(o);if(f){g.lineWidth=px;g.strokeStyle='rgba(255,170,40,.9)';g.strokeRect(f[0],f[1],f[2],f[3])}return}
+if(t=='place'&&E.asset&&!D_){const a=E.asset,p=edSnapPt(m.wx,m.wy),o=a.t=='v'?{veh:a.k,x:p.x,y:p.y,r:E.rot,c:E.vcol}:{k:a.k,x:p.x,y:p.y,r:E.rot,vr:E.pvr,c:E.pcol[a.k]};edObjLook(g,o,.6);const f=a.t=='p'&&cmFoot(o);if(f){g.lineWidth=px;g.strokeStyle='rgba(255,170,40,.9)';g.strokeRect(f[0],f[1],f[2],f[3])}return}
 if((t=='wall'||t=='zone')&&!D_){const p=edSnapPt(m.wx,m.wy);g.fillStyle='#ffcf40';g.fillRect(p.x-3*px,p.y-3*px,6*px,6*px)}}
 // ----- minimap -----
 function edMiniTex(){const E=ED,d=E.d,c=E.mmc||(E.mmc=document.createElement('canvas'));c.width=d.w;c.height=d.h;const q=c.getContext('2d'),im=q.createImageData(d.w,d.h),px=im.data,col={};
