@@ -10,18 +10,17 @@ function cmShadeRGB(c,k){return k<1?c.map(v=>v*k):c.map(v=>v+(255-v)*Math.min(1,
 function cmCarpet(hex){if(CMCPC[hex])return CMCPC[hex];const N=128,c=document.createElement('canvas');c.width=c.height=N;const q=c.getContext('2d');CMCPC[hex]=c;
 const base=cmRGB(hex),im=q.createImageData(N,N),a=im.data,P=(x,y,col)=>{x=(x+N)%N;y=(y+N)%N;const k=(y*N+x)*4;a[k]=col[0];a[k+1]=col[1];a[k+2]=col[2];a[k+3]=255};
 const H=(x,y,s)=>cmH(x%N,y%N,s),TAU=Math.PI*2;
-for(let y=0;y<N;y+=2)for(let x0=0;x0<N;x0+=2){const x=x0+((y>>1)&1);
+// one pixel per loop, so the weave reads as a fine texture rather than clumps
+for(let y=0;y<N;y++)for(let x=0;x<N;x++){
 // slow mottle and a faint chevron (both repeat every 128px / 32px so the square tiles seamlessly)
-const m=Math.sin(TAU*(x+y)/64)*.5+Math.sin(TAU*(2*x-y)/128)*.5,zz=((x+Math.abs((y%32)-16))%16)<8?1.035:.975;
-const r=H(x,y,71);let k=r<.06?.66:r<.24?.85:r<.62?1:r<.9?1.07:1.15;k*=(1+m*.05)*zz;
-const s=cmShadeRGB(base,k),lt=cmShadeRGB(base,k*1.05),dk=cmShadeRGB(base,k*.89);
-P(x,y,lt);P(x+1,y,s);P(x,y+1,s);P(x+1,y+1,dk);
-// the gap between loops shows through now and then
-if(H(x,y,72)<.22)P(x+(H(x,y,73)<.5?1:0),y+1,cmShadeRGB(base,.76))}
-// dark tufts: short streaks, a few per square
-for(let i=0;i<46;i++){const x=Math.floor(H(i,3,74)*N),y=Math.floor(H(i,5,75)*N),col=cmShadeRGB(base,.58+H(i,7,76)*.12),L=2+Math.floor(H(i,9,77)*2);if(H(i,11,78)<.5)for(let j=0;j<L;j++)P(x+j,y+(j>1?1:0),col);else for(let j=0;j<L;j++)P(x+(j>1?1:0),y+j,col)}
+const m=Math.sin(TAU*(x+y)/64)*.5+Math.sin(TAU*(2*x-y)/128)*.5,zz=((x+Math.abs((y%32)-16))%16)<8?1.02:.985;
+// rows of loops: every other pixel in a row sits a touch darker, offset row by row
+const w=((x+(y>>1))&1)?.975:1.015,r=H(x,y,71);let k=r<.05?.8:r<.2?.91:r<.7?1:r<.93?1.045:1.09;
+P(x,y,cmShadeRGB(base,k*w*(1+m*.03)*zz))}
+// darker flecks: single pixels and tiny pairs
+for(let i=0;i<70;i++){const x=Math.floor(H(i,3,74)*N),y=Math.floor(H(i,5,75)*N),col=cmShadeRGB(base,.72+H(i,7,76)*.1);P(x,y,col);if(H(i,9,77)<.4)P(x+1,y+(H(i,11,78)<.5?0:1),col)}
 // light loops that catch the light
-for(let i=0;i<60;i++){const x=Math.floor(H(i,13,79)*N),y=Math.floor(H(i,17,80)*N);P(x,y,cmShadeRGB(base,1.24))}
+for(let i=0;i<70;i++){const x=Math.floor(H(i,13,79)*N),y=Math.floor(H(i,17,80)*N);P(x,y,cmShadeRGB(base,1.14))}
 q.putImageData(im,0,0);return c}
 const CMCARPET=[['carpet_grey','Grey carpet','r','#8f8a84'],['carpet_dkgrey','Dark grey carpet','k','#57554f'],['carpet_tan','Tan carpet','e','#b39a76'],['carpet_black','Black carpet','q','#2c2b2b'],
 ['carpet_red','Red carpet','h','#8c2c2a'],['carpet_green','Green carpet','j','#3e6a46'],['carpet_blue','Blue carpet','u','#3a5a8e']];
