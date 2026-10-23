@@ -19,11 +19,11 @@ function cmFree(){return CML.filter(e=>e.doc).map(e=>e.key)}
 function mpName(m){if(!cmIs(m))return MP[m]?MP[m].n:'?';const e=cmEnt(m);return e?e.doc.name||'Custom map':'Custom map'}
 function mpDesc(m){if(!cmIs(m))return MPD[m]||(MP[m]?MP[m].d:'');const e=cmEnt(m);return e?e.doc.desc||'A map made in the Map Workshop.':''}
 function mpImg(m){if(!cmIs(m))return MPI[m]||'';const e=cmEnt(m),u=e&&e.meta&&e.meta.thumb;return typeof u=='string'&&/^data:image\/(png|jpeg);base64,[A-Za-z0-9+/=]+$/.test(u)?u:''}
-function cmMunT(m){const d=cmDocOf(m);if(!d)return '';const b=cmPT(m)?0:mBest(S.ac,m);return `${b?'Best wave here: '+b+' · ':''}✎ Custom map · ${d.w}×${d.h} tiles`}
+function cmMunT(m){const d=cmDocOf(m);if(!d)return '';{const e=!cmPT(m)&&ccOfKey(m);if(e&&!mapOK(m))return `🔒 In the campaign (${SEC[e.s].n}): beat it there to play it in Free Play`}const b=cmPT(m)?0:mBest(S.ac,m);return `${b?'Best wave here: '+b+' · ':''}✎ Custom map · ${d.w}×${d.h} tiles`}
 // (re)load every saved map from the store; returns the list
 async function cmLoadAll(){const [metas,maps]=await Promise.all([msAll('meta'),msAll('maps')]),byId={};for(const r of maps||[])byId[r.id]=r;const L=[];
 for(const m of metas||[]){const rec=byId[m.id],r=rec?cmRead(rec.json):{doc:null,errors:['The map data is missing.'],warnings:[]};L.push({id:m.id,key:cmKeyOf(m.id),meta:m,doc:r.doc,errors:r.errors,warnings:r.warnings})}
-L.sort((a,b)=>String(a.meta.name||'').localeCompare(String(b.meta.name||''),undefined,{sensitivity:'base'}));CML=L;CMLOK=1;return L}
+L.sort((a,b)=>String(a.meta.name||'').localeCompare(String(b.meta.name||''),undefined,{sensitivity:'base'}));CML=L;CMLOK=1;try{await ccLoad()}catch(e){}return L}
 // paint a whole custom map (ground, walls, props, vehicles) into g; used for the game's background and for thumbnails
 function cmProp(g,o){const B=cmOB(o.k);if(!B)return;const v=o.vr!=null?o.vr:cmH(o.x,o.y,3),r=o.r||0;if(!r){B.f(g,o.x,o.y,v,o.c);return}
 const L=vRec.L,n=L?L.length:0;g.save();g.translate(o.x,o.y);g.rotate(r*Math.PI/180);try{B.f(g,0,0,v,o.c)}finally{g.restore()}
@@ -47,4 +47,4 @@ for(let n=0;n<10;n++){const x=q.x+Math.random()*q.w,y=q.y+Math.random()*q.h;if(!
 return[q.x+q.w/2,q.y+q.h/2]}
 // load the device's maps once the page is up (Free Play lists them; nothing waits for this)
 // a crash checkpoint on a custom map can only be offered once the maps are loaded, so the menu is redrawn then
-cmLoadAll().then(()=>{try{const c=cpGet();if(c&&c.cm&&mode=='menu'&&UIS==''&&ui.querySelector&&ui.querySelector('.title'))menu()}catch(e){}},e=>{try{console.warn('custom maps',e)}catch(_){}});
+cmLoadAll().then(()=>{try{const c=cpGet();if(c&&(c.cm||c.cr)&&mode=='menu'&&UIS==''&&ui.querySelector&&ui.querySelector('.title'))menu();else if(mode=='menu'&&UIS=='cmap'&&ccAll().length+Object.keys(CCS.rep).length)cMap()}catch(e){}},e=>{try{console.warn('custom maps',e)}catch(_){}});

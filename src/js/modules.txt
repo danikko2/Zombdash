@@ -85,6 +85,7 @@ zombies/special-behaviors.js
 dev/spawn-diagnostics.js
 zombies/wave-size.js
 multiplayer/campaign-map-pick.js
+campaign/custom-campaign.js
 dev/test-switches.js
 game/drop-table.js
 dev/balance-editor.js
@@ -97,6 +98,7 @@ editor/selection.js
 editor/panels.js
 editor/playtest.js
 editor/workshop.js
+editor/workshop-campaign.js
 core/main-loop.js
 intro/cutscene.js
 core/start.js

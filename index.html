@@ -258,7 +258,20 @@ input[type=range]::-moz-range-thumb{width:18px;height:22px;background:var(--ac);
 .edst .edsl{color:var(--ac)}
 #ed .edwide.on{background:linear-gradient(180deg,#1f6a7a,#164c58);box-shadow:0 0 0 1px #4ae0ff}
 #ed input[type=checkbox]:indeterminate{accent-color:#ffcf40}
-@media(max-width:900px){.edr{width:220px}.edcr{right:226px}}</style></head><body>
+@media(max-width:900px){.edr{width:220px}.edcr{right:226px}}
+/* ---------- custom maps in the campaign (campaign/custom-campaign.js, editor/workshop-campaign.js) ---------- */
+.cnode.cu .ci img.cthumb{position:absolute;left:18%;top:-30%;width:64%;aspect-ratio:4/3;height:auto;object-fit:cover;border-radius:0;box-shadow:0 0 0 2px #f4ead0,0 0 0 4px #16111c,2px 5px 0 3px rgba(0,0,0,.3);transform:rotate(-4deg);image-rendering:pixelated}
+.cnode.cu.lk .ci img.cthumb{filter:grayscale(1) brightness(.6)}
+.cnode .crp{position:absolute;top:4%;left:2%;width:30%;aspect-ratio:1;border-radius:50%;background:#7a5ad8;color:#fff;font-size:clamp(10px,1.6vw,16px);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #16111c,0 0 0 4px #fff}
+.cmlk{display:flex;flex-wrap:wrap;gap:0 10px;margin-top:2px}.cmlk .lnk{font-size:15px;margin:0;padding:0}
+.wscp{color:#ffcf40!important;white-space:normal!important}
+.wcm h3{margin:12px 0 6px}
+.wcsl{display:flex;flex-direction:column;gap:6px;text-align:left}.wcsec{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.wcsec>b{font-weight:400;min-width:130px;color:var(--fg)}.wcsec>span{display:flex;gap:6px;flex-wrap:wrap}
+.wcsec button{width:auto;margin:0;padding:6px 12px;font-size:17px}.wcsec button small{font-size:13px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wcbs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}.wcbs button{margin:0;padding:4px 2px 6px;font-size:15px;white-space:nowrap;overflow:hidden}.wcbs canvas{position:static;width:40px;height:50px;image-rendering:pixelated}.wcbs b{font-weight:400}.wcbs small{font-size:12px;color:var(--mut);max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.wcm .wsbar select{flex:1;min-width:0;margin:0}
+@media(max-width:620px){.wcbs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+#ui .wcm .note{margin:6px 0 8px;line-height:1.15}#ui .wcm h3,#ui.ls .wcm h3{margin:16px 0 8px}#ui .wcm .wcbs,#ui .wcm .wcsl{margin-bottom:6px}</style></head><body>
 <div id="game" style="width:100vw;height:100vh"><canvas id="c"></canvas><div id="ui"><div class="p" id="boot" style="animation:none"><h2>LOADING ZOMBDASH...</h2><p class="note">If this message stays on screen, tell Claude.</p></div></div><div id="sb"></div><button id="pz" aria-label="Pause" data-q="1" onclick="pauseMenu()"></button></div>
 <script>window.__zb=1;addEventListener('error',function(e){try{if(window.__zstarted)return;var d=document.getElementById('zerr0');if(!d){d=document.createElement('div');d.id='zerr0';d.style.cssText='position:fixed;left:8px;right:8px;bottom:8px;z-index:99;background:rgba(120,10,10,.95);color:#fff;font:14px monospace;padding:8px;white-space:pre-wrap;pointer-events:auto';document.body.appendChild(d)}var t=document.createElement('div');t.textContent='Startup error (please tell Claude): '+(e.message||e)+' @'+(e.lineno||'?')+':'+(e.colno||'?');d.appendChild(t);if(!document.getElementById('zrst')){var b=document.createElement('button');b.id='zrst';b.textContent='Try again with a fresh save (your old save is backed up)';b.style.cssText='margin-top:6px;font:14px monospace;padding:6px 10px;width:auto;display:inline-block';b.onclick=function(){try{if(localStorage.deadyard){localStorage.deadyard_backup=localStorage.deadyard;localStorage.removeItem('deadyard')}}catch(_){}location.reload()};d.appendChild(b)}}catch(_){}});</script>
 <script>
@@ -1662,11 +1675,11 @@ function cmFree(){return CML.filter(e=>e.doc).map(e=>e.key)}
 function mpName(m){if(!cmIs(m))return MP[m]?MP[m].n:'?';const e=cmEnt(m);return e?e.doc.name||'Custom map':'Custom map'}
 function mpDesc(m){if(!cmIs(m))return MPD[m]||(MP[m]?MP[m].d:'');const e=cmEnt(m);return e?e.doc.desc||'A map made in the Map Workshop.':''}
 function mpImg(m){if(!cmIs(m))return MPI[m]||'';const e=cmEnt(m),u=e&&e.meta&&e.meta.thumb;return typeof u=='string'&&/^data:image\/(png|jpeg);base64,[A-Za-z0-9+/=]+$/.test(u)?u:''}
-function cmMunT(m){const d=cmDocOf(m);if(!d)return '';const b=cmPT(m)?0:mBest(S.ac,m);return `${b?'Best wave here: '+b+' · ':''}✎ Custom map · ${d.w}×${d.h} tiles`}
+function cmMunT(m){const d=cmDocOf(m);if(!d)return '';{const e=!cmPT(m)&&ccOfKey(m);if(e&&!mapOK(m))return `🔒 In the campaign (${SEC[e.s].n}): beat it there to play it in Free Play`}const b=cmPT(m)?0:mBest(S.ac,m);return `${b?'Best wave here: '+b+' · ':''}✎ Custom map · ${d.w}×${d.h} tiles`}
 // (re)load every saved map from the store; returns the list
 async function cmLoadAll(){const [metas,maps]=await Promise.all([msAll('meta'),msAll('maps')]),byId={};for(const r of maps||[])byId[r.id]=r;const L=[];
 for(const m of metas||[]){const rec=byId[m.id],r=rec?cmRead(rec.json):{doc:null,errors:['The map data is missing.'],warnings:[]};L.push({id:m.id,key:cmKeyOf(m.id),meta:m,doc:r.doc,errors:r.errors,warnings:r.warnings})}
-L.sort((a,b)=>String(a.meta.name||'').localeCompare(String(b.meta.name||''),undefined,{sensitivity:'base'}));CML=L;CMLOK=1;return L}
+L.sort((a,b)=>String(a.meta.name||'').localeCompare(String(b.meta.name||''),undefined,{sensitivity:'base'}));CML=L;CMLOK=1;try{await ccLoad()}catch(e){}return L}
 // paint a whole custom map (ground, walls, props, vehicles) into g; used for the game's background and for thumbnails
 function cmProp(g,o){const B=cmOB(o.k);if(!B)return;const v=o.vr!=null?o.vr:cmH(o.x,o.y,3),r=o.r||0;if(!r){B.f(g,o.x,o.y,v,o.c);return}
 const L=vRec.L,n=L?L.length:0;g.save();g.translate(o.x,o.y);g.rotate(r*Math.PI/180);try{B.f(g,0,0,v,o.c)}finally{g.restore()}
@@ -1690,7 +1703,7 @@ for(let n=0;n<10;n++){const x=q.x+Math.random()*q.w,y=q.y+Math.random()*q.h;if(!
 return[q.x+q.w/2,q.y+q.h/2]}
 // load the device's maps once the page is up (Free Play lists them; nothing waits for this)
 // a crash checkpoint on a custom map can only be offered once the maps are loaded, so the menu is redrawn then
-cmLoadAll().then(()=>{try{const c=cpGet();if(c&&c.cm&&mode=='menu'&&UIS==''&&ui.querySelector&&ui.querySelector('.title'))menu()}catch(e){}},e=>{try{console.warn('custom maps',e)}catch(_){}});
+cmLoadAll().then(()=>{try{const c=cpGet();if(c&&(c.cm||c.cr)&&mode=='menu'&&UIS==''&&ui.querySelector&&ui.querySelector('.title'))menu();else if(mode=='menu'&&UIS=='cmap'&&ccAll().length+Object.keys(CCS.rep).length)cMap()}catch(e){}},e=>{try{console.warn('custom maps',e)}catch(_){}});
 let OPF=0;
 const MT=['linear-gradient(#7a695c,#7a695c) 34% 22%/34% 34% no-repeat,linear-gradient(#a8a49a,#a8a49a) 0 62%/100% 6% no-repeat,linear-gradient(#3d4045,#3d4045) 0 82%/100% 22% no-repeat,#58b852',
 'linear-gradient(#8a8f96,#8a8f96) 55% 42%/56% 46% no-repeat,repeating-linear-gradient(90deg,transparent 0 9px,#e8e8e4 9px 10px),linear-gradient(#d9dde3,#d9dde3) 6% 50%/14% 70% no-repeat,#4a4d53',
@@ -1735,7 +1748,7 @@ function buySk(){const A=SKA();for(const b of SKB){const ti=b.k.findIndex(k=>k.i
 function resetSk(){const A=SKA();let back=0;for(const b of SKB)b.k.forEach((k,ti)=>{back+=(A.sk[k.id]||0)*(ti+1)});A.sp+=back;A.sk={};sv();sfx('click');skills()}
 function nameScreen(fromSk){mode='menu';const A=S.ac;show(`<div class=p><h2>${A.name?'CHANGE NAME':'NEW SURVIVOR'}</h2><p>${A.name?'Pick a new name for your account.':'Create your account. You earn XP every run, level up, and spend skill points on permanent perks.'}</p><input id=unm maxlength=12 placeholder="Your name" value="${(A.name||'').replace(/"/g,'')}" autocomplete=off><p class=note id=nmsg>1–12 letters or numbers.</p><button class=go onclick="setName(${fromSk?1:0})">${A.name?'SAVE':'CREATE ACCOUNT'}</button>${A.name?`<button onclick="${fromSk?'skills()':'menu()'}">CANCEL</button>`:''}</div>`);const i=document.getElementById('unm');if(i&&i.focus)setTimeout(()=>{try{i.focus()}catch(e){}},50)}
 function setName(fromSk){const i=document.getElementById('unm'),v=((i&&i.value)||'').replace(/[^A-Za-z0-9 _-]/g,'').trim().slice(0,12);if(!v){const m=document.getElementById('nmsg');if(m)m.textContent='Please enter a name.';sfx('deny');return}S.ac.name=v;sv();sfx('buy');fromSk?skills():menu()}
-function menu(){CMLB=0;try{olAuto()}catch(e){}mode='menu';MPn=0;SKI=0;UIS='';music('menu');duck(1);if(!S.ac.name)return nameScreen(0);const A=S.ac;show(`<div class="p title"><div><div class=logo><span>ZOMB</span><span>DASH</span></div><div class=tag>How long can you last!</div></div><div><div class=acct><span class=lv>LV ${A.lv}</span><div class=nm><b>${A.name}${bdH(A)}</b>${ttH(A)}<div class=xpb><i style="width:${Math.min(100,A.xp/xpNeed(A.lv)*100)}%"></i></div><small class=note>${A.xp}/${xpNeed(A.lv)} XP <button class=lnk data-q=1 onclick="accounts(0)">accounts</button></small></div></div><div class=stats><div><b>${A.pts}</b><small>Zombie Pts</small></div><div><b>${S.best}</b><small>Best wave</small></div></div>${cpBanner()}${olBanner()}<button class=go onclick="modes()">PLAY</button><button onclick="workshop()">CREATE<small>map workshop</small></button>${PCM()?'<button onclick="lobby()">SPLIT SCREEN</button>':''}<div class=row><button onclick="SKS=null;skills()">SKILLS<small>${A.sp?A.sp+' point'+(A.sp>1?'s':'')+' to spend':'upgrades'}</small></button><button onclick="mastery()">MASTERY<small>survivors</small></button></div><div class=row><button onclick="armory()">ARMORY<small>guns & camos</small></button><button onclick="chals()">CHALLENGES<small>${chN(S.ac)}/6 done</small></button></div><div class=row><button onclick="lbOpen()">LEADERBOARDS<small>best waves</small></button><button onclick="olMenu()">ONLINE<small>${olTag()}</small></button></div><button onclick="options()">OPTIONS</button>${AU.c&&AU.c.state=='running'?'':'<div class=hint id=sndh>tap anywhere to turn on sound</div>'}</div></div>`)}
+function menu(){CMLB=0;ccRunBack();try{olAuto()}catch(e){}mode='menu';MPn=0;SKI=0;UIS='';music('menu');duck(1);if(!S.ac.name)return nameScreen(0);const A=S.ac;show(`<div class="p title"><div><div class=logo><span>ZOMB</span><span>DASH</span></div><div class=tag>How long can you last!</div></div><div><div class=acct><span class=lv>LV ${A.lv}</span><div class=nm><b>${A.name}${bdH(A)}</b>${ttH(A)}<div class=xpb><i style="width:${Math.min(100,A.xp/xpNeed(A.lv)*100)}%"></i></div><small class=note>${A.xp}/${xpNeed(A.lv)} XP <button class=lnk data-q=1 onclick="accounts(0)">accounts</button></small></div></div><div class=stats><div><b>${A.pts}</b><small>Zombie Pts</small></div><div><b>${S.best}</b><small>Best wave</small></div></div>${cpBanner()}${olBanner()}<button class=go onclick="modes()">PLAY</button><button onclick="workshop()">CREATE<small>map workshop</small></button>${PCM()?'<button onclick="lobby()">SPLIT SCREEN</button>':''}<div class=row><button onclick="SKS=null;skills()">SKILLS<small>${A.sp?A.sp+' point'+(A.sp>1?'s':'')+' to spend':'upgrades'}</small></button><button onclick="mastery()">MASTERY<small>survivors</small></button></div><div class=row><button onclick="armory()">ARMORY<small>guns & camos</small></button><button onclick="chals()">CHALLENGES<small>${chN(S.ac)}/6 done</small></button></div><div class=row><button onclick="lbOpen()">LEADERBOARDS<small>best waves</small></button><button onclick="olMenu()">ONLINE<small>${olTag()}</small></button></div><button onclick="options()">OPTIONS</button>${AU.c&&AU.c.state=='running'?'':'<div class=hint id=sndh>tap anywhere to turn on sound</div>'}</div></div>`)}
 function sl(k,lb){const v=Math.round(S[k]*100);return `<label class=sl><span>${lb}</span><input type=range min=0 max=100 value=${v} style="--v:${v}%" oninput="setVol('${k}',this)" onchange="sv();${k=='sv'?"sfx('buy')":''}"><output id=o${k}>${v}%</output></label>`}
 function setVol(k,el){S[k]=el.value/100;el.style.setProperty('--v',el.value+'%');const o=document.getElementById('o'+k);if(o)o.textContent=el.value+'%';auVol()}
 function options(fp){if(fp!=null)OPF=fp;if(!OPF)mode='menu';S.sw=cl(S.sw,1,DT('wave')?99:S.best);show(`<div class="p wide"><h2>OPTIONS</h2><div class=opt><div><h3>Audio</h3>${sl('mv','Music')}${sl('sv','Sound')}<div class=row><button onclick="auInit();sfx('wave')" data-q=1>Test sound</button></div><p class=note id=sst>${sndTxt()}</p><p class=note>No sound on iPhone? Check the silent switch and volume buttons.</p></div><div><h3>Screen</h3><div class=seg>${[['a','Auto'],['p','Vertical'],['l','Landscape']].map(o=>`<button class="${S.or==o[0]?'on':''}" onclick="setO('${o[0]}')">${o[1]}</button>`).join('')}</div><h3>After a wave</h3><div class=seg><button class="${S.qs?'on':''}" onclick="setQ(1)">Skip if empty</button><button class="${S.qs?'':'on'}" onclick="setQ(0)">Always 15s</button></div><p class=note>${S.qs?'Goes to the shop early when no items are left.':'Always waits the full 15 seconds before the shop.'}</p></div>`+
@@ -1751,7 +1764,7 @@ function quitRun(){OPF=0;duck(1);over(1)}
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&mode=='play')pauseMenu()});
 function plan(){IW=zPlan()}
 function nextBoss(){if(!BB.length){BB=[6,7,8,12,13];for(let i=BB.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[BB[i],BB[j]]=[BB[j],BB[i]]}if(BB[BB.length-1]==LB){const j=Math.random()*(BB.length-1)|0;[BB[BB.length-1],BB[j]]=[BB[j],BB[BB.length-1]]}}LB=BB.pop();return LB}
-function start(){WRC=WRP=null;TUT=null;livesInit();RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];GCC=[];CWIN=null;KN=null;RH=null;SVB=0;MPn=0;mapFix();plan();BB=[];build();P=mkP(sel,S.ac,'any',0);PL=[P];zs=[];bs=[];pt=[];wave=swEff()-1;kills=0;ET=0;PRE=0;if(CPR){cpApply();olRun();return}if(!cmPT(mapId))cpClear();lmRun();olRun();if(swEff()>1){PRE=1;shop()}else if(tutOK())tutStart();else nextWave()}
+function start(){WRC=WRP=null;TUT=null;livesInit();RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];GCC=[];CWIN=null;KN=null;RH=null;SVB=0;MPn=0;ccRunBack();mapFix();ccRunRep();plan();BB=[];build();P=mkP(sel,S.ac,'any',0);PL=[P];zs=[];bs=[];pt=[];wave=swEff()-1;kills=0;ET=0;PRE=0;if(CPR){cpApply();olRun();return}if(!cmPT(mapId))cpClear();lmRun();olRun();if(swEff()>1){PRE=1;shop()}else if(tutOK())tutStart();else nextWave()}
 function nextWave(){OPF=0;duck(1);if(!MPn&&!TUT&&wave>=1)cpSave();PRE=0;P=PL[0];wave++;for(const p of PL){if(p.sc0!=null&&p.cash<p.sc0)chEv(p,'spend',p.sc0-p.cash);p.sc0=null;if(!p.dead)chEv(p,'wave',wave);if(p.sw0==1)mapUnl(p,wave)}nzn='';for(const t in IW)if(IW[t]==wave)nzn=ZT[t].n;if(wave>S.best){S.best=wave;sv()}const bw=wave%10==0;const nz=zWaveCount(wave);toSp=zWaveN(bw?Math.floor(nz*.35):nz);spT=1;mode='play';ui.innerHTML='';banner=2.2;ep=[];pd=[];fr=[];rg=[];DR=[];FT=[];ET=0;for(const p of PL){p.dd=0;p.bn=0;if(p.dead||p.dn)respawn(p);p.shd=sPk(p,1)?1:0;if(sPk(p,7)){p.inv=Math.max(p.inv||0,3);FT.push({x:p.x,y:p.y-38,t:'HEROIC ENTRANCE',c:'#ffcf40',l:1.6})}}{const rp=WRP&&WRP.w==wave;bossQ=bw?(rp?WRP.b:nextBoss()):-1;WRC=rp?{w:wave,b:WRP.b,t:WRP.t,i:0,x:WRP.x,rp:1}:{w:wave,b:bossQ,t:[],i:0,x:null};WRP=null}if(GMD=='c'&&wave>=20){toSp=0;bossQ=-1;svSpawn()}music(bw?'boss':'game');sfx('wave');if(nzn)sfx('newz')}
 function shop(){if(DT('money'))for(const p of PL)p.cash=999999;if(mode!='shop'){if(!PRE&&!MPn&&!CPR)setTimeout(cpSave,0);if(!PRE){sfx('clear');for(const p of PL){P=p;gainXP(10+4*wave);chEv(p,'clear',1)}if(SVD){SVD=0;sv()}P=PL[0]}music('menu');duck(.85);for(const p of PL){p.rdy=0;p.sc=p.sc||0;p.sc0=p.cash;amFill(p)}}mode='shop';L=R=null;if(MPn)return mshop();const AC=pc(Math.round((S.df?800:500)*(1-.1*rk('arm')))),RC=pc(Math.round(30*(1-.1*rk('arm')))),ar=P.ar||0;show(`<div class="p sp"><h2>${PRE?'GET READY · WAVE '+(wave+1):'WAVE '+wave+' CLEARED'}</h2><div class=chips><span class=chip>$<b>${P.cash}</b></span><span class=chip><span class=hp>♥</span> <b>${P.hp}/${P.mx}</b></span>${ar?`<span class=chip><span class=arc>ARMOR</span> <b>${ar}/6</b></span>`:''}</div><div class=sg>`+WP.map((w,i)=>{const o=P.own.includes(i),can=P.cash>=pc(w.cost);return `<button data-q=1 class="${P.cur==i?'on':''} ${!o&&(!can||P.own.length>=INV)?'no':''}" onclick="buy(${i})"><canvas data-gun=${i} data-cm=${cmOf(P.ac,i)}></canvas>${wN(P.ci||0,i)}<small>${o?(P.cur==i?'equipped':'equip'):P.own.length>=INV?'slots full':'$'+pc(w.cost)}</small></button>`}).join('')+`<button data-q=1 class="${P.cash<pc(25)||P.hp>=P.mx?'no':''}" onclick="heal()"><span class=ico>+♥</span>Heal +1<small>$${pc(25)}</small></button><button data-q=1 class="${P.mx>=MXH(P)||P.cash<pc(250)?'no':''}" onclick="mhp()"><span class=ico>♥+</span>Max HP<small>${P.mx>=MXH(P)?'maxed ('+MXH(P)+')':'$'+pc(250)}</small></button><button data-q=1 class="${!ar?(P.cash<AC?'no':''):ar>=6||P.cash<30?'no':''}" onclick="armor()"><span class="ico arc">▣</span>${!ar?'Armor +6':ar<6?'Repair':'Armor'}<small>${!ar?'$'+AC:ar<6?'$'+(6-ar)*RC+' (6-'+(6-ar)+')':'full 6/6'}</small></button></div>${invHTML()}<button class=go onclick="nextWave()">START WAVE ${wave+1}</button>${PTX?'<p class=note style="text-align:center;margin:8px 0 0"><button class=lnk onclick="ptEnd()">back to the editor</button></p>':''}</div>`)}
 function buy(i){const w=WP[i];if(!P.mg)amInit(P);if(P.own.includes(i)){P.cur=i;sfx('click')}else if(P.own.length>=INV)sfx('deny');else if(P.cash>=pc(w.cost)){const c=pc(w.cost);P.cash-=c;P.paid[i]=c;P.own.push(i);P.cur=i;const t=AMT[i];P.mg[i]=AMG(i,P.ci||0);P.am[t]=Math.min(AMI[t].max,P.am[t]+AMG(i,P.ci||0)*2);sfx('buy')}else sfx('deny');shop()}
@@ -1988,8 +2001,8 @@ function cycAc(s,d){const l=[...ACS(),'G'];let i=l.indexOf(s.ac);for(let n=0;n<l
 function lbMap(d){const o=ORD(),acs=lobAcs();let i=o.indexOf(mapId);for(let n=0;n<o.length;n++){i=(i+d+o.length)%o.length;if(mapOK(o[i],acs))break}mapId=o[i];if(!cmIs(mapId))S.mp=mapId;sv();sfx('click')}
 function lbMode(g){setGM(g);mapFix(lobAcs());sfx('click');rL()}
 function lbA(i,k,d){const s=LBY.s[i];if(!s)return;if(k=='ch')cycCh(s,d);else if(k=='ac')cycAc(s,d);else if(k=='v'){s.v=d;s.rdy=0;sfx('click')}else if(k=='rdy'){s.rdy=s.rdy?0:1;sfx(s.rdy?'buy':'click')}else if(k=='out'){LBY.s.splice(i,1);sfx('click')}rL()}
-function rL(){const kmIn=LBY.s.some(s=>s.inp=='km');mapFix(lobAcs());
-show(`<div class="p wide lob"><h2>SPLIT SCREEN</h2><div class="seg lmode"><button data-q=1 class="${GMD=='c'?'on':''}" onclick="lbMode('c')">CAMPAIGN</button><button data-q=1 class="${GMD=='f'?'on':''}" onclick="lbMode('f')">FREE PLAY</button></div><div class="seg lmode">${[0,1,2].map(d=>`<button data-q=1 class="${DIF()==d?'on':''}" onclick="setDif(${d});mapFix(lobAcs());rL()">${DNm(d,GMD=='c')}</button>`).join('')}</div><div class=lmap>${GMD=='c'?'':'<button data-q=1 onclick="lbMap(-1);rL()">◀</button>'}<div><i style="background:${MT[mapId]||'#4a6a4c'}"></i><b>${mapNm(mapId)}</b>${GMD=='c'?`<small class=lbos>wave 20 boss: ${CH[MUN[mapId]].n}</small>`:''}</div>${GMD=='c'?'<button data-q=1 class=go style="width:auto;min-width:0;height:auto;padding:8px 14px;font-size:13px;line-height:1.2;white-space:nowrap" onclick="clbOpen()">CHOOSE MAP</button>':'<button data-q=1 onclick="lbMap(1);rL()">▶</button>'}</div><div class=lg>`+
+function rL(){const kmIn=LBY.s.some(s=>s.inp=='km');ccRunBack();mapFix(lobAcs());
+show(`<div class="p wide lob"><h2>SPLIT SCREEN</h2><div class="seg lmode"><button data-q=1 class="${GMD=='c'?'on':''}" onclick="lbMode('c')">CAMPAIGN</button><button data-q=1 class="${GMD=='f'?'on':''}" onclick="lbMode('f')">FREE PLAY</button></div><div class="seg lmode">${[0,1,2].map(d=>`<button data-q=1 class="${DIF()==d?'on':''}" onclick="setDif(${d});mapFix(lobAcs());rL()">${DNm(d,GMD=='c')}</button>`).join('')}</div><div class=lmap>${GMD=='c'?'':'<button data-q=1 onclick="lbMap(-1);rL()">◀</button>'}<div><i style="background:${MT[mapId]||'#4a6a4c'}"></i><b>${mapNm(mapId)}</b>${GMD=='c'?`<small class=lbos>wave 20 boss: ${(CH[ccBossOf(mapId)]||CH[0]).n}</small>`:''}</div>${GMD=='c'?'<button data-q=1 class=go style="width:auto;min-width:0;height:auto;padding:8px 14px;font-size:13px;line-height:1.2;white-space:nowrap" onclick="clbOpen()">CHOOSE MAP</button>':'<button data-q=1 onclick="lbMap(1);rL()">▶</button>'}</div><div class=lg>`+
 [0,1,2,3].map(i=>{const s=LBY.s[i];if(!s)return `<div class="ls em" style="--pc:${PC[i]}"><b class=px>P${i+1}</b><p>Press <b>A</b> on a controller to join</p>${!kmIn?`<button data-q=1 onclick="joinL('km');rL()">Join with keyboard</button>`:''}</div>`;
 const A=acOf(s),u=unl(A);return `<div class="ls ${s.rdy?'rd':''}" style="--pc:${PC[i]}"><div class=lh><b class=px>P${i+1}</b><small>${s.inp=='km'?'Keyboard & mouse':'Controller '+(s.inp+1)}</small></div>
 <div class=lr><button data-q=1 onclick="lbA(${i},'ch',-1)">◀</button><div><canvas data-ch=${s.ci} data-v=${s.v||(slOn(A,s.ci)?9:0)}></canvas><span>${CH[s.ci].n}</span><small>♥ ${CH[s.ci].hp} · ${WP[CH[s.ci].w].n}</small></div><button data-q=1 onclick="lbA(${i},'ch',1)">▶</button></div>
@@ -2010,7 +2023,7 @@ if(!s){if(k=='enter'||k==' ')joinL('km');else if(k=='escape')return menu();else 
 if(k=='a'||k=='arrowleft')cycCh(s,-1);else if(k=='d'||k=='arrowright')cycCh(s,1);else if(k=='w'||k=='arrowup')cycAc(s,-1);else if(k=='s'||k=='arrowdown')cycAc(s,1);
 else if(k=='c')cycV(s,1);else if(k=='m'){setGM(GMD=='c'?'f':'c');mapFix(lobAcs())}else if(k=='q')lbMap(-1);else if(k=='e')lbMap(1);else if(k=='enter'||k==' '){if(s.rdy&&LBY.s.every(s=>s.rdy))return startMP();s.rdy=s.rdy?0:1;sfx(s.rdy?'buy':'click')}
 else if(k=='escape'){if(s.rdy)s.rdy=0;else LBY.s.splice(LBY.s.indexOf(s),1)}else return;rL()}
-function startMP(){const sl=LBY&&LBY.s;if(!sl||!sl.length){sfx('deny');return}WRC=WRP=null;TUT=null;livesInit();RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];GCC=[];CWIN=null;KN=null;RH=null;SVB=0;mapFix(lobAcs());MPn=sl.length;plan();BB=[];build();
+function startMP(){const sl=LBY&&LBY.s;if(!sl||!sl.length){sfx('deny');return}WRC=WRP=null;TUT=null;livesInit();RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];GCC=[];CWIN=null;KN=null;RH=null;SVB=0;ccRunBack();mapFix(lobAcs());ccRunRep();MPn=sl.length;plan();BB=[];build();
 PL=sl.map((s,i)=>{const A=s.ac=='G'?guest():s.ac;if(!A.g)A.lc=s.ci;return mkP(s.ci,A,s.inp,i,s.v)});P=PL[0];zs=[];bs=[];pt=[];wave=swEff()-1;kills=0;ET=0;PRE=0;sv();if(swEff()>1){PRE=1;shop()}else nextWave()}
 // ---------- per-player shop ----------
 function shopIt(p){const P0=P;P=p;const AC=pc(Math.round((S.df?800:500)*(1-.1*rk('arm')))),RC=pc(Math.round(30*(1-.1*rk('arm')))),ar=p.ar||0;P=P0;
@@ -2366,25 +2379,25 @@ let GMD=S.gm=='c'?'c':'f';
 function cpOf(A){if(!A)return 0;if(A.cp==null){let n=0;while(n<OLDC.length&&(A.un||[]).includes(MUN[OLDC[n]]))n++;A.cp=n;A.cv=4}else{if(A.cv!==2&&A.cv!==3&&A.cv!==4){if(A.cp>=4)A.cp++;A.cv=2}if(A.cv===2){if(A.cp>=5)A.cp+=3;A.cv=3}if(A.cv===3){if(A.cp>=8)A.cp+=2;A.cv=4}}return A.cp}
 function mapOKA(A,m){return mOpen(A,GMD=='c'?DIF():0,m)}
 function lobAcs(){const L=typeof LBY!='undefined'&&LBY&&LBY.s?LBY.s.map(acOf).filter(Boolean):[];return L.length?L:[S.ac]}
-function mapOK(m,acs){if(cmIs(m))return !!cmDocOf(m);return(acs||[S.ac]).some(A=>mapOKA(A,m))||!!(acs&&acs.length>1&&GMD=='c'&&mOpen(cMerge(acs),DIF(),m))}
+function mapOK(m,acs){if(cmIs(m)){if(!cmDocOf(m))return false;if(GMD!='c')return ccFreeOK(m,acs);if(!ccOfKey(m))return false}return(acs||[S.ac]).some(A=>mapOKA(A,m))||!!(acs&&acs.length>1&&GMD=='c'&&mOpen(cMerge(acs),DIF(),m))}
 function ORD(){return GMD=='c'?CORD:MP.map((_,i)=>i).concat(cmFree())}
 function swEff(){return GMD=='c'?(DT('wave')?cl(S.sw,1,20):1):S.sw}
 function setGM(g){GMD=g;S.gm=g;SVD=1}
 function mapNm(m){if(cmIs(m))return mpName(m);return GMD=='c'?(CORD.indexOf(m)+1)+'. '+MP[m].n:MP[m].n}
 function campFront(A){return cFront(A||S.ac,DIF())}
-function mapFix(acs){if(mapOK(mapId,acs))return;const O=ORD();let m=GMD=='c'?campFront((acs||[S.ac])[0]):O.find(i=>mapOK(i,acs));if(m==null||!mapOK(m,acs))m=O.find(i=>mapOK(i,acs));if(m==null)m=0;mapId=m;S.mp=m}
+function mapFix(acs){if(mapOK(mapId,acs))return;const O=ORD();let m=GMD=='c'?campFront((acs||[S.ac])[0]):O.find(i=>mapOK(i,acs));if(m==null||!mapOK(m,acs))m=O.find(i=>mapOK(i,acs));if(m==null)m=0;mapId=m;if(!cmIs(m))S.mp=m}
 function munT(m){const A=S.ac,ci=MUN[m],ok=mapOK(m),i=CORD.indexOf(m);
-if(cmIs(m))return cmMunT(m);if(GMD=='c')return cMunT(m);
+if(GMD=='c'&&(!cmIs(m)||ccOfKey(m)))return cMunT(m);if(cmIs(m))return cmMunT(m);
 if(!ok)return `🔒 Unlock it in the campaign first`;const b=mBest(A,m);return `Best wave here: ${b||'—'}`}
-function modes(){CMLB=0;UIS='mode';mode='menu';MPn=0;const A=S.ac,c=cBeat(A),nf=MP.filter((_,m)=>mapOKA(A,m)).length;
+function modes(){CMLB=0;ccRunBack();UIS='mode';mode='menu';MPn=0;const A=S.ac,c=cBeat(A),nf=MP.filter((_,m)=>mapOKA(A,m)).length;
 show(`<div class="p wide mds"><h2>CHOOSE A MODE</h2><div class=mdg>
 <button data-q=1 class="mdb ${GMD=='c'?'on':''}" onclick="setGM('c');mapId=campFront();S.mp=mapId;CMV=null;play()"><b>CAMPAIGN</b><span class=mdp>${c>=CORD.length?'✓ COMPLETE':c+'/'+CORD.length+' maps beaten'}</span><small>Survive 20 waves on each map, then defeat the survivor holding out there. Beat them and they join you, and the next map opens up.</small></button>
 <button data-q=1 class="mdb ${GMD=='f'?'on':''}" onclick="setGM('f');play()"><b>FREE PLAY</b><span class=mdp>${nf}/${MP.length} maps unlocked${cmFree().length?' · '+cmFree().length+' custom':''}</span><small>Endless waves on any map you've opened up in the campaign. Chase your best wave.</small></button>
 </div><p class=note style="text-align:center;margin:6px 0 0"><button class=lnk data-q=1 onclick="tutAgain()">play the tutorial again</button></p><div class=row><button onclick="UIS='';menu()">BACK</button></div></div>`)}
 // ----- end of a campaign map -----
-function cwH(){const C=CWIN;return `<h2 style="color:var(--tox)">${MP[C.m].n.toUpperCase()} COMPLETE!</h2><div class=cwin><canvas data-ch=${C.ci}></canvas><div><b>${CH[C.ci].n} joined your survivors!</b><small>${C.nx!=null?'Next up: '+MP[C.nx].n+' ('+SEC[secOf(C.nx)].n+').':cBeat(S.ac)>=SORD.length?'You beat the whole campaign. Every map is open in free play.':'Pick your next map on the campaign map.'}</small></div></div>`}
+function cwH(){const C=CWIN,cu=cmIs(C.m),own=(S.ac.un||[]).includes(C.ci);return `<h2 style="color:var(--tox)">${edEsc(mpName(C.m).toUpperCase())} COMPLETE!</h2><div class=cwin><canvas data-ch=${C.ci}></canvas><div><b>${CH[C.ci].n} ${cu?'gives up!':'joined your survivors!'}</b><small>${cu?(own?CH[C.ci].n+' is already one of your survivors. ':'Beat '+CH[C.ci].n+' on '+ccHome(C.ci)+' to recruit them. ')+'This map is now open in Free Play. ':''}${C.nx!=null?'Next up: '+MP[C.nx].n+' ('+SEC[secOf(C.nx)].n+').':cBeat(S.ac)>=SORD.length?'You beat the whole campaign. Every map is open in free play.':'Pick your next map on the campaign map.'}</small></div></div>`}
 function cwBtn(mp){const C=CWIN;if(C.nx==null)return `<button class=go onclick="setGM('c');CMV=null;play()">CAMPAIGN MAP</button>`;return `<button class=go onclick="campNext(${mp?1:0})">NEXT: ${MP[C.nx].n.toUpperCase()}</button>`}
-function campNext(mp){const C=CWIN;if(!C||C.nx==null)return modes();setGM('c');mapId=C.nx;S.mp=mapId;sv();if(mp)return startMP();survs()}
+function campNext(mp){const C=CWIN;if(!C||C.nx==null)return modes();setGM('c');CREP=null;mapId=C.nx;S.mp=mapId;sv();if(mp)return startMP();survs()}
 
 // ---------- campaign wave 20: the map's survivor fights you, then joins you ----------
 let KN=null,RH=null,SVB=0,CWIN=null,RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];GCC=[];
@@ -2398,10 +2411,10 @@ const SVS={
 6:{hp:260,sp:108,w:'smg',cd:1.25,pd:220,lz:'#9aff8a',h1:300,p1:"STEVE'S SHIP"},
 7:{hp:735,sp:98,w:'smg',cd:1.3,pd:230,h1:420,p1:'JOHN · AIRBORNE'},
 8:{hp:300,sp:84,w:'dp',cd:.3,pd:210,h1:260,p1:"HANK'S HORSE"},9:{hp:640,sp:92,w:'sg',cd:1.25,pd:170},10:{hp:420,sp:118,w:'pi',cd:.85,pd:220},11:{hp:560,sp:82,w:'sg',cd:1.35,pd:170,h1:340,p1:"THE HEADLESS HORSE"},12:{hp:760,sp:86,w:'smg',cd:1.5,pd:230},13:{hp:1250,sp:0,w:'smg',cd:2,pd:300},14:{hp:720,sp:150,w:'sg',cd:1.4,pd:150,h1:620,p1:'THE FIRE ENGINE'},15:{hp:560,sp:150,w:'pi',cd:.7,pd:220},16:{hp:700,sp:88,w:'sg',cd:1.25,pd:170,h1:560,p1:'THE POLICE CRUISER'}};
-const SVL=["You're a great survivor.","I'd like to join you!"],SVK=1.35;
+const SVL=["You're a great survivor.","I'd like to join you!"],SVL2=["You're a great survivor.","See you out there!"],SVK=1.35;
 function svOK(x,y){if(x<50||y<50||x>WW-50||y>WH-50)return 0;try{if(!okPos(x,y))return 0}catch(e){}if(WL.some(w=>x>w[0]-18&&x<w[0]+w[2]+18&&y>w[1]-18&&y<w[1]+w[3]+18))return 0;if(fd&&gw&&fd.length){const c=fd[cl(y/gs|0,0,gh-1)*gw+cl(x/gs|0,0,gw-1)];if(c<0)return 0}return 1}
 function svPt(cx,cy,r0,r1){for(let n=0;n<40;n++){const a=Math.random()*6.283,r=r0+Math.random()*(r1-r0),x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;if(svOK(x,y))return{x,y}}return null}
-function svSpawn(){const ci=MUN[mapId];if(ci==null||!SVS[ci])return;const D=SVS[ci],k=(S.df?1.8:1)*BMP(),Q=rndAlive()||PL[0];let p=svPt(Q.x,Q.y,280,420)||svPt(Q.x,Q.y,150,560);
+function svSpawn(){const ci=cBossNow();if(ci==null||!SVS[ci])return;const D=SVS[ci],k=(S.df?1.8:1)*BMP(),Q=rndAlive()||PL[0];let p=svPt(Q.x,Q.y,280,420)||svPt(Q.x,Q.y,150,560);
 if(!p){const s=HS.sp&&HS.sp[0];p=s?{x:s[0],y:s[1]}:{x:Q.x+220,y:Q.y}}
 const z={x:p.x,y:p.y,t:15,ci,hp:(D.h1||D.hp)*k,k:0,kx:0,ky:0,spm:1,ph:D.h1?1:2,h2:D.hp*k,bn:D.h1?D.p1:CH[ci].n.toUpperCase(),fa:0,cd:1.6,ab:2.2,tr:[]};z.mh=z.hp;
 if(ci==6){z.fly=1;z.hr=28}if(ci==8||ci==11)z.hr=22;if(ci==12)z.hr=20;if(ci==7)z.lift=34;if(ci==13||ci==14||ci==16){z.tk=1;z.hr=44;tkInit(z)}zs.push(z);SVB=1;nzn=CH[ci].n.toUpperCase()+' WILL NOT GO DOWN EASY';sfx('horn')}
@@ -2479,11 +2492,14 @@ if(z.ci==7){z.lift=0;z.rk=0;z.gs=0;if(!svOK(z.x,z.y)){const p=svPt(z.x,z.y,0,220
 if(z.ci==8||z.ci==11){z.hr=0;RH={x:z.x,y:z.y,a:z.ga||0,t:0,ci:z.ci};sfx('kong',z.x,z.y,.6);FT.push({x:z.x,y:z.y-56,t:z.ci==11?'THE HORSE VANISHES! THE HORSEMAN FIGHTS ON FOOT':'THE HORSE BOLTS! HANK FIGHTS ON FOOT',c:'#ffcf40',l:2.2})}
 return 1}
 // beaten: no pop, they kneel, ask to join, and are unlocked
-function svDown(z){if(z.tk)tkPark(z);for(const q of zs)if((q.cl||ZT[q.t].gh)&&q.hp>0&&q!==z){q.hp=0;svPop(q)}GHH=[];GRN=[];const ci=z.ci,i=OLDC.indexOf(mapId);RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];GCC=[];KN={ci,x:z.x,y:z.y,t:0,fl:Math.cos(z.fa)<0?-1:1};ep=[];SVB=0;sfx('power');
-for(const p of PL){const A=p.ac;if(!A||A.g)continue;A.un=A.un||[0];const nw=!A.un.includes(ci);if(nw)A.un.push(ci);const dd=DIF(),o0=SORD.filter(m=>mOpen(A,dd,m)),s0=secOf(mapId),sd0=s0>=0&&secDone(A,dd,s0);if(i>=0)cpUp(A,dd,i+1);bmSet(A,dd,mapId);
+function svDown(z){if(z.tk)tkPark(z);for(const q of zs)if((q.cl||ZT[q.t].gh)&&q.hp>0&&q!==z){q.hp=0;svPop(q)}GHH=[];GRN=[];const ci=z.ci,cm=cCampId(),cu=cmIs(cm),i=cu?-1:OLDC.indexOf(cm);RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];GCC=[];KN={ci,x:z.x,y:z.y,t:0,fl:Math.cos(z.fa)<0?-1:1,cu};ep=[];SVB=0;sfx('power');
+for(const p of PL){const A=p.ac;if(!A||A.g)continue;const dd=DIF();
+// a custom slot: its own record and Free Play; the survivor is recruited on their own map, not here
+if(cu){const id=cmIdOf(cm),first=!ccBt(A,0,id);ccMark(A,dd,id);if(first)(p.nt=p.nt||[]).push(mpName(cm)+' is now open in Free Play');continue}
+A.un=A.un||[0];const nw=!A.un.includes(ci);if(nw)A.un.push(ci);const o0=SORD.filter(m=>mOpen(A,dd,m)),s0=secOf(cm),sd0=s0>=0&&secDone(A,dd,s0);if(i>=0)cpUp(A,dd,i+1);bmSet(A,dd,cm);
 if(nw)(p.nt=p.nt||[]).push(CH[ci].n+' joined your survivors');if(s0>=0&&!sd0&&secDone(A,dd,s0)&&s0<4)(p.nt=p.nt||[]).push(SEC[s0+1].n+' is open!');for(const m of SORD)if(!o0.includes(m)&&mOpen(A,dd,m))(p.nt=p.nt||[]).push(MP[m].n+' unlocked')}
 FT.push({x:z.x,y:z.y-70,t:CH[ci].n.toUpperCase()+' GIVES UP!',c:'#9be860',l:2.5});sv()}
-function campWin(){const i=CORD.indexOf(mapId);CWIN={ci:KN?KN.ci:MUN[mapId],m:mapId,nx:campNx()};over(1)}
+function campWin(){CWIN={ci:KN?KN.ci:cBossNow(),m:cCampId(),nx:campNx()};over(1)}
 function svThrow(z,Q){const tx=Q.x+rnd(-18,18),ty=Q.y+rnd(-18,18),d=Math.hypot(tx-z.x,ty-z.y);RKS.push({sx:z.x,sy:z.y,tx,ty,l0:z.lift+20,t:0,T:cl(d/330,.6,1.35),h:60+d*.18,s:7+Math.random()*3,sp:(Math.random()-.5)*12});sfx('swoosh',z.x,z.y)}
 function svTick(dt){svTick3(dt);svTick4(dt);svTick5(dt);for(const r of RKS){r.t+=dt;if(r.t>=r.T){r.done=1;sfx('slam',r.tx,r.ty);shk=Math.max(shk,.3);rg.push({x:r.tx,y:r.ty,l:.45,m:.45,r:48,c:'#c09060'});for(let i=0;i<18;i++){const a=Math.random()*6.283,v=50+Math.random()*170;pt.push({x:r.tx,y:r.ty,vx:Math.cos(a)*v,vy:Math.sin(a)*v*.6,l:.5,c:i%2?'#7a6a58':'#a08a70'})}for(const q of PL)if(alive(q)&&Math.hypot(q.x-r.tx,q.y-r.ty)<48)hitP(q,2,Math.atan2(q.y-r.ty,q.x-r.tx))}}RKS=RKS.filter(r=>!r.done);if(RH){RH.t+=dt;let a=RH.a;const q=PL.find(alive);if(q)a=Math.atan2(RH.y-q.y,RH.x-q.x);RH.a=a;RH.x+=Math.cos(a)*230*dt;RH.y+=Math.sin(a)*230*dt;if(RH.t>2.6)RH=null}}
 // ----- drawing -----
@@ -2532,7 +2548,7 @@ if(RH){const a=1-Math.max(0,(RH.t-1.6)/1);svHorse(RH.x,RH.y+20,Math.cos(RH.a)<0?
 if(KN){const k=SVK,h=64*k/1.6,fy=KN.y+h*.45,ci=KN.ci;X.fillStyle='rgba(0,0,0,.3)';X.beginPath();X.ellipse(KN.x,fy-2,15,5,0,0,7);X.fill();
 svBody(ci,KN.x,fy,KN.fl,0,k,0,{gun:false,sq:.78});
 const gi=PS[ci]&&PS[ci].gun[CH[ci].w];if(gi&&PIMG.naturalWidth){const s=k/1.6;X.save();X.translate(KN.x+KN.fl*16,fy-3);X.rotate(KN.fl>0?.12:-.12);X.scale(KN.fl,1);X.drawImage(PIMG,gi[0]+26,gi[1],gi[2]-26,gi[3],-14,-gi[3]*s*.5,(gi[2]-26)*s,gi[3]*s);X.restore()}
-if(KN.t>.7){const a=Math.min(1,(KN.t-.7)*3);X.globalAlpha=a;X.font='17px VT323, ui-monospace, monospace';const L=SVL,tw=Math.max(...L.map(s=>X.measureText(s).width))+18,th=L.length*17+12,bx=Math.round(KN.x-tw/2),by=Math.round(fy-h*.78-th-16);
+if(KN.t>.7){const a=Math.min(1,(KN.t-.7)*3);X.globalAlpha=a;X.font='17px VT323, ui-monospace, monospace';const L=KN.cu?SVL2:SVL,tw=Math.max(...L.map(s=>X.measureText(s).width))+18,th=L.length*17+12,bx=Math.round(KN.x-tw/2),by=Math.round(fy-h*.78-th-16);
 X.fillStyle='#16111c';X.fillRect(bx-2,by-2,tw+4,th+4);X.fillStyle='#f4f1e6';X.fillRect(bx,by,tw,th);X.fillStyle='#16111c';X.beginPath();X.moveTo(KN.x-6,by+th+1);X.lineTo(KN.x+6,by+th+1);X.lineTo(KN.x,by+th+10);X.fill();X.fillStyle='#f4f1e6';X.beginPath();X.moveTo(KN.x-4,by+th-1);X.lineTo(KN.x+4,by+th-1);X.lineTo(KN.x,by+th+6);X.fill();
 X.textAlign='center';X.fillStyle='#16111c';L.forEach((s,i)=>X.fillText(s,KN.x,by+19+i*17));X.font='9px "Press Start 2P", monospace';X.fillStyle='#ffcf40';X.lineWidth=3;X.strokeStyle='#070a08';X.strokeText(CH[ci].n.toUpperCase(),KN.x,by-7);X.fillText(CH[ci].n.toUpperCase(),KN.x,by-7);X.globalAlpha=1}}}
 
@@ -3841,7 +3857,7 @@ g.fillStyle='#16111c';g.beginPath();g.moveTo(bx+w-12,by+4);g.lineTo(bx+w-4,by+20
 // ---------- difficulty: 0 easy · 1 normal (medium in the campaign) · 2 hard; free play and the campaign remember their own pick ----------
 function DIF(){let c;try{c=GMD=='c'}catch(e){c=0}const v=c?S.dlc:S.dlf;return v==null?1:v}
 function DNm(d,c){return['Easy',c?'Medium':'Normal','Hard'][d]}
-function cmpI(){try{return GMD=='c'?Math.max(0,CORD.indexOf(mapId)):0}catch(e){return 0}}
+function cmpI(){try{return GMD=='c'?ccScaleIdx():0}catch(e){return 0}}
 // every campaign map is a little tougher than the one before it
 function DMH(){return(DIF()==0?.8:1)*(1+.03*cmpI())}
 function DBH(){return(DIF()==0?.85:1)*(1+.025*cmpI())}
@@ -3941,21 +3957,26 @@ var SORD=SEC.reduce((a,s)=>a.concat(s.m.filter(m=>m>=0)),[]);
 var OLDC=[0,3,1,8,2,9,10,11,12,13,4,7,6,5];
 // beaten maps: one bitmask per difficulty (0 easy · 1 medium · 2 hard); old saves are converted from their campaign progress
 function bmOf(A){if(!A)return[0,0,0];if(!A.bm){const b=[0,0,0];for(let d=0;d<3;d++){const n=Math.min(cpD(A,d),OLDC.length);for(let i=0;i<n;i++)b[d]|=1<<OLDC[i]}A.bm=b}return A.bm}
-function bBt(A,d,m){if(m<0)return 0;const b=bmOf(A);for(let k=d;k<3;k++)if(b[k]>>m&1)return 1;return 0}
-function bmSet(A,d,m){bmOf(A)[d]|=1<<m}
-function secOf(m){return SEC.findIndex(s=>s.m.includes(m))}
+function bBt(A,d,m){if(m<0)return 0;if(cmIs(m)){if(CREP&&CREP.key===m)return bBt(A,d,CREP.o);const id=cmIdOf(m);return id?ccBt(A,d,id):0}const b=bmOf(A);for(let k=d;k<3;k++)if(b[k]>>m&1)return 1;return 0}
+// custom maps keep their own record (A.cmc); the masks only ever hold built-in map numbers
+function bmSet(A,d,m){if(cmIs(m)){if(CREP&&CREP.key===m)return bmSet(A,d,CREP.o);return ccMark(A,d,cmIdOf(m))}if(m>=0&&m<MP.length)bmOf(A)[d]|=1<<m}
+// a custom map's section is the one its slot is in (a replaced map's is the original's)
+function secOf(m){if(cmIs(m)){if(CREP&&CREP.key===m)return secOf(CREP.o);const e=ccOfKey(m);return e?e.s:-1}return SEC.findIndex(s=>s.m.includes(m))}
 function secDone(A,d,s){return SEC[s].m.every(m=>m<0||bBt(A,d,m))}
 function secOpen(A,d,s){for(let k=0;k<s;k++)if(!secDone(A,d,k))return SEC.slice(s).some(q=>q.m.some(m=>m>=0&&bBt(A,d,m)))?1:0;return 1}
-function mOpen(A,d,m){const s=secOf(m);if(s<0||!secOpen(A,d,s))return 0;const f=SEC[s].m[0];return m==f||bBt(A,d,f)}
+// a custom slot opens with the rest of its section (once the section's first map is beaten); it never blocks anything
+function mOpen(A,d,m){if(cmIs(m)&&!(CREP&&CREP.key===m)&&!ccOfKey(m))return 0;const s=secOf(m);if(s<0||!secOpen(A,d,s))return 0;const f=SEC[s].m[0];return m==f||bBt(A,d,f)}
 function cFront(A,d){A=A||S.ac;d=d??DIF();const m=SORD.find(m=>mOpen(A,d,m)&&!bBt(A,d,m));return m!=null?m:SORD[SORD.length-1]}
 function cBeat(A){return SORD.filter(m=>bBt(A,0,m)).length}
 // what the end screen offers next: the next open map you haven't beaten yet
-function campNx(){const A=S.ac,d=DIF(),m=SORD.find(k=>k!==mapId&&mOpen(A,d,k)&&!bBt(A,d,k));return m!=null?m:null}
+function campNx(){const A=S.ac,d=DIF(),cm=cCampId(),m=SORD.find(k=>k!==cm&&mOpen(A,d,k)&&!bBt(A,d,k));return m!=null?m:null}
 // ----- the campaign map screens -----
-var CMV=null;
-function cMap(){UIS='cmap';mode='menu';MPn=0;const A=cAcc(),d=DIF();if(secOf(mapId)<0||!mOpen(A,d,mapId)){mapId=cFront(A,d);S.mp=mapId}if(CMV==null)CMV=secOf(mapId);if(CMV==='w')return cWorld();return cSec(CMV)}
-function cGo(v){CMV=v;sfx('click');if(v!=='w'){const A=cAcc(),d=DIF(),s=SEC[v];if(secOf(mapId)!=v||!mOpen(A,d,mapId)){const f=s.m.find(m=>m>=0&&mOpen(A,d,m)&&!bBt(A,d,m));const g=s.m.find(m=>m>=0&&mOpen(A,d,m));if(f!=null||g!=null){mapId=f!=null?f:g;S.mp=mapId}}}cMap()}
-function cPick(m){if(m<0){sfx('deny');return}mapId=m;S.mp=m;SVD=1;sfx('click');cMap()}
+var CMV=null,CSEL=null;
+function cMap(){UIS='cmap';mode='menu';MPn=0;ccRunBack();const A=cAcc(),d=DIF();if(secOf(mapId)<0||!mOpen(A,d,mapId)){mapId=cFront(A,d);S.mp=mapId}if(CMV==null)CMV=secOf(mapId);if(CMV==='w')return cWorld();return cSec(CMV)}
+function cGo(v){CMV=v;CSEL=null;sfx('click');if(v!=='w'){const A=cAcc(),d=DIF(),s=SEC[v];if(secOf(mapId)!=v||!mOpen(A,d,mapId)){const f=s.m.find(m=>m>=0&&mOpen(A,d,m)&&!bBt(A,d,m));const g=s.m.find(m=>m>=0&&mOpen(A,d,m));if(f!=null||g!=null){mapId=f!=null?f:g;S.mp=mapId}}}cMap()}
+function cPick(m){if(m<0){sfx('deny');return}CSEL=null;mapId=m;if(!cmIs(m)){S.mp=m;SVD=1}sfx('click');cMap()}
+// an empty slot: shows what can go there
+function cSlotPick(s,k){CSEL=[s,k];sfx('click');cMap()}
 const cPath=(P,cl)=>{let d='M'+P[0][0]+' '+P[0][1];const n=P.length;for(let i=0;i<n;i++){const p0=P[(i-1+n)%n],p1=P[i],p2=P[(i+1)%n],p3=P[(i+2)%n];d+=` C${(p1[0]+(p2[0]-p0[0])/6).toFixed(1)} ${(p1[1]+(p2[1]-p0[1])/6).toFixed(1)} ${(p2[0]-(p3[0]-p1[0])/6).toFixed(1)} ${(p2[1]-(p3[1]-p1[1])/6).toFixed(1)} ${p2[0]} ${p2[1]}`}return d+(cl===false?'':'Z')};
 // little map art
 function cDeco(th,x,y,k,s){s=s||1;const T=`transform="translate(${x} ${y}) scale(${s})"`;
@@ -3975,7 +3996,7 @@ var CWR=[
 {p:[[706,462],[822,430],[928,476],[940,560],[826,602],[704,572]],l:[820,520],dc:[[740,490,0],[900,500,1],[760,570,2],[880,575,3]]}];
 function cWorld(){const A=cAcc(),d=DIF(),cur=secOf(cFront(A,d));let lb='';
 for(let i=0;i<5;i++){const S_=SEC[i],op=secOpen(A,d,i),dn=secDone(A,d,i),n=S_.m.filter(m=>m>=0),b=n.filter(m=>bBt(A,d,m)).length,[x,y]=CWC[i];
-lb+=`<button data-q=1 class="creg ${op?'':'lk'}" style="left:${x/10}%;top:${(y+(i==4?-14:30))/6.2}%" onclick="${op?`cGo(${i})`:`sfx('deny')`}"><b>${S_.n}</b><small>${op?(dn?'✓ complete':b+'/'+n.length+' beaten'):'🔒 finish '+SEC[i-1].n}</small>${i==cur?'<em class=cpn></em>':''}</button>`}
+lb+=`<button data-q=1 class="creg ${op?'':'lk'}" style="left:${x/10}%;top:${(y+(i==4?-14:30))/6.2}%" onclick="${op?`cGo(${i})`:`sfx('deny')`}"><b>${S_.n}</b><small>${op?(dn?'✓ complete':b+'/'+n.length+' beaten'):'🔒 finish '+SEC[i-1].n}${ccAll().some(e=>e.s===i)?' · +'+ccAll().filter(e=>e.s===i).length+' custom':''}</small>${i==cur?'<em class=cpn></em>':''}</button>`}
 show(`<div class="p wide cmp"><div class=cmh><button class="cbk cbm" data-q=1 onclick="${CMLB?'clbBack()':'modes()'}">${CMLB?'LOBBY':'MENU'}</button><h2>CAMPAIGN · WORLD MAP</h2>${difSel()}</div><div class="cmb cww"><canvas id=cmc width=1600 height=992></canvas>${lb}</div>
 <p class=cmn>Pick a section. Each section opens with one map; beat it and the rest of that section opens in any order. Beat every map in a section to reach the next.</p><div class=row><button class=go onclick="cGo(${cur})">GO TO ${SEC[cur].n.toUpperCase()}</button></div></div>`);
 const cv=document.getElementById&&document.getElementById('cmc'),g=cv&&cv.getContext&&cv.getContext('2d');if(!g||!g.drawImage)return;const art=cWorldArt();g.drawImage(art,0,0);const Q=AU.cmrg;if(!Q)return;g.save();g.scale(1.6,1.6);
@@ -3987,18 +4008,30 @@ var CSL=[[175,390],[330,205],[515,330],[690,180],[830,400]],CRD=[[0,1],[0,2],[1,
 var CIS=[[70,330],[150,170],[300,110],[470,150],[620,90],[800,100],[920,220],[930,380],[860,520],[680,560],[520,500],[360,560],[180,540],[80,460]];
 function cSec(si){const A=cAcc(),d=DIF(),S_=SEC[si],op=secOpen(A,d,si);if(!op)return cWorld();const front=cFront(A,d);let nodes='';
 S_.m.forEach((m,k)=>{const[x,y]=CSL[k],L=(x/10).toFixed(1)+'%',T=((y-78)/6.2).toFixed(1)+'%';
-if(m<0){nodes+=`<button data-q=1 class="cnode cs" style="left:${L};top:${T}" onclick="cPick(-1)"><span class=ci><b>?</b></span><span class=cnl>Coming Soon</span></button>`;return}
-const o=mOpen(A,d,m),b=bBt(A,d,m),on=m===mapId;
-nodes+=`<button data-q=1 class="cnode ${o?'':'lk'} ${b?'dn':''} ${on?'on':''}" style="left:${L};top:${T}" onclick="cPick(${m})"><span class=ci>${!o?'<em class=clk>🔒</em>':''}</span>${b?'<span class=cdn>✓</span>':''}${o&&!b?'<span class=cnew>★</span>':''}${k==0?'<span class=cst>START</span>':''}${m===front&&o?'<span class=cme>YOU</span>':''}<span class=cnl>${MP[m].n}</span></button>`});
-const m=mapId,o=mOpen(A,d,m),done=S_.m.filter(q=>q>=0),nb=done.filter(q=>bBt(A,d,q)).length,nx=si<4?SEC[si+1].n:null;
-const info=`<div class=cmi><div><b>${MP[m].n}</b><small>${MPD[m]||MP[m].d}</small><span class=munl>${munT(m)}</span></div><button id=mgo class="go ${o?'':'no'}" onclick="mapGo()">${o?(CMLB?'CHOOSE':'PLAY'):'🔒 LOCKED'}</button></div>`;
-show(`<div class="p wide cmp"><div class=cmh><button class=cbk data-q=1 onclick="cGo('w')" aria-label="World map">⟵ WORLD MAP</button><button class="cbk cbm" data-q=1 onclick="${CMLB?'clbBack()':'modes()'}">${CMLB?'LOBBY':'MENU'}</button><h2>${si+1}. ${S_.n.toUpperCase()}<small>${S_.sub} · ${nb}/${done.length} beaten${nx?' · beat them all to reach '+nx:''}</small></h2>${difSel()}</div>
-<div class=cmb><canvas id=cmc width=1600 height=992></canvas>${nodes}</div>${info}</div>`);
+if(m<0){const e=ccSlot(si,k);if(e){const o=mOpen(A,d,e.key),b=bBt(A,d,e.key),on=e.key===mapId&&!CSEL,img=mpImg(e.key);
+nodes+=`<button data-q=1 class="cnode cu ${o?'':'lk'} ${b?'dn':''} ${on?'on':''}" style="left:${L};top:${T}" onclick="cPick(${e.key})"><span class=ci>${img?`<img class=cthumb alt="" src="${img}">`:''}${!o?'<em class=clk>🔒</em>':''}</span>${b?'<span class=cdn>✓</span>':''}${o&&!b?'<span class=cnew>★</span>':''}<span class=cnl>${edEsc(mpName(e.key))}</span></button>`;return}
+const bad=ccSlotBad(si,k),sel=CSEL&&CSEL[0]===si&&CSEL[1]===k;nodes+=`<button data-q=1 class="cnode cs ${sel?'on':''}" style="left:${L};top:${T}" onclick="cSlotPick(${si},${k})"><span class=ci><b>${bad?'!':'?'}</b></span><span class=cnl>Coming Soon</span></button>`;return}
+const o=mOpen(A,d,m),b=bBt(A,d,m),on=m===mapId&&!CSEL,rp=ccRep(m);
+nodes+=`<button data-q=1 class="cnode ${o?'':'lk'} ${b?'dn':''} ${on?'on':''}" style="left:${L};top:${T}" onclick="cPick(${m})"><span class=ci>${!o?'<em class=clk>🔒</em>':''}</span>${b?'<span class=cdn>✓</span>':''}${o&&!b?'<span class=cnew>★</span>':''}${k==0?'<span class=cst>START</span>':''}${m===front&&o?'<span class=cme>YOU</span>':''}${rp?'<span class=crp title="Your custom map plays here instead">✎</span>':''}<span class=cnl>${MP[m].n}</span></button>`});
+const m=mapId,o=mOpen(A,d,m),done=S_.m.filter(q=>q>=0),nb=done.filter(q=>bBt(A,d,q)).length,nx=si<4?SEC[si+1].n:null,cus=ccAll().filter(e=>e.s===si),ncb=cus.filter(e=>bBt(A,d,e.key)).length;
+const info=CSEL&&CSEL[0]===si?cSlotInfo(si,CSEL[1]):`<div class=cmi><div><b>${edEsc(mpName(m))}</b><small>${edEsc(mpDesc(m))}</small><span class=munl>${munT(m)}</span>${cManage(m)}</div><button id=mgo class="go ${o?'':'no'}" onclick="mapGo()">${o?(CMLB?'CHOOSE':'PLAY'):'🔒 LOCKED'}</button></div>`;
+show(`<div class="p wide cmp"><div class=cmh><button class=cbk data-q=1 onclick="cGo('w')" aria-label="World map">⟵ WORLD MAP</button><button class="cbk cbm" data-q=1 onclick="${CMLB?'clbBack()':'modes()'}">${CMLB?'LOBBY':'MENU'}</button><h2>${si+1}. ${S_.n.toUpperCase()}<small>${S_.sub} · ${nb}/${done.length} beaten${cus.length?' · custom '+ncb+'/'+cus.length:''}${nx?' · beat them all to reach '+nx:''}</small></h2>${difSel()}</div>
+<div class=cmb><canvas id=cmc width=1600 height=992></canvas>${nodes}</div>${info}${CCW.length&&!CMLB?`<p class=cmn style="color:#ffb86a">⚠ ${edEsc(CCW[0])}${CCW.length>1?' (+'+(CCW.length-1)+' more in the Map Workshop)':''}</p>`:''}</div>`);
 const cv=document.getElementById&&document.getElementById('cmc'),g=cv&&cv.getContext&&cv.getContext('2d');if(g&&g.drawImage)g.drawImage(cSecArt(si),0,0)}
 // end-of-map text and button
-function cMunT(m){const A=cAcc(),d=DIF(),ci=MUN[m],s=secOf(m),o=mOpen(A,d,m);
+function cMunT(m){const A=cAcc(),d=DIF(),s=secOf(m),o=mOpen(A,d,m);
+if(cmIs(m)){const e=ccOfKey(m);if(!e)return '';if(!o)return !secOpen(A,d,s)?`🔒 Beat every map in ${SEC[s-1].n} on ${DNm(d,1)} first`:`🔒 Beat ${MP[SEC[s].m[0]].n} on ${DNm(d,1)} to open this map`;
+return (bBt(A,d,m)?`✓ Beaten on ${DNm(d,1)} · play it again any time`:`Survive 20 waves, then defeat <b>${CH[e.b].n}</b>`)+` · ✎ custom map, optional`}
+const ci=MUN[m],rp=ccRep(m),rt=rp?` · ✎ plays your map “${edEsc(mpName(rp.key))}”`:'';
 if(!o){if(!secOpen(A,d,s))return `🔒 Beat every map in ${SEC[s-1].n} on ${DNm(d,1)} first`;return `🔒 Beat ${MP[SEC[s].m[0]].n} on ${DNm(d,1)} to open this map`}
-return bBt(A,d,m)&&(A.un||[]).includes(ci)?`✓ Beaten · ${CH[ci].n} joined you · play it again any time`:`Survive 20 waves, then defeat <b>${CH[ci].n}</b> to recruit them`}
+return (bBt(A,d,m)&&(A.un||[]).includes(ci)?`✓ Beaten · ${CH[ci].n} joined you · play it again any time`:`Survive 20 waves, then defeat <b>${CH[ci].n}</b> to recruit them`)+rt}
+// the info box for an empty slot, and the custom-map links under a map's info (single player only: the lobby just picks)
+function cSlotInfo(s,k){const bad=ccSlotBad(s,k),n=cmFree().length;
+return `<div class=cmi><div><b>Coming Soon</b><small>${bad?`⚠ “${edEsc(bad.n||'A custom map')}” is in this slot but can't be opened right now, so the slot shows Coming Soon.`:`A free slot in ${SEC[s].n}. Put one of your own maps here: it plays with this section's zombies, lives and difficulty, ends with a survivor boss you pick, and never blocks the next section.`}</small></div>${CMLB?'':`<button class=go onclick="${n?`wcPickMap(${s},${k})`:`workshop()`}">${n?'ADD A MAP':'MAP WORKSHOP'}</button>`}</div>`}
+function cManage(m){if(CMLB)return '';const e=cmIs(m)&&ccOfKey(m);if(e)return `<span class=cmlk><button class=lnk onclick="wcOpen(cmIdOf(${m}),'cmap')">boss & slot</button><button class=lnk onclick="ccOut(cmIdOf(${m}))">remove from campaign</button></span>`;
+const rp=!cmIs(m)&&ccRep(m);return rp?`<span class=cmlk><button class=lnk onclick="ccBack(${m})">restore ${edEsc(MP[m].n)}</button></span>`:''}
+function ccOut(id){ccUnassign(id);sfx('click');CSEL=null;mapId=cFront(cAcc(),DIF());cMap()}
+function ccBack(m){ccRestore(m);sfx('click');cMap()}
 
 // ---------- painted campaign maps: terrain, trees, landmarks (drawn once into cached canvases) ----------
 function cRng(s){return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296}}
@@ -4064,6 +4097,10 @@ g.fillStyle=CO;g.fillRect(x-34,y-28,64,16);g.fillStyle='#5a6438';g.fillRect(x-32
 g.fillStyle=CO;g.fillRect(x+8,y-36,40,6);g.fillStyle='#4b5a32';g.fillRect(x+9,y-35,38,4);g.fillStyle='#e8d070';g.beginPath();g.arc(x-20,y-20,3,0,7);g.fill();g.fillStyle='#8a8a62';g.fillRect(x-8,y-42,2,8)},
 5:(g,x,y)=>{cShadow(g,x,y,44);cBox(g,x-28,y-44,52,44,'#d8c8a0','#c0b088');cRoof(g,x-28,y-44,52,20,'#3a5a7a','#2c4660');for(const[wx,wy]of[[-22,-36],[-4,-36],[12,-36],[-22,-18],[12,-18]])cWin(g,x+wx,y+wy,8,9);g.fillStyle='#7a2a2a';g.fillRect(x-5,y-16,10,16);g.strokeRect(x-5,y-16,10,16);
 g.fillStyle='#f4f0e6';for(let i=-44;i<44;i+=5){if(i>-34&&i<30)continue;g.fillRect(x+i,y-8,3,10)}g.fillRect(x-44,y-4,14,2);g.fillRect(x+30,y-4,14,2);cTree(g,x+38,y-2,1,'#3f8a3e','#5aaa4a')}};
+// a custom map's spot: a signpost with a map pinned to it, a tent and a campfire
+function cLmCustom(g,x,y){cShadow(g,x,y,40);g.fillStyle='#c8b490';g.beginPath();g.moveTo(x+6,y);g.lineTo(x+22,y-24);g.lineTo(x+38,y);g.closePath();g.fill();g.strokeStyle=CO;g.lineWidth=2.5;g.stroke();g.fillStyle='#a8946e';g.beginPath();g.moveTo(x+22,y-24);g.lineTo(x+38,y);g.lineTo(x+27,y);g.fill();g.fillStyle='#3a2a1a';g.beginPath();g.moveTo(x+17,y);g.lineTo(x+22,y-11);g.lineTo(x+27,y);g.fill();
+g.fillStyle=CO;g.fillRect(x-25,y-40,6,40);g.fillStyle='#8a5a32';g.fillRect(x-24,y-39,4,39);g.fillStyle=CO;g.fillRect(x-38,y-46,32,24);g.fillStyle='#f0e2c0';g.fillRect(x-36,y-44,28,20);g.strokeStyle='#b89a6a';g.lineWidth=1.5;g.beginPath();g.moveTo(x-33,y-38);g.lineTo(x-24,y-33);g.lineTo(x-18,y-40);g.lineTo(x-12,y-30);g.stroke();g.strokeStyle='#c0392b';g.lineWidth=2;g.beginPath();g.moveTo(x-17,y-33);g.lineTo(x-13,y-29);g.moveTo(x-13,y-33);g.lineTo(x-17,y-29);g.stroke();g.fillStyle='#c0392b';g.beginPath();g.arc(x-22,y-44,2.5,0,7);g.fill();
+g.fillStyle='#6a4a2a';g.fillRect(x-6,y+2,14,3);g.fillStyle='#ff8a2a';g.beginPath();g.moveTo(x-4,y+2);g.lineTo(x+1,y-9);g.lineTo(x+6,y+2);g.fill();g.fillStyle='#ffd84a';g.beginPath();g.moveTo(x-1,y+2);g.lineTo(x+1,y-4);g.lineTo(x+3,y+2);g.fill()}
 // ----- section islands -----
 const CSH=[{sd:11,r:1},{sd:23,r:1},{sd:37,r:1},{sd:51,r:1},{sd:67,r:.9}];
 function cOutline(si){const R=cRng(CSH[si].sd),P=[],n=26,cx=505,cy=330;for(let i=0;i<n;i++){const a=i/n*6.283,k=CSH[si].r*(.86+R()*.22+.08*Math.sin(a*3+si));P.push([cx+Math.cos(a)*440*k,cy+Math.sin(a)*262*k])}return P}
@@ -4089,7 +4126,7 @@ if(th=='spook'){if(k<.25)return cDead(g,x,y,1.1);if(k<.4)return cPine(g,x,y,1.1,
 if(th=='farm'){if(k<.12)return cCact(g,x,y,1);if(k<.35)return cPine(g,x,y,1.1,'#2f6b4a','#3f8a5a');const c=T.t[Math.floor(R()*T.t.length)];return cTree(g,x,y,1,c[0],c[1])}
 if(th=='city'&&k<.35){const h=14+R()*22;cBox(g,x-7,y-h,14,h,['#6a7a90','#5a6a80','#7a8aa0'][Math.floor(R()*3)]);for(let wy=y-h+4;wy<y-3;wy+=6){g.fillStyle='#ffd27a';g.fillRect(x-4,wy,3,3);g.fillStyle='#a8c0e0';g.fillRect(x+1,wy,3,3)}return}
 if(k<.25)return cPine(g,x,y,1.05,'#2f6b4a','#3f8a5a');const c=T.t[Math.floor(R()*T.t.length)];return cTree(g,x,y,1,c[0],c[1])}
-function cSecArt(si){const key='s'+si;AU.cma=AU.cma||{};if(AU.cma[key])return AU.cma[key];const S_=SEC[si],W=1000,H=620,cv=document.createElement('canvas');cv.width=W*1.6;cv.height=H*1.6;const g=cv.getContext('2d');if(!g||!g.scale)return cv;g.scale(1.6,1.6);const R=cRng(100+si*17);
+function cSecArt(si){const key='s'+si+SEC[si].m.map((m,k)=>m<0&&ccSlot(si,k)?'c':'').join('');AU.cma=AU.cma||{};if(AU.cma[key])return AU.cma[key];const S_=SEC[si],W=1000,H=620,cv=document.createElement('canvas');cv.width=W*1.6;cv.height=H*1.6;const g=cv.getContext('2d');if(!g||!g.scale)return cv;g.scale(1.6,1.6);const R=cRng(100+si*17);
 cSeaPaint(g,W,H,R);const P=cOutline(si);cLand(g,P,S_.th,R);
 // theme set pieces: mountains, mesas, fields, city blocks
 if(S_.th=='farm'){for(let i=0;i<6;i++){const x=180+R()*640,y=140+R()*360;if(CSL.some(q=>Math.hypot(q[0]-x,q[1]-y)<90))continue;g.save();g.translate(x,y);g.rotate(R()*.6-.3);g.fillStyle=['#e8c860','#c8a848','#a8b860'][i%3];g.fillRect(-34,-18,68,36);g.strokeStyle='rgba(90,70,20,.5)';g.lineWidth=1.5;for(let k=-30;k<34;k+=6){g.beginPath();g.moveTo(k,-18);g.lineTo(k,18);g.stroke()}g.restore()}}
@@ -4101,7 +4138,7 @@ if(S_.th=='spook'){g.fillStyle='rgba(200,210,220,.12)';for(let i=0;i<14;i++){g.b
 const V=[];for(let i=0;i<1400&&V.length<190;i++){const x=60+R()*880,y=60+R()*520;if(!ok(x,y,64))continue;if(CRD.some(([a,b])=>{const p=CSL[a],q=CSL[b];for(let t=0;t<=1;t+=.1){const mx=(p[0]+q[0])/2+((p[0]*7+q[1])%40-20),my=(p[1]+q[1])/2-18,u=1-t,X=u*u*p[0]+2*u*t*mx+t*t*q[0],Y=u*u*p[1]+2*u*t*my+t*t*q[1];if(Math.hypot(X-x,Y-y)<16)return 1}return 0}))continue;V.push([x,y])}
 V.sort((a,b)=>a[1]-b[1]);for(const[x,y]of V)cVeg(g,S_.th,x,y,R);
 cShip(g,70,560,1.2);if(si!=1)cShip(g,930,90,1);cCompassC(g,930,540,1);
-S_.m.forEach((m,k)=>{const[x,y]=CSL[k];if(m<0){g.fillStyle='rgba(230,230,240,.55)';for(let j=0;j<6;j++){g.beginPath();g.arc(x-26+j*10,y-10+(j%2)*6,16,0,7);g.fill()}return}g.save();g.translate(x,y+22);g.scale(1.55,1.55);CLM[m]&&CLM[m](g,0,0);g.restore()});
+S_.m.forEach((m,k)=>{const[x,y]=CSL[k];if(m<0&&ccSlot(si,k)){g.save();g.translate(x,y+22);g.scale(1.55,1.55);cLmCustom(g,0,0);g.restore();return}if(m<0){g.fillStyle='rgba(230,230,240,.55)';for(let j=0;j<6;j++){g.beginPath();g.arc(x-26+j*10,y-10+(j%2)*6,16,0,7);g.fill()}return}g.save();g.translate(x,y+22);g.scale(1.55,1.55);CLM[m]&&CLM[m](g,0,0);g.restore()});
 return AU.cma[key]=cv}
 // world: one continent split into four sections (nearest-centre cells) + Island offshore
 var CWP=[[60,380],[90,200],[200,80],[380,60],[560,50],[780,48],[920,140],[930,330],[860,400],[700,400],[560,390],[420,420],[380,560],[220,590],[80,520]];
@@ -4678,14 +4715,15 @@ function memMB(){let b=BGL?BGL.width*BGL.height*4:(BG&&BG.width>1?WW*WH*4:0);for
 const CPK='zd_cp';
 function cpGet(){try{const c=JSON.parse(localStorage[CPK]||'null');return c&&c.v==1?c:null}catch(e){return null}}
 function cpClear(){try{delete localStorage[CPK]}catch(e){}}
-function cpSave(){if(MPn||TUT||!P||cmPT(mapId)||GMD=='c'&&wave>=20)return;try{const p=P,cu=cmIs(mapId);if(cu&&!cmIdOf(mapId))return;localStorage[CPK]=JSON.stringify({v:1,t:Date.now(),an:S.ac.name,gm:GMD,m:cu?-1:mapId,cm:cu?cmIdOf(mapId):undefined,ci:p.ci||0,d:DIF(),w:wave,k:kills,L:LIVES,IW,BB,LB,
+function cpSave(){if(MPn||TUT||!P||cmPT(mapId)||GMD=='c'&&wave>=20)return;try{const p=P,rp=CREP&&CREP.key===mapId,cu=cmIs(mapId)&&!rp;if(cu&&!cmIdOf(mapId))return;localStorage[CPK]=JSON.stringify({v:1,t:Date.now(),an:S.ac.name,gm:GMD,m:rp?CREP.o:cu?-1:mapId,cm:cu?cmIdOf(mapId):undefined,cr:rp?CREP.id:undefined,ci:p.ci||0,d:DIF(),w:wave,k:kills,L:LIVES,IW,BB,LB,
 p:{cash:p.cash,hp:p.hp,mx:p.mx,ar:p.ar||0,own:p.own,cur:p.cur,mg:p.mg,am:p.am,paid:p.paid,v:p.v||0}})}catch(e){}}
 // a run on a custom map keeps the map's id (cm): it resumes once that map is loaded on this device
 function cpMap(c){return c.cm?cmKeyById(c.cm):MP[c.m]?c.m:null}
-function cpOK(){const c=cpGet();return c&&c.an==S.ac.name&&cpMap(c)!=null&&CH[c.ci]?c:null}
+// a campaign run on a custom map is only offered while that map is still in its slot (or still replaces the same map)
+function cpOK(){const c=cpGet();if(!(c&&c.an==S.ac.name&&cpMap(c)!=null&&CH[c.ci]))return null;if(c.gm=='c'){if(c.cm&&!ccOfKey(cpMap(c)))return null;if(c.cr){const r=ccRep(c.m);if(!r||r.id!==c.cr)return null}}return c}
 function cpResume(){const c=cpOK();if(!c){sfx('deny');return menu()}sfx('click');setGM(c.gm);if(c.gm=='c')S.dlc=c.d;else S.dlf=c.d;mapId=cpMap(c);if(!c.cm)S.mp=c.m;sel=c.ci;CPR=c;try{start()}finally{CPR=null}}
 function cpApply(){const c=CPR;wave=c.w;kills=c.k||0;if(c.gm=='c')LIVES=c.L||LIVES;if(c.IW)IW=c.IW;if(c.BB)BB=c.BB;LB=c.LB||0;Object.assign(P,c.p);if(!P.own.includes(P.cur))P.cur=P.own[0];P.hp=Math.max(1,Math.min(P.hp,P.mx));lmRun();mode='shop';PRE=0;shop();FT.push({x:P.x,y:P.y-40,t:'RUN RESUMED',c:'#9be860',l:2})}
-function cpBanner(){const c=cpOK();if(!c)return'';const crash=CRL.length&&CRL[0].t>=c.t&&!CRL[0].seen;return `<div class=cpb><b>${crash?'The game stopped unexpectedly.':'Unfinished run'}</b><small>${edEsc(mpName(cpMap(c)))} · ${CH[c.ci].n} · wave ${c.w} cleared · $${c.p.cash}</small><div class=row><button class=go onclick="cpResume()">RESUME AT WAVE ${c.w+1}</button><button onclick="cpClear();menu()">DISCARD</button></div></div>`}
+function cpBanner(){const c=cpOK();if(!c)return'';const crash=CRL.length&&CRL[0].t>=c.t&&!CRL[0].seen;return `<div class=cpb><b>${crash?'The game stopped unexpectedly.':'Unfinished run'}</b><small>${edEsc(c.cr&&ccRep(c.m)?mpName(ccRep(c.m).key)+' (instead of '+MP[c.m].n+')':mpName(cpMap(c)))} · ${CH[c.ci].n} · wave ${c.w} cleared · $${c.p.cash}</small><div class=row><button class=go onclick="cpResume()">RESUME AT WAVE ${c.w+1}</button><button onclick="cpClear();menu()">DISCARD</button></div></div>`}
 // ----- crash log: a heartbeat every few seconds; if the next load finds it wasn't closed cleanly, it's logged -----
 const CLK='zd_crash',HBK='zd_hb';let CRL=[],HB0=0,FPS={n:0,t:0,v:0},UP0=Date.now();
 try{CRL=JSON.parse(localStorage[CLK]||'[]')||[]}catch(e){CRL=[]}
@@ -4963,12 +5001,87 @@ function zWaveCount(w){const t=(GMD=='c'?ZMAPM.c:ZMAPM.f)[mapId],k=(t==null?100:
 // ---------- split screen campaign: pick the map on the same campaign map screens as single player ----------
 var CMLB=0;
 // the lobby's combined progress: a map or section counts as open when the players' progress together opens it
-function cMerge(acs){acs=(acs||[]).filter(Boolean);if(!acs.length)return S.ac;if(acs.length==1)return acs[0];const B=acs.map(bmOf);return{name:'Team',g:1,bm:[0,1,2].map(d=>B.reduce((v,b)=>v|b[d],0)),un:[...new Set(acs.flatMap(A=>A.un||[]))]}}
+function cMerge(acs){acs=(acs||[]).filter(Boolean);if(!acs.length)return S.ac;if(acs.length==1)return acs[0];const B=acs.map(bmOf);const cmc={};for(const A of acs)for(const id in A.cmc||{})cmc[id]=(cmc[id]||0)|A.cmc[id];return{name:'Team',g:1,bm:[0,1,2].map(d=>B.reduce((v,b)=>v|b[d],0)),un:[...new Set(acs.flatMap(A=>A.un||[]))],cmc}}
 function cAcc(){return CMLB?cMerge(lobAcs()):S.ac}
 function clbOpen(){if(GMD!='c'){sfx('deny');return}CMLB=1;CMV=null;sfx('click');cMap()}
 function clbBack(){CMLB=0;CMV=null;mode='lobby';UIS='';sfx('click');rL()}
-function clbGo(){if(!mOpen(cAcc(),DIF(),mapId)){sfx('deny');return}S.mp=mapId;SVD=1;clbBack()}
+function clbGo(){if(!mOpen(cAcc(),DIF(),mapId)){sfx('deny');return}if(!cmIs(mapId)){S.mp=mapId;SVD=1}clbBack()}
 
+// ---------- custom maps in the campaign ----------
+// Which map sits in which slot (and which built-in maps are replaced) is device data, kept in IndexedDB next to the maps
+// (kv record "campaign"), never in the save or online: CCS = {slots:{'section:slot':{id,b,n}}, rep:{<map number>:{id,n}}}.
+// id = the custom map's own id (a string, so it can never collide with a built-in map number), b = the boss, n = the
+// map's name when it was assigned (for warnings once a map is gone).
+// What an account has beaten on custom maps is in A.cmc = {<map id>: bits} (bit d = beaten on difficulty d). It never
+// touches the 16-bit beaten-map masks (A.bm), and removing a map from its slot keeps it.
+var CCS={slots:{},rep:{}},CCW=[],CREP=null,CCLD=0;
+// wave-20 bosses that work on any map, in campaign order. The other four need their own map:
+const CCBOSS=[2,3,1,9,4,10,11,12,5,8,6,7];
+const CCNOT={13:'drives the ice cream truck along the City Park road network',14:'drives the fire engine along the Downtown roads and blasts water into its buildings',15:'knocks stock off the Hometown Market shelves and sends carts out of its corrals',16:'watches from the City Hall roof while his police cruiser drives the Main Street roads'};
+function ccSK(s,k){return s+':'+k}
+function ccPK(sk){const a=String(sk).split(':');return[+a[0],+a[1]]}
+// the free slots: every -1 in SEC, as [section, slot]
+function ccFree(){const L=[];SEC.forEach((s,si)=>s.m.forEach((m,k)=>{if(m===-1)L.push([si,k])}));return L}
+function ccIsFree(s,k){return !!SEC[s]&&SEC[s].m[k]===-1}
+// a built-in map can be replaced when it is a campaign map whose own boss works on any map
+function ccRepOK(m){return typeof m=='number'&&!!MP[m]&&SORD.includes(m)&&CCBOSS.includes(MUN[m])}
+// ----- loading, checking and saving -----
+function ccClean(r){const O={slots:{},rep:{}},seen=new Set();if(!r||typeof r!='object')return O;const nm=v=>String(v==null?'':v).replace(/[<>]/g,'').slice(0,40);
+for(const sk of Object.keys(r.slots||{})){const a=r.slots[sk],[s,k]=ccPK(sk);if(!ccIsFree(s,k)||!a||typeof a.id!='string'||!a.id||seen.has(a.id))continue;seen.add(a.id);O.slots[ccSK(s,k)]={id:a.id,b:CCBOSS.includes(a.b)?a.b:CCBOSS[0],n:nm(a.n)}}
+for(const mk of Object.keys(r.rep||{})){const a=r.rep[mk],m=+mk;if(!ccRepOK(m)||!a||typeof a.id!='string'||!a.id||seen.has(a.id))continue;seen.add(a.id);O.rep[m]={id:a.id,n:nm(a.n)}}return O}
+// read the record once per session (after that the copy in memory is the truth and every change is written straight away)
+async function ccLoad(){if(!CCLD){CCLD=1;let r=null;try{r=await msGet('kv','campaign')}catch(e){}CCS=ccClean(r)}ccCheck()}
+function ccSave(){const rec={k:'campaign',slots:CCS.slots,rep:CCS.rep};try{return msWrite([['put','kv',rec]]).catch(()=>{})}catch(e){return Promise.resolve()}}
+// against the maps on this device: a map that is gone is taken out of the campaign (its slot is free again); one that is
+// still here but can't be opened keeps its place, and the slot shows Coming Soon until it is fixed. Both leave a warning.
+function ccCheck(){if(!CMLOK)return;const W=[];let ch=0;const look=(a,where,drop)=>{const e=CML.find(x=>x.id===a.id);
+if(!e){W.push('“'+(a.n||'A custom map')+'” is no longer on this device, so it was taken out of the campaign ('+where+').');drop();ch=1;return}
+if(!e.doc){W.push('“'+(a.n||e.meta.name||'A custom map')+'” can\'t be opened right now, so '+where+' shows '+(where.startsWith('slot')?'Coming Soon':'the original map')+' until it is fixed.');return}
+const n=String(e.doc.name||'').slice(0,40);if(a.n!==n){a.n=n;ch=1}};
+for(const sk of Object.keys(CCS.slots)){const[s,k]=ccPK(sk);look(CCS.slots[sk],'slot '+(k+1)+' of '+SEC[s].n,()=>{delete CCS.slots[sk]})}
+for(const mk of Object.keys(CCS.rep))look(CCS.rep[mk],MP[mk].n,()=>{delete CCS.rep[mk]});CCW=W;if(ch)ccSave();return W}
+// ----- what is where -----
+// the slot's map when it is loaded and playable: {s,k,id,b,key}; null for an empty slot or a map that can't be opened
+function ccSlot(s,k){const a=CCS.slots[ccSK(s,k)];if(!a)return null;const key=cmKeyById(a.id);return key==null?null:{s,k,id:a.id,b:a.b,key}}
+function ccSlotBad(s,k){const a=CCS.slots[ccSK(s,k)];return a&&cmKeyById(a.id)==null?a:null}
+function ccAll(){const L=[];for(const sk of Object.keys(CCS.slots)){const[s,k]=ccPK(sk),e=ccSlot(s,k);if(e)L.push(e)}return L}
+function ccSlotOfId(id){for(const sk of Object.keys(CCS.slots))if(CCS.slots[sk].id===id){const[s,k]=ccPK(sk);return{s,k,b:CCS.slots[sk].b}}return null}
+// the slot of a running map key (playtests and maps that aren't in a slot: null)
+function ccOfKey(m){if(!cmIs(m)||cmPT(m))return null;const id=cmIdOf(m);if(!id)return null;const q=ccSlotOfId(id);return q?{s:q.s,k:q.k,id,b:q.b,key:m}:null}
+// the custom map that plays instead of built-in map m (only when it is loaded): {o,id,key}
+function ccRep(m){const a=CCS.rep[m];if(!a)return null;const key=cmKeyById(a.id);return key==null?null:{o:m,id:a.id,key}}
+function ccRepOfId(id){for(const mk of Object.keys(CCS.rep))if(CCS.rep[mk].id===id)return +mk;return null}
+// ----- changing it (each change is written to the device straight away) -----
+function ccNm(id){const e=CML.find(x=>x.id===id);return e?String((e.doc&&e.doc.name)||e.meta.name||'').slice(0,40):''}
+// put map id in a free slot with boss b (moves it if it was in another slot; a map is in one place at a time)
+function ccAssign(id,s,k,b){if(!ccIsFree(s,k)||!CCBOSS.includes(b)||!id)return 0;const o=CCS.slots[ccSK(s,k)];if(o&&o.id!==id)return 0;ccUnassign(id,1);CCS.slots[ccSK(s,k)]={id,b,n:ccNm(id)};ccSave();return 1}
+function ccUnassign(id,quiet){let ch=0;for(const sk of Object.keys(CCS.slots))if(CCS.slots[sk].id===id){delete CCS.slots[sk];ch=1}for(const mk of Object.keys(CCS.rep))if(CCS.rep[mk].id===id){delete CCS.rep[mk];ch=1}if(ch&&!quiet)ccSave();return ch}
+function ccSetRep(id,m){if(!ccRepOK(m)||!id)return 0;ccUnassign(id,1);CCS.rep[m]={id,n:ccNm(id)};ccSave();return 1}
+function ccRestore(m){if(!CCS.rep[m])return 0;delete CCS.rep[m];ccSave();return 1}
+// ----- progress on custom maps -----
+function ccBits(A,id){return A&&A.cmc&&typeof A.cmc[id]=='number'?A.cmc[id]:0}
+// beaten on difficulty d (a harder one counts too, as for the built-in maps)
+function ccBt(A,d,id){const b=ccBits(A,id);for(let k=d;k<3;k++)if(b>>k&1)return 1;return 0}
+function ccMark(A,d,id){if(!A||A.g||!id)return;A.cmc=A.cmc&&typeof A.cmc=='object'?A.cmc:{};A.cmc[id]=ccBits(A,id)|(1<<d)}
+// Free Play: a map that is in a campaign slot opens once it is beaten there (on any difficulty, by any of the players);
+// maps that aren't in the campaign are always open
+function ccFreeOK(m,acs){const e=ccOfKey(m);if(!e)return true;return(acs||[S.ac]).some(A=>A&&ccBt(A,0,e.id))}
+// ----- the run in progress -----
+// a replaced map runs as the custom map (mapId = its key, so none of the built-in map's own code runs), but its progress,
+// section, boss and difficulty stay those of the original map number: CREP = {o, id, key} while that run lasts
+function cCampId(){return CREP&&CREP.key===mapId?CREP.o:mapId}
+function ccRunBack(){if(CREP&&mapId===CREP.key)mapId=CREP.o;CREP=null}
+function ccRunRep(){CREP=null;if(GMD!='c'||cmIs(mapId))return;const r=ccRep(mapId);if(r){CREP=r;mapId=r.key}}
+// who waits at wave 20: the original map's survivor, or the boss picked for the custom slot
+function cBossNow(){const m=cCampId();if(cmIs(m)){const e=ccOfKey(m);return e?e.b:null}return MUN[m]}
+// the wave-20 boss of a campaign map (built-in or custom slot)
+function ccBossOf(m){if(cmIs(m)){const e=ccOfKey(m);return e?e.b:null}return MUN[m]}
+// how tough the campaign scaling is: a replaced map scales as the original, a custom slot like the last map of its section
+function ccScaleIdx(){const m=cCampId();if(!cmIs(m))return Math.max(0,CORD.indexOf(m));const e=ccOfKey(m);if(!e)return 0;return Math.max(0,...SEC[e.s].m.filter(q=>q>=0).map(q=>CORD.indexOf(q)))}
+// a boss's own map (where they are recruited)
+function ccHome(ci){return UNM[ci]!=null&&MP[UNM[ci]]?MP[UNM[ci]].n:''}
+// the boss a slot in section s starts with: one from that section when there is one
+function ccBossFor(s){const B=CCBOSS.filter(ci=>SEC[s]&&SEC[s].m.includes(UNM[ci]));return B[0]!=null?B[0]:CCBOSS[0]}
 // ---------- test mode switches: entering the code turns test mode on with everything OFF; each cheat is its own switch ----------
 const DTL=[['unl','Unlock everything','every map, survivor, camo, weapon level, mastery perk, title, badge and look'],['money','Unlimited money','$999,999 at the start of a run and in every shop'],['sp','Unlimited skill points','buy any skill; turning it off puts your real skills and points back'],['wave','Start on any wave','up to wave 99 in free play, 20 in the campaign'],['god','Infinite health','zombies, bosses and hazards can\'t hurt you']];
 function DT(k){return!!(S.dev&&S.dt&&S.dt[k])}
@@ -5853,7 +5966,7 @@ try{await cmLoadAll()}catch(e){}try{WSD=await msGet('kv','draft')}catch(e){WSD=n
 function wsDraw(msg){const touch=wsTouch(),D_=WSD&&WSD.json?WSD:null;
 show(`<div class="p wide ws"><h2>MAP WORKSHOP</h2>${msg?`<p class=wsmsg>${msg}</p>`:''}
 ${D_?`<div class=cpb><b>Unsaved changes found</b><small>Your changes to “${edEsc(D_.name)}” from ${wsAgo(new Date(D_.t).toISOString())} were never saved.</small><div class=row><button onclick="wsDraft(0)">DISCARD</button><button class=go onclick="wsDraft(1)"${touch?' disabled':''}>RECOVER</button></div></div>`:''}
-${msMem()?'<div class=cpb><b>This browser can\'t store maps</b><small>Maps made now last until the page is closed. Use EXPORT to keep a map as a file.</small></div>':''}
+${CCW.length?`<div class=cpb><b>Campaign</b><small>${CCW.map(edEsc).join('<br>')}</small></div>`:''}${msMem()?'<div class=cpb><b>This browser can\'t store maps</b><small>Maps made now last until the page is closed. Use EXPORT to keep a map as a file.</small></div>':''}
 ${touch?'<p class=note>Making and editing maps needs a mouse and keyboard. You can still play, import, export and delete maps here.</p>':''}
 <div class=wsbar><input type=search id=wsq placeholder="Search your maps" value="${edEsc(WSQ)}" oninput="wsSearch(this.value)" autocomplete=off><button class=go onclick="wsNew()"${touch?' disabled':''}>NEW MAP</button><button onclick="wsImport()">IMPORT</button></div>
 <div class=wsl id=wsl>${wsList()}</div><div class=row><button onclick="UIS='';menu()">BACK</button></div></div>`)}
@@ -5861,8 +5974,8 @@ function wsSearch(v){WSQ=v;const el=document.getElementById('wsl');if(el)el.inne
 function wsList(){const q=WSQ.trim().toLowerCase(),touch=wsTouch();if(!CML.length)return `<div class=wsemp><b>No maps yet</b><p class=note>Press NEW MAP to start one, or IMPORT a map file someone sent you.</p></div>`;
 const L=CML.map((e,i)=>({e,i})).filter(({e})=>!q||String(e.meta.name||'').toLowerCase().includes(q)||String(e.meta.desc||'').toLowerCase().includes(q));if(!L.length)return `<p class=note>No map matches “${edEsc(WSQ)}”.</p>`;
 return L.map(({e,i})=>{const m=e.meta,ok=!!e.doc,img=wsImg(m.thumb),pr=ok?e.warnings.length:0;
-return `<div class="wsc${ok?'':' bad'}">${img?`<img class=wst alt="" src="${img}">`:'<i class=wst></i>'}<div class=wsi><b>${edEsc(m.name||'Untitled map')}</b><small>${m.w}×${m.h} tiles · edited ${wsAgo(m.updated)}</small>${ok?(pr?`<small class=wsw>⚠ ${edEsc(e.warnings[0])}</small>`:`<small>${edEsc(m.desc||'')}</small>`):`<small class=wsw>✖ Can't open: ${edEsc(e.errors[0]||'unknown problem')}</small>`}
-<div class=wsa>${ok?`<button class=go onclick="wsEdit(${i})"${touch?' disabled':''}>EDIT</button><button onclick="wsPlay(${i})">PLAY</button>`:''}<span class=wslk>${ok?`<button class=lnk onclick="wsRename(${i})">rename</button><button class=lnk onclick="wsDup(${i})">duplicate</button>`:''}<button class=lnk onclick="wsExport(${i})">export</button><button class=lnk onclick="wsDel(${i})">delete</button></span></div></div></div>`}).join('')}
+return `<div class="wsc${ok?'':' bad'}">${img?`<img class=wst alt="" src="${img}">`:'<i class=wst></i>'}<div class=wsi><b>${edEsc(m.name||'Untitled map')}</b><small>${m.w}×${m.h} tiles · edited ${wsAgo(m.updated)}</small>${wcStatus(e.id)}${ok?(pr?`<small class=wsw>⚠ ${edEsc(e.warnings[0])}</small>`:`<small>${edEsc(m.desc||'')}</small>`):`<small class=wsw>✖ Can't open: ${edEsc(e.errors[0]||'unknown problem')}</small>`}
+<div class=wsa>${ok?`<button class=go onclick="wsEdit(${i})"${touch?' disabled':''}>EDIT</button><button onclick="wsPlay(${i})">PLAY</button>`:''}<span class=wslk>${ok?`<button class=lnk onclick="wsRename(${i})">rename</button><button class=lnk onclick="wsDup(${i})">duplicate</button>`:''}${ok?`<button class=lnk onclick="wcOpen(CML[${i}].id,'ws')">campaign</button>`:ccSlotOfId(e.id)||ccRepOfId(e.id)!=null?`<button class=lnk onclick="wsCampOut(${i})">remove from campaign</button>`:''}<button class=lnk onclick="wsExport(${i})">export</button><button class=lnk onclick="wsDel(${i})">delete</button></span></div></div></div>`}).join('')}
 // ----- new map -----
 function wsNew(){const g=CMTER.map(t=>`<option value="${t.id}"${t.id=='grass'?' selected':''}>${edEsc(t.n)}</option>`).join('');
 show(`<div class="p wide ws wsn"><h2>NEW MAP</h2><label class=wsf><span>Name</span><input id=wsn maxlength=40 value="My map" autocomplete=off></label><label class=wsf><span>About (optional)</span><input id=wsd maxlength=240 autocomplete=off placeholder="What happens on this map?"></label>
@@ -5889,7 +6002,9 @@ async function wsDup(i){const e=CML[i];if(!e||!e.doc)return;const d=cmClone(e.do
 // export the stored file exactly as it is (works even for maps that can't be opened)
 async function wsExport(i){const e=CML[i];if(!e)return;let rec=null;try{rec=await msGet('maps',e.id)}catch(_){}if(!rec||!rec.json){sfx('deny');return workshop('There is no map data to export for “'+edEsc(e.meta.name)+'”.')}cmDownload(e.meta.name,rec.json);sfx('click')}
 function wsDel(i){const e=CML[i];if(!e)return;show(`<div class="p ws"><h2>DELETE MAP?</h2><p>“${edEsc(e.meta.name)}” will be deleted from this device. This can't be undone. EXPORT it first if you might want it back.</p><div class=row><button onclick="workshop()">CANCEL</button><button class=red onclick="wsDelOk(${i})">DELETE</button></div></div>`)}
-async function wsDelOk(i){const e=CML[i];if(!e)return workshop();const ops=[['del','maps',e.id],['del','meta',e.id]];if(WSD&&WSD.id===e.id)ops.push(['del','kv','draft']);try{await msWrite(ops)}catch(err){return workshop('Could not delete: '+edEsc(err&&err.message||err))}sfx('click');workshop('Deleted “'+edEsc(e.meta.name)+'”.')}
+async function wsDelOk(i){const e=CML[i];if(!e)return workshop();const ops=[['del','maps',e.id],['del','meta',e.id]];if(WSD&&WSD.id===e.id)ops.push(['del','kv','draft']);try{await msWrite(ops)}catch(err){return workshop('Could not delete: '+edEsc(err&&err.message||err))}const inC=ccUnassign(e.id);sfx('click');workshop('Deleted “'+edEsc(e.meta.name)+'”.'+(inC?' It was taken out of the campaign too (what you beat on it is kept).':''))}
+// a map that can't be opened can still be taken out of the campaign
+function wsCampOut(i){const e=CML[i];if(!e)return workshop();ccUnassign(e.id);sfx('click');workshop('“'+edEsc(e.meta.name)+'” was taken out of the campaign.')}
 // ----- import -----
 function wsImport(){let f;try{f=document.createElement('input');f.type='file';f.accept='.json,application/json';f.onchange=()=>{const x=f.files&&f.files[0];if(x)wsImportFile(x)};f.click()}catch(e){}}
 async function wsImportFile(file){if(file.size>40*1024*1024)return workshop('That file is too big to be a map.');let txt='';try{txt=await file.text()}catch(e){return workshop('Could not read the file.')}return wsImportText(txt)}
@@ -5901,6 +6016,50 @@ workshop('Imported “'+edEsc(d.name)+'”.'+(note.length?' '+note.join(' '):'')
 // ----- crash-safe draft -----
 async function wsDraft(keep){const D_=WSD;WSD=null;if(!keep||!D_){try{await msWrite([['del','kv','draft']])}catch(e){}return workshop()}
 const r=cmRead(D_.json);if(!r.doc)return workshop('The unsaved changes could not be opened: '+edEsc(r.errors[0]));edOpen(r.doc,CML.some(e=>e.id===r.doc.id)?'saved':'new',1)}
+// ---------- the campaign dialog ----------
+// WC = {id, back:'ws'|'cmap', s, k, b}: the map being placed, where to go afterwards, the slot and boss picked so far
+let WC=null;
+function wcEnt(){return WC&&CML.find(e=>e.id===WC.id)||null}
+// open the dialog for map id; pre = [section, slot] when it was opened from an empty slot
+function wcOpen(id,back,pre){const e=CML.find(x=>x.id===id);if(!e||!e.doc){sfx('deny');return}const cur=ccSlotOfId(id);
+WC={id,back:back||'ws',s:null,k:null,b:null};if(pre){WC.s=pre[0];WC.k=pre[1]}else if(cur){WC.s=cur.s;WC.k=cur.k}
+WC.b=cur?cur.b:WC.s!=null?ccBossFor(WC.s):null;sfx('click');wcDraw()}
+function wcBack(msg){const b=WC&&WC.back;WC=null;if(b=='cmap'){setGM('c');return cMap()}workshop(msg)}
+function wcDraw(){const e=wcEnt();if(!e||!e.doc)return wcBack();const cur=ccSlotOfId(WC.id),rp=ccRepOfId(WC.id),nm=edEsc(e.doc.name);
+const secs=SEC.map((S_,si)=>({si,ks:S_.m.map((m,k)=>m===-1?k:-1).filter(k=>k>=0)})).filter(q=>q.ks.length);
+const slots=secs.map(({si,ks})=>`<div class=wcsec><b>${si+1}. ${SEC[si].n}</b><span>${ks.map(k=>{const a=CCS.slots[ccSK(si,k)],mine=a&&a.id===WC.id,taken=a&&!mine;
+return `<button data-q=1 class="${WC.s===si&&WC.k===k?'on':''}"${taken?' disabled':''} onclick="wcSlot(${si},${k})">Slot ${k+1}<small>${taken?'“'+edEsc(a.n||'another map')+'”':mine?'this map':'free'}</small></button>`}).join('')}</span></div>`).join('');
+const boss=CCBOSS.map(ci=>`<button data-q=1 class="${WC.b===ci?'on':''}" onclick="wcBoss(${ci})"><canvas data-ch=${ci}></canvas><b>${CH[ci].n}</b><small>${ccHome(ci)}</small></button>`).join('');
+const repL=CORD.filter(ccRepOK).map(m=>`<option value="${m}">${CORD.indexOf(m)+1}. ${MP[m].n}${CCS.rep[m]?' (now: “'+edEsc(CCS.rep[m].n)+'”)':''}</option>`).join('');
+show(`<div class="p wide ws wcm"><h2>CAMPAIGN · ${nm}</h2>
+<p class=note>${cur?`In the campaign: <b>${SEC[cur.s].n}, slot ${cur.k+1}</b>, boss <b>${CH[cur.b].n}</b>.`:rp!=null?`Plays instead of <b>${MP[rp].n}</b> in the campaign.`:'Not in the campaign yet.'} A custom map in a slot plays with that section's zombies, lives and difficulty, waves 1–20 end with the boss you pick, and it never blocks the next section.</p>
+<h3>1. A free slot</h3><div class=wcsl>${slots}</div>
+<h3>2. The wave-20 boss</h3><div class=wcbs>${boss}</div>
+<p class=note>Not offered: ${[13,14,15,16].map(ci=>CH[ci].n).join(', ')}. Their fights need their own map (the road network for the truck, the fire engine and the cruiser, City Hall's roof, the market's shelves and cart corrals).</p>
+<p class=note><b>Beating the boss</b> marks this map beaten (on that difficulty) and opens it in Free Play. The survivor gives up but doesn't join you here: everyone is recruited on their own map, so a custom map can't skip ahead in the story.</p>
+<div class=row><button onclick="wcBack()">BACK</button>${cur?'<button class=red onclick="wcRemove()">REMOVE FROM CAMPAIGN</button>':''}<button class=go onclick="wcSave()"${WC.s==null||WC.b==null?' disabled':''}>${cur?'SAVE':'PUT IN SLOT'}</button></div>
+<h3>Or: play it instead of a campaign map</h3>
+${rp!=null?`<div class=cpb><b>Plays instead of ${MP[rp].n}</b><small>Progress, the section, the boss (${CH[MUN[rp]].n}) and the difficulty stay ${MP[rp].n}'s.</small><div class=row><button class=go onclick="wcRestore(${rp})">RESTORE ${MP[rp].n.toUpperCase()}</button></div></div>`
+:`<p class=note>For a map you made from or for one of the campaign maps. Progress stays with the original map, its boss and section stay the same, and you can restore the original with one click.</p><div class=wsbar><select id=wcrep aria-label="Campaign map">${repL}</select><button onclick="wcRepAsk()">PLAY INSTEAD…</button></div><p class=note>Not offered: ${MP.map((q,m)=>m).filter(m=>SORD.includes(m)&&!ccRepOK(m)).map(m=>MP[m].n).join(', ')} (their bosses need those maps).</p>`}</div>`)}
+function wcSlot(s,k){if(!WC||!ccIsFree(s,k))return;const a=CCS.slots[ccSK(s,k)];if(a&&a.id!==WC.id){sfx('deny');return}const ns=WC.s!==s;WC.s=s;WC.k=k;if(WC.b==null||ns&&!ccSlotOfId(WC.id))WC.b=ccBossFor(s);sfx('click');wcDraw()}
+function wcBoss(ci){if(!WC||!CCBOSS.includes(ci))return;WC.b=ci;sfx('click');wcDraw()}
+function wcSave(){if(!WC||WC.s==null||WC.b==null){sfx('deny');return}const e=wcEnt(),wasRep=ccRepOfId(WC.id);if(!e||!ccAssign(WC.id,WC.s,WC.k,WC.b)){sfx('deny');return wcDraw()}sfx('buy');
+const msg=`“${edEsc(e.doc.name)}” is in ${SEC[WC.s].n}, slot ${WC.k+1}, with ${CH[WC.b].n} at wave 20.`+(wasRep!=null?` It no longer plays instead of ${MP[wasRep].n}.`:'');
+if(WC.back=='cmap'){const s=WC.s,key=cmKeyById(WC.id);WC=null;setGM('c');CSEL=null;CMV=s;if(key!=null)mapId=key;return cMap()}wcBack(msg)}
+function wcRemove(){if(!WC)return;const e=wcEnt();ccUnassign(WC.id);sfx('click');if(WC.back=='cmap'){WC=null;setGM('c');CSEL=null;mapId=cFront(cAcc(),DIF());return cMap()}wcBack(`“${edEsc(e?e.doc.name:'')}” was taken out of the campaign. What you beat on it is kept.`)}
+// replacing a campaign map always asks first
+function wcRepAsk(){if(!WC)return;const sel=document.getElementById('wcrep'),m=sel?+sel.value:NaN,e=wcEnt();if(!ccRepOK(m)||!e){sfx('deny');return}const old=CCS.rep[m],cur=ccSlotOfId(WC.id);sfx('click');
+show(`<div class="p ws"><h2>PLAY THIS INSTEAD?</h2><p>In the campaign, “${edEsc(e.doc.name)}” will be played instead of <b>${MP[m].n}</b>. Your progress, the section, the boss (${CH[MUN[m]].n}) and the difficulty stay ${MP[m].n}'s, and you can restore the original with one click.${old&&old.id!==WC.id?` It takes the place of “${edEsc(old.n)}”, which plays there now.`:''}${cur?` It will be taken out of its slot in ${SEC[cur.s].n}.`:''}</p>
+<div class=row><button onclick="wcDraw()">CANCEL</button><button class=go onclick="wcRepOk(${m})">PLAY INSTEAD</button></div></div>`)}
+function wcRepOk(m){if(!WC)return;const e=wcEnt();if(!e||!ccSetRep(WC.id,m)){sfx('deny');return wcDraw()}sfx('buy');wcBack(`“${edEsc(e.doc.name)}” now plays instead of ${MP[m].n} in the campaign.`)}
+function wcRestore(m){if(!ccRestore(m)){sfx('deny');return}sfx('click');if(WC){const back=WC.back;WC=null;if(back=='cmap'){setGM('c');return cMap()}}workshop(`${MP[m].n} is back to the original map.`)}
+// from an empty campaign slot: which of your maps goes here
+function wcPickMap(s,k){const L=CML.map((e,i)=>({e,i})).filter(q=>q.e.doc);if(!L.length)return workshop();sfx('click');
+show(`<div class="p wide ws"><h2>${SEC[s].n.toUpperCase()} · SLOT ${k+1}</h2><p class=note>Pick one of your maps for this slot. Next you choose the survivor boss for wave 20.</p><div class=wsl>${L.map(({e,i})=>{const img=wsImg(e.meta.thumb),cs=ccSlotOfId(e.id),cr=ccRepOfId(e.id);
+return `<div class=wsc>${img?`<img class=wst alt="" src="${img}">`:'<i class=wst></i>'}<div class=wsi><b>${edEsc(e.doc.name)}</b><small>${e.doc.w}×${e.doc.h} tiles${cs?' · now in '+SEC[cs.s].n+', slot '+(cs.k+1)+' (it moves here)':cr!=null?' · now plays instead of '+MP[cr].n+' (that stops)':''}</small><div class=wsa><button class=go onclick="wcOpen(CML[${i}].id,'cmap',[${s},${k}])">CHOOSE</button></div></div></div>`}).join('')}</div>
+<div class=row><button onclick="setGM('c');cMap()">BACK</button></div></div>`)}
+// the Workshop's line about where a map is in the campaign
+function wcStatus(id){const s=ccSlotOfId(id);if(s)return `<small class=wscp>🏁 Campaign: ${SEC[s.s].n}, slot ${s.k+1} · boss ${CH[s.b].n}</small>`;const r=ccRepOfId(id);return r!=null?`<small class=wscp>🏁 Plays instead of ${MP[r].n} in the campaign</small>`:''}
 function loop(t){clFrame(t);aimCursor();dtFrame();zdFrame();requestAnimationFrame(loop);try{if(innerWidth!==LW||innerHeight!==LH){LW=innerWidth;LH=innerHeight;rs()}loopBody(t)}catch(e){showErr(e)}}
 function loopBody(t){const dt=Math.min(.05,(t-last)/1000||0);last=t;padPoll();if(mode=='splash'||mode=='intro'){padUI();CT+=dt;PZ.style.display='none';SB.innerHTML='';sbk='';drawCut(dt);return}padUI();if(mode=='play')upd(dt);if(SVD&&t-SVT>5000&&mode!='play'||SVD&&t-SVT>20000){SVD=0;SVT=t;sv()}for(const p of PL){if(p.hp<(p.php??p.hp)&&mode!='menu'&&mode!='lobby')sfx('hurt');p.php=p.hp}smk(dt);const kk=mode+MPn+(P?P.own+'|'+P.cur:'');if(kk!=sbk){sbk=kk;PZ.style.display=mode=='play'&&!MPn?'flex':'none';SB.innerHTML=mode=='play'&&!MPn?P.own.map((i,k)=>`<button data-q=1 class="${i==P.cur?'on':''}" onclick="eq(${i});sfx('click')">${k+1}<small>${CH[P.ci||0].dw&&i==0?'Duals':WP[i].n}</small></button>`).join('')+`<button data-q=1 onclick="amRel(P)">R<small>Reload</small></button>`:''}draw()}
 C.addEventListener('pointerdown',e=>{if(mode!='play')return;const q=gp(e);

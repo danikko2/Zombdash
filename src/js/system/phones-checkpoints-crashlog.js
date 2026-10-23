@@ -17,14 +17,15 @@ function memMB(){let b=BGL?BGL.width*BGL.height*4:(BG&&BG.width>1?WW*WH*4:0);for
 const CPK='zd_cp';
 function cpGet(){try{const c=JSON.parse(localStorage[CPK]||'null');return c&&c.v==1?c:null}catch(e){return null}}
 function cpClear(){try{delete localStorage[CPK]}catch(e){}}
-function cpSave(){if(MPn||TUT||!P||cmPT(mapId)||GMD=='c'&&wave>=20)return;try{const p=P,cu=cmIs(mapId);if(cu&&!cmIdOf(mapId))return;localStorage[CPK]=JSON.stringify({v:1,t:Date.now(),an:S.ac.name,gm:GMD,m:cu?-1:mapId,cm:cu?cmIdOf(mapId):undefined,ci:p.ci||0,d:DIF(),w:wave,k:kills,L:LIVES,IW,BB,LB,
+function cpSave(){if(MPn||TUT||!P||cmPT(mapId)||GMD=='c'&&wave>=20)return;try{const p=P,rp=CREP&&CREP.key===mapId,cu=cmIs(mapId)&&!rp;if(cu&&!cmIdOf(mapId))return;localStorage[CPK]=JSON.stringify({v:1,t:Date.now(),an:S.ac.name,gm:GMD,m:rp?CREP.o:cu?-1:mapId,cm:cu?cmIdOf(mapId):undefined,cr:rp?CREP.id:undefined,ci:p.ci||0,d:DIF(),w:wave,k:kills,L:LIVES,IW,BB,LB,
 p:{cash:p.cash,hp:p.hp,mx:p.mx,ar:p.ar||0,own:p.own,cur:p.cur,mg:p.mg,am:p.am,paid:p.paid,v:p.v||0}})}catch(e){}}
 // a run on a custom map keeps the map's id (cm): it resumes once that map is loaded on this device
 function cpMap(c){return c.cm?cmKeyById(c.cm):MP[c.m]?c.m:null}
-function cpOK(){const c=cpGet();return c&&c.an==S.ac.name&&cpMap(c)!=null&&CH[c.ci]?c:null}
+// a campaign run on a custom map is only offered while that map is still in its slot (or still replaces the same map)
+function cpOK(){const c=cpGet();if(!(c&&c.an==S.ac.name&&cpMap(c)!=null&&CH[c.ci]))return null;if(c.gm=='c'){if(c.cm&&!ccOfKey(cpMap(c)))return null;if(c.cr){const r=ccRep(c.m);if(!r||r.id!==c.cr)return null}}return c}
 function cpResume(){const c=cpOK();if(!c){sfx('deny');return menu()}sfx('click');setGM(c.gm);if(c.gm=='c')S.dlc=c.d;else S.dlf=c.d;mapId=cpMap(c);if(!c.cm)S.mp=c.m;sel=c.ci;CPR=c;try{start()}finally{CPR=null}}
 function cpApply(){const c=CPR;wave=c.w;kills=c.k||0;if(c.gm=='c')LIVES=c.L||LIVES;if(c.IW)IW=c.IW;if(c.BB)BB=c.BB;LB=c.LB||0;Object.assign(P,c.p);if(!P.own.includes(P.cur))P.cur=P.own[0];P.hp=Math.max(1,Math.min(P.hp,P.mx));lmRun();mode='shop';PRE=0;shop();FT.push({x:P.x,y:P.y-40,t:'RUN RESUMED',c:'#9be860',l:2})}
-function cpBanner(){const c=cpOK();if(!c)return'';const crash=CRL.length&&CRL[0].t>=c.t&&!CRL[0].seen;return `<div class=cpb><b>${crash?'The game stopped unexpectedly.':'Unfinished run'}</b><small>${edEsc(mpName(cpMap(c)))} · ${CH[c.ci].n} · wave ${c.w} cleared · $${c.p.cash}</small><div class=row><button class=go onclick="cpResume()">RESUME AT WAVE ${c.w+1}</button><button onclick="cpClear();menu()">DISCARD</button></div></div>`}
+function cpBanner(){const c=cpOK();if(!c)return'';const crash=CRL.length&&CRL[0].t>=c.t&&!CRL[0].seen;return `<div class=cpb><b>${crash?'The game stopped unexpectedly.':'Unfinished run'}</b><small>${edEsc(c.cr&&ccRep(c.m)?mpName(ccRep(c.m).key)+' (instead of '+MP[c.m].n+')':mpName(cpMap(c)))} · ${CH[c.ci].n} · wave ${c.w} cleared · $${c.p.cash}</small><div class=row><button class=go onclick="cpResume()">RESUME AT WAVE ${c.w+1}</button><button onclick="cpClear();menu()">DISCARD</button></div></div>`}
 // ----- crash log: a heartbeat every few seconds; if the next load finds it wasn't closed cleanly, it's logged -----
 const CLK='zd_crash',HBK='zd_hb';let CRL=[],HB0=0,FPS={n:0,t:0,v:0},UP0=Date.now();
 try{CRL=JSON.parse(localStorage[CLK]||'[]')||[]}catch(e){CRL=[]}

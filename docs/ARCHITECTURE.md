@@ -12,7 +12,7 @@ The game ships as **one self-contained file**, `index.html` (what GitHub Pages s
 | `src/css/game.css` | All the styles for menus and the HUD. |
 | `src/js/early-error-screen.js` | Tiny script that shows a "Startup error" box if the game fails to load. |
 | `src/js/modules.txt` | **Load order** of the game modules. |
-| `src/js/**` | The game, split into 99 modules (listed below). The Map Workshop is in `src/js/editor/`, the custom map format and loader in `src/js/world/`. |
+| `src/js/**` | The game, split into 101 modules (listed below). The Map Workshop is in `src/js/editor/`, the custom map format and loader in `src/js/world/`. |
 | `src/assets/sprites/` | `zombies.png` (zombie atlas) and `survivors.png` (player atlas). Frame positions are in `ZS` / `PS` in `render/sprites.js`. |
 | `src/assets/thumbs/map-NN.jpg` | Map preview pictures; `NN` is the map's number in `MP`. |
 | `src/assets/sounds/` | Recorded reload sounds (everything else is synthesized in `audio/sound.js`). |
@@ -55,6 +55,7 @@ node tests/run.js spawn ammo # only suites whose name contains a word
 | Easy / Normal / Hard multipliers | `core/difficulty.js` |
 | Map list and names | `MP` in `world/map-list-and-pathfinding.js`; descriptions `MPD` in `ui/map-and-survivor-select.js` |
 | Campaign sections and map order | `SEC` in `campaign/sections.js`, `CORD` in `campaign/modes.js` |
+| Which survivor bosses custom campaign maps may use | `CCBOSS` / `CCNOT` in `campaign/custom-campaign.js` |
 | Skill tree | `SKB` in `ui/core-ui.js` |
 | Online accounts / leaderboards | `online/supabase.js` and `docs/supabase-setup.sql` |
 | Test code and its switches | `dev/test-code.js`, `dev/test-switches.js`, `dev/balance-editor.js` |
@@ -80,6 +81,18 @@ Values changed in the in-game **GAME BALANCE** menu only live on that device; us
   * **Leaderboards:** a custom-map score is posted as `map = 63` with the map's id in the `cmap` column (`olRow` in `online/supabase.js`, `CMLBM`). Everyone who has the same map file (same id) shares a board. "All maps" leaves map 63 out. The `cmap` column must exist on the server: run the current `docs/supabase-setup.sql` once (it is safe to run again); until then the server refuses custom-map scores and the built-in boards carry on as before.
 * **Playtest** (`editor/playtest.js`) plays the edited map with the real game (`start()`), with saving switched off (`sv.off`); afterwards the account, best wave and settings are put back exactly, so a playtest earns nothing and writes no checkpoint or score.
 * **Problems.** `cmLint` lists what the editor warns about, each with a `ref` to the thing it is about (the Problems tab jumps to it): no player start, the start or a spawn inside a wall, spawns zombies can't walk from to the player, things outside the map, missing props / vehicles / terrain.
+
+### Custom maps in the campaign (step 3)
+
+* **Slots.** The `-1` entries in `SEC` are the free "Coming Soon" slots: 9 of them (Wrong Turn 5, Zombville 4–5, Countryside 4–5, Island 2–5; `ccFree()`). `SEC` itself never changes. A custom map goes into a slot from the Workshop (**campaign** on its row) or from the slot on the section map (**ADD A MAP**); the dialog is `editor/workshop-campaign.js`.
+* **Device data, not save data.** Which map is in which slot, its boss, and which built-in maps are replaced live in IndexedDB next to the maps (`kv` record `campaign`, in memory as `CCS`), so they never reach `S` or the online save. A map is in one place at a time (one slot, or one replacement).
+* **In a run** a slot map keeps its runtime key (≥1000) in `mapId`. `secOf()` returns its slot's section, so it gets that section's `ZCFG.camp` line-up and caps; campaign lives and difficulty work as on any campaign map, and `cmpI()` scales it like the toughest map of its section (`ccScaleIdx`). At wave 20 `svSpawn()` brings the boss picked for the slot (`cBossNow()`).
+* **Bosses.** Only bosses whose fight works on any map are offered (`CCBOSS`). Not offered (`CCNOT`): the Ice Cream Man and the Fire Chief (they drive the map's road graph `HS.RG`, and the Chief blasts into its buildings `HS.HO`), Penny (the Hometown Market shelves `HS.SHF` / store `HS.ST` and cart corrals `HS.CRL`), and the Mayor (City Hall's roof `HS.CH` and the cruiser on the road graph).
+* **Progress.** Custom maps are recorded per account in `A.cmc = {<map id>: bits}` (bit d = beaten on difficulty d; harder counts for easier), never in the 16-bit masks `A.bm`. `bBt` / `bmSet` / `mOpen` send custom keys there (`bmSet` also ignores anything outside the built-in map numbers). Slots are optional: `secDone` only counts built-in maps, so they never block the next section. Removing a map from its slot keeps its record. Beating the boss marks the map beaten and opens it in Free Play; the survivor gives up but is not recruited (that stays on their own map). A custom map that is in a slot is locked in Free Play until it is beaten there (`ccFreeOK`); maps that aren't in the campaign are always open.
+* **Replacing a campaign map.** A custom map can be played instead of a built-in campaign map whose own boss works anywhere (`ccRepOK`: all but City Park, Downtown, Hometown Market and Main Street). Only the campaign is affected. When the run starts (`start` / `startMP` → `ccRunRep`) `mapId` becomes the custom map's key and `CREP = {o, id, key}` remembers the original, so none of the built-in map's own code runs; its section, boss, difficulty scaling and progress stay the original's (`cCampId()`). Leaving the run (`ccRunBack`, called from the menus, the campaign map and the lobby) puts the original back. Restoring is one click; replacing asks first.
+* **Checkpoints** on a slot map store `cm` (its id) and are offered only while it is still in a slot; on a replaced map they store the original map number plus `cr` (the replacement's id) and are offered only while that replacement is still active.
+* **Leaderboards:** campaign runs never post scores (`olRow` is Free Play only), so custom campaign maps and replaced maps post nothing.
+* **Missing maps.** `ccCheck()` runs whenever the maps are (re)loaded: a map that is gone is taken out of the campaign (its slot shows Coming Soon again) with a warning (`CCW`, shown on the section map and in the Workshop); one that is still there but can't be opened keeps its slot, which shows Coming Soon until it's fixed. Deleting a map in the Workshop takes it out of the campaign.
 
 ### Layers, draw order and collision shapes (step 2)
 
@@ -213,6 +226,7 @@ Anything that writes this JSON makes a map; import it with **IMPORT** in the Wor
 | `editor/panels.js` | The right panel: Properties (one or several things), Layers, Problems |
 | `editor/playtest.js` | Playtest with the real game, keeping nothing it earns |
 | `editor/workshop.js` | The Map Workshop screen: list, new, open, rename, duplicate, delete, import / export, unsaved-changes recovery |
+| `editor/workshop-campaign.js` | The campaign dialog: put a map in a free slot with a wave-20 boss, or play it instead of a campaign map (and restore) |
 
 ### Menus and screens (`src/js/ui/`)
 
@@ -262,6 +276,7 @@ Anything that writes this JSON makes a map; import it with **IMPORT** in the Wor
 | `multiplayer/shop-and-game-over.js` | Split-screen shop and game over |
 | `multiplayer/split-screen-draw.js` | Split-screen viewports, minimap, HUD |
 | `multiplayer/campaign-map-pick.js` | Split-screen campaign map picking |
+| `campaign/custom-campaign.js` | Custom maps in the campaign: the free slots, their bosses, replacing a built-in map, custom-map progress (A.cmc) |
 
 ### Input (`src/js/input/`)
 

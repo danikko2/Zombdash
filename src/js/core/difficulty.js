@@ -2,7 +2,7 @@
 // ---------- difficulty: 0 easy · 1 normal (medium in the campaign) · 2 hard; free play and the campaign remember their own pick ----------
 function DIF(){let c;try{c=GMD=='c'}catch(e){c=0}const v=c?S.dlc:S.dlf;return v==null?1:v}
 function DNm(d,c){return['Easy',c?'Medium':'Normal','Hard'][d]}
-function cmpI(){try{return GMD=='c'?Math.max(0,CORD.indexOf(mapId)):0}catch(e){return 0}}
+function cmpI(){try{return GMD=='c'?ccScaleIdx():0}catch(e){return 0}}
 // every campaign map is a little tougher than the one before it
 function DMH(){return(DIF()==0?.8:1)*(1+.03*cmpI())}
 function DBH(){return(DIF()==0?.85:1)*(1+.025*cmpI())}

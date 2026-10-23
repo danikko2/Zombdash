@@ -1,15 +1,15 @@
 # Zombdash map editor: plan and handoff (agreed Oct 20, 2026)
 
-The full wish list is the "Map Workshop" prompt the owner attaches. This file records how it fits the game and what each step covers (steps 1 and 2 are done). Read `docs/ARCHITECTURE.md` too.
+The full wish list is the "Map Workshop" prompt the owner attaches. This file records how it fits the game and what each step covers (steps 1–3 are done). Read `docs/ARCHITECTURE.md` too.
 
 ## Working on this repo
-- **Where the code lives:** the source is in `src/`, split into 99 modules whose load order is in `src/js/modules.txt`.
+- **Where the code lives:** the source is in `src/`, split into 101 modules whose load order is in `src/js/modules.txt`.
   - `tools/build.js` builds `index.html`, which GitHub Pages serves at https://danikko2.github.io/Zombdash/.
   - A GitHub Action rebuilds `index.html` whenever `src/` changes.
 - **Don't edit `index.html` by hand.** Before starting, run `node tools/build.js --check`. If it fails, someone edited `index.html` directly, and that change has to be moved into `src/` first.
 - **Publishing each change:**
   1. Run `node tools/build.js`.
-  2. Run `node tests/run.js` (22 suites, about 4½ minutes). Two exceptions are expected:
+  2. Run `node tests/run.js` (23 suites, about 4½ minutes). Two exceptions are expected:
      - `tutorial.js` camera zoom is a known failure.
      - The `campaign.js` Rusty check is flaky and retried automatically.
      - The `balance-editor-and-test-switches.js` ground-limit check fails about 1 run in 20 on the original game too (a kill can add two drops when one slot is left), so it is retried automatically as well.
@@ -33,7 +33,7 @@ The full wish list is the "Map Workshop" prompt the owner attaches. This file re
   - There are about 15 vehicle kinds (`HWV`), drawn via `vDraw` (`world/vehicles.js`, `maps/highway.js`).
 - **Low-memory mode:** on phones it halves the background canvas (`system/phones-checkpoints-crashlog.js`).
 - **Campaign:**
-  - `SEC` (`campaign/sections.js`) has 5 sections. `-1` marks the 7 free "Coming Soon" slots.
+  - `SEC` (`campaign/sections.js`) has 5 sections. `-1` marks the **9** free "Coming Soon" slots (an earlier version of this file said 7): Wrong Turn 5, Zombville 4–5, Countryside 4–5, Island 2–5.
   - Each campaign map has a survivor boss (`MUN`, `SVS` in `bosses/survivors.js`) and a landmark on the painted world map (`CLM` in `campaign/map-screens.js`).
   - Beating a map in the campaign opens it in Free Play.
 - **Saves:** `localStorage.deadyard` (`S`) plus Supabase online saves of the main account. Custom maps must stay out of both, in IndexedDB.
@@ -94,6 +94,21 @@ The full wish list is the "Map Workshop" prompt the owner attaches. This file re
      - A crash checkpoint on a custom map remembers the map's id and is only offered while that map is on the device.
 
    - **Added after step 2 (Oct 22, 2026, owner's request):** carpet terrain in grey, dark grey, tan, black, red, green and blue (a loop-pile texture drawn from the owner's carpet photo), farm soil, road markings (yellow line, yellow dashed, white line, white dashed, crosswalk) that join up with their neighbours, 40 house props (kitchen counters, sinks, stoves, fridges, cabinets in several sizes, islands, kitchen tables, nightstands, dressers, TV stands, TVs, a brick fireplace, showers, garage cabinets, couches), 24 forest and farm props (oak, big oak, maple, birch, spruce, giant pine, willow, big dead tree, young tree, long grass, ferns, cattails, big rotting fallen trees, crop rows) and **prop colours**: props that come in colours show swatches plus a custom colour picker, stored as the prop's `color`. Built-in maps are unchanged.
-3. **Step 3:** campaign slots.
+3. **Step 3:** custom maps in the campaign.
+   - **Slots:** a custom map can go into any of the 9 free Coming Soon slots, from the Workshop (**campaign** on the map's row) or from the slot on the section map (**ADD A MAP**). It shows there with its name, a postcard of its thumbnail and a generic landmark (signpost, tent, campfire), and can be moved or removed. Works in single player and in the split-screen campaign map picker.
+   - **Wave-20 boss:** picked when assigning, from the 12 bosses whose fight works on any map.
+   - **Section rules:** the section's zombie line-up and caps (`ZCFG.camp`), campaign difficulty scaling (like the toughest map in the section), lives, waves 1–20 ending in the boss.
+   - **Progress:** stored per account in `A.cmc` by the map's string id, never in the beaten-map bitmasks. Slots are optional and never block the next section. Removing a map keeps its record.
+   - **Free Play:** a map in a slot opens in Free Play once beaten there; maps not in the campaign stay open.
+   - **Replace a campaign map:** "play this instead of …" for a built-in campaign map, with a confirmation; progress, section, boss and difficulty stay the original's; one-click restore.
+   - **Compatibility:** checkpoints and crash resume work on slot maps and replaced maps; campaign runs never post leaderboard scores; a map that is deleted or can't be opened puts its slot back to Coming Soon with a warning.
+   - **Status: done (Oct 22, 2026).** How it works is in `docs/ARCHITECTURE.md` ("Custom maps in the campaign"); `tests/suites/custom-campaign.js` covers it (103 checks). The map format is unchanged (still version 2): slots and replacements are device data in IndexedDB, not part of the map file.
+   - **Decisions made while building it:**
+     - **Bosses not offered**, because their fights need their own map: the **Ice Cream Man**, Scoops (drives the truck along City Park's road graph `HS.RG`; without one it can't move), the **Fire Chief**, Chief Mac (the fire engine drives Downtown's road graph and blasts into its buildings), **Penny** (her attacks dump the Hometown Market's shelves and send carts from its corrals), the **Mayor** (watches from City Hall's roof while his cruiser drives Main Street's road graph). Officer Ray, Abigail, the Headless Horseman and Rusty work anywhere (Ray vaults over whatever solid things the map has; Rusty's grenades for players hiding in houses just don't happen on maps without houses).
+     - **Reward:** beating the boss marks the map beaten on that difficulty (✓ on the campaign map), opens it in Free Play, and gives the run's usual XP and Zombie Pts. The survivor gives up ("See you out there!") but doesn't join: everyone is recruited on their own map, so a custom map can't skip ahead in the story, and no extra currency is handed out, because anyone can make an easy map.
+     - **Replacing** only affects the campaign (Free Play keeps the original map), and isn't offered for City Park, Downtown, Hometown Market or Main Street, whose bosses need those maps.
+     - A map is in one place at a time: one slot, or replacing one map.
+     - Slot assignments are per device (shared by the accounts on it); progress is per account.
+     - The Free Play leaderboards for custom maps (added at the owner's request in step 2) are unchanged; campaign runs, custom or not, never post scores.
 4. **Step 4:** editing existing maps as a base.
 5. **Step 5:** gameplay pieces the owner picks (loot crates, doors, traps…).

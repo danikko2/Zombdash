@@ -11,10 +11,10 @@ const SVS={
 6:{hp:260,sp:108,w:'smg',cd:1.25,pd:220,lz:'#9aff8a',h1:300,p1:"STEVE'S SHIP"},
 7:{hp:735,sp:98,w:'smg',cd:1.3,pd:230,h1:420,p1:'JOHN · AIRBORNE'},
 8:{hp:300,sp:84,w:'dp',cd:.3,pd:210,h1:260,p1:"HANK'S HORSE"},9:{hp:640,sp:92,w:'sg',cd:1.25,pd:170},10:{hp:420,sp:118,w:'pi',cd:.85,pd:220},11:{hp:560,sp:82,w:'sg',cd:1.35,pd:170,h1:340,p1:"THE HEADLESS HORSE"},12:{hp:760,sp:86,w:'smg',cd:1.5,pd:230},13:{hp:1250,sp:0,w:'smg',cd:2,pd:300},14:{hp:720,sp:150,w:'sg',cd:1.4,pd:150,h1:620,p1:'THE FIRE ENGINE'},15:{hp:560,sp:150,w:'pi',cd:.7,pd:220},16:{hp:700,sp:88,w:'sg',cd:1.25,pd:170,h1:560,p1:'THE POLICE CRUISER'}};
-const SVL=["You're a great survivor.","I'd like to join you!"],SVK=1.35;
+const SVL=["You're a great survivor.","I'd like to join you!"],SVL2=["You're a great survivor.","See you out there!"],SVK=1.35;
 function svOK(x,y){if(x<50||y<50||x>WW-50||y>WH-50)return 0;try{if(!okPos(x,y))return 0}catch(e){}if(WL.some(w=>x>w[0]-18&&x<w[0]+w[2]+18&&y>w[1]-18&&y<w[1]+w[3]+18))return 0;if(fd&&gw&&fd.length){const c=fd[cl(y/gs|0,0,gh-1)*gw+cl(x/gs|0,0,gw-1)];if(c<0)return 0}return 1}
 function svPt(cx,cy,r0,r1){for(let n=0;n<40;n++){const a=Math.random()*6.283,r=r0+Math.random()*(r1-r0),x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;if(svOK(x,y))return{x,y}}return null}
-function svSpawn(){const ci=MUN[mapId];if(ci==null||!SVS[ci])return;const D=SVS[ci],k=(S.df?1.8:1)*BMP(),Q=rndAlive()||PL[0];let p=svPt(Q.x,Q.y,280,420)||svPt(Q.x,Q.y,150,560);
+function svSpawn(){const ci=cBossNow();if(ci==null||!SVS[ci])return;const D=SVS[ci],k=(S.df?1.8:1)*BMP(),Q=rndAlive()||PL[0];let p=svPt(Q.x,Q.y,280,420)||svPt(Q.x,Q.y,150,560);
 if(!p){const s=HS.sp&&HS.sp[0];p=s?{x:s[0],y:s[1]}:{x:Q.x+220,y:Q.y}}
 const z={x:p.x,y:p.y,t:15,ci,hp:(D.h1||D.hp)*k,k:0,kx:0,ky:0,spm:1,ph:D.h1?1:2,h2:D.hp*k,bn:D.h1?D.p1:CH[ci].n.toUpperCase(),fa:0,cd:1.6,ab:2.2,tr:[]};z.mh=z.hp;
 if(ci==6){z.fly=1;z.hr=28}if(ci==8||ci==11)z.hr=22;if(ci==12)z.hr=20;if(ci==7)z.lift=34;if(ci==13||ci==14||ci==16){z.tk=1;z.hr=44;tkInit(z)}zs.push(z);SVB=1;nzn=CH[ci].n.toUpperCase()+' WILL NOT GO DOWN EASY';sfx('horn')}
@@ -92,11 +92,14 @@ if(z.ci==7){z.lift=0;z.rk=0;z.gs=0;if(!svOK(z.x,z.y)){const p=svPt(z.x,z.y,0,220
 if(z.ci==8||z.ci==11){z.hr=0;RH={x:z.x,y:z.y,a:z.ga||0,t:0,ci:z.ci};sfx('kong',z.x,z.y,.6);FT.push({x:z.x,y:z.y-56,t:z.ci==11?'THE HORSE VANISHES! THE HORSEMAN FIGHTS ON FOOT':'THE HORSE BOLTS! HANK FIGHTS ON FOOT',c:'#ffcf40',l:2.2})}
 return 1}
 // beaten: no pop, they kneel, ask to join, and are unlocked
-function svDown(z){if(z.tk)tkPark(z);for(const q of zs)if((q.cl||ZT[q.t].gh)&&q.hp>0&&q!==z){q.hp=0;svPop(q)}GHH=[];GRN=[];const ci=z.ci,i=OLDC.indexOf(mapId);RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];GCC=[];KN={ci,x:z.x,y:z.y,t:0,fl:Math.cos(z.fa)<0?-1:1};ep=[];SVB=0;sfx('power');
-for(const p of PL){const A=p.ac;if(!A||A.g)continue;A.un=A.un||[0];const nw=!A.un.includes(ci);if(nw)A.un.push(ci);const dd=DIF(),o0=SORD.filter(m=>mOpen(A,dd,m)),s0=secOf(mapId),sd0=s0>=0&&secDone(A,dd,s0);if(i>=0)cpUp(A,dd,i+1);bmSet(A,dd,mapId);
+function svDown(z){if(z.tk)tkPark(z);for(const q of zs)if((q.cl||ZT[q.t].gh)&&q.hp>0&&q!==z){q.hp=0;svPop(q)}GHH=[];GRN=[];const ci=z.ci,cm=cCampId(),cu=cmIs(cm),i=cu?-1:OLDC.indexOf(cm);RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];GCC=[];KN={ci,x:z.x,y:z.y,t:0,fl:Math.cos(z.fa)<0?-1:1,cu};ep=[];SVB=0;sfx('power');
+for(const p of PL){const A=p.ac;if(!A||A.g)continue;const dd=DIF();
+// a custom slot: its own record and Free Play; the survivor is recruited on their own map, not here
+if(cu){const id=cmIdOf(cm),first=!ccBt(A,0,id);ccMark(A,dd,id);if(first)(p.nt=p.nt||[]).push(mpName(cm)+' is now open in Free Play');continue}
+A.un=A.un||[0];const nw=!A.un.includes(ci);if(nw)A.un.push(ci);const o0=SORD.filter(m=>mOpen(A,dd,m)),s0=secOf(cm),sd0=s0>=0&&secDone(A,dd,s0);if(i>=0)cpUp(A,dd,i+1);bmSet(A,dd,cm);
 if(nw)(p.nt=p.nt||[]).push(CH[ci].n+' joined your survivors');if(s0>=0&&!sd0&&secDone(A,dd,s0)&&s0<4)(p.nt=p.nt||[]).push(SEC[s0+1].n+' is open!');for(const m of SORD)if(!o0.includes(m)&&mOpen(A,dd,m))(p.nt=p.nt||[]).push(MP[m].n+' unlocked')}
 FT.push({x:z.x,y:z.y-70,t:CH[ci].n.toUpperCase()+' GIVES UP!',c:'#9be860',l:2.5});sv()}
-function campWin(){const i=CORD.indexOf(mapId);CWIN={ci:KN?KN.ci:MUN[mapId],m:mapId,nx:campNx()};over(1)}
+function campWin(){CWIN={ci:KN?KN.ci:cBossNow(),m:cCampId(),nx:campNx()};over(1)}
 function svThrow(z,Q){const tx=Q.x+rnd(-18,18),ty=Q.y+rnd(-18,18),d=Math.hypot(tx-z.x,ty-z.y);RKS.push({sx:z.x,sy:z.y,tx,ty,l0:z.lift+20,t:0,T:cl(d/330,.6,1.35),h:60+d*.18,s:7+Math.random()*3,sp:(Math.random()-.5)*12});sfx('swoosh',z.x,z.y)}
 function svTick(dt){svTick3(dt);svTick4(dt);svTick5(dt);for(const r of RKS){r.t+=dt;if(r.t>=r.T){r.done=1;sfx('slam',r.tx,r.ty);shk=Math.max(shk,.3);rg.push({x:r.tx,y:r.ty,l:.45,m:.45,r:48,c:'#c09060'});for(let i=0;i<18;i++){const a=Math.random()*6.283,v=50+Math.random()*170;pt.push({x:r.tx,y:r.ty,vx:Math.cos(a)*v,vy:Math.sin(a)*v*.6,l:.5,c:i%2?'#7a6a58':'#a08a70'})}for(const q of PL)if(alive(q)&&Math.hypot(q.x-r.tx,q.y-r.ty)<48)hitP(q,2,Math.atan2(q.y-r.ty,q.x-r.tx))}}RKS=RKS.filter(r=>!r.done);if(RH){RH.t+=dt;let a=RH.a;const q=PL.find(alive);if(q)a=Math.atan2(RH.y-q.y,RH.x-q.x);RH.a=a;RH.x+=Math.cos(a)*230*dt;RH.y+=Math.sin(a)*230*dt;if(RH.t>2.6)RH=null}}
 // ----- drawing -----
@@ -145,7 +148,7 @@ if(RH){const a=1-Math.max(0,(RH.t-1.6)/1);svHorse(RH.x,RH.y+20,Math.cos(RH.a)<0?
 if(KN){const k=SVK,h=64*k/1.6,fy=KN.y+h*.45,ci=KN.ci;X.fillStyle='rgba(0,0,0,.3)';X.beginPath();X.ellipse(KN.x,fy-2,15,5,0,0,7);X.fill();
 svBody(ci,KN.x,fy,KN.fl,0,k,0,{gun:false,sq:.78});
 const gi=PS[ci]&&PS[ci].gun[CH[ci].w];if(gi&&PIMG.naturalWidth){const s=k/1.6;X.save();X.translate(KN.x+KN.fl*16,fy-3);X.rotate(KN.fl>0?.12:-.12);X.scale(KN.fl,1);X.drawImage(PIMG,gi[0]+26,gi[1],gi[2]-26,gi[3],-14,-gi[3]*s*.5,(gi[2]-26)*s,gi[3]*s);X.restore()}
-if(KN.t>.7){const a=Math.min(1,(KN.t-.7)*3);X.globalAlpha=a;X.font='17px VT323, ui-monospace, monospace';const L=SVL,tw=Math.max(...L.map(s=>X.measureText(s).width))+18,th=L.length*17+12,bx=Math.round(KN.x-tw/2),by=Math.round(fy-h*.78-th-16);
+if(KN.t>.7){const a=Math.min(1,(KN.t-.7)*3);X.globalAlpha=a;X.font='17px VT323, ui-monospace, monospace';const L=KN.cu?SVL2:SVL,tw=Math.max(...L.map(s=>X.measureText(s).width))+18,th=L.length*17+12,bx=Math.round(KN.x-tw/2),by=Math.round(fy-h*.78-th-16);
 X.fillStyle='#16111c';X.fillRect(bx-2,by-2,tw+4,th+4);X.fillStyle='#f4f1e6';X.fillRect(bx,by,tw,th);X.fillStyle='#16111c';X.beginPath();X.moveTo(KN.x-6,by+th+1);X.lineTo(KN.x+6,by+th+1);X.lineTo(KN.x,by+th+10);X.fill();X.fillStyle='#f4f1e6';X.beginPath();X.moveTo(KN.x-4,by+th-1);X.lineTo(KN.x+4,by+th-1);X.lineTo(KN.x,by+th+6);X.fill();
 X.textAlign='center';X.fillStyle='#16111c';L.forEach((s,i)=>X.fillText(s,KN.x,by+19+i*17));X.font='9px "Press Start 2P", monospace';X.fillStyle='#ffcf40';X.lineWidth=3;X.strokeStyle='#070a08';X.strokeText(CH[ci].n.toUpperCase(),KN.x,by-7);X.fillText(CH[ci].n.toUpperCase(),KN.x,by-7);X.globalAlpha=1}}}
 

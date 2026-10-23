@@ -254,3 +254,16 @@ input[type=range]::-moz-range-thumb{width:18px;height:22px;background:var(--ac);
 #ed .edwide.on{background:linear-gradient(180deg,#1f6a7a,#164c58);box-shadow:0 0 0 1px #4ae0ff}
 #ed input[type=checkbox]:indeterminate{accent-color:#ffcf40}
 @media(max-width:900px){.edr{width:220px}.edcr{right:226px}}
+/* ---------- custom maps in the campaign (campaign/custom-campaign.js, editor/workshop-campaign.js) ---------- */
+.cnode.cu .ci img.cthumb{position:absolute;left:18%;top:-30%;width:64%;aspect-ratio:4/3;height:auto;object-fit:cover;border-radius:0;box-shadow:0 0 0 2px #f4ead0,0 0 0 4px #16111c,2px 5px 0 3px rgba(0,0,0,.3);transform:rotate(-4deg);image-rendering:pixelated}
+.cnode.cu.lk .ci img.cthumb{filter:grayscale(1) brightness(.6)}
+.cnode .crp{position:absolute;top:4%;left:2%;width:30%;aspect-ratio:1;border-radius:50%;background:#7a5ad8;color:#fff;font-size:clamp(10px,1.6vw,16px);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #16111c,0 0 0 4px #fff}
+.cmlk{display:flex;flex-wrap:wrap;gap:0 10px;margin-top:2px}.cmlk .lnk{font-size:15px;margin:0;padding:0}
+.wscp{color:#ffcf40!important;white-space:normal!important}
+.wcm h3{margin:12px 0 6px}
+.wcsl{display:flex;flex-direction:column;gap:6px;text-align:left}.wcsec{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.wcsec>b{font-weight:400;min-width:130px;color:var(--fg)}.wcsec>span{display:flex;gap:6px;flex-wrap:wrap}
+.wcsec button{width:auto;margin:0;padding:6px 12px;font-size:17px}.wcsec button small{font-size:13px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wcbs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}.wcbs button{margin:0;padding:4px 2px 6px;font-size:15px;white-space:nowrap;overflow:hidden}.wcbs canvas{position:static;width:40px;height:50px;image-rendering:pixelated}.wcbs b{font-weight:400}.wcbs small{font-size:12px;color:var(--mut);max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.wcm .wsbar select{flex:1;min-width:0;margin:0}
+@media(max-width:620px){.wcbs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+#ui .wcm .note{margin:6px 0 8px;line-height:1.15}#ui .wcm h3,#ui.ls .wcm h3{margin:16px 0 8px}#ui .wcm .wcbs,#ui .wcm .wcsl{margin-bottom:6px}
