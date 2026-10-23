@@ -39,7 +39,7 @@ The full wish list is the "Map Workshop" prompt the owner attaches. This file re
 - **Saves:** `localStorage.deadyard` (`S`) plus Supabase online saves of the main account. Custom maps must stay out of both, in IndexedDB.
 
 ## Agreed decisions
-- **Existing maps:** they can't become fully editable without rebuilding each as data. "Edit an existing map" (a later step) means loading the built map as base picture + walls + spawns, editing on top, and saving as a copy.
+- **Existing maps (revised Oct 22, 2026):** the owner's main goal is that Claude builds maps and the owner then opens them in the editor for small tweaks. So step 4 **converts** the built-in maps into the editor's map format, one section at a time, instead of the earlier "base picture + walls" idea. Every map, old or new, ends up fully editable object by object. From now on, new maps Claude builds are made directly in the editor format.
 - **Terrain:** a new tile terrain set is needed: grass, dirt, asphalt, concrete, sidewalk, sand, gravel, mud, water (blocks walking), wood floor, tile floor, plus blood and burn overlays. The registry must be easy to extend.
 - **Asset browser:** it uses only the real `OB` props and `HWV` vehicles, no fake entries.
 - **No placeholder markers:** loot containers, traps, objectives, extraction/trigger zones, opening doors, breakable barricades, roof hiding and turrets have no gameplay yet. They are not added until they're built as real features.
@@ -110,5 +110,11 @@ The full wish list is the "Map Workshop" prompt the owner attaches. This file re
      - A map is in one place at a time: one slot, or replacing one map.
      - Slot assignments are per device (shared by the accounts on it); progress is per account.
      - The Free Play leaderboards for custom maps (added at the owner's request in step 2) are unchanged; campaign runs, custom or not, never post scores.
-4. **Step 4:** editing existing maps as a base.
+4. **Step 4 (revised Oct 22, 2026):** convert the built-in maps into the editor's format so they are fully editable.
+   - **Kit first:** before converting a map, check what it needs that the editor can't place yet (for example windows and doorways in walls, walk-behind tall objects and roofs, building floors, special road pieces, animated props) and add those as real editor pieces.
+   - **Map-specific systems** stay attached to the map as named "special features" saved in the map file, which the editor shows and lets you move but not redesign. Examples: fountains and other animations, the Mayor's City Hall roof, boss road graphs for the Ice Cream Man, Fire Chief and police car, Penny's shelves and corrals, walk-behind bridges, no-spawn zones.
+   - **Order:** convert one section at a time (Hometown first), about 1–2 maps per chat. Each converted map is checked side by side with the original (screenshots), playtested (walls, zombie paths, spawns, its survivor boss) and only then replaces the code-drawn version.
+   - **Shipping:** converted maps are stored as `src/maps/*.json` and embedded by `tools/build.js`. The step 1 note says the loader is ready and the build needs to embed the files.
+   - **Progress safety:** a converted map keeps its map number, campaign slot, boss, progress and leaderboard board, so players' progress is untouched.
+   - **Small differences are allowed:** a converted map may look slightly different in painted details. The layout, walls, spawns and gameplay must match.
 5. **Step 5:** gameplay pieces the owner picks (loot crates, doors, traps…).
