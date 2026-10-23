@@ -1,0 +1,2522 @@
+{
+ "format": "zombdash-map",
+ "version": 3,
+ "id": "sample-town-block",
+ "name": "Elm & 3rd (kit demo)",
+ "description": "A small town block built with the building kit: a furnished house, a corner market, roads with an intersection, a parking lot, a little park, decals and effects.",
+ "tileSize": 32,
+ "width": 64,
+ "height": 48,
+ "ground": "grass",
+ "terrain": {
+  "legend": {
+   "g": "grass",
+   "p": "grass_park",
+   "a": "asphalt",
+   "s": "slabs",
+   "c": "concrete",
+   "v": "gravel"
+  },
+  "rows": [
+   "gggggggggggggggggggggggggggggsaaaasvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
+   "gggggggggggggggggggggggggggggsaaaasvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
+   "gggggggggggggggggggggggggggggsaaaasvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
+   "gggggggggggggggggggggggggggggsaaaasvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
+   "gggggggggggggggggggggggggggggsaaaasggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggsaaaasggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggsaaaasggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggsaaaasggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggsaaaasggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggsaaaasggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggsaaaasggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggsaaaasggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggsaaaasggggggggggggggggggggggggggggg",
+   "gggggggggggggggggggggggggggggsaaaasggggggggggggggggggggggggggggg",
+   "gggggggggggggggcccccgggggggggsaaaasggggggggggggggggggggggggggggg",
+   "gggggggggggggggcccccgggggggggsaaaasggggggggggggggggggggggggggggg",
+   "gggggggggggggggcccccgggggggggsaaaasggggggggggggggggggggggggggggg",
+   "gggggggggggggggcccccgggggggggsaaaasggggggggggggggggggggggggggggg",
+   "gggggggggggggggcccccgggggggggsaaaasgggssssssssssssssssssgggggggg",
+   "gggggggggggggggcccccgggggggggsaaaasgggssssssssssssssssssgggggggg",
+   "gggggggggggggggcccccgggggggggsaaaasgggssssssssssssssssssgggggggg",
+   "ssssssssssssssssssssssssssssssaaaassssssssssssssssssssssssssssss",
+   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "ssssssssssssssssssssssssssssssaaaassssssssssssssssssssssssssssss",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg",
+   "pppppppppppppppppppppppppppppsaaaasggggggggggggggggggggggggggggg"
+  ]
+ },
+ "layers": [
+  {
+   "id": "terrain",
+   "name": "Terrain",
+   "kind": "tiles"
+  },
+  {
+   "id": "roads",
+   "name": "Roads & paths",
+   "kind": "tiles"
+  },
+  {
+   "id": "ground",
+   "name": "Ground detail",
+   "kind": "objects"
+  },
+  {
+   "id": "buildings",
+   "name": "Buildings",
+   "kind": "objects"
+  },
+  {
+   "id": "walls",
+   "name": "Walls & collision",
+   "kind": "objects"
+  },
+  {
+   "id": "env",
+   "name": "Environmental props",
+   "kind": "objects"
+  },
+  {
+   "id": "interior",
+   "name": "Interior props",
+   "kind": "objects"
+  },
+  {
+   "id": "vehicles",
+   "name": "Vehicles",
+   "kind": "objects"
+  },
+  {
+   "id": "effects",
+   "name": "Effects & lights",
+   "kind": "objects"
+  },
+  {
+   "id": "spawns",
+   "name": "Zombie spawns",
+   "kind": "objects"
+  },
+  {
+   "id": "features",
+   "name": "Special features",
+   "kind": "objects"
+  }
+ ],
+ "props": [
+  {
+   "id": "p42",
+   "kind": "bed",
+   "x": 290,
+   "y": 250
+  },
+  {
+   "id": "p43",
+   "kind": "nstand",
+   "x": 258,
+   "y": 196
+  },
+  {
+   "id": "p44",
+   "kind": "dress_w",
+   "x": 236,
+   "y": 282,
+   "color": "#7a5232"
+  },
+  {
+   "id": "p45",
+   "kind": "plant",
+   "x": 214,
+   "y": 282
+  },
+  {
+   "id": "p46",
+   "kind": "tub",
+   "x": 398,
+   "y": 196
+  },
+  {
+   "id": "p47",
+   "kind": "toilet",
+   "x": 430,
+   "y": 282
+  },
+  {
+   "id": "p48",
+   "kind": "msink",
+   "x": 372,
+   "y": 278
+  },
+  {
+   "id": "p50",
+   "kind": "kc_corner",
+   "x": 466,
+   "y": 196
+  },
+  {
+   "id": "p51",
+   "kind": "kc_long",
+   "x": 516,
+   "y": 192
+  },
+  {
+   "id": "p52",
+   "kind": "kc_sink",
+   "x": 574,
+   "y": 192
+  },
+  {
+   "id": "p53",
+   "kind": "kc_range",
+   "x": 620,
+   "y": 194
+  },
+  {
+   "id": "p54",
+   "kind": "kfridge",
+   "x": 476,
+   "y": 282
+  },
+  {
+   "id": "p55",
+   "kind": "ktable",
+   "x": 580,
+   "y": 276
+  },
+  {
+   "id": "p56",
+   "kind": "micro",
+   "x": 516,
+   "y": 174
+  },
+  {
+   "id": "p58",
+   "kind": "tvs_tv",
+   "x": 300,
+   "y": 330
+  },
+  {
+   "id": "p59",
+   "kind": "sofa3",
+   "x": 300,
+   "y": 428,
+   "color": "#4a6ab0"
+  },
+  {
+   "id": "p60",
+   "kind": "coffeetable",
+   "x": 300,
+   "y": 392
+  },
+  {
+   "id": "p61",
+   "kind": "armch",
+   "x": 412,
+   "y": 404,
+   "color": "#8a5a3a"
+  },
+  {
+   "id": "p62",
+   "kind": "bookshelf",
+   "x": 224,
+   "y": 330
+  },
+  {
+   "id": "p63",
+   "kind": "plant",
+   "x": 450,
+   "y": 440
+  },
+  {
+   "id": "p64",
+   "kind": "bfplace",
+   "x": 420,
+   "y": 330
+  },
+  {
+   "id": "p66",
+   "kind": "gcab_w",
+   "x": 520,
+   "y": 330
+  },
+  {
+   "id": "p67",
+   "kind": "gbench",
+   "x": 606,
+   "y": 330
+  },
+  {
+   "id": "p68",
+   "kind": "tirestack",
+   "x": 486,
+   "y": 440
+  },
+  {
+   "id": "p75",
+   "kind": "canopytree",
+   "x": 110,
+   "y": 150,
+   "color": "#448e36"
+  },
+  {
+   "id": "p76",
+   "kind": "canopytree",
+   "x": 820,
+   "y": 150,
+   "color": "#448e36"
+  },
+  {
+   "id": "p77",
+   "kind": "canopytree",
+   "x": 110,
+   "y": 560,
+   "color": "#448e36"
+  },
+  {
+   "id": "p78",
+   "kind": "oak_b",
+   "x": 830,
+   "y": 560
+  },
+  {
+   "id": "p82",
+   "kind": "picnic",
+   "x": 300,
+   "y": 110
+  },
+  {
+   "id": "p83",
+   "kind": "grill",
+   "x": 420,
+   "y": 100
+  },
+  {
+   "id": "p84",
+   "kind": "doghouse",
+   "x": 760,
+   "y": 330
+  },
+  {
+   "id": "p85",
+   "kind": "mail",
+   "x": 380,
+   "y": 664
+  },
+  {
+   "id": "p86",
+   "kind": "flower",
+   "x": 230,
+   "y": 520
+  },
+  {
+   "id": "p87",
+   "kind": "bush",
+   "x": 150,
+   "y": 470
+  },
+  {
+   "id": "p88",
+   "kind": "bush",
+   "x": 740,
+   "y": 470
+  },
+  {
+   "id": "p116",
+   "kind": "awning",
+   "x": 1504,
+   "y": 600,
+   "color": "#2f8a4a",
+   "text": "ELM ST MARKET"
+  },
+  {
+   "id": "p117",
+   "kind": "fridge",
+   "x": 1450,
+   "y": 398
+  },
+  {
+   "id": "p118",
+   "kind": "fridge",
+   "x": 1520,
+   "y": 398
+  },
+  {
+   "id": "p119",
+   "kind": "fridge",
+   "x": 1590,
+   "y": 398
+  },
+  {
+   "id": "p120",
+   "kind": "fridge",
+   "x": 1660,
+   "y": 398
+  },
+  {
+   "id": "p121",
+   "kind": "gshelf",
+   "x": 1420,
+   "y": 465
+  },
+  {
+   "id": "p122",
+   "kind": "gshelf",
+   "x": 1580,
+   "y": 465
+  },
+  {
+   "id": "p123",
+   "kind": "gshelf",
+   "x": 1420,
+   "y": 530
+  },
+  {
+   "id": "p124",
+   "kind": "gshelf",
+   "x": 1580,
+   "y": 530
+  },
+  {
+   "id": "p125",
+   "kind": "checkout",
+   "x": 1330,
+   "y": 570
+  },
+  {
+   "id": "p126",
+   "kind": "checkout",
+   "x": 1680,
+   "y": 570
+  },
+  {
+   "id": "p127",
+   "kind": "plant",
+   "x": 1270,
+   "y": 570
+  },
+  {
+   "id": "p128",
+   "kind": "cart",
+   "x": 1460,
+   "y": 560
+  },
+  {
+   "id": "p129",
+   "kind": "pbox",
+   "x": 1300,
+   "y": 300
+  },
+  {
+   "id": "p130",
+   "kind": "crate",
+   "x": 1370,
+   "y": 322
+  },
+  {
+   "id": "p131",
+   "kind": "crate",
+   "x": 1396,
+   "y": 330
+  },
+  {
+   "id": "p132",
+   "kind": "pallet",
+   "x": 1560,
+   "y": 326
+  },
+  {
+   "id": "p133",
+   "kind": "barrel",
+   "x": 1720,
+   "y": 300
+  },
+  {
+   "id": "p134",
+   "kind": "barrel",
+   "x": 1740,
+   "y": 306
+  },
+  {
+   "id": "p135",
+   "kind": "shelf",
+   "x": 1600,
+   "y": 290
+  },
+  {
+   "id": "p138",
+   "kind": "dumpster",
+   "x": 1330,
+   "y": 190
+  },
+  {
+   "id": "p139",
+   "kind": "bags",
+   "x": 1400,
+   "y": 198
+  },
+  {
+   "id": "p140",
+   "kind": "bags",
+   "x": 1424,
+   "y": 186
+  },
+  {
+   "id": "p164",
+   "kind": "plight",
+   "x": 1380,
+   "y": 1172
+  },
+  {
+   "id": "p166",
+   "kind": "plight",
+   "x": 1760,
+   "y": 1172
+  },
+  {
+   "id": "p168",
+   "kind": "corral",
+   "x": 1290,
+   "y": 1176
+  },
+  {
+   "id": "p169",
+   "kind": "cartrow",
+   "x": 1860,
+   "y": 1190
+  },
+  {
+   "id": "p170",
+   "kind": "cart",
+   "x": 1500,
+   "y": 1160
+  },
+  {
+   "id": "p171",
+   "kind": "cart",
+   "x": 1700,
+   "y": 1420
+  },
+  {
+   "id": "p172",
+   "kind": "cart",
+   "x": 1980,
+   "y": 1000
+  },
+  {
+   "id": "p181",
+   "kind": "fntn",
+   "x": 480,
+   "y": 1232
+  },
+  {
+   "id": "p187",
+   "kind": "bench",
+   "x": 400,
+   "y": 1110
+  },
+  {
+   "id": "p188",
+   "kind": "bench",
+   "x": 560,
+   "y": 1110
+  },
+  {
+   "id": "p189",
+   "kind": "lamp",
+   "x": 384,
+   "y": 1088
+  },
+  {
+   "id": "p191",
+   "kind": "lamp",
+   "x": 576,
+   "y": 1088
+  },
+  {
+   "id": "p193",
+   "kind": "lamp",
+   "x": 384,
+   "y": 1296
+  },
+  {
+   "id": "p195",
+   "kind": "lamp",
+   "x": 576,
+   "y": 1296
+  },
+  {
+   "id": "p197",
+   "kind": "canopytree",
+   "x": 140,
+   "y": 940,
+   "color": "#448e36"
+  },
+  {
+   "id": "p199",
+   "kind": "canopytree",
+   "x": 300,
+   "y": 960,
+   "color": "#448e36"
+  },
+  {
+   "id": "p201",
+   "kind": "canopytree",
+   "x": 760,
+   "y": 950,
+   "color": "#448e36"
+  },
+  {
+   "id": "p203",
+   "kind": "canopytree",
+   "x": 860,
+   "y": 1300,
+   "color": "#448e36"
+  },
+  {
+   "id": "p205",
+   "kind": "canopytree",
+   "x": 160,
+   "y": 1260,
+   "color": "#448e36"
+  },
+  {
+   "id": "p207",
+   "kind": "canopytree",
+   "x": 700,
+   "y": 1470,
+   "color": "#448e36"
+  },
+  {
+   "id": "p209",
+   "kind": "canopytree",
+   "x": 420,
+   "y": 1480,
+   "color": "#448e36"
+  },
+  {
+   "id": "p211",
+   "kind": "canopytree",
+   "x": 80,
+   "y": 1400,
+   "color": "#448e36"
+  },
+  {
+   "id": "p214",
+   "kind": "swing",
+   "x": 740,
+   "y": 1400
+  },
+  {
+   "id": "p215",
+   "kind": "slide",
+   "x": 830,
+   "y": 1490
+  },
+  {
+   "id": "p216",
+   "kind": "bench",
+   "x": 640,
+   "y": 1520
+  },
+  {
+   "id": "p217",
+   "kind": "picnic",
+   "x": 200,
+   "y": 1120
+  },
+  {
+   "id": "p218",
+   "kind": "grill",
+   "x": 266,
+   "y": 1060
+  },
+  {
+   "id": "p219",
+   "kind": "trash",
+   "x": 420,
+   "y": 1000
+  },
+  {
+   "id": "p220",
+   "kind": "trash",
+   "x": 620,
+   "y": 1340
+  },
+  {
+   "id": "p226",
+   "kind": "bstop",
+   "x": 700,
+   "y": 862
+  },
+  {
+   "id": "p227",
+   "kind": "bench",
+   "x": 780,
+   "y": 858
+  },
+  {
+   "id": "p228",
+   "kind": "trash",
+   "x": 640,
+   "y": 866
+  },
+  {
+   "id": "p229",
+   "kind": "lamp",
+   "x": 200,
+   "y": 698
+  },
+  {
+   "id": "p231",
+   "kind": "lamp",
+   "x": 600,
+   "y": 698
+  },
+  {
+   "id": "p233",
+   "kind": "lamp",
+   "x": 1400,
+   "y": 698
+  },
+  {
+   "id": "p235",
+   "kind": "lamp",
+   "x": 1800,
+   "y": 698
+  },
+  {
+   "id": "p237",
+   "kind": "lamp",
+   "x": 200,
+   "y": 862
+  },
+  {
+   "id": "p239",
+   "kind": "lamp",
+   "x": 1600,
+   "y": 862
+  },
+  {
+   "id": "p241",
+   "kind": "tlight",
+   "x": 944,
+   "y": 698
+  },
+  {
+   "id": "p242",
+   "kind": "tlight",
+   "x": 1104,
+   "y": 862
+  },
+  {
+   "id": "p243",
+   "kind": "streetsign",
+   "x": 920,
+   "y": 694,
+   "text": "ELM ST"
+  },
+  {
+   "id": "p244",
+   "kind": "streetsign",
+   "x": 1128,
+   "y": 694,
+   "text": "3RD AVE"
+  },
+  {
+   "id": "p245",
+   "kind": "hydrant",
+   "x": 1140,
+   "y": 690
+  },
+  {
+   "id": "p246",
+   "kind": "newsb",
+   "x": 940,
+   "y": 860
+  },
+  {
+   "id": "p247",
+   "kind": "stopsign",
+   "x": 1110,
+   "y": 698
+  }
+ ],
+ "vehicles": [
+  {
+   "id": "v65",
+   "kind": "sedan",
+   "x": 552,
+   "y": 368,
+   "rot": 90,
+   "color": "#c0392b"
+  },
+  {
+   "id": "v146",
+   "kind": "sedan",
+   "x": 1180,
+   "y": 984,
+   "rot": 90,
+   "color": "#c0392b"
+  },
+  {
+   "id": "v147",
+   "kind": "suv",
+   "x": 1230,
+   "y": 984,
+   "rot": 90,
+   "color": "#2f6fd0"
+  },
+  {
+   "id": "v148",
+   "kind": "van",
+   "x": 1330,
+   "y": 984,
+   "rot": 90,
+   "color": "#d8d8d4"
+  },
+  {
+   "id": "v149",
+   "kind": "sedan",
+   "x": 1480,
+   "y": 984,
+   "rot": 90,
+   "color": "#26262c",
+   "damaged": true
+  },
+  {
+   "id": "v150",
+   "kind": "pickup",
+   "x": 1630,
+   "y": 1076,
+   "rot": -90,
+   "color": "#2f8a4a"
+  },
+  {
+   "id": "v151",
+   "kind": "sedan",
+   "x": 1730,
+   "y": 984,
+   "rot": 90,
+   "color": "#d68a1c"
+  },
+  {
+   "id": "v152",
+   "kind": "sedan",
+   "x": 1280,
+   "y": 1076,
+   "rot": -90,
+   "color": "#8a8f96"
+  },
+  {
+   "id": "v153",
+   "kind": "suv",
+   "x": 1430,
+   "y": 1244,
+   "rot": 90,
+   "color": "#6a4a9a"
+  },
+  {
+   "id": "v154",
+   "kind": "sedan",
+   "x": 1530,
+   "y": 1336,
+   "rot": -90,
+   "color": "#c0392b"
+  },
+  {
+   "id": "v155",
+   "kind": "van",
+   "x": 1680,
+   "y": 1244,
+   "rot": 90,
+   "color": "#2f6fd0",
+   "damaged": true
+  },
+  {
+   "id": "v156",
+   "kind": "sedan",
+   "x": 1780,
+   "y": 1336,
+   "rot": -90,
+   "color": "#d8d8d4"
+  },
+  {
+   "id": "v157",
+   "kind": "pickup",
+   "x": 1380,
+   "y": 1336,
+   "rot": -90,
+   "color": "#26262c"
+  },
+  {
+   "id": "v158",
+   "kind": "sedan",
+   "x": 1580,
+   "y": 1076,
+   "rot": -80,
+   "color": "#26262c",
+   "burnt": true
+  },
+  {
+   "id": "v248",
+   "kind": "police",
+   "x": 900,
+   "y": 740,
+   "rot": 180
+  },
+  {
+   "id": "v250",
+   "kind": "sedan",
+   "x": 1200,
+   "y": 792,
+   "rot": 18,
+   "color": "#d8d8d4",
+   "damaged": true
+  }
+ ],
+ "walls": [
+  {
+   "id": "w6",
+   "x": 189,
+   "y": 157.0,
+   "w": 31.0,
+   "h": 6,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w7",
+   "x": 220.0,
+   "y": 157.0,
+   "w": 40,
+   "h": 6,
+   "style": "window",
+   "color": "#2a3a5a"
+  },
+  {
+   "id": "w8",
+   "x": 260.0,
+   "y": 157.0,
+   "w": 278.0,
+   "h": 6,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w9",
+   "x": 538.0,
+   "y": 157.0,
+   "w": 44,
+   "h": 6,
+   "style": "door"
+  },
+  {
+   "id": "w10",
+   "x": 580.0,
+   "y": 157.0,
+   "w": 40,
+   "h": 6,
+   "style": "window",
+   "color": "#2a3a5a"
+  },
+  {
+   "id": "w11",
+   "x": 620.0,
+   "y": 157.0,
+   "w": 23.0,
+   "h": 6,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w12",
+   "x": 189,
+   "y": 445.0,
+   "w": 31.0,
+   "h": 6,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w13",
+   "x": 220.0,
+   "y": 445.0,
+   "w": 40,
+   "h": 6,
+   "style": "window",
+   "color": "#2a3a5a"
+  },
+  {
+   "id": "w14",
+   "x": 260.0,
+   "y": 445.0,
+   "w": 38.0,
+   "h": 6,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w15",
+   "x": 298.0,
+   "y": 445.0,
+   "w": 44,
+   "h": 6,
+   "style": "door"
+  },
+  {
+   "id": "w16",
+   "x": 342.0,
+   "y": 445.0,
+   "w": 48.0,
+   "h": 6,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w17",
+   "x": 390.0,
+   "y": 445.0,
+   "w": 40,
+   "h": 6,
+   "style": "window",
+   "color": "#2a3a5a"
+  },
+  {
+   "id": "w18",
+   "x": 430.0,
+   "y": 445.0,
+   "w": 62.0,
+   "h": 6,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w19",
+   "x": 492.0,
+   "y": 445.0,
+   "w": 120,
+   "h": 6,
+   "style": "rollup"
+  },
+  {
+   "id": "w20",
+   "x": 612.0,
+   "y": 445.0,
+   "w": 31.0,
+   "h": 6,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w21",
+   "x": 189.0,
+   "y": 163,
+   "w": 6,
+   "h": 43.0,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w22",
+   "x": 189.0,
+   "y": 206.0,
+   "w": 6,
+   "h": 36,
+   "style": "window",
+   "color": "#2a3a5a"
+  },
+  {
+   "id": "w23",
+   "x": 189.0,
+   "y": 242.0,
+   "w": 6,
+   "h": 120.0,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w24",
+   "x": 189.0,
+   "y": 362.0,
+   "w": 6,
+   "h": 36,
+   "style": "window",
+   "color": "#2a3a5a"
+  },
+  {
+   "id": "w25",
+   "x": 189.0,
+   "y": 398.0,
+   "w": 6,
+   "h": 47.0,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w26",
+   "x": 637.0,
+   "y": 163,
+   "w": 6,
+   "h": 43.0,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w27",
+   "x": 637.0,
+   "y": 206.0,
+   "w": 6,
+   "h": 36,
+   "style": "window",
+   "color": "#2a3a5a"
+  },
+  {
+   "id": "w28",
+   "x": 637.0,
+   "y": 242.0,
+   "w": 6,
+   "h": 203.0,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w29",
+   "x": 195,
+   "y": 285.0,
+   "w": 55.0,
+   "h": 6,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w30",
+   "x": 250.0,
+   "y": 285.0,
+   "w": 44,
+   "h": 6,
+   "style": "door"
+  },
+  {
+   "id": "w31",
+   "x": 294.0,
+   "y": 285.0,
+   "w": 84.0,
+   "h": 6,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w32",
+   "x": 378.0,
+   "y": 285.0,
+   "w": 44,
+   "h": 6,
+   "style": "door"
+  },
+  {
+   "id": "w33",
+   "x": 422.0,
+   "y": 285.0,
+   "w": 76.0,
+   "h": 6,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w34",
+   "x": 498.0,
+   "y": 285.0,
+   "w": 44,
+   "h": 6,
+   "style": "door"
+  },
+  {
+   "id": "w35",
+   "x": 542.0,
+   "y": 285.0,
+   "w": 95.0,
+   "h": 6,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w36",
+   "x": 349.0,
+   "y": 163,
+   "w": 6,
+   "h": 122,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w37",
+   "x": 445.0,
+   "y": 163,
+   "w": 6,
+   "h": 122,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w38",
+   "x": 461.0,
+   "y": 291,
+   "w": 6,
+   "h": 55.0,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w39",
+   "x": 461.0,
+   "y": 346.0,
+   "w": 6,
+   "h": 44,
+   "style": "door"
+  },
+  {
+   "id": "w40",
+   "x": 461.0,
+   "y": 390.0,
+   "w": 6,
+   "h": 55.0,
+   "style": "siding",
+   "color": "#8fb4d8"
+  },
+  {
+   "id": "w95",
+   "x": 1245,
+   "y": 573.0,
+   "w": 35.0,
+   "h": 6,
+   "style": "brick"
+  },
+  {
+   "id": "w96",
+   "x": 1280.0,
+   "y": 573.0,
+   "w": 160,
+   "h": 6,
+   "style": "glass"
+  },
+  {
+   "id": "w97",
+   "x": 1440.0,
+   "y": 573.0,
+   "w": 28.0,
+   "h": 6,
+   "style": "brick"
+  },
+  {
+   "id": "w98",
+   "x": 1468.0,
+   "y": 573.0,
+   "w": 72,
+   "h": 6,
+   "style": "autodoor"
+  },
+  {
+   "id": "w99",
+   "x": 1540.0,
+   "y": 573.0,
+   "w": 30.0,
+   "h": 6,
+   "style": "brick"
+  },
+  {
+   "id": "w100",
+   "x": 1570.0,
+   "y": 573.0,
+   "w": 160,
+   "h": 6,
+   "style": "glass"
+  },
+  {
+   "id": "w101",
+   "x": 1730.0,
+   "y": 573.0,
+   "w": 33.0,
+   "h": 6,
+   "style": "brick"
+  },
+  {
+   "id": "w102",
+   "x": 1245,
+   "y": 221.0,
+   "w": 133.0,
+   "h": 6,
+   "style": "brick"
+  },
+  {
+   "id": "w103",
+   "x": 1378.0,
+   "y": 221.0,
+   "w": 44,
+   "h": 6,
+   "style": "rollup"
+  },
+  {
+   "id": "w104",
+   "x": 1422.0,
+   "y": 221.0,
+   "w": 258.0,
+   "h": 6,
+   "style": "brick"
+  },
+  {
+   "id": "w105",
+   "x": 1680.0,
+   "y": 221.0,
+   "w": 40,
+   "h": 6,
+   "style": "window_b"
+  },
+  {
+   "id": "w106",
+   "x": 1720.0,
+   "y": 221.0,
+   "w": 43.0,
+   "h": 6,
+   "style": "brick"
+  },
+  {
+   "id": "w107",
+   "x": 1245.0,
+   "y": 227,
+   "w": 6,
+   "h": 346,
+   "style": "brick"
+  },
+  {
+   "id": "w108",
+   "x": 1757.0,
+   "y": 227,
+   "w": 6,
+   "h": 31.0,
+   "style": "brick"
+  },
+  {
+   "id": "w109",
+   "x": 1757.0,
+   "y": 258.0,
+   "w": 6,
+   "h": 44,
+   "style": "door"
+  },
+  {
+   "id": "w110",
+   "x": 1757.0,
+   "y": 302.0,
+   "w": 6,
+   "h": 271.0,
+   "style": "brick"
+  },
+  {
+   "id": "w111",
+   "x": 1251,
+   "y": 333.0,
+   "w": 47.0,
+   "h": 6,
+   "style": "wall"
+  },
+  {
+   "id": "w112",
+   "x": 1298.0,
+   "y": 333.0,
+   "w": 44,
+   "h": 6,
+   "style": "door"
+  },
+  {
+   "id": "w113",
+   "x": 1342.0,
+   "y": 333.0,
+   "w": 336.0,
+   "h": 6,
+   "style": "wall"
+  },
+  {
+   "id": "w114",
+   "x": 1678.0,
+   "y": 333.0,
+   "w": 44,
+   "h": 6,
+   "style": "door"
+  },
+  {
+   "id": "w115",
+   "x": 1722.0,
+   "y": 333.0,
+   "w": 35.0,
+   "h": 6,
+   "style": "wall"
+  }
+ ],
+ "decals": [
+  {
+   "id": "d49",
+   "kind": "mat",
+   "x": 400,
+   "y": 246,
+   "color": "#4a5a7a"
+  },
+  {
+   "id": "d69",
+   "kind": "oil",
+   "x": 552,
+   "y": 414,
+   "scale": 0.8
+  },
+  {
+   "id": "d71",
+   "kind": "mat",
+   "x": 320,
+   "y": 470,
+   "color": "#7a3b3b",
+   "text": "WELCOME"
+  },
+  {
+   "id": "d79",
+   "kind": "leaves",
+   "x": 110,
+   "y": 160,
+   "scale": 1.3
+  },
+  {
+   "id": "d80",
+   "kind": "leaves",
+   "x": 820,
+   "y": 170,
+   "scale": 1.2,
+   "color": "#d8a43a"
+  },
+  {
+   "id": "d81",
+   "kind": "treeshadow",
+   "x": 830,
+   "y": 566,
+   "scale": 1.2
+  },
+  {
+   "id": "d91",
+   "kind": "wildflowers",
+   "x": 600,
+   "y": 120
+  },
+  {
+   "id": "d92",
+   "kind": "dirtpatch",
+   "x": 760,
+   "y": 350,
+   "scale": 0.8
+  },
+  {
+   "id": "d141",
+   "kind": "graffiti",
+   "x": 1540,
+   "y": 176,
+   "color": "#ff3a8a",
+   "text": "ZED"
+  },
+  {
+   "id": "d142",
+   "kind": "paper",
+   "x": 1460,
+   "y": 150
+  },
+  {
+   "id": "d161",
+   "kind": "scorch",
+   "x": 1580,
+   "y": 1076,
+   "scale": 1.1
+  },
+  {
+   "id": "d162",
+   "kind": "handicap",
+   "x": 1180,
+   "y": 1080
+  },
+  {
+   "id": "d163",
+   "kind": "handicap",
+   "x": 1230,
+   "y": 1080
+  },
+  {
+   "id": "d173",
+   "kind": "oil",
+   "x": 1300,
+   "y": 1020,
+   "scale": 0.7
+  },
+  {
+   "id": "d174",
+   "kind": "oil",
+   "x": 1620,
+   "y": 1300,
+   "scale": 0.8
+  },
+  {
+   "id": "d175",
+   "kind": "oil",
+   "x": 1840,
+   "y": 1100,
+   "scale": 0.6
+  },
+  {
+   "id": "d176",
+   "kind": "crack_big",
+   "x": 1500,
+   "y": 1460,
+   "scale": 0.8
+  },
+  {
+   "id": "d177",
+   "kind": "crack",
+   "x": 1880,
+   "y": 1450
+  },
+  {
+   "id": "d178",
+   "kind": "puddle",
+   "x": 1240,
+   "y": 1430,
+   "scale": 0.8
+  },
+  {
+   "id": "d198",
+   "kind": "leaves",
+   "x": 140,
+   "y": 948,
+   "scale": 1.1,
+   "color": "#5a8a3a"
+  },
+  {
+   "id": "d200",
+   "kind": "leaves",
+   "x": 300,
+   "y": 968,
+   "scale": 1.1,
+   "color": "#5a8a3a"
+  },
+  {
+   "id": "d202",
+   "kind": "leaves",
+   "x": 760,
+   "y": 958,
+   "scale": 1.1,
+   "color": "#5a8a3a"
+  },
+  {
+   "id": "d204",
+   "kind": "leaves",
+   "x": 860,
+   "y": 1308,
+   "scale": 1.1,
+   "color": "#5a8a3a"
+  },
+  {
+   "id": "d206",
+   "kind": "leaves",
+   "x": 160,
+   "y": 1268,
+   "scale": 1.1,
+   "color": "#5a8a3a"
+  },
+  {
+   "id": "d208",
+   "kind": "leaves",
+   "x": 700,
+   "y": 1478,
+   "scale": 1.1,
+   "color": "#5a8a3a"
+  },
+  {
+   "id": "d210",
+   "kind": "leaves",
+   "x": 420,
+   "y": 1488,
+   "scale": 1.1,
+   "color": "#5a8a3a"
+  },
+  {
+   "id": "d212",
+   "kind": "leaves",
+   "x": 80,
+   "y": 1408,
+   "scale": 1.1,
+   "color": "#5a8a3a"
+  },
+  {
+   "id": "d221",
+   "kind": "wildflowers",
+   "x": 240,
+   "y": 1300
+  },
+  {
+   "id": "d222",
+   "kind": "grasspatch",
+   "x": 700,
+   "y": 1100
+  },
+  {
+   "id": "d223",
+   "kind": "wildflowers",
+   "x": 820,
+   "y": 1200
+  },
+  {
+   "id": "d253",
+   "kind": "glass",
+   "x": 1170,
+   "y": 780
+  },
+  {
+   "id": "d254",
+   "kind": "debris",
+   "x": 1230,
+   "y": 812,
+   "scale": 0.9
+  },
+  {
+   "id": "d255",
+   "kind": "bloodtrail",
+   "x": 1180,
+   "y": 836,
+   "rot": 10,
+   "scale": 0.8
+  },
+  {
+   "id": "d256",
+   "kind": "manhole",
+   "x": 880,
+   "y": 760
+  },
+  {
+   "id": "d257",
+   "kind": "manhole",
+   "x": 1024,
+   "y": 560
+  },
+  {
+   "id": "d258",
+   "kind": "manhole",
+   "x": 1024,
+   "y": 1000
+  },
+  {
+   "id": "d259",
+   "kind": "drain",
+   "x": 400,
+   "y": 708,
+   "rot": 0
+  },
+  {
+   "id": "d260",
+   "kind": "drain",
+   "x": 1600,
+   "y": 828,
+   "rot": 0
+  },
+  {
+   "id": "d261",
+   "kind": "drain",
+   "x": 964,
+   "y": 400,
+   "rot": 90
+  },
+  {
+   "id": "d262",
+   "kind": "crack",
+   "x": 300,
+   "y": 760,
+   "rot": 10
+  },
+  {
+   "id": "d263",
+   "kind": "crack",
+   "x": 700,
+   "y": 780,
+   "rot": -20
+  },
+  {
+   "id": "d264",
+   "kind": "crack",
+   "x": 1500,
+   "y": 740,
+   "rot": 30
+  },
+  {
+   "id": "d265",
+   "kind": "crack",
+   "x": 1800,
+   "y": 790,
+   "rot": 0
+  },
+  {
+   "id": "d266",
+   "kind": "crack",
+   "x": 1040,
+   "y": 300,
+   "rot": 80
+  },
+  {
+   "id": "d267",
+   "kind": "crack",
+   "x": 1010,
+   "y": 1300,
+   "rot": 100
+  }
+ ],
+ "effects": [
+  {
+   "id": "x137",
+   "kind": "flicker",
+   "x": 1500,
+   "y": 280,
+   "color": "#c8e0ff",
+   "options": {
+    "flame": 0
+   },
+   "size": 1.6
+  },
+  {
+   "id": "x159",
+   "kind": "fire",
+   "x": 1580,
+   "y": 1082,
+   "size": 0.9
+  },
+  {
+   "id": "x160",
+   "kind": "smoke",
+   "x": 1580,
+   "y": 1066
+  },
+  {
+   "id": "x165",
+   "kind": "light",
+   "x": 1380,
+   "y": 1160,
+   "size": 1.6,
+   "color": "#ffd27a"
+  },
+  {
+   "id": "x167",
+   "kind": "light",
+   "x": 1760,
+   "y": 1160,
+   "size": 1.6,
+   "color": "#ffd27a"
+  },
+  {
+   "id": "x182",
+   "kind": "fountain",
+   "x": 480,
+   "y": 1160
+  },
+  {
+   "id": "x183",
+   "kind": "water",
+   "x": 480,
+   "y": 1208,
+   "size": 0.6
+  },
+  {
+   "id": "x190",
+   "kind": "light",
+   "x": 384,
+   "y": 1094,
+   "size": 0.8
+  },
+  {
+   "id": "x192",
+   "kind": "light",
+   "x": 576,
+   "y": 1094,
+   "size": 0.8
+  },
+  {
+   "id": "x194",
+   "kind": "light",
+   "x": 384,
+   "y": 1302,
+   "size": 0.8
+  },
+  {
+   "id": "x196",
+   "kind": "light",
+   "x": 576,
+   "y": 1302,
+   "size": 0.8
+  },
+  {
+   "id": "x225",
+   "kind": "ducks",
+   "x": 150,
+   "y": 1150,
+   "size": 0.8
+  },
+  {
+   "id": "x230",
+   "kind": "light",
+   "x": 200,
+   "y": 702,
+   "size": 0.9,
+   "color": "#ffd27a"
+  },
+  {
+   "id": "x232",
+   "kind": "light",
+   "x": 600,
+   "y": 702,
+   "size": 0.9,
+   "color": "#ffd27a"
+  },
+  {
+   "id": "x234",
+   "kind": "light",
+   "x": 1400,
+   "y": 702,
+   "size": 0.9,
+   "color": "#ffd27a"
+  },
+  {
+   "id": "x236",
+   "kind": "light",
+   "x": 1800,
+   "y": 702,
+   "size": 0.9,
+   "color": "#ffd27a"
+  },
+  {
+   "id": "x238",
+   "kind": "light",
+   "x": 200,
+   "y": 866,
+   "size": 0.9,
+   "color": "#ffd27a"
+  },
+  {
+   "id": "x240",
+   "kind": "light",
+   "x": 1600,
+   "y": 866,
+   "size": 0.9,
+   "color": "#ffd27a"
+  },
+  {
+   "id": "x249",
+   "kind": "siren",
+   "x": 906,
+   "y": 740,
+   "options": {
+    "m": "police"
+   }
+  },
+  {
+   "id": "x251",
+   "kind": "hazard",
+   "x": 1200,
+   "y": 792
+  }
+ ],
+ "areas": [
+  {
+   "id": "a1",
+   "kind": "floor",
+   "x": 192,
+   "y": 160,
+   "w": 160,
+   "h": 128,
+   "color": "#7a8ab8",
+   "options": {
+    "pt": "carpet",
+    "in": 1
+   }
+  },
+  {
+   "id": "a2",
+   "kind": "floor",
+   "x": 352,
+   "y": 160,
+   "w": 96,
+   "h": 128,
+   "color": "#a8c0cc",
+   "color2": "#9cb4c0",
+   "options": {
+    "pt": "tile",
+    "in": 1
+   }
+  },
+  {
+   "id": "a3",
+   "kind": "floor",
+   "x": 448,
+   "y": 160,
+   "w": 192,
+   "h": 128,
+   "color": "#e8e8e4",
+   "color2": "#2a2c32",
+   "options": {
+    "pt": "check",
+    "in": 1
+   }
+  },
+  {
+   "id": "a4",
+   "kind": "floor",
+   "x": 192,
+   "y": 288,
+   "w": 272,
+   "h": 160,
+   "color": "#9a6a3c",
+   "options": {
+    "pt": "plank",
+    "in": 1
+   }
+  },
+  {
+   "id": "a5",
+   "kind": "floor",
+   "x": 464,
+   "y": 288,
+   "w": 176,
+   "h": 160,
+   "color": "#8d8d8d",
+   "options": {
+    "pt": "concrete",
+    "in": 1
+   }
+  },
+  {
+   "id": "a41",
+   "kind": "rug",
+   "x": 214,
+   "y": 180,
+   "w": 96,
+   "h": 60,
+   "color": "#c8b48e",
+   "color2": "#e8e0c8",
+   "options": {
+    "pat": 0,
+    "fringe": 1
+   }
+  },
+  {
+   "id": "a57",
+   "kind": "rug",
+   "x": 236,
+   "y": 340,
+   "w": 148,
+   "h": 80,
+   "color": "#5a1a2a",
+   "color2": "#a8862e"
+  },
+  {
+   "id": "a70",
+   "kind": "porch",
+   "x": 272,
+   "y": 451,
+   "w": 120,
+   "h": 34,
+   "color": "#b8885a",
+   "options": {
+    "posts": 1
+   }
+  },
+  {
+   "id": "a93",
+   "kind": "floor",
+   "x": 1248,
+   "y": 336,
+   "w": 512,
+   "h": 240,
+   "color": "#eceee8",
+   "color2": "#e2e4de",
+   "options": {
+    "pt": "tile",
+    "in": 1
+   }
+  },
+  {
+   "id": "a94",
+   "kind": "floor",
+   "x": 1248,
+   "y": 224,
+   "w": 512,
+   "h": 112,
+   "color": "#9a9890",
+   "options": {
+    "pt": "concrete",
+    "in": 1
+   }
+  },
+  {
+   "id": "a136",
+   "kind": "dark",
+   "x": 1248,
+   "y": 224,
+   "w": 512,
+   "h": 112,
+   "color": "#0c0610",
+   "options": {
+    "s": 0.28
+   }
+  },
+  {
+   "id": "a143",
+   "kind": "paving",
+   "x": 1120,
+   "y": 896,
+   "w": 832,
+   "h": 544,
+   "options": {
+    "s": "asphalt",
+    "cracks": 1,
+    "curb": 1
+   }
+  },
+  {
+   "id": "a144",
+   "kind": "parking",
+   "x": 1150,
+   "y": 940,
+   "w": 760,
+   "h": 180,
+   "color": "#e8e8e0",
+   "options": {
+    "rows": "2",
+    "sw": 50
+   }
+  },
+  {
+   "id": "a145",
+   "kind": "parking",
+   "x": 1150,
+   "y": 1200,
+   "w": 760,
+   "h": 180,
+   "color": "#e8e8e0",
+   "options": {
+    "rows": "2",
+    "sw": 50
+   }
+  },
+  {
+   "id": "a179",
+   "kind": "paving",
+   "x": 352,
+   "y": 1056,
+   "w": 256,
+   "h": 256,
+   "options": {
+    "s": "slabs"
+   }
+  },
+  {
+   "id": "a180",
+   "kind": "rugr",
+   "x": 368,
+   "y": 1072,
+   "w": 224,
+   "h": 224,
+   "color": "#c8c0ae",
+   "color2": "#9a907a"
+  },
+  {
+   "id": "a213",
+   "kind": "sandbox",
+   "x": 640,
+   "y": 1330,
+   "w": 240,
+   "h": 170
+  },
+  {
+   "id": "a270",
+   "kind": "junction",
+   "x": 960,
+   "y": 704,
+   "w": 128,
+   "h": 128,
+   "options": {
+    "cn": 1,
+    "ce": 1,
+    "cs": 1,
+    "cw": 1,
+    "stop": 1,
+    "s": "asphalt"
+   }
+  }
+ ],
+ "paths": [
+  {
+   "id": "l72",
+   "kind": "walk",
+   "points": [
+    [
+     320,
+     488
+    ],
+    [
+     320,
+     672
+    ]
+   ],
+   "width": 40
+  },
+  {
+   "id": "l73",
+   "kind": "picket",
+   "points": [
+    [
+     296,
+     648
+    ],
+    [
+     64,
+     648
+    ],
+    [
+     64,
+     64
+    ],
+    [
+     880,
+     64
+    ],
+    [
+     880,
+     648
+    ],
+    [
+     660,
+     648
+    ]
+   ]
+  },
+  {
+   "id": "l74",
+   "kind": "picket",
+   "points": [
+    [
+     344,
+     648
+    ],
+    [
+     468,
+     648
+    ]
+   ]
+  },
+  {
+   "id": "l89",
+   "kind": "flowerbed",
+   "points": [
+    [
+     208,
+     500
+    ],
+    [
+     262,
+     496
+    ],
+    [
+     266,
+     546
+    ],
+    [
+     212,
+     552
+    ]
+   ]
+  },
+  {
+   "id": "l90",
+   "kind": "flowerbed",
+   "points": [
+    [
+     392,
+     500
+    ],
+    [
+     446,
+     496
+    ],
+    [
+     450,
+     546
+    ],
+    [
+     396,
+     552
+    ]
+   ]
+  },
+  {
+   "id": "l184",
+   "kind": "gravelpath",
+   "points": [
+    [
+     480,
+     864
+    ],
+    [
+     480,
+     1072
+    ]
+   ],
+   "width": 34
+  },
+  {
+   "id": "l185",
+   "kind": "gravelpath",
+   "points": [
+    [
+     928,
+     1184
+    ],
+    [
+     592,
+     1184
+    ]
+   ],
+   "width": 34
+  },
+  {
+   "id": "l186",
+   "kind": "gravelpath",
+   "points": [
+    [
+     96,
+     1536
+    ],
+    [
+     200,
+     1440
+    ],
+    [
+     300,
+     1360
+    ],
+    [
+     380,
+     1290
+    ]
+   ],
+   "width": 30
+  },
+  {
+   "id": "l224",
+   "kind": "pond",
+   "points": [
+    [
+     60,
+     1090
+    ],
+    [
+     180,
+     1060
+    ],
+    [
+     250,
+     1120
+    ],
+    [
+     230,
+     1210
+    ],
+    [
+     120,
+     1230
+    ],
+    [
+     40,
+     1170
+    ]
+   ],
+   "options": {
+    "lily": 1,
+    "reeds": 1
+   }
+  },
+  {
+   "id": "l252",
+   "kind": "skid",
+   "points": [
+    [
+     1400,
+     806
+    ],
+    [
+     1300,
+     798
+    ],
+    [
+     1210,
+     794
+    ]
+   ],
+   "width": 14
+  },
+  {
+   "id": "l268",
+   "kind": "road",
+   "points": [
+    [
+     0,
+     768
+    ],
+    [
+     2048,
+     768
+    ]
+   ],
+   "width": 128,
+   "options": {
+    "cl": "dash",
+    "curb": 0,
+    "lanes": 1,
+    "s": "asphalt"
+   }
+  },
+  {
+   "id": "l269",
+   "kind": "road",
+   "points": [
+    [
+     1024,
+     0
+    ],
+    [
+     1024,
+     1536
+    ]
+   ],
+   "width": 128,
+   "options": {
+    "cl": "dash",
+    "curb": 0,
+    "lanes": 1,
+    "s": "asphalt"
+   }
+  }
+ ],
+ "features": [
+  {
+   "id": "froads",
+   "kind": "roadgraph",
+   "nodes": [
+    [
+     32,
+     768
+    ],
+    [
+     288,
+     768
+    ],
+    [
+     544,
+     768
+    ],
+    [
+     800,
+     768
+    ],
+    [
+     1024,
+     768
+    ],
+    [
+     1248,
+     768
+    ],
+    [
+     1504,
+     768
+    ],
+    [
+     1760,
+     768
+    ],
+    [
+     2016,
+     768
+    ],
+    [
+     1024,
+     32
+    ],
+    [
+     1024,
+     288
+    ],
+    [
+     1024,
+     544
+    ],
+    [
+     1024,
+     992
+    ],
+    [
+     1024,
+     1248
+    ],
+    [
+     1024,
+     1504
+    ]
+   ],
+   "edges": [
+    [
+     0,
+     1
+    ],
+    [
+     1,
+     2
+    ],
+    [
+     2,
+     3
+    ],
+    [
+     3,
+     4
+    ],
+    [
+     4,
+     5
+    ],
+    [
+     5,
+     6
+    ],
+    [
+     6,
+     7
+    ],
+    [
+     7,
+     8
+    ],
+    [
+     9,
+     10
+    ],
+    [
+     10,
+     11
+    ],
+    [
+     11,
+     4
+    ],
+    [
+     4,
+     12
+    ],
+    [
+     12,
+     13
+    ],
+    [
+     13,
+     14
+    ]
+   ]
+  },
+  {
+   "id": "fstore",
+   "kind": "store",
+   "x": 1248,
+   "y": 336,
+   "w": 512,
+   "h": 240
+  }
+ ],
+ "playerStart": {
+  "x": 1000,
+  "y": 736
+ },
+ "zombieSpawns": {
+  "points": [
+   {
+    "id": "s1",
+    "x": 24,
+    "y": 768,
+    "enabled": true
+   },
+   {
+    "id": "s2",
+    "x": 2024,
+    "y": 768,
+    "enabled": true
+   },
+   {
+    "id": "s3",
+    "x": 1024,
+    "y": 24,
+    "enabled": true
+   },
+   {
+    "id": "s4",
+    "x": 1024,
+    "y": 1512,
+    "enabled": true
+   }
+  ],
+  "zones": [
+   {
+    "id": "z1",
+    "x": 1150,
+    "y": 12,
+    "w": 600,
+    "h": 90,
+    "enabled": true
+   },
+   {
+    "id": "z2",
+    "x": 1960,
+    "y": 900,
+    "w": 72,
+    "h": 500,
+    "enabled": true
+   },
+   {
+    "id": "z3",
+    "x": 8,
+    "y": 1440,
+    "w": 80,
+    "h": 80,
+    "enabled": true
+   }
+  ]
+ },
+ "created": "2026-10-23T12:00:00.000Z",
+ "updated": "2026-10-23T12:00:00.000Z"
+}

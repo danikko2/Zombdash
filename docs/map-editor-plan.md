@@ -1,15 +1,15 @@
 # Zombdash map editor: plan and handoff (agreed Oct 20, 2026)
 
-The full wish list is the "Map Workshop" prompt the owner attaches. This file records how it fits the game and what each step covers (steps 1–3 are done). Read `docs/ARCHITECTURE.md` too.
+The full wish list is the "Map Workshop" prompt the owner attaches. This file records how it fits the game and what each step covers (steps 1–3 and the building kit are done; step 4, converting the built-in maps, is next). Read `docs/ARCHITECTURE.md` and `docs/map-format.md` too.
 
 ## Working on this repo
-- **Where the code lives:** the source is in `src/`, split into 101 modules whose load order is in `src/js/modules.txt`.
+- **Where the code lives:** the source is in `src/`, split into 114 modules whose load order is in `src/js/modules.txt`. Map files that ship with the game are in `src/maps/`.
   - `tools/build.js` builds `index.html`, which GitHub Pages serves at https://danikko2.github.io/Zombdash/.
   - A GitHub Action rebuilds `index.html` whenever `src/` changes.
 - **Don't edit `index.html` by hand.** Before starting, run `node tools/build.js --check`. If it fails, someone edited `index.html` directly, and that change has to be moved into `src/` first.
 - **Publishing each change:**
   1. Run `node tools/build.js`.
-  2. Run `node tests/run.js` (23 suites, about 4½ minutes). Two exceptions are expected:
+  2. Run `node tests/run.js` (24 suites, about 4 minutes). These exceptions are expected:
      - `tutorial.js` camera zoom is a known failure.
      - The `campaign.js` Rusty check is flaky and retried automatically.
      - The `balance-editor-and-test-switches.js` ground-limit check fails about 1 run in 20 on the original game too (a kill can add two drops when one slot is left), so it is retried automatically as well.
@@ -111,10 +111,163 @@ The full wish list is the "Map Workshop" prompt the owner attaches. This file re
      - Slot assignments are per device (shared by the accounts on it); progress is per account.
      - The Free Play leaderboards for custom maps (added at the owner's request in step 2) are unchanged; campaign runs, custom or not, never post scores.
 4. **Step 4 (revised Oct 22, 2026):** convert the built-in maps into the editor's format so they are fully editable.
-   - **Kit first:** before converting a map, check what it needs that the editor can't place yet (for example windows and doorways in walls, walk-behind tall objects and roofs, building floors, special road pieces, animated props) and add those as real editor pieces.
+   - **Kit first:** before converting a map, check what it needs that the editor can't place yet (for example windows and doorways in walls, walk-behind tall objects and roofs, building floors, special road pieces, animated props) and add those as real editor pieces. **Done (Oct 23, 2026):** see "Building kit" below; the audit after it is the checklist, and "What each map still needs" lists what is left per map.
    - **Map-specific systems** stay attached to the map as named "special features" saved in the map file, which the editor shows and lets you move but not redesign. Examples: fountains and other animations, the Mayor's City Hall roof, boss road graphs for the Ice Cream Man, Fire Chief and police car, Penny's shelves and corrals, walk-behind bridges, no-spawn zones.
    - **Order:** convert one section at a time (Hometown first), about 1–2 maps per chat. Each converted map is checked side by side with the original (screenshots), playtested (walls, zombie paths, spawns, its survivor boss) and only then replaces the code-drawn version.
    - **Shipping:** converted maps are stored as `src/maps/*.json` and embedded by `tools/build.js`. The step 1 note says the loader is ready and the build needs to embed the files.
    - **Progress safety:** a converted map keeps its map number, campaign slot, boss, progress and leaderboard board, so players' progress is untouched.
    - **Small differences are allowed:** a converted map may look slightly different in painted details. The layout, walls, spawns and gameplay must match.
 5. **Step 5:** gameplay pieces the owner picks (loot crates, doors, traps…).
+
+## Building kit (done Oct 23, 2026)
+The editor can now build maps as detailed as the hand-coded ones. Map format version 3 (`docs/map-format.md` has every piece with examples; `docs/ARCHITECTURE.md` "Building kit" has how it works).
+
+- **What's in it:**
+  - **Buildings:** the Room tool (drag a rectangle: a floor plus walls in the chosen style with a doorway; Interior wall mode), the Opening tool (click a wall: doorway, window, boarded / broken window, storefront glass, automatic doors, open roll-up door, closed garage door, cell bars, or a plain gap), 25 wall styles, porches, steps, docks and bridges over water, pools, a gas station canopy, roofs on solid blocks (flat, skyscraper tower, brick, shingle, slate, metal; rooftop detail, clock dome, helipad, clinic cross, a name plate), the stadium and the city skyline.
+  - **Roads and ground:** road paths (centre lines, 1–4 lanes, edge lines, curbs, round ends for cul-de-sacs and dead ends; curve them by adding points), highway lanes and ramps with rumble strips, cobbled roads, intersections with crosswalks and stop lines, crosswalks, parking stalls (rows, stall width, numbers), paved patches with curbs, sidewalks, trails, gravel paths, boardwalks, railroad tracks, streams, painted lines, ponds and lakes with shores, lily pads and reeds, ground patches of any shape, courts, helipads, sandboxes, splash pads, crop beds, and 31 more terrains (every ground texture of the built-in maps). Sidewalk terrains get curbs where they meet road terrains; water gets a shoreline.
+  - **Decals:** 51 (wear, crash, blood, nature, paint and markings with your own words, shadows and light, spooky, litter), turned and sized freely.
+  - **Effects:** fountain spray, water glints, fire, smoke (the game's smoke points), flickering and still light pools, emergency lights, hazard blinkers, flares, glows, wisps, ducks; fog, darkness and canopy-shade areas.
+  - **Special features:** no-spawn zone, building interior, store (Penny), City Hall roof (Mayor), boss road graph (drawn like a path, or made from the road paths with "Build road graph from roads"). They set the same `HS` fields the built-in maps set.
+  - **Props:** 48 kit props for what the maps drew in their own code (signs with your text, awnings, portraits whose eyes follow you, plane and helicopter wrecks, containers, office / school / bath rows, rooftop units…); taxi and food truck vehicles; text on trailers and food trucks. Every prop and vehicle placed on the 16 maps is in the asset browser with a name and category (checked by a test).
+  - **Prefabs:** save a selection (optionally with the ground under it) and place it again from the Prefabs tab as separate, ordinary things. 33 starter prefabs from the built-in maps' layouts: furnished living room, kitchen, bedroom, bathroom, garage, office, diner, classroom, small house, family house, corner store, gas station, police cell block, barracks, cabin, hangar, barn, City Hall, skyscraper block, parked car row, crash scene, bus stop, food trucks, checkpoint, campsite, playground, picnic area, fountain plaza, fishing pond, army tent camp, graveyard plot, mausoleum, chapel.
+  - **For Claude:** `docs/map-format.md` (the whole format, with a complete example that a test keeps correct) and `node tools/check-map.js file.json` (errors, missing assets, misspelt options, unreachable spawns and other problems; `--strict`, `--json`).
+  - **Demo:** "Elm & 3rd (kit demo)", a town block (furnished house, corner market, crossroads, parking lot, park with a pond and fountain, decals and effects), ships as a sample in the Workshop (`src/maps/samples/town-block.zombdash-map.json`, embedded by `tools/build.js`, which now also understands `{{json:…}}`).
+  - **Tests:** `tests/suites/building-kit.js` (147 checks): the format and the v2 → v3 upgrade, drawing and collision of every piece, the Room / Opening / Area / Path / point-editing / Feature tools with undo, decals and effects, prefabs (save, place, undo, every starter prefab), effects and features in a real run, the checker, the demo map (loads clean, builds, playtest with zombies), the asset browser, walk-behind.
+- **How to use it:**
+  - **Room tool (O, Build tab):** pick the wall style, floor pattern and colours and which side gets the doorway, then drag a rectangle. Switch to *Interior wall* and drag a line inside a room for a wall (with a doorway in its middle when *Doorway in the middle* is ticked).
+  - **Openings (D):** pick a kind and width on the left and click a wall; clicking an opening with another kind changes it, *Opening* removes it.
+  - **Areas (A) and paths (T):** pick a piece in the Build or Paths tab. Areas: drag a box. Paths: click points, then Enter or double-click (clicking the first point closes a shape; Backspace takes a point back, Esc cancels). Select a path to drag its points; Alt+click removes one, double-click on the line adds one.
+  - **Decals and effects (Decals tab):** pick one and click to place; R turns, [ and ] size the next one; selected ones get size, opacity, colour, text and options in the right panel.
+  - **Prefabs (G, Prefabs tab):** click one and click the map. To make your own, select things (drag a box), press *Save selection as prefab…*, name it and pick a group.
+  - **Special features (K, Markers tab):** pick one; for the box kinds drag a box. For the *Boss road graph*, click points like a path (Enter finishes; a road that starts on a node joins it), or press *Build road graph from roads* in the Markers tab.
+- **Decisions:**
+  - **Format version 3**, with automatic upgrade of version 1 and 2 files (it only adds the Ground detail, Effects & lights and Special features layers). Built-in maps, progress and saved maps are unchanged. A file without `layers` now gets the default layers (it used to get them one by one with warnings).
+  - **Windows stop bullets,** as on the built-in maps (their windows are painted on solid walls); cell bars and fences let bullets through.
+  - **No roof hiding:** no built-in map hides a roof when you walk in. Walk-in buildings have no roof; roofs only go on solid blocks; tall things use walk-behind (now also every kit and forest tree, sign and lamp).
+  - **Pools are solid,** like Main Street's.
+  - Effects are drawn by the game only while on screen; areas and paths are baked into the map picture like the built-in maps' painting. A 128×96 map (the demo four times: 736 objects, 224 walls) loads in about 0.4 s and runs at 60 fps in Chromium; low-memory mode works as before (the picture is halved).
+- **Partly done / not covered:**
+  - Enchanted Forest's canopy layer that hides players under the trees (`HS.FS`): the kit has walk-behind trees and a canopy-shade area, not a full canopy over players.
+  - The Haunted Mansion's grand staircase: build it from Steps areas (with a runner) and walls.
+  - Highway gore chevrons: use Hazard stripes decals. Light beams: only light pools.
+  - The second spawn list some maps have (`HS.sp2`): use spawn points and zones.
+  - Bosses that need these features (Ice Cream Man, Fire Chief, Penny, Mayor) still aren't offered for custom campaign maps; the features are there for the conversions.
+
+## Building kit audit (Oct 23, 2026): what the 16 built-in maps draw or do, and the kit piece for it
+This is the checklist for the step 4 conversions. Maps: **Su** Suburb, **Wa** Warehouse, **Gr** Graveyard, **Sc** School, **OW** Old West, **Ne** Neighborhood, **MB** Military Base, **Ca** Campground, **Hw** Deadway Highway, **HM** Haunted Mansion, **EF** Enchanted Forest, **Ur** Urban Outskirts, **CP** City Park, **Dt** Downtown, **Mk** Hometown Market, **MS** Main Street. Every prop in `OB` (259 before the kit) and every vehicle in `HWV` (14) was already in the asset browser; everything below was drawn by map code or done by map systems. ✓ = a kit piece reproduces it; ◐ = approximated.
+
+### A. Buildings and walls
+| What the maps do | Maps | Kit piece |
+|---|---|---|
+| Room shells: 6px walls around rooms with door gaps (26–60px), interior walls with doorways | every map with buildings | ✓ Room tool, Interior wall, `door` openings |
+| Wall looks: plank / board walls | Ne, Ca, EF, OW | ✓ `plank` (any colour), `wood` |
+| Wall looks: metal hangar walls, whitewashed / coloured siding, brick | MB, OW, MS, Dt | ✓ `metal`, `siding` (any colour), `brick`, `stone`, `concrete` |
+| Glass storefront walls (still stop bullets) | Dt, MS, Mk | ✓ `glass` |
+| Windows painted on walls (glass, broken, boarded, with shutters); the wall still stops bullets | Su, Sc, MB, Ca, HM, Ur, Mk, MS | ✓ `window` (trim colour), `window_x`, `window_b` |
+| See-through bars (sheriff's and police cells) | OW, MS | ✓ `bars` |
+| Doorway thresholds, door mats, automatic doors | Su, Mk | ✓ `door`, `autodoor`, `threshold` and `mat` decals |
+| Roll-up dock / fire-bay doors over an open gap, closed garage doors | Mk, MS, Su | ✓ `rollup` (walk through), `garage` (solid) |
+| Plank barricade walls with gaps | Ne | ✓ `barricade` |
+| Room floors: checker in any two colours, 12px tiles with grout, planks, marble, terrazzo, linoleum, charred floor, stained carpet | all | ✓ `floor` area patterns, floor terrains, `stain` decals |
+| Rugs and runners with borders, round rugs | Su, Gr, Sc, HM | ✓ `rug`, `rugr` |
+| Porches and decks, boardwalks, docks cut out of water, steps, the grand staircase | MS, OW, Ca, CP, Gr, HM | ✓ `porch`, `boardwalk`, `dock`, `bridge`, `steps`; ◐ grand staircase |
+| Roofs painted on solid blocks: skyscrapers (window lights, roof grid, AC units, helipad), apartment roofs (brick, water tanks), City Hall (slate, clock dome, name plate), decorative house roofs, clinic cross | Dt, MS, Ne | ✓ `roof` area (`tower`, `brick`, `slate`, `shingle`… + detail, dome, helipad, cross, name plate); prefabs `s_tower`, `s_cityhall` |
+| The stadium (solid ellipse, seats, field, scoreboard, dome) | Dt | ✓ `stadium` |
+| Gas station canopy (walked under, painted on the ground) | MS | ✓ `canopy`; prefab `s_gasstation` |
+| Large buildings: hangars, barracks, chapel, crypt, church / saloon / stables, cabins, shower house, witch's cabin, restrooms, market, fire station, police station, gas station, guard booths | MB, Gr, OW, Ca, EF, CP, Mk, MS, Wa | ✓ Room tool + roofs + props; prefabs `s_hangar`, `s_barracks`, `s_chapel`, `s_mausoleum`, `s_barn`, `s_cabin`, `s_cornerstore`, `s_cellblock`, `s_gasstation`, `s_checkpoint` |
+| City skyline backdrop behind a blocked band (sound wall) | Ur, CP | ✓ `skyline`, `soundwall` |
+| Walk-in buildings never get a roof: roofs only sit on solid blocks, and tall things use walk-behind instead | all | ✓ same rule (no roof hiding) |
+
+### B. Roads and ground
+| What the maps do | Maps | Kit piece |
+|---|---|---|
+| Straight roads with curbs, sidewalks, dashed / double yellow centre lines, white lane and edge lines | Su, Wa, Sc, Ne, MB, Hw, Ur, CP, Dt, Mk, MS | ✓ `road` path, sidewalk terrains with automatic curbs, `walk`, `line` |
+| Intersections with zebra crosswalks and stop lines | Ur, Dt, MS | ✓ `junction`, `zebra`, `stopline` |
+| Cul-de-sac (round road end) | Ne | ✓ `road` with `ends: round` |
+| Highway: 8 lanes, rumble strips, concrete median, guard rails, curved exit ramp, gore chevrons | Hw | ✓ `highway`, `median`, `guardrail`, curved paths; ◐ gore chevrons (`hazard` decals) |
+| Curved roads: sine cobbled road, drive loop | EF, CP | ✓ `cobble`, curved `road` |
+| Parking lots: stall lines, loading bays with numbers, arrows, handicap stalls, aisle lines | Wa, Gr, Sc, Ca, CP, Mk, MS | ✓ `parking` (numbers), `arrow`, `handicap`, `number`, `line` |
+| Driveways, alleys, front walks, sidewalks with slab joints | Su, Ne, Sc, Ur, Dt, Mk, MS | ✓ `paving`, `walk`, `slabs` |
+| Curved dirt trails, gravel paths, forest paths, wagon ruts, railroad track | Su, Ca, EF, CP, HM, OW | ✓ `trail`, `gravelpath`, `ruts`, `rails` |
+| Lake with a curved shoreline, beach and reeds; ponds with mud / sand shore, lily pads and reeds (water blocks walking, bullets fly over) | Ca, CP | ✓ `pond` (lily pads, reeds), `beach`, water terrain shorelines |
+| Pools, splash pad, sandbox, basketball court, helipads, runway markings | MS, CP, Sc, MB | ✓ `pool`, `splash`, `sandbox`, `court`, `helipad`, `runway` terrain + `line` |
+| Ground textures: forest floor with litter, mossy clearings, dark spooky lawn, dry and olive grass, mown stripes, worn asphalt, cobbles, pavers, slab grid, rubber playground surface, gravel drive, hangar metal floor, runway | Su, EF, Gr, HM, MB, Ur, CP, MS, Sc, Dt | ✓ kit terrains (`forest`, `moss`, `grass_dark`, `grass_dry`, `grass_olive`, `grass_park`, `asphalt_worn`, `cobble`, `pavers`, `slabs`, `rubber_*`, `metal`, `runway`…), shape patches |
+
+### C. Detail and decals
+| What the maps do | Maps | Kit piece |
+|---|---|---|
+| Cracks, oil stains, blood trails, puddles, stains | most | ✓ `crack*`, `oil`, `bloodtrail`, `puddle`, `stain` |
+| Skid marks, scorch rings, glass and debris around wrecks | Su, MB, Hw | ✓ `skid` (decal and path), `scorch`, `glass`, `debris`, `tiremarks` |
+| Leaf litter, twigs, moss, rocks, mushrooms | Su, HM, EF | ✓ `leaves`, `twigs`, `moss`, `rocks`; mushroom props |
+| Potholes with water, manholes, drains, grass in cracks, dirt patches | Ur, Dt, Su, Sc, MB | ✓ `pothole`, `manhole`, `drain`, `crack_grass`, `dirtpatch` |
+| Graffiti, chalk circle and scrawled words, cobwebs | Ur, HM | ✓ `graffiti`, `chalk`, `scrawl`, `cobweb` |
+| Painted words and arrows on the ground (DOCK 1, FOOD TRUCKS ONLY, STOP, IN / OUT), hazard stripes, yellow safety lines | Wa, Sc, CP, Mk | ✓ `text`, `arrow`, `arrow_turn`, `hazard`, `hazardband`, `safety` |
+| Shadows under props and vehicles | all | ✓ `shadow`, `treeshadow` |
+
+### D. Effects
+| What the maps do | Maps | Kit piece |
+|---|---|---|
+| Animated fountain spray and ripples; splash-pad jets and bucket dump; ducks on ponds | Sc, CP | ✓ `fountain`, `splash` area, `ducks` |
+| Flashing police / ambulance / fire lights, hazard blinkers, road flares, burning wrecks | Hw | ✓ `siren` (police, ambulance, fire), `hazard`, `flare`, `fire` |
+| Campfire and burning-barrel flames with a warm glow | Ca, Wa | ✓ `fire` |
+| Flickering candle / fireplace / lamp light pools; light pools and beams | HM, Gr | ✓ `flicker`, `light`; ◐ beams |
+| Portrait eyes that follow the player | HM | ✓ `portrait` prop |
+| Glowing mushrooms, will-o'-wisps | EF | ✓ `glow`, `wisp` |
+| Drifting fog over the grounds; a dark tint baked over an interior | HM | ✓ `fog`, `dark` |
+| Smoke points (`SM`) | Su, Wa, OW, Ne, MB, Ca, Hw, EF, Ur | ✓ `smoke` |
+| Tree canopies drawn over players (forest canopy grids, walk-behind trees) | Su, Sc, EF, CP, HM, Hw | ✓ walk-behind trees, `shade`; ◐ the full forest canopy layer |
+
+### E. Vehicles and walk-behind
+| What the maps do | Maps | Kit piece |
+|---|---|---|
+| Cars painted by map code (parked top-down cars) | Su, Ne, Ca | ✓ vehicles with colours |
+| Food trucks with names on the roof, taxis with roof signs | CP, Dt | ✓ `ftruck` (text), `taxi` |
+| Fighter jets, crashed cargo plane, downed helicopter | MB, Su | ✓ `jet`, `planebody`, `planetail`, `planewing`, `heliwreck` |
+| Semi trailers with names on the roof | Wa, Mk | ✓ `trailer` text |
+| Walk-behind for tall props (`vehWrap` list); the new house / forest props weren't on it | all | ✓ `wb: 1` props |
+
+### F. Props drawn by map code
+| What the maps do | Maps | Kit piece |
+|---|---|---|
+| Painted furniture: counters, stove, sink, microwave, fridge, sofa, armchair, TV, coffee table, garage shelf, workbench, beds, dressers | Su, Ne | ✓ house props, `micro`, `coffeetable`, `garageshelf` |
+| Office desks with monitors, filing cabinets, toilet stall rows, sinks, lockers rows, shower rows | Wa, Sc, MB, Ca | ✓ `officedesk`, `lockrow`, `stalls`, `showers` |
+| Chalkboards, cubbies, clocks, posters, cafeteria counter | Sc | ✓ `chalkb`, `cubby`, `wclock`, `poster`, `cafeteria` |
+| Coffins, open grave with dirt pile, stone gate arch, signposts with arrows | Gr, HM, EF | ✓ `coffin`, `opengrave`, `dirtpile`, `gatearch`, `arrowsign` |
+| Highway signs, billboards, shop signs, awnings, name plates, aisle and department signs, price sign, name boards | Wa, Sc, Hw, Dt, Mk, MS, all | ✓ `hwsign`, `billboard`, `storesign`, `awning`, `nameplate`, `aislesign`, `deptsign`, `pricesign`, `signboard`, `streetsign`, `stopsign` (your text) |
+| Campfire stone ring, log archway with a sign, boom gates, shipping containers | Ca, Wa, MB | ✓ `campring`, `archway`, `boomgate`, `container` |
+| Portraits, fallen chandelier, twisted dead trees, spooky and park canopy trees, forest trees | HM, EF, CP, Su, Hw | ✓ `portrait`, `chandelier`, `deadtwist`, `canopytree`, `blackpine`, forest props |
+| AC units, water tanks, fire escapes | Dt | ✓ `acunit`, `wtank`, `fireesc`, `elevator` |
+
+### G. Special features (map systems)
+| What the maps do | Maps | Kit piece |
+|---|---|---|
+| Boss road graphs `HS.RG` (ice cream truck, fire engine, police cruiser) | CP, Dt, MS | ✓ `roadgraph` feature |
+| Street trees that stop the fire hose `HS.TRK` | Dt | ✓ `stree` props (automatic) |
+| City Hall roof spot `HS.CH` | MS | ✓ `cityhall` feature |
+| Store rectangle, shelves and cart corrals `HS.ST` / `HS.SHF` / `HS.CRL` | Mk | ✓ `store` feature + `gshelf`, `corral`, `cartrow` props |
+| Building interiors `HS.HO` (bosses look for players inside) | EF, Ur, CP, Dt, Mk, MS | ✓ `house` feature, indoor floors |
+| No-spawn rectangle `HS.nx0…` and no-go areas `NOGO` | HM, Mk, Ca, CP | ✓ `nospawn` feature |
+| Spawn point lists `HS.sp` / `HS.sp2` | most | ✓ spawn points and zones; ◐ the second list |
+| Map-only animation data (`HS.MN`, `HS.FS`, `HS.HL`, `HS.HB`, `HS.PK`) and School's own walk-behind pass | HM, EF, CP, Hw, Sc | ✓ `fog` / `flicker` / `portrait` (MN), `siren` (HL), `fire` (HB), `ducks` (PK), walk-behind props (School); ◐ the forest canopy (FS) |
+
+## What each map still needs before converting
+Everything else on each map can be built with the kit; the conversion still has to be laid out, compared side by side and playtested (walls, zombie paths, spawns, its survivor boss).
+
+| Map | Still needs / watch out for |
+|---|---|
+| Suburb | Forest canopy over players (use walk-behind trees). |
+| Warehouse | Nothing new. |
+| Graveyard | Nothing new (chapel and mausoleum prefabs are a start; the mausoleum glow is a `glow` effect). |
+| School | Nothing new; its own walk-behind pass becomes ordinary walk-behind props. |
+| Old West | Nothing new (barn prefab for the stables, `bars` for the sheriff). |
+| Neighborhood | Nothing new (cul-de-sac = road with round end; decorative house roofs only on solid blocks). |
+| Military Base | Nothing new (hangar, barracks, tent camp, checkpoint prefabs). |
+| Campground | Nothing new. |
+| Deadway Highway | Gore chevrons as hazard decals; a second spawn list as spawn points. |
+| Haunted Mansion | The grand staircase from steps areas; candles = `flicker`, fog = `fog`, inside = `nospawn`. |
+| Enchanted Forest | The canopy layer that hides players (`HS.FS`): not a kit piece yet; decide between walk-behind trees and a new canopy feature. |
+| Urban Outskirts | Nothing new. |
+| City Park | Nothing new (road graph for the Ice Cream Man; splash pad, ponds, ducks). |
+| Downtown | Second spawn list as spawn points; lobbies with the Room tool next to tower roofs; street trees `stree`. |
+| Hometown Market | Nothing new (store feature, shelves, corrals, no-spawn). |
+| Main Street | Nothing new (City Hall prefab with the roof feature, road graph for the Mayor's cruiser, pools, canopy). |

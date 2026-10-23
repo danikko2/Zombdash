@@ -12,7 +12,7 @@ ${D_?`<div class=cpb><b>Unsaved changes found</b><small>Your changes to “${edE
 ${CCW.length?`<div class=cpb><b>Campaign</b><small>${CCW.map(edEsc).join('<br>')}</small></div>`:''}${msMem()?'<div class=cpb><b>This browser can\'t store maps</b><small>Maps made now last until the page is closed. Use EXPORT to keep a map as a file.</small></div>':''}
 ${touch?'<p class=note>Making and editing maps needs a mouse and keyboard. You can still play, import, export and delete maps here.</p>':''}
 <div class=wsbar><input type=search id=wsq placeholder="Search your maps" value="${edEsc(WSQ)}" oninput="wsSearch(this.value)" autocomplete=off><button class=go onclick="wsNew()"${touch?' disabled':''}>NEW MAP</button><button onclick="wsImport()">IMPORT</button></div>
-<div class=wsl id=wsl>${wsList()}</div><div class=row><button onclick="UIS='';menu()">BACK</button></div></div>`)}
+<div class=wsl id=wsl>${wsList()}</div>${wsSamples()}<div class=row><button onclick="UIS='';menu()">BACK</button></div></div>`)}
 function wsSearch(v){WSQ=v;const el=document.getElementById('wsl');if(el)el.innerHTML=wsList()}
 function wsList(){const q=WSQ.trim().toLowerCase(),touch=wsTouch();if(!CML.length)return `<div class=wsemp><b>No maps yet</b><p class=note>Press NEW MAP to start one, or IMPORT a map file someone sent you.</p></div>`;
 const L=CML.map((e,i)=>({e,i})).filter(({e})=>!q||String(e.meta.name||'').toLowerCase().includes(q)||String(e.meta.desc||'').toLowerCase().includes(q));if(!L.length)return `<p class=note>No map matches “${edEsc(WSQ)}”.</p>`;

@@ -12,13 +12,15 @@ The game ships as **one self-contained file**, `index.html` (what GitHub Pages s
 | `src/css/game.css` | All the styles for menus and the HUD. |
 | `src/js/early-error-screen.js` | Tiny script that shows a "Startup error" box if the game fails to load. |
 | `src/js/modules.txt` | **Load order** of the game modules. |
-| `src/js/**` | The game, split into 101 modules (listed below). The Map Workshop is in `src/js/editor/`, the custom map format and loader in `src/js/world/`. |
+| `src/js/**` | The game, split into 114 modules (listed below). The Map Workshop is in `src/js/editor/`, the custom map format, loader and building kit in `src/js/world/`. |
+| `src/maps/` | Map files (`*.zombdash-map.json`) that ship with the game, embedded by the build with `{{json:maps/<file>}}`: `samples/town-block.zombdash-map.json` is the Workshop's sample map. |
 | `src/assets/sprites/` | `zombies.png` (zombie atlas) and `survivors.png` (player atlas). Frame positions are in `ZS` / `PS` in `render/sprites.js`. |
 | `src/assets/thumbs/map-NN.jpg` | Map preview pictures; `NN` is the map's number in `MP`. |
 | `src/assets/sounds/` | Recorded reload sounds (everything else is synthesized in `audio/sound.js`). |
 | `tools/build.js` | The build (Node, no packages needed). |
+| `tools/check-map.js` | The map checker: `node tools/check-map.js map.json` reports errors, missing assets and other problems in map files (see `docs/map-format.md`). |
 | `tests/run.js`, `tests/suites/` | Automated tests that load the real game in Node with a fake browser. |
-| `docs/` | This file, the map editor plan (`map-editor-plan.md`) and the Supabase setup SQL for online accounts. |
+| `docs/` | This file, the map editor plan (`map-editor-plan.md`), the map file format (`map-format.md`) and the Supabase setup SQL for online accounts. |
 
 ## Build and test
 
@@ -37,6 +39,7 @@ node tests/run.js spawn ammo # only suites whose name contains a word
 * To add a module: create the file and add its path to `modules.txt` after everything it needs during loading. The build refuses to run if a `.js` file isn't listed, or is listed twice.
 * Lines starting with `//#` at the very top of a module are notes for people; the build leaves them out.
 * Pictures and sounds are written as `data:image/png;base64,{{asset:sprites/zombies.png}}`; the build swaps in the file from `src/assets/`. To change a sprite sheet, replace the PNG.
+* JSON files from `src/` are embedded with `{{json:maps/samples/town-block.zombdash-map.json}}` (the build writes the file's JSON there, with `</` escaped); that is how map files ship with the game.
 * The split was done so that the built `index.html` is **byte-for-byte identical** to the single file it came from, so nothing in the game changed.
 
 ## Where to change things
@@ -65,6 +68,14 @@ node tests/run.js spawn ammo # only suites whose name contains a word
 | House props (kitchen, living room, bedroom, bathroom, garage) and their colour choices | `maps/props/home-props.js` (`PCAB`, `PFAB`, `PAPP`, `PMET`, `PTIL`, `PBRK`) |
 | Forest and farm props, leaf / grass colours | `maps/props/forest-props.js` (`PLEAF`, `PGRS`, `PBARK`) |
 | Names and categories in the editor's prop browser | `EDPN` (props), `EDVN` (vehicles), `EDCAT` in `editor/assets.js` |
+| Building kit pieces: decals, areas, paths, effects (add one with `cmAddDec` / `cmAddArea` / `cmAddPath` / `cmAddFx`) | `world/kit-decals.js`, `kit-areas.js`, `kit-paths.js`, `kit-effects.js` |
+| Special features (no-spawn, building interior, store, City Hall roof, road graph) and what the game does with them | `CMFEAT` in `world/kit-core.js`, `cmFeatHS` in `world/custom-maps.js` |
+| Wall styles incl. windows, doorways, glass, bars | `world/kit-walls.js` (added to `CMWALL`) |
+| Kit terrains (lawns, forest floor, pavers, floors, deep water…) | `CMTK` in `world/terrain-kit.js` |
+| Kit props (signs with text, portraits, wrecks, office / school / bath rows…) | `maps/props/kit-props.js` |
+| Openings the editor's Opening tool offers, room wall styles | `EDOPEN`, `EDROOMW` in `editor/kit-tools.js` |
+| Starter prefabs | `CMPFS` in `editor/prefab-starter.js` |
+| Workshop sample maps | `CMSAMPLES` in `editor/samples.js` (files in `src/maps/samples/`) |
 
 Values changed in the in-game **GAME BALANCE** menu only live on that device; use its *Copy changes as a list* button and ask Claude to make them permanent in these files.
 
@@ -103,48 +114,26 @@ Values changed in the in-game **GAME BALANCE** menu only live on that device; us
 * **Locks:** a locked layer or a locked object (`lk`) can't be selected by box, moved, turned, deleted or painted. A locked object can still be clicked, to unlock it in the properties panel.
 * **Editor code:** `editor/selection.js` has the selection, group moves and turns, the clipboard (`EDCB`), layer operations and shape editing; `editor/panels.js` the right-hand panel (Properties, Layers, Problems). Every change goes through the one history (`edMut` snapshots the objects it changes).
 
+### Building kit (format version 3)
+
+The kit lets custom maps be as detailed as the hand-coded maps. The whole format, with every piece and an example, is in **`docs/map-format.md`**; the audit of what the built-in maps needed is in `docs/map-editor-plan.md`.
+
+* **Five kinds of pieces** besides props, vehicles and walls: **decals** (`d.obj` items with `dc`), **effects** (`d.obj` items with `fx`), **areas** (`d.areas`, boxes: floors, porches, docks, parking, roofs, fog…), **paths** (`d.paths`, a first point `x,y` and `pts` relative to it: roads, trails, fences, ponds) and **special features** (`d.feats`: boxes, or the road graph's `pts` and edges `e`). Registries: `CMDEC`/`CMDI`, `CMAREA`/`CMAI`, `CMPA`/`CMPAI`, `CMFX`/`CMFXI`, `CMFEAT`/`CMFEI` (`world/kit-core.js`); each entry is data plus drawing functions.
+* **Drawing.** `cmPaintIt` sends each draw-list entry to `cmWallDraw`, `cmAreaDraw`, `cmPathDraw`, `cmDecDraw`, `cmFxBake` (an effect's still part) or the prop / vehicle drawing. Kit pieces of the same layer and order stack by `cmPri` (darkness, floors, rugs, decals, props, effects).
+* **Collision** (`cmColl`): walls by style (`walk` styles such as doorways make no box; `fl` 2 styles such as fences and bars let bullets through), solid areas (`cmAreaBoxes`: roofs, the stadium, pools, the skyline band), paths (`cmPathBoxes`: fences as chains of boxes, ponds and streams as rows of see-through boxes), and walk areas (`dock`, `bridge`) that dry the water tiles under them and cut pond / stream boxes away (`cmWalkR`, `cmMinus`).
+* **In the game.** `cmBuild` ends with `cmFeatHS(d)` and `HS.CX = cmFxData(d)`. `cmFeatHS` sets the same `HS` fields the built-in maps set: smoke effects → `SM`; `nospawn` → `HS.nx0…`, `HS.NS`, `NOGO` (and `cmSpawnAt` skips spawns inside them); `house` features and indoor floors → `HS.HO`; `roadgraph` → `HS.RG = {N, A}`; `cityhall` → `HS.CH`; `store` → `HS.ST`, its `gshelf` props → `HS.SHF`, `corral`/`cartrow` props → `HS.CRL`; `stree` props → `HS.TRK`. `HS.CX = {A, T, E}` holds the animated effects and areas (`cmFxAnim`, drawn under people next to the built-in maps' animations), the ones drawn over people (`cmFxTop`: fog, wisps) and portrait eyes; both are called from `drawW` (`render/world-and-hud.js`) and only draw what is on screen.
+* **Walk-behind.** `vehWrap` (`world/vehicles.js`) puts tall props on the walk-behind list: the old list plus every prop with `wb: 1` (kit and forest props), forwarding colour and text.
+* **Editor** (`editor/kit-tools.js`, `editor/kit-view.js`): the Room tool (O: drag a rectangle → floor + walls in the chosen style with a doorway; Interior wall mode), Opening (D: click a wall → doorway, window, storefront glass, automatic doors, roll-up / garage door, bars or a gap; the wall is split, `edGapSplit`), Area (A), Path (T: click points, Enter / double-click to finish; Backspace, Esc), Feature (K) and Prefab (G) tools. A selected path or road graph shows point handles (drag; Alt+click deletes; double-click on the line adds). Areas and paths are cached as small pictures per piece in the editor (`edKitImg`). Every action is one undo step (`edApply` can also carry a tile patch). Seven left tabs: Terrain, Build, Paths, Props, Decals, Prefabs, Markers.
+* **Prefabs** (`editor/prefabs.js`, starter set `editor/prefab-starter.js`): `edPfFrom` turns a selection (and optionally the tiles under it) into a prefab; `edPrefabPlace` places one as new, separate things with one undo step. Your prefabs live in IndexedDB (`kv` record `prefabs`).
+* **Samples** (`editor/samples.js`): `CMSAMPLES` are map files built into the game, listed under "Sample maps" in the Workshop (**ADD TO MY MAPS** / **EDIT A COPY**).
+* **Checker:** `tools/check-map.js` loads the built game in Node and runs `cmRead` + `cmLint` plus authoring checks on map files.
+
 ### Custom map files
 
-Anything that writes this JSON makes a map; import it with **IMPORT** in the Workshop. Pixels for positions, tiles of 32px for the size.
+The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs, the checker, a complete example). In short: a JSON file with `format: "zombdash-map"`, `version: 3`, size in 32px tiles (20×15 to 128×128), tile grids (`terrain`, `roads`, `overlay`: rows of legend letters), `layers`, `props`, `vehicles`, `walls`, `decals`, `effects`, `areas`, `paths`, `features`, `playerStart` and `zombieSpawns`. Positions are pixels. Unknown kinds load with a warning and are written back unchanged; a file with mistakes is refused with a list of what's wrong.
 
-```json
-{
-  "format": "zombdash-map", "version": 2,
-  "name": "Gas Station", "description": "Pumps, a shop and a parking lot.",
-  "tileSize": 32, "width": 40, "height": 30,
-  "ground": "grass",
-  "terrain": { "legend": { "g": "grass", "a": "asphalt", "w": "water" },
-               "rows": ["gggggaaaaa…", "…"] },
-  "roads":   { "legend": { "s": "sidewalk", "a": "asphalt" }, "rows": ["..ssss…", "…"] },
-  "overlay": { "legend": { "b": "blood", "x": "burn" }, "rows": ["....b…", "…"] },
-  "layers": [ { "id": "terrain", "name": "Terrain", "kind": "tiles" },
-              { "id": "roads", "name": "Roads & paths", "kind": "tiles" },
-              { "id": "buildings", "name": "Buildings", "kind": "objects" },
-              { "id": "walls", "name": "Walls & collision", "kind": "objects" },
-              { "id": "env", "name": "Environmental props", "kind": "objects", "locked": true },
-              { "id": "interior", "name": "Interior props", "kind": "objects" },
-              { "id": "vehicles", "name": "Vehicles", "kind": "objects" },
-              { "id": "spawns", "name": "Zombie spawns", "kind": "objects", "editorHidden": true } ],
-  "props":    [ { "kind": "crate", "x": 400, "y": 300, "rot": 0, "layer": "env" },
-                { "kind": "flower", "x": 420, "y": 420, "layer": "env", "solid": true,
-                  "shape": { "type": "circle", "x": 0, "y": -4, "r": 20 } } ],
-  "vehicles": [ { "kind": "sedan", "x": 640, "y": 480, "rot": 90, "color": "#c0392b", "damaged": true, "layer": "vehicles", "order": 2 } ],
-  "walls":    [ { "x": 0, "y": 0, "w": 200, "h": 8, "style": "brick", "layer": "walls" } ],
-  "playerStart": { "x": 640, "y": 560 },
-  "zombieSpawns": { "points": [ { "x": 40, "y": 40, "enabled": true, "layer": "spawns" } ],
-                    "zones":  [ { "x": 900, "y": 600, "w": 200, "h": 150, "enabled": true, "layer": "spawns" } ] }
-}
-```
-
-* `width` × `height` is 20×15 up to 128×128 tiles. `terrain.rows` has `height` strings of `width` characters, each a key of its `legend`; leave `terrain` out for plain `ground` everywhere. `overlay` is optional, `.` means nothing.
-* Terrain: `grass dirt asphalt concrete sidewalk sand gravel mud water wood tile soil carpet_grey carpet_dkgrey carpet_tan carpet_black carpet_red carpet_green carpet_blue` (water blocks walking, bullets fly over it). Overlays: `blood burn`, and the road markings `yline ydash wline wdash xwalk` (a marking joins up with the same marking on the next tile; one overlay per tile). Wall styles: `wall brick concrete wood` (stop bullets), `fence` (see-through), `hidden` (an invisible blocker).
-* A prop's `kind` is a key of `OB` (the editor's prop browser shows them all), its `x`,`y` is the middle of its base; props with a collision size in `OB` are solid. A vehicle's `kind` is a key of `HWV` (`sedan suv pickup van limo police amb fire bus semi cab trailer hmv mtruck`), its `x`,`y` is its centre. `rot` is in degrees. Props that come in colours (the editor shows swatches for them) take `"color": "#rrggbb"`; left out, they use their first colour.
-* `roads` is optional, like `overlay` (`.` means no road there, the terrain shows).
-* `layers` lists the layers bottom to top: `id` (letters, digits, `_`, `-`), `name`, `kind` (`tiles` only for `terrain` and `roads`). Optional `editorHidden` / `locked`. Leave `layers` out to get the defaults.
-* Every prop, vehicle, wall and spawn can have: `layer` (an object layer's id; left out = the layer of its kind), `order` (draw order within the layer, higher is on top), `solid` (`true`/`false`, left out = the default), `shape` (`{"type":"rect","x","y","w","h"}` or `{"type":"circle","x","y","r"}`, offsets from its `x`,`y`; props and vehicles only), `locked`, `editorHidden`.
-* `playerStart` can be left out: the run then starts in the middle and the editor lists it as a problem.
-* `id`s are optional (they are added). Fields the game doesn't know are kept and written back. A thing on a layer the file doesn't list gets a new layer of that id (with a warning). A file with mistakes is refused with a list of what's wrong, and nothing is changed.
-* **Version 1** files (step 1) load as version 2: every thing goes on the layer of its kind and the roads layer starts empty (`CMMIG[1]`). Nothing else changes; saving writes version 2.
+* **Upgrades:** version 1 files load as version 2 (every thing on the layer of its kind, an empty roads layer; `CMMIG[1]`), version 2 as version 3 (adds the Ground detail, Effects & lights and Special features layers; `CMMIG[2]`). Nothing else changes; saving writes version 3.
+* A file without `layers` gets the 11 default layers.
 
 ## Modules (in load order)
 
@@ -201,14 +190,22 @@ Anything that writes this JSON makes a map; import it with **IMPORT** in the Wor
 | `maps/main-street.js` | Hometown Main Street map |
 | `maps/props/home-props.js` | House props for custom maps (kitchen, living room, bedroom, bathroom, garage), `obc()` for props that come in colours |
 | `maps/props/forest-props.js` | Forest and farm props for custom maps: trees, long grass, ferns, reeds, crops, big rotting fallen trees |
+| `maps/props/kit-props.js` | Building kit props: what the built-in maps drew in their own code (signs with your text, awnings, portraits, wrecks, containers, office / school / bath rows, rooftop units…) |
 
 ### World systems (`src/js/world/`)
 
 | File | What's in it |
 |---|---|
 | `world/map-list-and-pathfinding.js` | The map list (MP), build() to load a map, zombie pathfinding flow field, wall push-out |
-| `world/map-schema.js` | Custom map format: terrain (CMTER), overlays, wall styles, layers (CMLAY), cmRead / cmWrite with the v1 → v2 upgrade, collision and shapes (cmColl), draw order (cmDrawList), problem checks (cmLint) |
+| `world/map-schema.js` | Custom map format: terrain (CMTER), overlays, wall styles, layers (CMLAY), cmRead / cmWrite with the v1 → v2 → v3 upgrades, collision and shapes (cmColl), draw order (cmDrawList), problem checks (cmLint) |
 | `world/terrain-more.js` | More custom-map terrain: loop-pile carpet in seven colours, farm soil, road markings that join up |
+| `world/terrain-kit.js` | Building kit terrain: the built-in maps' remaining ground textures, terrain groups, curbs where sidewalks meet roads |
+| `world/kit-core.js` | Building kit core: registries for decals, areas, paths, effects and special features; shared geometry (curves, polygons, boxes along a line) |
+| `world/kit-decals.js` | Decals: cracks, stains, skid marks, blood, leaves, painted words and arrows, shadows… |
+| `world/kit-areas.js` | Areas: floors, rugs, porches, steps, docks, pools, parking, intersections, courts, roofs, the stadium, the skyline, fog and darkness; their collision |
+| `world/kit-paths.js` | Paths: roads, highway lanes, trails, sidewalks, rails, streams, painted lines, fences and rails, ponds and patches; their collision; the road graph from roads |
+| `world/kit-walls.js` | Wall styles: windows, storefront glass, doorways, automatic / roll-up / garage doors, bars, planks, metal, siding, stone, barricades, sound walls, hedges and fences |
+| `world/kit-effects.js` | Effects: fountain spray, water, fire, smoke, flickering and still lights, sirens, hazard blinkers, flares, glows, wisps, ducks; `cmFxData` / `cmFxAnim` / `cmFxTop` for the game |
 | `world/map-store.js` | Custom map storage on the device (IndexedDB) |
 | `world/custom-maps.js` | Custom maps in the game: map keys, the Free Play list (CML), cmBuild(), painting in draw order, spawning from zones |
 | `world/wall-index.js` | Fast wall lookup grid |
@@ -227,6 +224,11 @@ Anything that writes this JSON makes a map; import it with **IMPORT** in the Wor
 | `editor/playtest.js` | Playtest with the real game, keeping nothing it earns |
 | `editor/workshop.js` | The Map Workshop screen: list, new, open, rename, duplicate, delete, import / export, unsaved-changes recovery |
 | `editor/workshop-campaign.js` | The campaign dialog: put a map in a free slot with a wave-20 boss, or play it instead of a campaign map (and restore) |
+| `editor/kit-view.js` | Drawing kit pieces in the editor: cached area / path pictures, effect frames, fog overlays, special features, point handles, minimap marks |
+| `editor/kit-tools.js` | The kit tools: Room, Opening, Area, Path (and road graph), Feature; their tabs, previews and property fields |
+| `editor/prefabs.js` | Prefabs: save a selection, place a prefab, the Prefabs tab, your prefabs on the device |
+| `editor/prefab-starter.js` | The 33 starter prefabs, laid out after the built-in maps |
+| `editor/samples.js` | Sample maps built into the Workshop (`CMSAMPLES`) |
 
 ### Menus and screens (`src/js/ui/`)
 

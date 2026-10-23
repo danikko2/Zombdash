@@ -24,7 +24,7 @@ const inBox=(b,x,y)=>x>=b[0]&&x<=b[0]+b[2]&&y>=b[1]&&y<=b[1]+b[3];
 // ---------- the map format ----------
 const d0=cmNew({name:'Round <b>Trip</b>',desc:'desc',w:30,h:22,ground:'dirt'});
 ok(d0.w==30&&d0.h==22&&d0.ground=='dirt'&&d0.name=='Round bTrip/b','new map: size, ground, name without markup');
-ok(same(d0.layers.map(l=>l.id),['terrain','roads','buildings','walls','env','interior','vehicles','spawns']),'new map: the default layers, bottom to top');
+ok(same(d0.layers.map(l=>l.id),['terrain','roads','ground','buildings','walls','env','interior','vehicles','effects','spawns','features']),'new map: the default layers, bottom to top');
 for(let i=0;i<d0.ter.length;i++){if(i%7==0)d0.ter[i]=cmPi(d0,'water');if(i%11==0)d0.ter[i]=cmPi(d0,'asphalt');if(i%13==0)d0.ovl[i]=cmOi(d0,'blood');if(i%17==0)d0.rtr[i]=cmRi(d0,'sidewalk')}
 d0.obj.push({id:'p1',k:'crate',x:100,y:120,r:0,vr:.4,ly:'env'},{id:'v1',veh:'police',x:300,y:200,r:90,c:'#2f6fd0',dmg:1,ly:'vehicles',z:2},{id:'p2',k:'barrel',x:150,y:330,r:45,ly:'env',sol:false,lk:true},
 {id:'p3',k:'flower',x:420,y:420,r:0,ly:'env',sol:true,sh:{t:'c',x:0,y:-4,r:20},hd:true},{id:'p4',k:'bench',x:520,y:420,r:0,ly:'env',sh:{t:'r',x:-20,y:-12,w:40,h:12}});
@@ -38,7 +38,7 @@ ok(d1&&Array.from(d1.ovl).every((v,i)=>d1.opal[v]===d0.opal[d0.ovl[i]]),'round t
 ok(d1&&Array.from(d1.rtr).every((v,i)=>d1.rpal[v]===d0.rpal[d0.rtr[i]]),'round trip keeps every road tile');
 ok(d1&&same(d1.obj,d0.obj)&&same(d1.walls,d0.walls)&&same(d1.spawns,d0.spawns)&&same(d1.zones,d0.zones),'round trip keeps props, vehicles, walls and spawns with layer, order, solid, shape, lock and hide');
 ok(d1&&same(d1.layers,d0.layers),'round trip keeps the layers with their names, order, hidden and locked');
-ok(j0.format=='zombdash-map'&&j0.version==2&&CMVER==2&&j0.terrain.rows.length==22&&j0.terrain.rows[0].length==30&&j0.terrain.legend.d=='dirt'&&j0.overlay.legend.b=='blood'&&j0.roads.rows[0][0]!='.'&&j0.layers.length==8,'file layout v2: version 2, terrain / roads / overlay rows with a legend, layers');
+ok(j0.format=='zombdash-map'&&j0.version==3&&CMVER==3&&j0.terrain.rows.length==22&&j0.terrain.rows[0].length==30&&j0.terrain.legend.d=='dirt'&&j0.overlay.legend.b=='blood'&&j0.roads.rows[0][0]!='.'&&j0.layers.length==11,'file layout v3: version 3, terrain / roads / overlay rows with a legend, layers');
 ok(same(j0.props.find(p=>p.id=='p3').shape,{type:'circle',x:0,y:-4,r:20})&&j0.props.find(p=>p.id=='p2').solid===false&&j0.props.find(p=>p.id=='p2').locked===true&&j0.props.find(p=>p.id=='p3').editorHidden===true&&j0.vehicles[0].order==2,'file layout v2: shape, solid, locked, editorHidden, order');
 ok(same(cmWrite(d1),j0),'writing it again gives the same file');
 // errors: the file is refused and nothing comes back
@@ -53,10 +53,10 @@ ok(bad(JSON.stringify(Object.assign({},j0,{width:5}))),'too small: refused');ok(
 {const j=JSON.parse(JSON.stringify(j0));j.props[0].layer='terrain';ok(/tile layer/.test(bad(JSON.stringify(j))),'a prop on a tile layer: refused')}
 {const j=JSON.parse(JSON.stringify(j0));j.layers.push({id:'env',name:'Again',kind:'objects'});ok(/same id/.test(bad(JSON.stringify(j))),'two layers with the same id: refused')}
 // warnings: loads, keeps what it doesn't know
-{const j=JSON.parse(JSON.stringify(j0));j.props.push({id:'zz',kind:'flying_saucer',x:10,y:10,layer:'ufo'});j.terrain.legend.d='lava';j.walls[0].style='glass';j.mod={keep:1};
+{const j=JSON.parse(JSON.stringify(j0));j.props.push({id:'zz',kind:'flying_saucer',x:10,y:10,layer:'ufo'});j.terrain.legend.d='lava';j.walls[0].style='jelly';j.mod={keep:1};
 const r=cmRead(JSON.stringify(j));ok(r.doc&&r.warnings.length>=4,'unknown prop, terrain, wall style and layer: loads with warnings ('+r.warnings.length+')');
 ok(r.doc&&cmLy(r.doc,'ufo')&&cmLy(r.doc,'ufo').k=='o','a layer the file does not list is added, so nothing is lost');
-const w=cmWrite(r.doc);ok(w.props.some(p=>p.kind=='flying_saucer'&&p.layer=='ufo')&&Object.values(w.terrain.legend).includes('lava')&&w.walls[0].style=='glass'&&w.mod&&w.mod.keep==1,'and writes them back unchanged (nothing is thrown away)');
+const w=cmWrite(r.doc);ok(w.props.some(p=>p.kind=='flying_saucer'&&p.layer=='ufo')&&Object.values(w.terrain.legend).includes('lava')&&w.walls[0].style=='jelly'&&w.mod&&w.mod.keep==1,'and writes them back unchanged (nothing is thrown away)');
 ok(cmLint(r.doc).some(p=>/flying_saucer/.test(p.m)&&p.ref&&p.ref.o.k=='flying_saucer'),'the Problems list names the missing prop and points at it')}
 // names that are built into every JavaScript object are not props, terrain or walls
 {const j=JSON.parse(JSON.stringify(j0));j.props.push({kind:'constructor',x:20,y:20},{kind:'__proto__',x:30,y:30},{kind:'toString',x:40,y:40});j.vehicles.push({kind:'hasOwnProperty',x:50,y:50});j.terrain.legend.d='toString';j.walls[0].style='valueOf';
@@ -69,11 +69,11 @@ props:[{id:'c1',kind:'crate',x:100,y:100},{id:'h1',kind:'shed',x:300,y:200,rot:1
 vehicles:[{id:'v1',kind:'sedan',x:600,y:400,rot:90,color:'#2f6fd0',damaged:true}],walls:[{id:'w1',x:10,y:10,w:100,h:8,style:'brick'}],playerStart:{x:380,y:280},
 zombieSpawns:{points:[{id:'sp1',x:40,y:40,enabled:true}],zones:[{id:'zn1',x:500,y:50,w:120,h:80,enabled:false}]},created:'2026-10-20T00:00:00.000Z',updated:'2026-10-20T00:00:00.000Z',order:['c1','h1','s1','b1','v1'],future:{keep:'me'}};
 {const r=cmRead(JSON.stringify(v1)),d=r.doc;ok(d&&!r.errors.length&&!r.warnings.length,'a version 1 map loads with no errors or warnings');
-ok(d&&same(d.layers.map(l=>l.id),['terrain','roads','buildings','walls','env','interior','vehicles','spawns']),'v1 -> v2: it gets the default layers');
+ok(d&&same(d.layers.map(l=>l.id),['terrain','roads','ground','buildings','walls','env','interior','vehicles','effects','spawns','features']),'v1 -> v3: it gets the default layers');
 ok(d&&same(d.obj.map(o=>o.id+':'+o.ly),['c1:env','h1:buildings','s1:interior','b1:vehicles','v1:vehicles'])&&d.walls[0].ly=='walls'&&d.spawns[0].ly=='spawns'&&d.zones[0].ly=='spawns','v1 -> v2: everything goes on the layer of its kind (crate, shed, couch, bus, car, wall, spawns)');
 ok(d&&d.obj[1].r==15&&d.obj[2].vr==.25&&d.obj[4].c=='#2f6fd0'&&d.obj[4].dmg==1&&d.zones[0].on===false&&same(d.start,{x:380,y:280})&&d.extra.future.keep=='me'&&d.id=='mOLD1'&&d.created=='2026-10-20T00:00:00.000Z','v1 -> v2: positions, turns, colours, flags, start, ids, dates and unknown fields are all kept');
 ok(d&&d.pal[d.ter[9*24]]=='asphalt'&&d.opal[d.ovl[2*24]]=='blood'&&d.rtr.every(v=>!v),'v1 -> v2: terrain and overlays kept, the roads layer starts empty');
-const w=cmWrite(d);ok(w.version==2&&w.layers.length==8&&w.props[0].layer=='env'&&w.future.keep=='me','v1 -> v2: saving writes a version 2 file');
+const w=cmWrite(d);ok(w.version==3&&w.layers.length==11&&w.props[0].layer=='env'&&w.future.keep=='me','v1 -> v3: saving writes a version 3 file');
 CMPTD=d;mapId=CMPTK;build();ok(WW==24*32&&WL.some(b=>b[0]==10&&b[1]==10&&b[2]==100)&&HS.px==380,'an upgraded v1 map plays');CMPTD=null}
 // ---------- the loader (what Free Play and playtest use) ----------
 CMPTD=d1;mapId=CMPTK;build();
@@ -239,7 +239,7 @@ ok(PL.every(p=>!p.x||true)&&mode=='edit','the game does not run while the editor
 // ---------- saving, the Workshop list, export / import ----------
 let saved=await edSave();ok(msMem(),'no IndexedDB in this test: maps are kept in memory');ok(saved&&!edIsDirty()&&ED.src=='saved','Save: stored, map clean');
 await cmLoadAll();const e2=CML.find(e=>e.id==d2.id);ok(e2&&e2.doc&&e2.meta.name=='Editor test'&&e2.doc.w==50&&same(e2.doc.layers,d2.layers),'the saved map is in the list, layers and all');
-const stored=await msGet('maps',d2.id);ok(same(stored.json,cmWrite(d2))&&stored.json.version==2,'what is stored is exactly the export file (version 2)');
+const stored=await msGet('maps',d2.id);ok(same(stored.json,cmWrite(d2))&&stored.json.version==3,'what is stored is exactly the export file (version 3)');
 // a draft is kept while there are unsaved changes, and dropped by a save
 ED.terK='t';ED.ter='mud';{const S_=edStroke('Paint');edBrushAt(S_,1,1,1,0);edStrokeEnd(S_)}flush();await edDraft();
 const dr=await msGet('kv','draft');ok(dr&&dr.id==d2.id&&cmRead(dr.json).doc.pal.includes('mud'),'unsaved changes are kept in a crash-safe draft');
@@ -249,12 +249,12 @@ ok(!(await msGet('kv','draft')),'saving clears the draft');
 await cmLoadAll();ok(CML.length==2,'two maps in the list');
 // a step-1 map already on the device opens, plays and is saved as version 2
 await msWrite([['put','maps',{id:v1.id,json:v1}],['put','meta',{id:v1.id,name:v1.name,desc:'',w:24,h:18,created:v1.created,updated:v1.updated,thumb:''}]]);await cmLoadAll();
-{const e=CML.find(x=>x.id==v1.id);ok(e&&e.doc&&e.doc.layers.length==8&&!e.warnings.length,'a version 1 map stored on the device loads as version 2');edOpen(cmClone(e.doc),'saved');await edSave();ok((await msGet('maps',v1.id)).json.version==2,'saving it writes version 2');edClose()}
+{const e=CML.find(x=>x.id==v1.id);ok(e&&e.doc&&e.doc.layers.length==11&&!e.warnings.length,'a version 1 map stored on the device loads as version 3');edOpen(cmClone(e.doc),'saved');await edSave();ok((await msGet('maps',v1.id)).json.version==3,'saving it writes version 3');edClose()}
 // import: a good file is added as its own map, a broken one changes nothing
 let im=await wsImportText(JSON.stringify(j0));ok(im&&CML.some(e=>e.doc&&e.doc.name=='Round bTrip/b'),'import a map file');
 const nb=CML.length;im=await wsImportText('{"format":"zombdash-map","version":1,"width":3}');ok(!im&&CML.length==nb,'a broken file is not imported and nothing changes');
 im=await wsImportText(JSON.stringify(j0));ok(im&&CML.length==nb+1&&new Set(CML.map(e=>e.id)).size==CML.length,'importing the same map again adds a copy with a new id');
-im=await wsImportText(JSON.stringify(Object.assign({},v1,{id:'mOLD2'})));ok(im&&im.layers.length==8,'importing a version 1 file upgrades it');
+im=await wsImportText(JSON.stringify(Object.assign({},v1,{id:'mOLD2'})));ok(im&&im.layers.length==11,'importing a version 1 file upgrades it');
 // rename / duplicate / delete
 {const i=CML.findIndex(e=>e.doc&&e.doc.name=='Round bTrip/b');document.getElementById('wsrn').value='Renamed';await wsRenameOk(i);await cmLoadAll();ok(CML.some(e=>e.meta.name=='Renamed'&&e.doc.name=='Renamed'),'rename')}
 {const n0=CML.length,i=CML.findIndex(e=>e.meta.name=='Renamed');await wsDup(i);await cmLoadAll();ok(CML.length==n0+1&&CML.some(e=>e.meta.name=='Renamed (copy)'),'duplicate')}

@@ -14,6 +14,12 @@ function asset(name) {
   if (!fs.existsSync(p)) throw new Error('missing asset src/assets/' + name);
   return fs.readFileSync(p).toString('base64');
 }
+// a JSON file from src/ (for example src/maps/*.json), checked and written into the game as a JS value
+function json(name) {
+  const p = path.join(SRC, name);
+  if (!fs.existsSync(p)) throw new Error('missing src/' + name);
+  try { return JSON.stringify(JSON.parse(fs.readFileSync(p, 'utf8'))).replace(/<\//g, '<\\/'); } catch (e) { throw new Error('src/' + name + ' is not valid JSON: ' + e.message); }
+}
 function build() {
   const list = read('js/modules.txt').split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('#'));
   const seen = new Set();
@@ -25,7 +31,7 @@ function build() {
   const all = []; (function walk(d, rel) { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const r = rel ? rel + '/' + e.name : e.name; if (e.isDirectory()) walk(path.join(d, e.name), r); else if (r.endsWith('.js') && r !== 'early-error-screen.js') all.push(r) } })(path.join(SRC, 'js'), '');
   const extra = all.filter(f => !seen.has(f));
   if (extra.length) throw new Error('not listed in src/js/modules.txt: ' + extra.join(', '));
-  const game = mods.join('\n').replace(/\{\{asset:([^}]+)\}\}/g, (_, n) => asset(n));
+  const game = mods.join('\n').replace(/\{\{asset:([^}]+)\}\}/g, (_, n) => asset(n)).replace(/\{\{json:([^}]+)\}\}/g, (_, n) => json(n));
   return read('index.html').replace('{{CSS}}', () => body(read('css/game.css')))
     .replace('{{EARLY}}', () => body(read('js/early-error-screen.js')))
     .replace('{{GAME}}', () => game);

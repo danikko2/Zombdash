@@ -1,9 +1,10 @@
 //# editor/selection.js — Map Workshop step 2: multi-select, box select, moving / turning / deleting groups, copy / paste / duplicate, draw order, layers, collision shapes
 // ---------- selection ----------
-// ED.sel is a list of {t,o}: t is 'o' (prop or vehicle), 'w' wall, 's' spawn point, 'z' spawn zone or 'p' the player start; o is the object in ED.d.
+// ED.sel is a list of {t,o}: t is 'o' (prop, vehicle, decal or effect), 'w' wall, 'a' area, 'l' path, 'f' special feature, 's' spawn point,
+// 'z' spawn zone or 'p' the player start; o is the object in ED.d.
 // Everything here changes the map through the one history (hPush / edMut), so every step can be undone.
 let EDCB=null; // the clipboard; it stays while the page is open, so things can be copied from one map into another
-function edArr(t){const d=ED.d;return t=='o'?d.obj:t=='w'?d.walls:t=='s'?d.spawns:t=='z'?d.zones:null}
+function edArr(t){const d=ED.d;return t=='o'?d.obj:t=='w'?d.walls:t=='s'?d.spawns:t=='z'?d.zones:t=='a'?d.areas:t=='l'?d.paths:t=='f'?d.feats:null}
 function edLyIt(it){return it.t=='p'?null:cmLy(ED.d,it.o.ly)}
 // shown in the editor (its layer isn't hidden, it isn't hidden itself)
 function edVisIt(it){if(it.t=='p')return true;const l=edLyIt(it);return !it.o.hd&&!(l&&l.hid)}
@@ -14,7 +15,7 @@ function edSelOf(o){return ED.sel.find(s=>s.o===o)||null}
 function edOne(){return ED.sel.length==1?ED.sel[0]:null}
 // the part of the selection that edits may change
 function edFree(){return ED.sel.filter(s=>!edLockIt(s))}
-function edItName(it){return it.t=='o'?edAsset(it.o).n:it.t=='w'?'wall':it.t=='s'?'spawn point':it.t=='z'?'spawn zone':'player start'}
+function edItName(it){const o=it.o;if(it.t=='a'){const T=cmArea(o.a);return T?T.n.toLowerCase():'area'}if(it.t=='l'){const T=cmPath(o.p);return T?T.n.toLowerCase():'path'}if(it.t=='f'){const T=cmFeat(o.f);return T?T.n.toLowerCase():'special feature'}return it.t=='o'?edAsset(o).n:it.t=='w'?'wall':it.t=='s'?'spawn point':it.t=='z'?'spawn zone':'player start'}
 function edNameOf(L,verb){return verb+' '+(L.length>1?L.length+' things':edItName(L[0]))}
 function edAlive(s){const d=ED.d;if(s.t=='p')return !!d.start&&s.o===d.start;const a=edArr(s.t);return !!a&&a.includes(s.o)}
 function edSelect(L){const E=ED,keep=E.she&&L.length==1&&E.sel.length==1&&L[0].o===E.sel[0].o;E.sel=L.filter(Boolean);if(!keep)E.she=0;E.need=1;edUI()}
@@ -32,15 +33,23 @@ function edDL(){const E=ED;if(E.dlV!==E.ver){E.dl=cmDrawList(E.d,0);E.dlV=E.ver}
 function edHit(x,y){const E=ED,d=E.d,z=E.cam.z,ok=it=>edVisIt(it)&&!edLyLocked(it);
 if(d.start&&Math.hypot(x-d.start.x,y-d.start.y)<14/z)return{t:'p',o:d.start};
 for(let i=d.spawns.length-1;i>=0;i--){const it={t:'s',o:d.spawns[i]};if(ok(it)&&Math.hypot(x-it.o.x,y-it.o.y)<12/z)return it}
-const L=edDL();for(let i=L.length-1;i>=0;i--){const q=L[i],it={t:q.w?'w':'o',o:q.o};if(!ok(it))continue;
-if(q.w){const m=4/z,w=q.o;if(x>=w.x-m&&x<=w.x+w.w+m&&y>=w.y-m&&y<=w.y+w.h+m)return it}else if(edOnObj(q.o,x,y,2/z))return it}
+// the road graph's nodes and roads come first (they sit on top), then two passes over the draw list from the top down:
+// first walls, props, vehicles, decals, effects, roofs and fences, then big ground pieces (floors, roads, ponds, zones of effect)
+for(let i=d.feats.length-1;i>=0;i--){const f=d.feats[i],it={t:'f',o:f};if(!f.pts||!ok(it))continue;const N=f.pts.map(p=>[f.x+p[0],f.y+p[1]]);if(N.some(n=>Math.hypot(n[0]-x,n[1]-y)<9/z)||(f.e||[]).some(e=>N[e[0]]&&N[e[1]]&&cmPolyDist([N[e[0]],N[e[1]]],x,y)<5/z))return it}
+const L=edDL(),bg=q=>q.t=='a'?((cmArea(q.o.a)||{}).cat!='struct'):q.t=='l'?((cmPath(q.o.p)||{}).cat!='barrier'):false;
+for(const pass of[0,1])for(let i=L.length-1;i>=0;i--){const q=L[i];if(bg(q)!=!!pass)continue;const it={t:q.t,o:q.o};if(!ok(it))continue;
+if(q.t=='w'||q.t=='a'){const m=4/z,w=q.o;if(x>=w.x-m&&x<=w.x+w.w+m&&y>=w.y-m&&y<=w.y+w.h+m)return it}else if(q.t=='l'){if(edOnPath(q.o,x,y))return it}else if(edOnObj(q.o,x,y,2/z))return it}
+for(let i=d.feats.length-1;i>=0;i--){const f=d.feats[i],it={t:'f',o:f};if(f.pts||!ok(it))continue;if(x>=f.x&&x<=f.x+f.w&&y>=f.y&&y<=f.y+f.h)return it}
 for(let i=d.zones.length-1;i>=0;i--){const it={t:'z',o:d.zones[i]},q=it.o;if(ok(it)&&x>=q.x&&x<=q.x+q.w&&y>=q.y&&y<=q.y+q.h)return it}return null}
+// is (x,y) on a path (within its width; inside it for closed shapes)?
+function edOnPath(o,x,y){const P=cmPathSm(o),T=cmPath(o.p),z=ED.cam.z;if(P.length<2)return false;if(T&&T.closed&&P.length>2&&cmPolyIn(P,x,y))return true;return cmPolyDist(T&&T.closed?P.concat([P[0]]):P,x,y)<=Math.max(5/z,(o.w||(T&&T.w)||8)/2+2/z)}
 // world box around one thing / a group
-function edBB(it){const o=it.o;if(it.t=='w'||it.t=='z')return{x0:o.x,y0:o.y,x1:o.x+o.w,y1:o.y+o.h};if(it.t!='o')return{x0:o.x,y0:o.y,x1:o.x,y1:o.y};
+function edBB(it){const o=it.o;if(it.t=='w'||it.t=='z'||it.t=='a'||it.t=='f'&&!o.pts)return{x0:o.x,y0:o.y,x1:o.x+o.w,y1:o.y+o.h};
+if(it.t=='l'||it.t=='f'){const b=cmPolyBB(o.pts.map(p=>[o.x+p[0],o.y+p[1]])),m=it.t=='l'?(o.w||(cmPath(o.p)||{w:8}).w)/2:0;return{x0:b.x0-m,y0:b.y0-m,x1:b.x1+m,y1:b.y1+m}}if(it.t!='o')return{x0:o.x,y0:o.y,x1:o.x,y1:o.y};
 const b=edBox(o),a=(o.r||0)*Math.PI/180,c=Math.cos(a),s=Math.sin(a);let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const[px,py]of[[b.x0,b.y0],[b.x1,b.y0],[b.x0,b.y1],[b.x1,b.y1]]){const X_=o.x+px*c-py*s,Y_=o.y+px*s+py*c;x0=Math.min(x0,X_);y0=Math.min(y0,Y_);x1=Math.max(x1,X_);y1=Math.max(y1,Y_)}return{x0,y0,x1,y1}}
 function edBBAll(L){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const it of L){const b=edBB(it);x0=Math.min(x0,b.x0);y0=Math.min(y0,b.y0);x1=Math.max(x1,b.x1);y1=Math.max(y1,b.y1)}return{x0,y0,x1,y1}}
 // everything that could be selected, in a fixed order
-function edAllItems(){const d=ED.d,L=[];if(d.start)L.push({t:'p',o:d.start});for(const o of d.spawns)L.push({t:'s',o});for(const o of d.obj)L.push({t:'o',o});for(const o of d.walls)L.push({t:'w',o});for(const o of d.zones)L.push({t:'z',o});return L}
+function edAllItems(){const d=ED.d,L=[];if(d.start)L.push({t:'p',o:d.start});for(const o of d.spawns)L.push({t:'s',o});for(const o of d.obj)L.push({t:'o',o});for(const o of d.walls)L.push({t:'w',o});for(const o of d.areas)L.push({t:'a',o});for(const o of d.paths)L.push({t:'l',o});for(const o of d.zones)L.push({t:'z',o});for(const o of d.feats)L.push({t:'f',o});return L}
 // select everything completely inside the box r (shown, not locked); add=1 keeps what was selected
 function edBoxSel(r,add){const inR=b=>b.x0>=r.x&&b.y0>=r.y&&b.x1<=r.x+r.w&&b.y1<=r.y+r.h,L=edAllItems().filter(it=>edVisIt(it)&&!edLockIt(it)&&inR(edBB(it)));
 if(!add)return edSelect(L);const S=ED.sel.slice();for(const it of L)if(!S.some(s=>s.o===it.o))S.push(it);edSelect(S)}
@@ -52,18 +61,19 @@ const apply=()=>{for(const r of R){const k=r.a.indexOf(r.o);if(k>=0)r.a.splice(k
 apply();E.sel=E.sel.filter(s=>edLockIt(s));E.hov=null;E.she=0;hPush({n:edNameOf(L,'Delete'),undo:back,redo:apply})}
 // R turns every selected prop and vehicle in place (15° a press); their collision shapes turn with them
 function edRotate(a){const E=ED;if(E.tool=='place'&&!E.sel.length){E.rot=((E.rot+a)%360+360)%360;E.need=1;return edLeft()}
-const L=edFree().filter(s=>s.t=='o');if(!L.length){if(E.sel.some(s=>s.t=='o'))edToast('Locked: unlock it to turn it');else if(E.sel.length)edToast('Only props and vehicles turn (the group buttons on the right turn a whole group)');return}
-edMut(edNameOf(L,'Turn'),L.map(s=>s.o),()=>{for(const s of L){const o=s.o;o.r=(((o.r||0)+a)%360+360)%360;if(o.sh)o.sh=cmTurnShape(o.sh,a)}})}
+const L=edFree().filter(s=>s.t=='o'&&!s.o.fx||s.t=='l'||s.t=='f'&&s.o.pts);if(!L.length){if(E.sel.some(s=>s.t=='o'||s.t=='l'))edToast('Locked: unlock it to turn it');else if(E.sel.length)edToast('Only props, vehicles, decals and paths turn (the group buttons on the right turn a whole group)');return}
+edMut(edNameOf(L,'Turn'),L.map(s=>s.o),()=>{for(const s of L){const o=s.o;if(s.t!='o'){edTurnPts(o,a);continue}o.r=(((o.r||0)+a)%360+360)%360;if(o.sh)o.sh=cmTurnShape(o.sh,a)}})}
 // turn the whole group a quarter turn around its middle: positions turn, walls and zones swap width and height
 function edTurnGroup(dir){const L=edFree();if(!L.length)return;const B=edBBAll(L),cx=(B.x0+B.x1)/2,cy=(B.y0+B.y1)/2,a=dir*90,rot=(x,y)=>dir>0?[cx-(y-cy),cy+(x-cx)]:[cx+(y-cy),cy-(x-cx)];
-edMut(edNameOf(L,'Turn'),L.map(s=>s.o),()=>{for(const s of L){const o=s.o;if(s.t=='w'||s.t=='z'){const[mx,my]=rot(o.x+o.w/2,o.y+o.h/2),w=o.h,h=o.w;o.x=cmR1(mx-w/2);o.y=cmR1(my-h/2);o.w=w;o.h=h}
+edMut(edNameOf(L,'Turn'),L.map(s=>s.o),()=>{for(const s of L){const o=s.o;if(s.t=='l'||s.t=='f'&&o.pts){edTurnPts(o,a,cx,cy);continue}if(s.t=='w'||s.t=='z'||s.t=='a'||s.t=='f'){const[mx,my]=rot(o.x+o.w/2,o.y+o.h/2),w=o.h,h=o.w;o.x=cmR1(mx-w/2);o.y=cmR1(my-h/2);o.w=w;o.h=h}
 else{const[nx,ny]=rot(o.x,o.y);o.x=cmR1(nx);o.y=cmR1(ny);if(s.t=='o'){o.r=(((o.r||0)+a)%360+360)%360;if(o.sh)o.sh=cmTurnShape(o.sh,a)}}}})}
 function edNudge(dx,dy){const L=edFree();if(!L.length){if(ED.sel.length)edToast('Locked: unlock it to move it');return}edMut(edNameOf(L,'Move'),L.map(s=>s.o),()=>{for(const s of L){s.o.x=cmR1(s.o.x+dx);s.o.y=cmR1(s.o.y+dy)}})}
 // draw order inside a layer: how = 'front', 'back', 1 (forward) or -1 (backward)
-function edOrder(how){const L=edFree().filter(s=>s.t=='o'||s.t=='w');if(!L.length){if(ED.sel.length)edToast('Only walls, props and vehicles have a draw order');return}
+function edOrder(how){const L=edFree().filter(s=>s.t=='o'||s.t=='w'||s.t=='a'||s.t=='l');if(!L.length){if(ED.sel.length)edToast('Only walls, props, vehicles, decals, areas and paths have a draw order');return}
 const n=how=='front'?'Bring to front':how=='back'?'Send to back':how>0?'Bring forward':'Send backward';
-edMut(n,L.map(s=>s.o),()=>{for(const s of L){const o=s.o,oth=edDL().filter(q=>q.o.ly===o.ly&&q.o!==o).map(q=>q.o.z||0);
-if(how=='front')o.z=(oth.length?Math.max(...oth):0)+1;else if(how=='back')o.z=(oth.length?Math.min(...oth):0)-1;else o.z=(o.z||0)+how;if(!o.z)delete o.z}})}
+// kit pieces keep their place in the stack (floors under rugs under decals): front / back compare the order they are drawn in
+edMut(n,L.map(s=>s.o),()=>{for(const s of L){const o=s.o,pr=cmPri(o,s.t),oth=edDL().filter(q=>q.o.ly===o.ly&&q.o!==o).map(q=>q.z);
+if(how=='front')o.z=(oth.length?Math.max(...oth):0)+1-pr;else if(how=='back')o.z=(oth.length?Math.min(...oth):0)-1-pr;else o.z=(o.z||0)+how;if(!o.z)delete o.z}})}
 // ----- copy, cut, paste, duplicate -----
 function edCopy(cut){const S=ED.sel.filter(s=>s.t!='p');if(!S.length){edToast('Select something to copy');return 0}const B=edBBAll(S);
 EDCB={cx:(B.x0+B.x1)/2,cy:(B.y0+B.y1)/2,items:S.map(s=>({t:s.t,o:edClone(s.o)}))};
@@ -98,14 +108,14 @@ edLyMut('Add layer',()=>{const i=a&&a.k=='o'?d.layers.indexOf(a)+1:d.layers.leng
 // move an object layer up (dir 1, drawn later) or down among the object layers (the tile layers stay at the bottom)
 function edLyMove(id,dir){const d=ED.d,i=d.layers.findIndex(l=>l.id===id),j=i+dir;if(i<0||d.layers[i].k!='o'||j<0||j>=d.layers.length||d.layers[j].k!='o')return;
 edLyMut(dir>0?'Move layer up':'Move layer down',()=>{const t=d.layers[i];d.layers[i]=d.layers[j];d.layers[j]=t})}
-function edLyCount(id){const d=ED.d;return d.obj.concat(d.walls,d.spawns,d.zones).filter(o=>o.ly===id).length}
+function edLyCount(id){const d=ED.d;return d.obj.concat(d.walls,d.spawns,d.zones,d.areas,d.paths,d.feats).filter(o=>o.ly===id).length}
 // delete an object layer: its things are moved to another layer or deleted with it (asks first when it has any)
 function edLyDel(id){const E=ED,d=E.d,l=cmLy(d,id);if(!l)return;if(l.k=='t')return edToast('The Terrain and Roads layers can\'t be deleted');
 const ol=d.layers.filter(q=>q.k=='o');if(ol.length<2)return edToast('A map needs at least one object layer');
 const n=edLyCount(id),i=ol.indexOf(l),to=ol[i>0?i-1:i+1];if(!n)return edLyDelNow(id,null);
 edModal('Delete the layer “'+l.n+'”?',`<p>It holds <b>${n} thing${n>1?'s':''}</b>. Move them to the layer “${edEsc(to.n)}”, or delete them with it? You can undo either.</p>`,[['Cancel','',()=>0],['Delete them too','red',()=>edLyDelNow(id,null)],['Move to “'+to.n+'”','go',()=>edLyDelNow(id,to.id)]])}
 function edLyDelNow(id,to){const E=ED,d=E.d,B=JSON.stringify(d.layers),li=d.layers.findIndex(l=>l.id===id),lyN=d.layers[li].n,R=[],M=[];
-for(const t of['o','w','s','z']){const a=edArr(t);a.forEach((o,i)=>{if(o.ly===id){if(to)M.push(o);else R.push({a,i,o})}})}
+for(const t of['o','w','s','z','a','l','f']){const a=edArr(t);a.forEach((o,i)=>{if(o.ly===id){if(to)M.push(o);else R.push({a,i,o})}})}
 const apply=()=>{d.layers.splice(d.layers.findIndex(l=>l.id===id),1);for(const o of M)o.ly=to;for(let k=R.length-1;k>=0;k--){const r=R[k],x=r.a.indexOf(r.o);if(x>=0)r.a.splice(x,1)}if(E.al===id)E.al=''},
 back=()=>{d.layers.splice(0,d.layers.length,...JSON.parse(B));for(const o of M)o.ly=id;for(const r of R)r.a.splice(Math.min(r.i,r.a.length),0,r.o)};
 apply();hPush({n:'Delete layer “'+lyN+'”',undo:back,redo:apply})}
@@ -113,8 +123,8 @@ apply();hPush({n:'Delete layer “'+lyN+'”',undo:back,redo:apply})}
 function edLyMoveSel(id){const E=ED,l=cmLy(E.d,id),L=edFree().filter(s=>s.t!='p');if(!l||l.k!='o')return;if(!L.length)return edToast(E.sel.length?'Locked: unlock it first':'Select something first');
 if(l.lock)return edToast('The “'+l.n+'” layer is locked');edMut(edNameOf(L,'Move')+' to “'+l.n+'”',L.map(s=>s.o),()=>{for(const s of L)s.o.ly=id});if(l.hid)edToast('Moved to “'+l.n+'”, which is hidden')}
 // ----- per-object settings: solid, lock, hide (hide is for the editor only: the game still has it) -----
-function edSolidDef(it){const o=it.o;return it.t=='w'?true:o.veh?!!cmHW(o.veh):!!(cmOB(o.k)&&cmOB(o.k).c)}
-function edSetSolid(L,on){L=L.filter(s=>(s.t=='o'||s.t=='w')&&!edLockIt(s));if(!L.length)return;edMut(on?'Make solid':'Make not solid',L.map(s=>s.o),()=>{for(const s of L){const o=s.o;if(on===edSolidDef(s))delete o.sol;else o.sol=on;
+function edSolidDef(it){const o=it.o;if(it.t=='w'||it.t=='a'||it.t=='l'){const q=Object.assign({},o);delete q.sol;return cmSolid(q,it.t)}return o.veh?!!cmHW(o.veh):!!(cmOB(o.k)&&cmOB(o.k).c)}
+function edSetSolid(L,on){L=L.filter(s=>(s.t=='o'&&!s.o.dc&&!s.o.fx||s.t=='w'||s.t=='a'||s.t=='l')&&!edLockIt(s));if(!L.length)return;edMut(on?'Make solid':'Make not solid',L.map(s=>s.o),()=>{for(const s of L){const o=s.o;if(on===edSolidDef(s))delete o.sol;else o.sol=on;
 if(on&&s.t=='o'&&!o.sh&&!cmObjBoxes(o).length)o.sh=edShapeInit(o,'r')}})}
 function edSetFlag(L,k,on,n){L=L.filter(s=>s.t!='p'&&(k=='lk'||!edLockIt(s)));if(!L.length)return;edMut(n,L.map(s=>s.o),()=>{for(const s of L){if(on)s.o[k]=true;else delete s.o[k]}})}
 // ----- collision shapes -----

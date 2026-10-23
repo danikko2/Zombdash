@@ -1,4 +1,4 @@
-//# editor/editor.js — The Map Workshop editor: layout, left panel, tools (terrain, roads, props, walls, spawns), mouse and keys, save, resize
+//# editor/editor.js — The Map Workshop editor: layout, left panel, tools (terrain, roads, props, walls, spawns; the building kit's tools are in editor/kit-tools.js), mouse and keys, save, resize
 // ---------- the map editor ----------
 // Desktop mouse and keyboard. While it is open mode=='edit': the game's loop calls edFrame() instead of drawing the world,
 // and key presses come to edKey(). The map being edited is ED.d (a doc, see world/map-schema.js); every change goes through
@@ -12,10 +12,16 @@ const EDT=[ // tools: id, name, key, left panel tab, hint
 ['rect','Rectangle','U','terrain','Drag a rectangle to fill it. Right-drag erases a rectangle.'],
 ['pick','Eyedropper','I','terrain','Click a tile to pick its road or ground. Shift+click picks its overlay.'],
 ['place','Place prop','P','assets','Click to place the picked prop or vehicle. R turns it first. Right-click or Esc stops placing.'],
-['wall','Walls','W','walls','Drag to draw a wall. Right-drag (or Alt+drag) cuts a gap in walls.'],
-['start','Player start','S','spawns','Click where the player starts.'],
-['spawn','Spawn point','Z','spawns','Click to add a zombie spawn point.'],
-['zone','Spawn zone','X','spawns','Drag to add a zone: zombies appear anywhere inside it.']];
+['wall','Walls','W','build','Drag to draw a wall. Right-drag (or Alt+drag) cuts a gap in walls.'],
+['room','Room','O','build','Drag a rectangle: walls all round with a floor (and a doorway on the side you picked). Interior wall mode: drag a line inside a room.'],
+['door','Openings','D','build','Click a wall to put a doorway, window, garage door or gap of the chosen width into it.'],
+['area','Area piece','A','','Drag a box to place the picked floor, roof, marking or effect zone.'],
+['path','Path','T','paths','Click to add points, double-click or Enter to finish. Backspace takes the last point back, Esc cancels. Closed shapes join back to the start.'],
+['prefab','Place prefab','G','prefabs','Click to place the picked prefab: everything in it becomes separate things you can edit.'],
+['start','Player start','S','markers','Click where the player starts.'],
+['spawn','Spawn point','Z','markers','Click to add a zombie spawn point.'],
+['zone','Spawn zone','X','markers','Drag to add a zone: zombies appear anywhere inside it.'],
+['feat','Special feature','K','markers','Drag a box for the picked special feature.']];
 const EDI={ // 16px icons
 select:'<path d="M3 1v13l3-3 2.5 4.5 2-1L8 10h4.5z"/>',brush:'<path d="M13.5 1L15 2.5 9 8.5 7.5 7zM6.5 8L8 9.5C8 12.5 5 15 1.5 15c1-1 1-2 1-3 0-2.2 1.6-4 4-4z"/>',
 erase:'<path d="M9.5 1.5l5 5L8 13H4.5L1.5 10zM3 10.5L5 12.5h2l1.3-1.3-3.5-3.5z"/>',fill:'<path d="M7 1L1 7l6 6 6-6zM7 3.6L3.6 7h6.8z M14 9.5s-2 2.6-2 3.7a2 2 0 004 0c0-1.1-2-3.7-2-3.7z" fill-rule="evenodd"/>',
@@ -27,7 +33,9 @@ undo:'<path d="M6 2L1 6.5 6 11V8h4a2.5 2.5 0 010 5H7v2h3a4.5 4.5 0 000-9H6z"/>',
 grid:'<path d="M1 1h14v14H1zm2 2v3h3V3zm5 0v3h5V3zM3 8v5h3V8zm5 0v5h5V8z" fill-rule="evenodd"/>',coll:'<path d="M1 1h14v14H1zm2 2v1.6L4.6 3zm4.4 0L3 7.4v2.8L10.2 3zm5.6 1.6L4.6 13h2.8L13 7.4zm0 5.6L10.2 13H13z" fill-rule="evenodd"/>',
 snap:'<path d="M2 2h4v7a2 2 0 004 0V2h4v7A6 6 0 012 9zm1 1v2h2V3zm8 0v2h2V3z" fill-rule="evenodd"/>',check:'<path d="M8 1l7.5 14H.5zM7 6v4.5h2V6zm0 6v2h2v-2z" fill-rule="evenodd"/>',
 save:'<path d="M1 1h11l3 3v11H1zm3 0v4h7V1zm0 8v5h8V9z" fill-rule="evenodd"/>',play:'<path d="M3 1l12 7-12 7z"/>',back:'<path d="M10 1L3 8l7 7 1.5-1.5L6 8l5.5-5.5z"/>',
-left:'<path d="M10 1L3 8l7 7V1z"/>',right:'<path d="M6 1l7 7-7 7V1z"/>'};
+left:'<path d="M10 1L3 8l7 7V1z"/>',right:'<path d="M6 1l7 7-7 7V1z"/>',
+room:'<path d="M1 1h14v14H1zm2 2v10h10V3zm2 2h6v6H5z" fill-rule="evenodd"/>',door:'<path d="M1 1h14v14h-5V9H6v6H1zm2 2v10h1V7h8v6h1V3z" fill-rule="evenodd"/>',area:'<path d="M1 3h14v10H1zm2 2v6h10V5zm2 1h6v4H5z" fill-rule="evenodd"/>',
+path:'<path d="M2 14C2 9 5 9 8 8s5-2 6-7l1.5.5C14.5 7 11 9 8.5 9.8S4 11 4 14z"/>',prefab:'<path d="M1 1h6v6H1zm8 0h6v6H9zM1 9h6v6H1zm8 0h6v6H9z" fill-rule="evenodd" opacity=".9"/>',feat:'<path d="M8 1l2 5h5l-4 3 1.5 5L8 11l-4.5 3L5 9 1 6h5z"/>'};
 function edIco(k){return `<svg class=edi viewBox="0 0 16 16" aria-hidden="true">${EDI[k]||''}</svg>`}
 function edEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c])}
 // ----- opening and closing -----
@@ -35,7 +43,7 @@ function edEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;
 function edOpen(d,src,dirty){if(ED)edTeardown();hReset();
 ED={d,src:src||'saved',cam:{x:0,y:0,z:1},tool:'select',tab:'terrain',ter:'grass',terK:'t',brush:1,asset:null,rot:0,pvr:Math.random(),vcol:EDVC[0],pcol:{},wall:'wall',wth:8,
 sel:[],she:0,al:'',pt:'t',rt:'props',dlV:-1,dl:null,hov:null,snap:1,step:16,grid:1,coll:0,pl:1,pr:1,drag:null,mouse:{x:0,y:0,wx:0,wy:0,in:0},ch:new Map(),ver:0,collV:-1,collC:null,mark:0,probs:cmLint(d),q:'',cat:'all',
-need:1,mmDirty:1,mmNeed:1,vis:1,space:0,cvx:0,cvy:0,mmw:200,mmh:150,dt:0,tip:''};
+need:1,mmDirty:1,mmNeed:1,vis:1,space:0,cvx:0,cvy:0,mmw:200,mmh:150,dt:0,tip:''};edKitInit(ED);edPfLoad().then(()=>{if(ED&&ED.root&&ED.tab=='prefabs')edLeft()});
 if(dirty)ED.mark=-1;mode='edit';UIS='';ui.innerHTML='';L=R=null;mouse.d=0;keys={};
 try{edDom()}catch(e){ED.cv=null;ED.root=null}edFit();edUI()}
 // headless (tests) or real: remove the editor's page parts
@@ -73,12 +81,12 @@ EDT.map(t=>edTB('tool:'+t[0],t[0],t[1]+' ('+t[2]+')',E.tool==t[0])).join('')+`<s
 `${edTB('grid','grid','Grid (Shift+G)',E.grid)}${edTB('coll','coll','Show collision: red stops bullets, orange is solid props, blue is see-through like fences and water (Shift+C)',E.coll)}${edTB('snap','snap','Snap to a '+E.step+'px grid (Shift+S)',E.snap)}<span class=edsep></span>`+
 `${edTB('probs','check','Problems with the map: click one to go to it',0,0,pc?String(pc):'✓')}<span class=edgrow></span><button data-a=save class="${dirty?'edsave':'edsaved'}" title="${dirty?'Unsaved changes: save them (Ctrl+S)':'Everything is saved (Ctrl+S saves)'}">${edIco('save')}<span>${dirty?'Save ●':'Saved ✓'}</span></button><button data-a=playtest class=edgo title="Play this map with the real game, then come back here">${edIco('play')}<span>Playtest</span></button>`}
 function edTerSw(t,ov){const k=(ov?'o:':'t:')+t.id;if(EDTH[k])return EDTH[k];const c=document.createElement('canvas');c.width=c.height=32;const g=c.getContext('2d');if(ov){(t.mk?CMTI.asphalt:CMTI.concrete).f(g,0,0,3,5);t.f(g,0,0,3,5)}else t.f(g,0,0,3,5);let u='';try{u=c.toDataURL()}catch(e){}return EDTH[k]=u}
-function edLeft(){const E=ED,el=E.root.querySelector('#edl');const tabs=[['terrain','Terrain'],['assets','Props'],['walls','Walls'],['spawns','Spawns']];
-let h=`<div class=edtabs>${tabs.map(t=>`<button data-a="tab:${t[0]}" class="${E.tab==t[0]?'on':''}">${t[1]}</button>`).join('')}</div><div class=edpane>`;
+function edLeft(){const E=ED,el=E.root.querySelector('#edl');const tabs=[['terrain','Terrain'],['build','Build'],['paths','Paths'],['assets','Props'],['decals','Decals'],['prefabs','Prefabs'],['markers','Markers']];
+let h=`<div class="edtabs edtabs7">${tabs.map(t=>`<button data-a="tab:${t[0]}" class="${E.tab==t[0]?'on':''}">${t[1]}</button>`).join('')}</div><div class=edpane>`;
 if(E.tab=='terrain'){const tool=['brush','erase','fill','rect','pick'].includes(E.tool)?E.tool:'brush';
 h+=`<div class=edtools>${['brush','erase','fill','rect','pick'].map(id=>{const t=EDT.find(x=>x[0]==id);return edTB('tool:'+id,id,t[1]+' ('+t[2]+')',E.tool==id,0,t[1])}).join('')}</div>`;
 {const tl=cmLy(E.d,E.pt=='r'?'roads':'terrain');h+=`<h4>Paint on</h4><div class="edrow edseg"><button data-a="pt:t" class="${E.pt=='t'?'on':''}" title="The ground under everything">${edEsc(cmLy(E.d,'terrain').n)}</button><button data-a="pt:r" class="${E.pt=='r'?'on':''}" title="Tiles painted over the ground: erasing shows the ground again">${edEsc(cmLy(E.d,'roads').n)}</button></div>${tl.lock||tl.hid?`<p class=edhint>⚠ This layer is ${tl.lock?'locked':'hidden'}: ${tl.lock?'unlock':'show'} it in the Layers panel to paint.</p>`:''}`}
-h+=`<h4>Ground</h4><div class=edsw>${CMTER.map(t=>`<button data-a="ter:${t.id}" class="${E.terK=='t'&&E.ter==t.id?'on':''}" title="${edEsc(t.n)}${t.walk===0?' (blocks walking)':''}"><img alt="" src="${edTerSw(t)}"><span>${edEsc(t.n)}</span></button>`).join('')}</div>`;
+for(const[c,cn]of CMTCAT){const L=CMTER.filter(t=>t.cat==c);if(L.length)h+=`<h4>${cn}</h4><div class=edsw>${L.map(t=>`<button data-a="ter:${t.id}" class="${E.terK=='t'&&E.ter==t.id?'on':''}" title="${edEsc(t.n)}${t.walk===0?' (blocks walking)':''}${t.curb?' (curbs where it meets a road)':''}"><img alt="" src="${edTerSw(t)}"><span>${edEsc(t.n)}</span></button>`).join('')}</div>`}
 const ovb=t=>`<button data-a="ovl:${t.id}" class="${E.terK=='o'&&E.ter==t.id?'on':''}" title="${edEsc(t.n)}${t.mk?': joins up with the same marking next to it':''}"><img alt="" src="${edTerSw(t,1)}"><span>${edEsc(t.n)}</span></button>`;
 h+=`<h4>Road markings</h4><div class=edsw>${CMOVL.filter(t=>t.mk).map(ovb).join('')}</div>`;
 h+=`<h4>Overlays</h4><div class=edsw>${CMOVL.filter(t=>!t.mk).map(t=>`<button data-a="ovl:${t.id}" class="${E.terK=='o'&&E.ter==t.id?'on':''}" title="${edEsc(t.n)}"><img alt="" src="${edTerSw(t,1)}"><span>${edEsc(t.n)}</span></button>`).join('')}</div>`;
@@ -89,12 +97,10 @@ h+=`<input type=search data-f=q placeholder="Search props and vehicles" value="$
 const a=E.asset;if(a){h+=`<div class=edcur><img alt="" src="${edThumb(a)}"><div><b>${edEsc(a.n)}</b><small>Rotation ${Math.round(E.rot)}° · R / Shift+R turns</small></div></div>`;if(a.t=='v')h+=`<div class=edcols>${EDVC.map(c=>`<button data-a="vcol:${c}" class="${E.vcol==c?'on':''}" style="--c:${c}" title="${c}"></button>`).join('')}</div><label class=edf title="Any colour"><span>Custom</span><input type=color data-f=vcolnew value="${/^#[0-9a-f]{6}$/i.test(E.vcol)?E.vcol:EDVC[0]}"></label>`;
 else{const P=edPalOf({k:a.k});if(P){const cur=E.pcol[a.k]||P[0][0];h+=`<h4>Colour</h4><div class=edcols>${P.map(([c,n])=>`<button data-a="pcol:${c}" class="${cur==c?'on':''}" style="--c:${c}" title="${edEsc(n)}"></button>`).join('')}</div><label class=edf title="Any colour"><span>Custom</span><input type=color data-f=pcolnew value="${cur}"></label><p class=edhint>New ones get this colour. Change a placed one in its properties.</p>`}}}
 h+=`<div class=edag id=edag>${edGrid()}</div>`}
-else if(E.tab=='walls'){h+=`<div class=edtools>${edTB('tool:wall','wall','Draw walls (W)',E.tool=='wall',0,'Draw walls')}</div><h4>Style</h4><div class=edlist>${CMWALL.map(s=>`<button data-a="wst:${s.id}" class="${E.wall==s.id?'on':''}"><i class=edws style="${edWallSw(s)}"></i><span>${edEsc(s.n)}<small>${s.fl==2?'blocks walking, bullets fly through':s.hid?'blocks walking and bullets, not drawn in the game':'blocks walking and bullets'}</small></span></button>`).join('')}</div>
-<h4>Thickness</h4><div class=edrow><input type=number min=4 max=64 step=2 value="${E.wth}" data-f=wth aria-label="Wall thickness"><span class=edval>px</span></div><p class=edhint>Drag along a line for a wall of this thickness, or drag a box for a block. Right-drag (or Alt+drag) cuts a gap, for doors. Props with a solid base get their own collision automatically.</p>`}
-else{h+=`<div class=edlist>${[['start','Player start','Where the run begins.'],['spawn','Spawn point','Zombies come out here.'],['zone','Spawn zone','Zombies appear anywhere inside.']].map(t=>`<button data-a="tool:${t[0]}" class="${E.tool==t[0]?'on':''}">${edIco(t[0])}<span>${t[1]} (${EDT.find(x=>x[0]==t[0])[2]})<small>${t[2]}</small></span></button>`).join('')}</div>
-<p class=edhint>Zombies come from the spawn points and zones that are on, choosing ones out of the player's sight. With none, they come from off-screen around the player, like on the built-in maps.</p><p class=edhint>${E.d.spawns.length} spawn point${E.d.spawns.length==1?'':'s'} · ${E.d.zones.length} zone${E.d.zones.length==1?'':'s'}</p>`}
+else if(E.tab=='prefabs')h+=edPfLeft();
+else h+=edKitLeft(E.tab);
 el.innerHTML=h+'</div>'}
-function edWallSw(s){const c={wall:'#7a695c',brick:'#9a4632',concrete:'#8c9099',wood:'#8a5a2c',fence:'repeating-linear-gradient(45deg,#aab1bd 0 2px,transparent 2px 6px)',hidden:'rgba(170,110,255,.5)'}[s.id]||'#7a695c';return 'background:'+c}
+function edWallSw(s){if(!s)return 'background:#7a695c';const c={wall:'#7a695c',brick:'#9a4632',concrete:'#8c9099',wood:'#8a5a2c',fence:'repeating-linear-gradient(45deg,#aab1bd 0 2px,transparent 2px 6px)',hidden:'rgba(170,110,255,.5)'}[s.id];if(c)return 'background:'+c;const u=edKitThumb('w:'+s.id,g=>{g.fillStyle='#3a4a3a';g.fillRect(0,0,48,48);s.f(g,2,20,44,9,s.pal?s.pal[0][0]:undefined)});return `background:url(${u}) center/cover`}
 function edGrid(){const E=ED,q=E.q.trim().toLowerCase(),L=edAssets().filter(a=>(E.cat=='all'||a.cat==E.cat)&&(!q||a.n.toLowerCase().includes(q)||a.k.toLowerCase().includes(q)));
 if(!L.length)return `<p class=edhint>Nothing matches “${edEsc(E.q)}”.</p>`;return L.map(a=>`<button data-a="asset:${a.id}" class="${E.asset&&E.asset.id==a.id?'on':''}" title="${edEsc(a.n)}${a.t=='v'||edPalOf({k:a.k})?' (comes in colours)':''}"><img alt="" loading=lazy src="${edThumb(a)}"><span>${edEsc(a.n)}</span></button>`).join('')}
 function edStatus(){const E=ED;if(!E||!E.root)return;const el=E.root.querySelector('#edst'),m=E.mouse,d=E.d,T=d.tile,t=EDT.find(x=>x[0]==E.tool),dirty=edIsDirty();
@@ -112,12 +118,13 @@ function edClick(e){const b=e.target.closest&&e.target.closest('[data-a]');if(!b
 if(a.startsWith('mb:')){const fn=E.mb&&E.mb[+a.slice(3)];edModalOff();if(fn)fn[2]();return}
 if(a.startsWith('tool:'))return edTool(a.slice(5));
 if(a.startsWith('pt:')){E.pt=a[3]=='r'?'r':'t';if(E.pt=='r'&&E.terK=='o')E.terK='t';E.al=E.pt=='r'?'roads':'terrain';if(!['brush','erase','fill','rect','pick'].includes(E.tool))return edTool('brush');return edUI()}
-if(a.startsWith('tab:')){E.tab=a.slice(4);const def={terrain:'brush',assets:E.asset?'place':'select',walls:'wall',spawns:E.tool=='start'||E.tool=='spawn'||E.tool=='zone'?E.tool:'zone'}[E.tab];return edTool(def,1)}
+if(a.startsWith('tab:')){if(E.pd)edPathFinish();E.tab=a.slice(4);const at=E.asset&&E.asset.t,def={terrain:'brush',assets:at=='p'||at=='v'?'place':'select',build:['room','door','wall'].includes(E.tool)||E.tool=='area'&&['floor','build','struct'].includes((cmArea(E.ak)||{}).cat)?E.tool:'room',paths:E.pk&&E.pk!='@graph'?'path':'select',decals:at=='d'||at=='x'?'place':'select',prefabs:E.pf?'prefab':'select',markers:['start','spawn','zone','feat'].includes(E.tool)?E.tool:'zone'}[E.tab];return edTool(def,1)}
+if(edKitClick(a)||edPfClick(a))return;
 if(a.startsWith('ter:')||a.startsWith('ovl:')){E.terK=a[0]=='t'?'t':'o';E.ter=a.slice(4);if(E.terK=='o')E.pt='t';if(!['brush','erase','fill','rect'].includes(E.tool))E.tool='brush';return edUI()}
-if(a.startsWith('asset:')){E.asset=edAssets().find(x=>x.id==a.slice(6))||null;E.pvr=Math.random();if(E.asset&&E.asset.t=='v'&&!E.vcol)E.vcol=EDVC[0];E.sel=[];return edTool('place',1)}
+if(a.startsWith('asset:')){if(E.pd)edPathFinish();E.asset=edAssets().find(x=>x.id==a.slice(6))||null;E.pvr=Math.random();if(E.asset&&E.asset.t=='v'&&!E.vcol)E.vcol=EDVC[0];E.sel=[];return edTool('place',1)}
 if(a.startsWith('vcol:')){E.vcol=a.slice(5);E.need=1;return edLeft()}
 if(a.startsWith('pcol:')){if(E.asset)E.pcol[E.asset.k]=a.slice(5);E.need=1;return edLeft()}
-if(a.startsWith('wst:')){E.wall=a.slice(4);if(E.tool!='wall')return edTool('wall');return edLeft()}
+if(a.startsWith('wst:')){E.wall=a.slice(4);E.tab='build';if(E.tool!='wall')return edTool('wall');return edLeft()}
 if(edPanelClick(a))return;
 switch(a){case 'back':return edBack();case 'undo':return edUndo();case 'redo':return edRedo();case 'grid':E.grid^=1;E.need=1;return edTop();case 'coll':E.coll^=1;E.need=1;return edTop();case 'snap':E.snap^=1;return edTop();
 case 'probs':case 'check':E.probs=cmLint(E.d);E.rt='probs';E.pr=1;edUI();return edToast(E.probs.filter(p=>p.lv!='info').length?'Click a problem to go to it':'No problems found');
@@ -125,9 +132,9 @@ case 'mapset':E.sel=[];E.rt='props';E.pr=1;return edUI();case 'save':return edSa
 case 'pl':E.pl^=1;return edUI();case 'pr':E.pr^=1;return edUI();case 'bs-':E.brush=cl(E.brush-1,1,9);return edLeft();case 'bs+':E.brush=cl(E.brush+1,1,9);return edLeft();
 case 'del':return edDelete();case 'rot-':return edRotate(-15);case 'rot+':return edRotate(15);
 case 'resize':{const f=E.root.querySelector('[data-f=nw]'),g=E.root.querySelector('[data-f=nh]');return edResize(+f.value,+g.value)}}}
-function edInput(e){const f=e.target.dataset&&e.target.dataset.f,E=ED;if(!f||!E)return;if(f=='q'){E.q=e.target.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid()}else if(f=='brush'){E.brush=cl(+e.target.value,1,9);const v=E.root.querySelector('.edval');if(v)v.textContent=E.brush+'×'+E.brush;E.need=1}}
+function edInput(e){const f=e.target.dataset&&e.target.dataset.f,E=ED;if(!f||!E)return;if(f=='q2'){E.q2=e.target.value;const pos=e.target.selectionStart;edLeft();const el=E.root.querySelector('[data-f=q2]');if(el&&el.focus){el.focus();try{el.setSelectionRange(pos,pos)}catch(_){}}return}if(f=='dsc'){edKitField(f,e.target);return}if(f=='q'){E.q=e.target.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid()}else if(f=='brush'){E.brush=cl(+e.target.value,1,9);const v=E.root.querySelector('.edval');if(v)v.textContent=E.brush+'×'+E.brush;E.need=1}}
 function edChange(e){const t=e.target,f=t.dataset&&t.dataset.f,E=ED;if(!f||!E)return;const num=+t.value,ok=isFinite(num)&&t.value!=='';
-if(f=='cat'){E.cat=t.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid();return}if(f=='q'||f=='brush'||f=='nw'||f=='nh')return;
+if(f=='cat'){E.cat=t.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid();return}if(f=='q'||f=='q2'||f=='brush'||f=='nw'||f=='nh')return;if(edKitField(f,t))return;
 if(f=='vcolnew'||f=='pcolnew'){const v=String(t.value).toLowerCase();if(/^#[0-9a-f]{6}$/.test(v)){if(f=='vcolnew')E.vcol=v;else if(E.asset)E.pcol[E.asset.k]=v;E.need=1;edLeft()}return}
 if(f=='wth'){E.wth=cl(ok?Math.round(num):8,4,64);t.value=E.wth;return}
 if(f=='name'){const v=String(t.value).replace(/[<>]/g,'').trim().slice(0,40)||'Untitled map';if(v!==E.d.name)edSet(E.d,{name:v},'Rename map');return}
@@ -135,7 +142,7 @@ if(f=='desc'){const v=String(t.value).replace(/[<>]/g,'').slice(0,240);if(v!==E.
 if(f=='ground'){if(CMTI[t.value]&&t.value!==E.d.ground)edSet(E.d,{ground:t.value},'Change default ground');return}
 return edPropChange(f,t)}
 // ----- tools -----
-function edTool(id,keepTab){const E=ED,t=EDT.find(x=>x[0]==id);if(!t)return;E.tool=id;E.tip='';if(id!='select')E.she=0;if(t[3])E.tab=t[3];if(id!='select'&&id!='place')E.hov=null;if(id=='place'&&!E.asset)E.tab='assets';E.drag=null;E.need=1;if(E.cv)E.cv.style.cursor=id=='select'?'default':id=='place'?'copy':'crosshair';edUI()}
+function edTool(id,keepTab){const E=ED,t=EDT.find(x=>x[0]==id);if(!t)return;if(E.pd&&id!='path')edPathFinish();E.tool=id;E.tip='';if(id!='select')E.she=0;if(t[3]&&!keepTab)E.tab=t[3];if(id=='area'&&!keepTab){const T=cmArea(E.ak);E.tab=T&&T.cat=='ground'?'paths':T&&T.cat=='effect'?'decals':'build'}if(id!='select'&&id!='place')E.hov=null;if(id=='place'&&!E.asset)E.tab='assets';if(id=='place'&&!keepTab&&E.asset)E.tab=E.asset.t=='d'||E.asset.t=='x'?'decals':'assets';E.drag=null;E.need=1;if(E.cv)E.cv.style.cursor=id=='select'?'default':id=='place'?'copy':'crosshair';edUI()}
 function edSnap(v){const E=ED;return E.snap?Math.round(v/E.step)*E.step:Math.round(v)}
 function edSnapPt(x,y){return{x:edSnap(x),y:edSnap(y)}}
 // any change: redraw, refresh panels, keep a crash-safe draft
@@ -179,19 +186,23 @@ function edBoxOf(x0,y0,x1,y1){return{x:Math.min(x0,x1),y:Math.min(y0,y1),w:Math.
 function edHandleAt(sx,sy){const E=ED,so=edShapeObj();if(so){for(const[k,x,y]of edShapeHandles(so))if(Math.abs(edSX(x)-sx)<=7&&Math.abs(edSY(y)-sy)<=7)return{k,m:'sh'}}
 const one=edOne();if(one&&!edLockIt(one))for(const[k,x,y]of edHandleList(one))if(Math.abs(edSX(x)-sx)<=7&&Math.abs(edSY(y)-sy)<=7)return{k,m:'size'};return null}
 // ----- mouse -----
-function edCursor(){const E=ED;if(E.cv)E.cv.style.cursor=E.tool=='select'?'default':E.tool=='place'?'copy':'crosshair'}
+function edCursor(){const E=ED;if(E.cv)E.cv.style.cursor=E.tool=='select'?'default':E.tool=='place'||E.tool=='prefab'?'copy':E.tool=='door'?'cell':'crosshair'}
 function edDown(e){const E=ED;if(!E||edModalOn())return;try{if(document.activeElement&&document.activeElement.blur&&document.activeElement!==document.body)document.activeElement.blur()}catch(_){}
 try{E.cv.setPointerCapture(e.pointerId)}catch(_){}const p=edLocal(e),wx=E.cam.x+p.x/E.cam.z,wy=E.cam.y+p.y/E.cam.z,d=E.d,T=d.tile,tx=Math.floor(wx/T),ty=Math.floor(wy/T),b=e.button,t=E.tool;E.mouse={x:p.x,y:p.y,wx,wy,in:1};
 const pan=()=>{E.drag={t:'pan',sx:p.x,sy:p.y,cx:E.cam.x,cy:E.cam.y};E.cv.style.cursor='grabbing'};
 if(b==1||(b==0&&E.space))return pan();
 if(b==2){if(t=='brush'||t=='erase'){if(!edPaintOK())return;const S_=edStroke('Erase');edBrushAt(S_,tx,ty,E.brush,1);E.drag={t:'paint',S:S_,er:1,lx:tx,ly:ty};return}
 if(t=='rect'){if(!edPaintOK())return;E.drag={t:'rect',x0:tx,y0:ty,er:1,r:null};return}if(t=='wall'){const q=edSnapPt(wx,wy);E.drag={t:'cut',x0:q.x,y0:q.y,r:null};return}
-if(t=='place'||t=='start'||t=='spawn'||t=='zone')return edTool('select');return pan()}
+if(t=='path'&&E.pd){edPathFinish();return}if(['place','start','spawn','zone','room','door','area','feat','path','prefab'].includes(t))return edTool('select');return pan()}
 if(b!=0)return;
+if(['room','door','area','feat','path','prefab'].includes(t)){edKitDown(e,wx,wy);return}
 if(t=='select'){
+// a selected path's or road graph's points: drag one, Alt+click removes it; double-click on its line adds a point
+{const ph=edPtHandleAt(p.x,p.y);if(ph){if(e.altKey){edPtDel(ph.o,ph.i);return}E.drag={t:'pt',o:ph.o,i:ph.i,B:{x:ph.o.x,y:ph.o.y,pts:edClone(ph.o.pts)},m:0};return}
+const po=edPtObj(),now=performance.now(),dbl=E.lsel&&now-E.lsel.t<400&&Math.hypot(E.lsel.x-p.x,E.lsel.y-p.y)<6;E.lsel={t:now,x:p.x,y:p.y};if(po&&dbl&&edPtInsert(po,wx,wy)){E.lsel=null;return}}
 // resize handles (the selected wall or zone, or the shape being edited) come first, then dragging the shape itself
 const hk=edHandleAt(p.x,p.y);if(hk&&hk.m=='sh'){const o=edShapeObj();E.drag={t:'shsize',o,k:hk.k,B:edClone(o.sh),b0:edShapeRect(o),m:0};return}
-if(hk){const it=edOne(),o=it.o;E.drag={t:'size',o,k:hk.k,b:{x:o.x,y:o.y,w:o.w,h:o.h},z:it.t=='z',m:0};return}
+if(hk){const it=edOne(),o=it.o,mn=it.t=='a'?Math.min(...((cmArea(o.a)||{min:[8,8]}).min||[8,8])):it.t=='f'?16:0;E.drag={t:'size',o,k:hk.k,b:{x:o.x,y:o.y,w:o.w,h:o.h},z:it.t=='z',mn,m:0};return}
 const so=edShapeObj();if(so&&edInShape(so,wx,wy)){E.drag={t:'shmove',o:so,B:edClone(so.sh),dx:wx,dy:wy,m:0};return}
 const h=edHit(wx,wy);
 // Shift: add to or take from the selection; Shift-drag on empty ground adds a box of things
@@ -203,7 +214,10 @@ E.drag={t:'move',h,L:L.map(s=>({o:s.o,b:{x:s.o.x,y:s.o.y}})),ax:h.o.x,ay:h.o.y,d
 if(E.sel.length)edSelect([]);E.drag={t:'box',x0:wx,y0:wy,r:null,add:0};return}
 if(t=='brush'||t=='erase'){if(!edPaintOK())return;const S_=edStroke(t=='erase'?'Erase':'Paint '+(((E.terK=='o'?CMOI:CMTI)[E.ter]||{n:E.ter}).n).toLowerCase()+(E.pt=='r'&&E.terK!='o'?' road':''));edBrushAt(S_,tx,ty,E.brush,t=='erase');E.drag={t:'paint',S:S_,er:t=='erase',lx:tx,ly:ty};return}
 if(t=='fill'){if(!edPaintOK())return;return edFill(tx,ty,0)}if(t=='rect'){if(!edPaintOK())return;E.drag={t:'rect',x0:tx,y0:ty,er:0,r:null};return}if(t=='pick')return edPick(tx,ty,e.shiftKey);
-if(t=='place'){const a=E.asset;if(!a)return edToast('Pick a prop or vehicle on the left first');const q=edSnapPt(wx,wy);const o=a.t=='v'?{id:cmUid('v'),veh:a.k,x:q.x,y:q.y,r:E.rot,c:E.vcol}:{id:cmUid('p'),k:a.k,x:q.x,y:q.y,r:E.rot,vr:Math.round(E.pvr*100)/100};if(a.t=='p'&&E.pcol[a.k]&&edPalOf(o))o.c=E.pcol[a.k];
+if(t=='place'){const a=E.asset;if(!a)return edToast('Pick a prop or vehicle on the left first');const q=edSnapPt(wx,wy);let o;
+if(a.t=='d'){const T=cmDec(a.k);o={id:cmUid('d'),dc:a.k,x:q.x,y:q.y,r:E.rot,vr:Math.round(E.pvr*100)/100};if(E.dsc!==1)o.sc=E.dsc;if(T&&T.pal&&E.pcol['d:'+a.k])o.c=E.pcol['d:'+a.k]}
+else if(a.t=='x'){const T=cmFx(a.k);o={id:cmUid('x'),fx:a.k,x:q.x,y:q.y};if(E.dsc!==1)o.sc=E.dsc;if(T&&T.pal)o.c=E.pcol['x:'+a.k]||(T.def&&T.def.c)||T.pal[0][0];if(T&&T.def&&T.def.o)o.o=edClone(T.def.o)}
+else{o=a.t=='v'?{id:cmUid('v'),veh:a.k,x:q.x,y:q.y,r:E.rot,c:E.vcol}:{id:cmUid('p'),k:a.k,x:q.x,y:q.y,r:E.rot,vr:Math.round(E.pvr*100)/100};if(a.t=='p'&&E.pcol[a.k]&&edPalOf(o))o.c=E.pcol[a.k]}
 const ly=edTargetLy('o',o);if(!ly)return;o.ly=ly;E.pvr=Math.random();edAdd(d.obj,o,'Place '+a.n);return}
 if(t=='wall'){const q=edSnapPt(wx,wy);if(!e.altKey&&!edTargetLy('w'))return;E.drag={t:e.altKey?'cut':'wall',x0:q.x,y0:q.y,r:null};return}
 if(t=='start'){const q=edSnapPt(wx,wy);if(!d.start){const st={x:q.x,y:q.y};d.start=st;hPush({n:'Place player start',undo(){d.start=null},redo(){d.start=st}});return}return edSet(d.start,{x:q.x,y:q.y},'Move player start')}
@@ -218,16 +232,17 @@ else if(D_.t=='rect'){const tx=Math.floor(wx/T),ty=Math.floor(wy/T);D_.r={x:Math
 else if(D_.t=='wall'){const q=edSnapPt(wx,wy);D_.r=edWallBox(D_.x0,D_.y0,q.x,q.y)}
 else if(D_.t=='cut'||D_.t=='zone'){const q=edSnapPt(wx,wy);D_.r=edBoxOf(D_.x0,D_.y0,q.x,q.y)}
 else if(D_.t=='box')D_.r=edBoxOf(D_.x0,D_.y0,wx,wy);
+else if(edKitMove(D_,wx,wy)){}
 else if(D_.t=='move'){const ddx=edSnap(wx+D_.dx)-D_.ax,ddy=edSnap(wy+D_.dy)-D_.ay;if(ddx!==D_.lx||ddy!==D_.ly){D_.lx=ddx;D_.ly=ddy;for(const q of D_.L){q.o.x=q.b.x+ddx;q.o.y=q.b.y+ddy}D_.m=ddx||ddy?1:0;E.mmNeed=1}}
-else if(D_.t=='size'){const o=D_.o,b=D_.b,k=D_.k,q=edSnapPt(wx,wy),mn=D_.z?16:2;let x0=b.x,y0=b.y,x1=b.x+b.w,y1=b.y+b.h;if(k.includes('w'))x0=Math.min(q.x,x1-mn);if(k.includes('e'))x1=Math.max(q.x,x0+mn);if(k.includes('n'))y0=Math.min(q.y,y1-mn);if(k.includes('s'))y1=Math.max(q.y,y0+mn);o.x=x0;o.y=y0;o.w=x1-x0;o.h=y1-y0;D_.m=1}
+else if(D_.t=='size'){const o=D_.o,b=D_.b,k=D_.k,q=edSnapPt(wx,wy),mn=D_.mn||(D_.z?16:2);let x0=b.x,y0=b.y,x1=b.x+b.w,y1=b.y+b.h;if(k.includes('w'))x0=Math.min(q.x,x1-mn);if(k.includes('e'))x1=Math.max(q.x,x0+mn);if(k.includes('n'))y0=Math.min(q.y,y1-mn);if(k.includes('s'))y1=Math.max(q.y,y0+mn);o.x=x0;o.y=y0;o.w=x1-x0;o.h=y1-y0;D_.m=1}
 else if(D_.t=='shmove'){const o=D_.o;o.sh.x=cmR1(D_.B.x+edSnapS(wx-D_.dx));o.sh.y=cmR1(D_.B.y+edSnapS(wy-D_.dy));D_.m=1}
 else if(D_.t=='shsize'){const o=D_.o,s=o.sh,qx=edSnapS(wx),qy=edSnapS(wy);if(s.t=='c')s.r=Math.max(4,cmR1(Math.hypot(qx-(o.x+s.x),qy-(o.y+s.y))));
 else{const b=D_.b0,k=D_.k;let x0=b.x0,y0=b.y0,x1=b.x1,y1=b.y1;if(k.includes('w'))x0=Math.min(qx,x1-4);if(k.includes('e'))x1=Math.max(qx,x0+4);if(k.includes('n'))y0=Math.min(qy,y1-4);if(k.includes('s'))y1=Math.max(qy,y0+4);s.x=cmR1(x0-o.x);s.y=cmR1(y0-o.y);s.w=cmR1(x1-x0);s.h=cmR1(y1-y0)}D_.m=1}}
-else if(E.tool=='select'){const hk=edHandleAt(p.x,p.y),h=hk&&hk.k;E.cv.style.cursor=h?(h=='n'||h=='s'?'ns-resize':h=='e'||h=='w'?'ew-resize':h=='nw'||h=='se'?'nwse-resize':'nesw-resize'):'default';
+else if(E.tool=='select'){const ph=edPtHandleAt(p.x,p.y);if(ph){E.cv.style.cursor='move';E.hov=null;edStatus();return}const hk=edHandleAt(p.x,p.y),h=hk&&hk.k;E.cv.style.cursor=h?(h=='n'||h=='s'?'ns-resize':h=='e'||h=='w'?'ew-resize':h=='nw'||h=='se'?'nwse-resize':'nesw-resize'):'default';
 const so=!h&&edShapeObj();if(so&&edInShape(so,wx,wy)){E.cv.style.cursor='move';E.hov=null}else{const hv=h?null:edHit(wx,wy);if((hv&&hv.o)!==(E.hov&&E.hov.o))E.hov=hv;if(!h&&hv)E.cv.style.cursor=edLockIt(hv)?'not-allowed':'move'}}
 edStatus()}
 function edUp(e){const E=ED;if(!E)return;const D_=E.drag;E.drag=null;if(!D_)return;const d=E.d,T=d.tile;
-if(D_.t=='pan')return edCursor();
+if(D_.t=='pan')return edCursor();if(edKitUp(D_))return;
 if(D_.t=='paint')return edStrokeEnd(D_.S);
 if(D_.t=='rect'){const r=D_.r||{x:D_.x0*T,y:D_.y0*T,w:T,h:T},S_=edStroke(D_.er?'Erase rectangle':'Fill rectangle');for(let y=r.y/T;y<(r.y+r.h)/T;y++)for(let x=r.x/T;x<(r.x+r.w)/T;x++)if(x>=0&&y>=0&&x<d.w&&y<d.h)edPaintTile(S_,y*d.w+x,D_.er);return edStrokeEnd(S_)}
 if(D_.t=='wall'){const r=D_.r;if(!r||r.w<2||r.h<2)return edToast('Drag to draw a wall');const ly=edTargetLy('w');if(!ly)return;const w={id:cmUid('w'),x:r.x,y:r.y,w:r.w,h:r.h,s:E.wall,ly};edAdd(d.walls,w,'Draw wall');return}
@@ -243,6 +258,8 @@ function edWheel(e){if(!ED||edModalOn())return;e.preventDefault();const p=edLoca
 function edKey(e){const E=ED;if(!E)return;const k=e.key||'',kl=k.toLowerCase(),c=e.ctrlKey||e.metaKey,tg=e.target&&e.target.tagName,typing=tg=='INPUT'||tg=='TEXTAREA'||tg=='SELECT';
 const stop=()=>{if(e.preventDefault)e.preventDefault()};
 if(edModalOn()){if(k=='Escape'){stop();const b=E.mb&&E.mb[0];edModalOff();if(b&&b[0]=='Cancel')b[2]()}return}
+// the path being drawn: Enter finishes, Backspace takes the last point back, Esc throws it away
+if(E.pd&&!typing&&!c){if(k=='Enter'){stop();return edPathFinish()}if(k=='Backspace'||k=='Delete'){stop();E.pd.pts.pop();if(!E.pd.pts.length)E.pd=null;E.need=1;return}if(k=='Escape'){stop();E.pd=null;E.need=1;return edToast('Path cancelled')}}
 if(c&&kl=='s'){stop();if(typing&&e.target.blur)e.target.blur();return edSave()}
 if(typing){if(k=='Escape'&&e.target.blur)e.target.blur();return}
 if(c&&kl=='z'){stop();return e.shiftKey?edRedo():edUndo()}if(c&&kl=='y'){stop();return edRedo()}
@@ -252,12 +269,12 @@ if(c&&(k==']'||k=='['||k=='}'||k=='{')){stop();const fw=k==']'||k=='}';return ed
 if(c)return;
 if(k==' '){stop();E.space=1;if(E.cv)E.cv.style.cursor='grab';return}
 // Esc: cancel the drag in progress (putting things back), then stop editing a shape, then leave the tool, then clear the selection
-if(k=='Escape'){stop();if(E.drag){const D_=E.drag;E.drag=null;if(D_.t=='move')for(const q of D_.L)Object.assign(q.o,q.b);if(D_.t=='size')Object.assign(D_.o,D_.b);if(D_.t=='shmove'||D_.t=='shsize')D_.o.sh=edClone(D_.B);if(D_.t=='paint')edStrokeEnd(D_.S);E.need=1;edCursor();return edUI()}
+if(k=='Escape'){stop();if(E.drag){const D_=E.drag;E.drag=null;if(D_.t=='move')for(const q of D_.L)Object.assign(q.o,q.b);if(D_.t=='pt'){const o=D_.o;o.x=D_.B.x;o.y=D_.B.y;o.pts=edClone(D_.B.pts)}if(D_.t=='size')Object.assign(D_.o,D_.b);if(D_.t=='shmove'||D_.t=='shsize')D_.o.sh=edClone(D_.B);if(D_.t=='paint')edStrokeEnd(D_.S);E.need=1;edCursor();return edUI()}
 if(E.she){E.she=0;E.need=1;return edRight()}if(E.tool!='select')return edTool('select');if(E.sel.length)edSelect([]);return}
 if(k=='Delete'||k=='Backspace'){stop();return edDelete()}
 if(e.shiftKey&&kl=='g'){E.grid^=1;E.need=1;return edTop()}if(e.shiftKey&&kl=='c'){E.coll^=1;E.need=1;return edTop()}if(e.shiftKey&&kl=='s'){E.snap^=1;edToast(E.snap?'Snap on':'Snap off');return edTop()}
 if(kl=='r'){stop();return edRotate(e.shiftKey?-15:15)}
-if(k=='['||k==']'){E.brush=cl(E.brush+(k==']'?1:-1),1,9);E.need=1;return edLeft()}
+if(k=='['||k==']'){if(E.tool=='place'&&E.asset&&(E.asset.t=='d'||E.asset.t=='x')){E.dsc=cl(Math.round((E.dsc+(k==']'?.25:-.25))*100)/100,.25,4);E.need=1;return edLeft()}E.brush=cl(E.brush+(k==']'?1:-1),1,9);E.need=1;return edLeft()}
 if(k=='+'||k=='='){return edZoom(1.25)}if(k=='-'||k=='_'){return edZoom(1/1.25)}if(k=='0'){return edFit()}
 if(k.startsWith('Arrow')){stop();const dx=k=='ArrowLeft'?-1:k=='ArrowRight'?1:0,dy=k=='ArrowUp'?-1:k=='ArrowDown'?1:0;
 if(E.sel.length){const st=e.shiftKey?E.step:1;return edNudge(dx*st,dy*st)}E.cam.x+=dx*80/E.cam.z;E.cam.y+=dy*80/E.cam.z;E.need=1;E.mmNeed=1;return}
@@ -266,15 +283,15 @@ if(!e.shiftKey&&!e.altKey){const t=EDT.find(x=>x[2].toLowerCase()==kl);if(t){if(
 function edKeyUp(e){if(!ED)return;if(e.key==' '){ED.space=0;if(!ED.drag)edCursor()}}
 // ----- map size -----
 function edResize(nw,nh){const E=ED,d=E.d,T=d.tile;nw=cl(Math.round(nw)||d.w,CMMIN[0],CMMAX);nh=cl(Math.round(nh)||d.h,CMMIN[1],CMMAX);if(nw==d.w&&nh==d.h){edRight();return}
-const MW=nw*T,MH=nh*T,gone={obj:d.obj.filter(o=>o.x>MW||o.y>MH),walls:d.walls.filter(w=>w.x>=MW||w.y>=MH),spawns:d.spawns.filter(s=>s.x>MW||s.y>MH),zones:d.zones.filter(z=>z.x>=MW||z.y>=MH)};
-const n=gone.obj.length+gone.walls.length+gone.spawns.length+gone.zones.length,cut=d.w*d.h-Math.min(d.w,nw)*Math.min(d.h,nh)>0&&(nw<d.w||nh<d.h);
+const MW=nw*T,MH=nh*T,gone={obj:d.obj.filter(o=>o.x>MW||o.y>MH),walls:d.walls.filter(w=>w.x>=MW||w.y>=MH),spawns:d.spawns.filter(s=>s.x>MW||s.y>MH),zones:d.zones.filter(z=>z.x>=MW||z.y>=MH),areas:d.areas.filter(a=>a.x>=MW||a.y>=MH),paths:d.paths.filter(l=>l.x>MW||l.y>MH),feats:d.feats.filter(f=>f.x>MW||f.y>MH)};
+const n=gone.obj.length+gone.walls.length+gone.spawns.length+gone.zones.length+gone.areas.length+gone.paths.length+gone.feats.length,cut=d.w*d.h-Math.min(d.w,nw)*Math.min(d.h,nh)>0&&(nw<d.w||nh<d.h);
 const go=()=>edResizeNow(nw,nh,gone);if(!n&&!cut)return go();
-const parts=[];if(gone.obj.length)parts.push(gone.obj.length+' prop'+(gone.obj.length>1?'s':''));if(gone.walls.length)parts.push(gone.walls.length+' wall'+(gone.walls.length>1?'s':''));if(gone.spawns.length)parts.push(gone.spawns.length+' spawn point'+(gone.spawns.length>1?'s':''));if(gone.zones.length)parts.push(gone.zones.length+' spawn zone'+(gone.zones.length>1?'s':''));
+const parts=[];if(gone.obj.length)parts.push(gone.obj.length+' prop'+(gone.obj.length>1?'s':''));if(gone.walls.length)parts.push(gone.walls.length+' wall'+(gone.walls.length>1?'s':''));if(gone.spawns.length)parts.push(gone.spawns.length+' spawn point'+(gone.spawns.length>1?'s':''));if(gone.zones.length)parts.push(gone.zones.length+' spawn zone'+(gone.zones.length>1?'s':''));for(const[k,nm]of[['areas','area'],['paths','path'],['feats','special feature']])if(gone[k].length)parts.push(gone[k].length+' '+nm+(gone[k].length>1?'s':''));
 edModal('Make the map smaller?',`<p>The map becomes ${nw}×${nh} tiles. Ground painted beyond that is cut off${parts.length?', and these are removed: <b>'+parts.join(', ')+'</b>':''}.</p><p>You can undo this.</p>`,[['Cancel','',()=>{edRight()}],['Resize','red',go]])}
 function edResizeNow(nw,nh,gone){const E=ED,d=E.d,T=d.tile,MW=nw*T,MH=nh*T,b={w:d.w,h:d.h,ter:d.ter,ovl:d.ovl,rtr:d.rtr,start:d.start?{x:d.start.x,y:d.start.y}:null},gi=d.pal.indexOf(d.ground)>=0?d.pal.indexOf(d.ground):cmPi(d,d.ground);
 const nt=new Uint8Array(nw*nh).fill(gi),no=new Uint8Array(nw*nh),nr=new Uint8Array(nw*nh);for(let y=0;y<Math.min(d.h,nh);y++)for(let x=0;x<Math.min(d.w,nw);x++){nt[y*nw+x]=d.ter[y*d.w+x];no[y*nw+x]=d.ovl[y*d.w+x];nr[y*nw+x]=d.rtr[y*d.w+x]}
-const rem=[];for(const k of['obj','walls','spawns','zones'])for(const o of gone[k])rem.push({k,o,i:d[k].indexOf(o)});rem.sort((a,c)=>a.i-c.i);
-const clips=[];for(const w of d.walls.concat(d.zones))if(!rem.some(r=>r.o===w)&&(w.x+w.w>MW||w.y+w.h>MH))clips.push({o:w,b:{w:w.w,h:w.h},a:{w:Math.min(w.w,MW-w.x),h:Math.min(w.h,MH-w.y)}});
+const rem=[];for(const k of['obj','walls','spawns','zones','areas','paths','feats'])for(const o of gone[k])rem.push({k,o,i:d[k].indexOf(o)});rem.sort((a,c)=>a.i-c.i);
+const clips=[];for(const w of d.walls.concat(d.zones,d.areas,d.feats.filter(f=>!f.pts)))if(!rem.some(r=>r.o===w)&&(w.x+w.w>MW||w.y+w.h>MH))clips.push({o:w,b:{w:w.w,h:w.h},a:{w:Math.min(w.w,MW-w.x),h:Math.min(w.h,MH-w.y)}});
 const a={w:nw,h:nh,ter:nt,ovl:no,rtr:nr,start:d.start?{x:cl(d.start.x,8,MW-8),y:cl(d.start.y,8,MH-8)}:null};
 const apply=s=>{d.w=s.w;d.h=s.h;d.ter=s.ter;d.ovl=s.ovl;d.rtr=s.rtr;if(d.start&&s.start){d.start.x=s.start.x;d.start.y=s.start.y}};
 const redo=()=>{apply(a);for(let j=rem.length-1;j>=0;j--){const r=rem[j],k=d[r.k].indexOf(r.o);if(k>=0)d[r.k].splice(k,1)}for(const c of clips)Object.assign(c.o,c.a);ED.sel=[];edAllDirty();edLay()},

@@ -25,21 +25,37 @@ async function cmLoadAll(){const [metas,maps]=await Promise.all([msAll('meta'),m
 for(const m of metas||[]){const rec=byId[m.id],r=rec?cmRead(rec.json):{doc:null,errors:['The map data is missing.'],warnings:[]};L.push({id:m.id,key:cmKeyOf(m.id),meta:m,doc:r.doc,errors:r.errors,warnings:r.warnings})}
 L.sort((a,b)=>String(a.meta.name||'').localeCompare(String(b.meta.name||''),undefined,{sensitivity:'base'}));CML=L;CMLOK=1;try{await ccLoad()}catch(e){}return L}
 // paint a whole custom map (ground, walls, props, vehicles) into g; used for the game's background and for thumbnails
-function cmProp(g,o){const B=cmOB(o.k);if(!B)return;const v=o.vr!=null?o.vr:cmH(o.x,o.y,3),r=o.r||0;if(!r){B.f(g,o.x,o.y,v,o.c);return}
-const L=vRec.L,n=L?L.length:0;g.save();g.translate(o.x,o.y);g.rotate(r*Math.PI/180);try{B.f(g,0,0,v,o.c)}finally{g.restore()}
+function cmProp(g,o){const B=cmOB(o.k);if(!B)return;const v=o.vr!=null?o.vr:cmH(o.x,o.y,3),r=o.r||0;if(!r){B.f(g,o.x,o.y,v,o.c,o.tx);return}
+const L=vRec.L,n=L?L.length:0;g.save();g.translate(o.x,o.y);g.rotate(r*Math.PI/180);try{B.f(g,0,0,v,o.c,o.tx)}finally{g.restore()}
 // a turned sprite has no straight base line, so walk-behind uses its pixels instead
 if(L)for(let i=n;i<L.length;i++)delete L[i].base}
 function cmCar(g,o){const v=cmVeh(o);if(!v)return;const r=Math.hypot(v.L,v.W)/2+6;vDraw(g,v.x-r,v.y-r,r*2,r*2,q=>hwDraw(q,v))}
-function cmWallDraw(g,w){const s=CMWI[w.s]||CMWI.wall;s.f(g,w.x,w.y,w.w,w.h)}
+function cmWallDraw(g,w){const s=CMWI[w.s]||CMWI.wall;s.f(g,w.x,w.y,w.w,w.h,w.c)}
 // everything is painted in layer order (hidden layers too: hiding is only for the editor)
-function cmPaint(g,d){cmGround(g,d,0,0,d.w,d.h,0);for(const{o,w}of cmDrawList(d,0)){if(w)cmWallDraw(g,o);else if(o.veh)cmCar(g,o);else cmProp(g,o)}}
+function cmPaint(g,d){cmGround(g,d,0,0,d.w,d.h,0);for(const it of cmDrawList(d,0))cmPaintIt(g,it.o,it.t)}
+// one thing of the draw list: t is 'w' wall, 'a' area, 'l' path, 'o' prop / vehicle / decal / effect
+function cmPaintIt(g,o,t){if(t=='w')return cmWallDraw(g,o);if(t=='a')return cmAreaDraw(g,o);if(t=='l')return cmPathDraw(g,o);if(o.dc)return cmDecDraw(g,o);if(o.fx)return cmFxBake(g,o);if(o.veh)return cmCar(g,o);cmProp(g,o)}
 // the map loader: everything a map function (mapXxx) does, from data
 function cmBuild(d){const T=d.tile;WW=d.w*T;WH=d.h*T;WL=cmColl(d);
 const sp=d.spawns.filter(s=>s.on!==false).map(s=>[s.x,s.y]),zn=d.zones.filter(z=>z.on!==false).map(z=>[z.x,z.y,z.w,z.h]);
 const st=cmStart(d);HS={cx:cl(st.x,0,WW),cy:cl(st.y,0,WH),px:cl(st.x,8,WW-8),py:cl(st.y,8,WH-8),nx0:0,nx1:0,ny0:0,ny1:0,CM:d.id};if(sp.length||zn.length)HS.CZ={p:sp,z:zn};
-grid();BG.width=WW;BG.height=WH;cmPaint(BG.getContext('2d'),d)}
+cmFeatHS(d);grid();BG.width=WW;BG.height=WH;cmPaint(BG.getContext('2d'),d);HS.CX=cmFxData(d)}
+// what the map's special features, effects and props tell the game's systems (the same HS fields the built-in maps set)
+function cmFeatHS(d){const F=d.feats||[],R=f=>[f.x,f.y,f.x+f.w,f.y+f.h];
+SM=d.obj.filter(o=>o.fx&&cmFx(o.fx)&&cmFx(o.fx).sm).map(o=>({x:o.x,y:o.y}));
+// no-spawn zones: the first is the game's no-spawn box for zombies from off-screen; spawn points and zones inside any are skipped
+const NS=F.filter(f=>f.f=='nospawn'&&f.w>0);if(NS.length){const r=R(NS[0]);HS.nx0=r[0];HS.ny0=r[1];HS.nx1=r[2];HS.ny1=r[3];HS.NS=NS.map(R);NOGO=HS.NS.slice()}
+// building interiors (bosses look for players inside): Building interior features and indoor floors
+const HO=F.filter(f=>f.f=='house'&&f.w>0).map(f=>({x:f.x,y:f.y,w:f.w,h:f.h}));for(const a of d.areas||[])if(a.a=='floor'&&(!a.o||a.o.in!==0&&a.o.in!==false))HO.push({x:a.x,y:a.y,w:a.w,h:a.h});if(HO.length)HS.HO=HO;
+// the boss road graph
+const G=F.find(f=>f.f=='roadgraph'&&f.pts&&f.pts.length>1);if(G){const N=G.pts.map(p=>[G.x+p[0],G.y+p[1]]),A=N.map(()=>[]);for(const e of G.e||[]){if(!A[e[0]]||!A[e[1]]||e[0]===e[1])continue;if(!A[e[0]].includes(e[1]))A[e[0]].push(e[1]);if(!A[e[1]].includes(e[0]))A[e[1]].push(e[0])}HS.RG={N,A}}
+// the Mayor's roof, Penny's store
+const C=F.find(f=>f.f=='cityhall'&&f.w>0);if(C)HS.CH={x:C.x+C.w/2,y:C.y+40,rx:C.x,ry:C.y,rw:C.w,rh:C.h};
+const S_=F.find(f=>f.f=='store'&&f.w>0);if(S_){HS.ST=R(S_);HS.SHF=d.obj.filter(o=>o.k=='gshelf'&&o.x>S_.x&&o.x<S_.x+S_.w&&o.y>S_.y&&o.y<S_.y+S_.h).map(o=>[o.x,o.y-24]);HS.CRL=d.obj.filter(o=>o.k=='corral'||o.k=='cartrow').map(o=>[o.x,o.y])}
+// street trees stop the fire hose (as on Downtown)
+const TK=d.obj.filter(o=>o.k=='stree').map(o=>[o.x,o.y-4]);if(TK.length)HS.TRK=TK}
 // where the next zombie appears on a custom map with spawn points or zones (spawnZ calls this)
-function cmSpawnAt(R){const Z=HS.CZ,c=[];for(const p of Z.p)c.push({x:p[0],y:p[1],w:0,h:0});for(const z of Z.z)c.push({x:z[0],y:z[1],w:z[2],h:z[3]});
+function cmSpawnAt(R){const Z=HS.CZ,c=[],ns=(x,y)=>(HS.NS||[]).some(r=>x>r[0]&&x<r[2]&&y>r[1]&&y<r[3]);for(const p of Z.p)if(!ns(p[0],p[1]))c.push({x:p[0],y:p[1],w:0,h:0});for(const z of Z.z)if(!ns(z[0]+z[2]/2,z[1]+z[3]/2))c.push({x:z[0],y:z[1],w:z[2],h:z[3]});if(!c.length){for(const p of Z.p)c.push({x:p[0],y:p[1],w:0,h:0});for(const z of Z.z)c.push({x:z[0],y:z[1],w:z[2],h:z[3]})}
 // like the spawn points of the built-in maps: prefer spots out of the player's sight
 const far=c.filter(q=>Math.hypot(q.x+q.w/2-P.x,q.y+q.h/2-P.y)>R*.75),pool=far.length?far:c,q=pool[Math.random()*pool.length|0];
 if(!q.w)return[q.x+rnd(-14,14),q.y+rnd(-14,14)];

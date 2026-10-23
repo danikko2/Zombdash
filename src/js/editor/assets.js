@@ -2,7 +2,7 @@
 // ---------- editor assets ----------
 // Only real game art is listed: every prop in OB and every highway vehicle kind in HWV. A prop added to OB later shows up
 // by itself under "Other"; give it a name and category by adding a line to EDPN below.
-const EDCAT=[['all','All'],['vehicles','Vehicles'],['buildings','Buildings & walls'],['street','Street'],['nature','Nature'],['spooky','Graveyard & spooky'],['supplies','Supplies & tools'],['kitchen','Kitchen'],['living','Living room'],['bedroom','Bedroom'],['bath','Bathroom'],['garage','Garage'],['furniture','Furniture'],['store','Shops'],['play','Park & playground'],['farm','Farm & crops'],['other','Other']];
+const EDCAT=[['all','All'],['vehicles','Vehicles'],['buildings','Buildings & walls'],['street','Street'],['nature','Nature'],['spooky','Graveyard & spooky'],['supplies','Supplies & tools'],['kitchen','Kitchen'],['living','Living room'],['bedroom','Bedroom'],['bath','Bathroom'],['garage','Garage'],['furniture','Furniture'],['store','Shops'],['play','Park & playground'],['farm','Farm & crops'],['signs','Signs'],['office','School & office'],['other','Other']];
 // the colours a thing can take, as [hex, name] (null: it has one look); vehicles use EDVC
 function edPalOf(o){if(o.veh)return EDVC.map(x=>[x,x]);const B=cmOB(o.k);return B&&B.pc||null}
 function edColOf(o){const P=edPalOf(o);return o.c||(P?P[0][0]:'')}
@@ -25,25 +25,39 @@ nstand:['Nightstand with lamp','bedroom'],nstand2:['Nightstand','bedroom'],dress
 shower:['Shower stall','bath'],shower_w:['Walk-in shower','bath'],gcab_t:['Garage cabinet (tall)','garage'],gcab_w:['Garage cabinet set','garage'],gbench:['Workbench','garage'],gchest:['Rolling tool chest','garage'],
 oak:['Oak tree','nature'],oak_b:['Big oak tree','nature'],maple:['Maple tree','nature'],birch:['Birch tree','nature'],spruce:['Spruce tree','nature'],pine_g:['Giant pine','nature'],willow:['Weeping willow','nature'],deadtree:['Big dead tree','nature'],sapling:['Young tree','nature'],
 tgrass:['Long grass','nature'],tgrass_w:['Long grass (wide)','nature'],reeds:['Cattails','nature'],fern:['Fern','nature'],bigfall:['Big fallen tree (rotting)','nature'],fallroot:['Fallen tree with roots','nature'],rotlog:['Rotting hollow log','nature'],logpile:['Log pile','nature'],
+signboard:['Name board (your text)','signs'],hwsign:['Highway sign (your text)','signs'],billboard:['Billboard (your text)','signs'],arrowsign:['Arrow signpost (your text)','signs'],streetsign:['Street name sign (your text)','signs'],pricesign:['Gas price sign (your text)','signs'],
+awning:['Awning (your text)','signs'],storesign:['Store sign (your text)','signs'],aislesign:['Aisle sign (your text)','signs'],deptsign:['Department sign (your text)','signs'],nameplate:['Name plate (your text)','signs'],stopsign:['Stop sign','street'],tpole:['Telephone pole','street'],bollard:['Bollard','street'],boomgate:['Boom gate','street'],
+archway:['Log entrance arch (your text)','buildings'],gatearch:['Stone gate arch (your text)','spooky'],acunit:['Rooftop AC unit','buildings'],wtank:['Water tank','buildings'],fireesc:['Fire escape','buildings'],elevator:['Elevator doors','buildings'],
+portrait:['Portrait (eyes follow you)','spooky'],chandelier:['Fallen chandelier','spooky'],deadtwist:['Twisted dead tree','spooky'],blackpine:['Black pine','spooky'],coffin:['Coffin','spooky'],opengrave:['Open grave','spooky'],canopytree:['Canopy tree','nature'],campring:['Campfire ring','nature'],dirtpile:['Dirt pile','nature'],
+jet:['Fighter jet','vehicles'],planebody:['Plane wreck (body)','vehicles'],planetail:['Plane wreck (tail)','vehicles'],planewing:['Plane wreck (wing)','vehicles'],heliwreck:['Helicopter wreck','vehicles'],container:['Shipping container','supplies'],
+officedesk:['Office desk','office'],chalkb:['Chalkboard','office'],cubby:['Cubbies','office'],wclock:['Wall clock','office'],poster:['Poster','office'],lockrow:['Row of lockers','office'],cafeteria:['Cafeteria counter','office'],
+stalls:['Toilet stalls','bath'],showers:['Shower row','bath'],micro:['Microwave','kitchen'],coffeetable:['Coffee table','living'],garageshelf:['Garage shelf','garage'],
 corn_r:['Corn row','farm'],wheat:['Wheat','farm'],cabbage:['Cabbage row','farm'],pumpkin:['Pumpkin patch','farm'],tomato:['Tomato plants','farm'],carrot_r:['Carrot row','farm'],sunflow:['Sunflowers','farm']};
 // top-down highway vehicles (they turn freely and take a colour)
-const EDVN={sedan:'Sedan',suv:'SUV',pickup:'Pickup truck',van:'Van',limo:'Limo',police:'Police car',amb:'Ambulance',fire:'Fire truck',bus:'School bus (top)',semi:'Semi truck',cab:'Semi cab',trailer:'Semi trailer',hmv:'Humvee (top)',mtruck:'Army truck (top)'};
+const EDVN={sedan:'Sedan',suv:'SUV',pickup:'Pickup truck',van:'Van',limo:'Limo',police:'Police car',amb:'Ambulance',fire:'Fire truck',bus:'School bus (top)',semi:'Semi truck',cab:'Semi cab',trailer:'Semi trailer',hmv:'Humvee (top)',mtruck:'Army truck (top)',taxi:'Taxi',ftruck:'Food truck (your text)'};
+// vehicles that take text (the name on a food truck's roof), up to n characters
+const EDVTX={ftruck:16,trailer:16};
 const EDVC=['#c0392b','#2f6fd0','#d8d8d4','#26262c','#8a8f96','#2f8a4a','#d68a1c','#6a4a9a','#a8a49a','#7a1f1f','#1f4f7a','#e0c040'];
 let EDAS=null;
 // the asset list: {id:'p:crate'|'v:sedan', t:'p'|'v', k, n, cat}
 function edAssets(){if(EDAS)return EDAS;const L=[];for(const k of Object.keys(EDVN))if(HWV(k))L.push({id:'v:'+k,t:'v',k,n:EDVN[k],cat:'vehicles'});
 for(const k of Object.keys(OB)){if(!cmOB(k))continue;const e=Object.prototype.hasOwnProperty.call(EDPN,k)?EDPN[k]:[k.replace(/_/g,' '),'other'];L.push({id:'p:'+k,t:'p',k,n:e[0],cat:e[1]})}
 const ci=c=>{const i=EDCAT.findIndex(x=>x[0]==c);return i<0?99:i};L.sort((a,b)=>ci(a.cat)-ci(b.cat)||a.n.localeCompare(b.n));return EDAS=L}
-function edAsset(o){const own=(T,k)=>Object.prototype.hasOwnProperty.call(T,k);return o.veh?{t:'v',k:o.veh,n:own(EDVN,o.veh)?EDVN[o.veh]:String(o.veh)}:{t:'p',k:o.k,n:own(EDPN,o.k)?EDPN[o.k][0]:String(o.k)}}
+function edAsset(o){const own=(T,k)=>Object.prototype.hasOwnProperty.call(T,k);if(o.dc){const T=cmDec(o.dc);return{t:'d',k:o.dc,n:T?T.n:String(o.dc)}}if(o.fx){const T=cmFx(o.fx);return{t:'x',k:o.fx,n:T?T.n:String(o.fx)}}return o.veh?{t:'v',k:o.veh,n:own(EDVN,o.veh)?EDVN[o.veh]:String(o.veh)}:{t:'p',k:o.k,n:own(EDPN,o.k)?EDPN[o.k][0]:String(o.k)}}
 // sprites drawn once into small canvases: props anchored at their base, vehicles centred and unturned
 const EDSP={};
-function edSprite(o){const v=o.vr!=null?Math.round(o.vr*10)/10:Math.round(cmH(o.x,o.y,3)*10)/10,key=o.veh?'v|'+o.veh+'|'+(o.c||'')+'|'+(o.dmg?1:0)+(o.burn?1:0):'p|'+o.k+'|'+v+'|'+(o.c||'');
+function edSprite(o){if(o.dc)return edDecSprite(o);if(o.fx)return edFxSprite(o);const v=o.vr!=null?Math.round(o.vr*10)/10:Math.round(cmH(o.x,o.y,3)*10)/10,key=o.veh?'v|'+o.veh+'|'+(o.c||'')+'|'+(o.dmg?1:0)+(o.burn?1:0)+'|'+(o.tx||''):'p|'+o.k+'|'+v+'|'+(o.c||'')+'|'+(o.tx||'');
 if(EDSP[key])return EDSP[key];let s=null;
-try{if(o.veh){const q=cmVeh({veh:o.veh,x:0,y:0,r:0,c:o.c,dmg:o.dmg,burn:o.burn});if(q){const pad=6,c=document.createElement('canvas');c.width=q.L+pad*2;c.height=q.W+pad*2;const g=c.getContext('2d');q.x=c.width/2;q.y=c.height/2;hwDraw(g,q);s={c,ax:c.width/2,ay:c.height/2,w:q.L,h:q.W}}}
-else{const B=cmOB(o.k);if(B){const c=document.createElement('canvas');c.width=B.w+4;c.height=B.h+4;const g=c.getContext('2d');B.f(g,c.width/2,c.height-2,v,o.c);s={c,ax:c.width/2,ay:c.height-2,w:B.w,h:B.h}}}}catch(e){s=null}
+try{if(o.veh){const q=cmVeh({veh:o.veh,x:0,y:0,r:0,c:o.c,dmg:o.dmg,burn:o.burn,tx:o.tx});if(q){const pad=6,c=document.createElement('canvas');c.width=q.L+pad*2;c.height=q.W+pad*2;const g=c.getContext('2d');q.x=c.width/2;q.y=c.height/2;hwDraw(g,q);s={c,ax:c.width/2,ay:c.height/2,w:q.L,h:q.W}}}
+else{const B=cmOB(o.k);if(B){const c=document.createElement('canvas');c.width=B.w+4;c.height=B.h+4;const g=c.getContext('2d');B.f(g,c.width/2,c.height-2,v,o.c,o.tx);s={c,ax:c.width/2,ay:c.height-2,w:B.w,h:B.h}}}}catch(e){s=null}
 return EDSP[key]=s}
 // a thumbnail image (data URL) for the browser grid
 const EDTH={};
-function edThumb(a){if(EDTH[a.id])return EDTH[a.id];const S_=56,c=document.createElement('canvas');c.width=S_;c.height=S_;const g=c.getContext('2d');g.imageSmoothingEnabled=false;
+// a decal drawn at its size and colour (centred), an effect as a small marker (its real look is drawn on the map separately)
+function edDecSprite(o){const T=cmDec(o.dc),sc=cl(+o.sc||1,.25,4),v=o.vr!=null?Math.round(o.vr*20)/20:Math.round(cmH(o.x,o.y,5)*20)/20,key='d|'+o.dc+'|'+sc+'|'+(o.c||'')+'|'+(o.tx||'')+'|'+v+'|'+(o.op==null?1:o.op);if(EDSP[key])return EDSP[key];if(!T)return EDSP[key]=null;
+let s=null;try{const c=document.createElement('canvas');c.width=Math.ceil(T.w*sc)+8;c.height=Math.ceil(T.h*sc)+8;const g=c.getContext('2d');cmDecDraw(g,Object.assign({},o,{x:c.width/2,y:c.height/2,r:0,vr:v}));s={c,ax:c.width/2,ay:c.height/2,w:T.w*sc,h:T.h*sc}}catch(e){s=null}return EDSP[key]=s}
+function edFxSprite(o){const T=cmFx(o.fx),key='x|'+o.fx+'|'+(o.c||'');if(EDSP[key])return EDSP[key];if(!T)return EDSP[key]=null;let s=null;
+try{const c=document.createElement('canvas');c.width=c.height=26;const g=c.getContext('2d');g.fillStyle='rgba(10,16,12,.75)';g.beginPath();g.arc(13,13,12,0,7);g.fill();g.strokeStyle=cmCol(o.c,T.pal?T.pal[0][0]:'#ffcf40');g.lineWidth=2;g.stroke();g.fillStyle='#ffcf40';g.font='bold 13px monospace';g.textAlign='center';g.textBaseline='middle';g.fillText({fountain:'~',water:'≈',fire:'▲',smoke:'○',flicker:'*',light:'☼',siren:'!',hazard:'!',flare:'|',glow:'◌',wisp:'°',ducks:'d'}[o.fx]||'✦',13,14);s={c,ax:13,ay:13,w:26,h:26}}catch(e){s=null}return EDSP[key]=s}
+function edThumb(a){if(a.t=='d'){const T=cmDec(a.k);return T?edDecThumb(T):''}if(a.t=='x'){const T=cmFx(a.k);return T?edFxThumb(T):''}if(EDTH[a.id])return EDTH[a.id];const S_=56,c=document.createElement('canvas');c.width=S_;c.height=S_;const g=c.getContext('2d');g.imageSmoothingEnabled=false;
 const s=edSprite(a.t=='v'?{veh:a.k,x:0,y:0,c:EDVC[0]}:{k:a.k,x:0,y:0,vr:.6});if(s){const k=Math.min(2,(S_-6)/s.c.width,(S_-6)/s.c.height),w=s.c.width*k,h=s.c.height*k;g.drawImage(s.c,(S_-w)/2,(S_-h)/2,w,h)}
 let u='';try{u=c.toDataURL()}catch(e){}return EDTH[a.id]=u}

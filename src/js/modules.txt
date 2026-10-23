@@ -21,6 +21,13 @@ maps/campground.js
 world/map-list-and-pathfinding.js
 world/map-schema.js
 world/terrain-more.js
+world/terrain-kit.js
+world/kit-core.js
+world/kit-decals.js
+world/kit-areas.js
+world/kit-paths.js
+world/kit-walls.js
+world/kit-effects.js
 world/map-store.js
 world/custom-maps.js
 ui/core-ui.js
@@ -77,6 +84,7 @@ maps/hometown-market.js
 maps/main-street.js
 maps/props/home-props.js
 maps/props/forest-props.js
+maps/props/kit-props.js
 bosses/penny-and-mayor.js
 system/phones-checkpoints-crashlog.js
 online/supabase.js
@@ -96,9 +104,14 @@ editor/editor-view.js
 editor/editor.js
 editor/selection.js
 editor/panels.js
+editor/kit-view.js
+editor/kit-tools.js
+editor/prefabs.js
+editor/prefab-starter.js
 editor/playtest.js
 editor/workshop.js
 editor/workshop-campaign.js
+editor/samples.js
 core/main-loop.js
 intro/cutscene.js
 core/start.js
