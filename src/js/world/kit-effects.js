@@ -1,6 +1,6 @@
 //# world/kit-effects.js — Building kit effects: animated and lit points (fountain spray, fire, smoke, flickering light, light pools, sirens, hazard blinkers, road flares, glowing things, will-o'-wisps, water glints, ducks) plus portrait eyes; how a custom map runs them every frame (cmFxAnim under people, cmFxTop over people)
 // ---------- effects ----------
-// An effect is a point (x,y) with a size (sc, 0.25–4) and sometimes a colour. bake(g,o) paints its still part into the map picture
+// An effect is a point (x,y) with a size (sc, 0.25–4), a turn (r, degrees; fxTurn turns everything it draws) and sometimes a colour. bake(g,o) paints its still part into the map picture
 // (light pools), anim(o,t) draws it under people each frame, top(o,t) over people, sm:1 makes it a smoke point (the game's SM
 // list). ed(g,o) is how the editor shows it (a still frame). Everything runs only while the effect is on screen.
 const CMXCAT=[['water','Water'],['fire','Fire & smoke'],['light','Lights'],['spooky','Spooky'],['life','Wildlife']];
@@ -32,19 +32,21 @@ if(!fxOn(x,y,30))continue;X.fillStyle=c;X.globalAlpha=.12;X.beginPath();X.arc(x,
 X.strokeStyle='rgba(220,240,255,.45)';X.lineWidth=1;X.beginPath();X.ellipse(x,y+4,12+Math.sin(t*3+i)*2,4,0,0,7);X.stroke();X.fillStyle='#16111c';X.fillRect(x-8,y-5,16,9);X.fillRect(x+fl*5-3,y-11,7,7);X.fillStyle='#e8e4d8';X.fillRect(x-7,y-4,14,7);X.fillStyle=i%2?'#2f8a4a':'#e8e4d8';X.fillRect(x+fl*5-2,y-10,5,5);X.fillStyle='#e8a030';X.fillRect(x+fl*9-(fl<0?2:0),y-8,3,2);X.fillStyle='#16111c';X.fillRect(x+fl*6,y-9,1,1)}},
 ed(g,o){g.fillStyle='#16111c';g.fillRect(o.x-8,o.y-5,16,9);g.fillRect(o.x+2,o.y-11,7,7);g.fillStyle='#e8e4d8';g.fillRect(o.x-7,o.y-4,14,7);g.fillStyle='#2f8a4a';g.fillRect(o.x+3,o.y-10,5,5);g.fillStyle='#e8a030';g.fillRect(o.x+9,o.y-8,3,2)}}];
 for(const t of CMXK)cmAddFx(t);
+// turn what an effect draws around its own point (hazard blinkers and sirens line up with the vehicle they sit on)
+function fxTurn(G,o){if(o.r){G.translate(o.x,o.y);G.rotate(o.r*Math.PI/180);G.translate(-o.x,-o.y)}}
 // bake the still part of an effect into the map picture
-function cmFxBake(g,o){const T=cmFx(o.fx);if(!T||!T.bake)return;g.save();try{T.bake(g,o)}finally{g.restore()}}
+function cmFxBake(g,o){const T=cmFx(o.fx);if(!T||!T.bake)return;g.save();try{fxTurn(g,o);T.bake(g,o)}finally{g.restore()}}
 // the editor's still picture of an effect (its baked part, then a frame of the animation)
-function cmFxEd(g,o){const T=cmFx(o.fx);if(!T)return;g.save();try{if(T.bake)T.bake(g,o);if(T.ed)T.ed(g,o)}finally{g.restore()}}
+function cmFxEd(g,o){const T=cmFx(o.fx);if(!T)return;g.save();try{fxTurn(g,o);if(T.bake)T.bake(g,o);if(T.ed)T.ed(g,o)}finally{g.restore()}}
 // the moving parts of a custom map, collected by cmBuild: HS.CX = {A: under people, T: over people, E: portrait eyes}
 function cmFxData(d){const A=[],T=[],E=[];for(const o of d.obj){if(o.fx){const F=cmFx(o.fx);if(!F)continue;const it={o,f:F,r:fxR(o,F.r||30)+60};if(F.anim)A.push(it);if(F.top)T.push(it)}
 else if(o.k=='portrait'){const B=cmOB(o.k);if(B&&B.eyes)for(const e of B.eyes(o))E.push(e)}}
 for(const o of d.areas){const F=cmArea(o.a);if(!F)continue;const it={o,f:F,a:1,r:Math.hypot(o.w,o.h)/2+120};if(F.anim)A.push(it);if(F.top)T.push(it)}return A.length||T.length||E.length?{A,T,E}:null}
 function fxVis(it){const o=it.o;if(it.a)return o.x<cam.x+W+60&&o.x+o.w>cam.x-60&&o.y<cam.y+H+60&&o.y+o.h>cam.y-60;return fxOn(o.x,o.y,it.r)}
 // under people (called next to the built-in maps' animations)
-function cmFxAnim(){const C=HS.CX;if(!C||!cmIs(mapId))return;const t=performance.now()/1000;for(const it of C.A)if(fxVis(it))it.f.anim(it.o,t);
+function cmFxAnim(){const C=HS.CX;if(!C||!cmIs(mapId))return;const t=performance.now()/1000;for(const it of C.A)if(fxVis(it)){if(!it.o.r||it.a){it.f.anim(it.o,t);continue}X.save();try{fxTurn(X,it.o);it.f.anim(it.o,t)}finally{X.restore()}}
 // portrait eyes follow the nearest living player; now and then one pair glows red (as in the Haunted Mansion)
 if(C.E.length){const Q=(typeof PL!='undefined'&&PL.find(alive))||P,red=Math.floor(t/5)%C.E.length,rp=(t%5)<1.2;for(let i=0;i<C.E.length;i++){const e=C.E[i];if(!fxOn(e.x,e.y,10))continue;const a=Math.atan2(Q.y-e.y,Q.x-e.x),px=Math.round(e.x+Math.cos(a)*.9-.5),py=Math.round(e.y+Math.sin(a)*.9-.5);
 if(rp&&(i>>1)==(red>>1)){X.fillStyle='#ff2a1a';X.globalAlpha=.35;X.beginPath();X.arc(e.x,e.y,4,0,7);X.fill();X.globalAlpha=1;X.fillRect(px,py,2,2)}else{X.fillStyle='#16111c';X.fillRect(px,py,1,1)}}}}
 // over people (fog, wisps)
-function cmFxTop(){const C=HS.CX;if(!C||!cmIs(mapId))return;const t=performance.now()/1000;for(const it of C.T)if(it.a||fxVis(it))it.f.top(it.o,t)}
+function cmFxTop(){const C=HS.CX;if(!C||!cmIs(mapId))return;const t=performance.now()/1000;for(const it of C.T)if(it.a||fxVis(it)){if(!it.o.r||it.a){it.f.top(it.o,t);continue}X.save();try{fxTurn(X,it.o);it.f.top(it.o,t)}finally{X.restore()}}}

@@ -61,7 +61,7 @@ const apply=()=>{for(const r of R){const k=r.a.indexOf(r.o);if(k>=0)r.a.splice(k
 apply();E.sel=E.sel.filter(s=>edLockIt(s));E.hov=null;E.she=0;hPush({n:edNameOf(L,'Delete'),undo:back,redo:apply})}
 // R turns every selected prop and vehicle in place (15° a press); their collision shapes turn with them
 function edRotate(a){const E=ED;if(E.tool=='place'&&!E.sel.length){E.rot=((E.rot+a)%360+360)%360;E.need=1;return edLeft()}
-const L=edFree().filter(s=>s.t=='o'&&!s.o.fx||s.t=='l'||s.t=='f'&&s.o.pts);if(!L.length){if(E.sel.some(s=>s.t=='o'||s.t=='l'))edToast('Locked: unlock it to turn it');else if(E.sel.length)edToast('Only props, vehicles, decals and paths turn (the group buttons on the right turn a whole group)');return}
+const L=edFree().filter(s=>s.t=='o'||s.t=='l'||s.t=='f'&&s.o.pts);if(!L.length){if(E.sel.some(s=>s.t=='o'||s.t=='l'))edToast('Locked: unlock it to turn it');else if(E.sel.length)edToast('Only props, vehicles, decals, effects and paths turn (the group buttons on the right turn a whole group)');return}
 edMut(edNameOf(L,'Turn'),L.map(s=>s.o),()=>{for(const s of L){const o=s.o;if(s.t!='o'){edTurnPts(o,a);continue}o.r=(((o.r||0)+a)%360+360)%360;if(o.sh)o.sh=cmTurnShape(o.sh,a)}})}
 // turn the whole group a quarter turn around its middle: positions turn, walls and zones swap width and height
 function edTurnGroup(dir){const L=edFree();if(!L.length)return;const B=edBBAll(L),cx=(B.x0+B.x1)/2,cy=(B.y0+B.y1)/2,a=dir*90,rot=(x,y)=>dir>0?[cx-(y-cy),cy+(x-cx)]:[cx+(y-cy),cy-(x-cx)];

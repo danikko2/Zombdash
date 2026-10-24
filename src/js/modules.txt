@@ -28,6 +28,8 @@ world/kit-areas.js
 world/kit-paths.js
 world/kit-walls.js
 world/kit-effects.js
+world/kit-gore.js
+world/kit-lighting.js
 world/map-store.js
 world/custom-maps.js
 ui/core-ui.js
@@ -106,6 +108,7 @@ editor/selection.js
 editor/panels.js
 editor/kit-view.js
 editor/kit-tools.js
+editor/lighting-panel.js
 editor/prefabs.js
 editor/prefab-starter.js
 editor/playtest.js

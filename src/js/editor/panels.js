@@ -23,7 +23,7 @@ if(allLk)h+=`<p class=edhint>🔒 ${one?'Locked':'All locked'}${S.some(edLyLocke
 else if(S.some(edLockIt))h+=`<p class=edhint>🔒 Some are locked: changes skip them.</p>`;
 // position, turn, size
 h+=edPNum('X','x',edShared(S,s=>s.o.x),1,'Arrow keys nudge by 1, Shift+arrows by a grid step')+edPNum('Y','y',edShared(S,s=>s.o.y));
-if(only('o')&&!S.some(s=>s.o.fx))h+=edPNum('Turn','r',edShared(S,s=>Math.round(s.o.r||0)),15,'R turns 15° clockwise, Shift+R back')+`<div class=edrow><button data-a=rot- title="Shift+R"${EDDIS}>↺ 15°</button><button data-a=rot+ title="R"${EDDIS}>↻ 15°</button><button data-a=rot0 title="Straighten"${EDDIS}>0°</button></div>`;
+if(only('o'))h+=edPNum('Turn','r',edShared(S,s=>Math.round(s.o.r||0)),15,'R turns 15° clockwise, Shift+R back')+`<div class=edrow><button data-a=rot- title="Shift+R"${EDDIS}>↺ 15°</button><button data-a=rot+ title="R"${EDDIS}>↻ 15°</button><button data-a=rot0 title="Straighten"${EDDIS}>0°</button></div>`;
 if(S.every(s=>s.t=='w'||s.t=='z'||s.t=='a'||s.t=='f'&&!s.o.pts))h+=edPNum('Width','w',edShared(S,s=>s.o.w))+edPNum('Height','h',edShared(S,s=>s.o.h))+(one?`<p class=edhint>Drag the yellow squares to resize.</p>`:'');
 if(S.length>1&&!allLk)h+=`<div class=edrow><button data-a="turng:-1" title="Turn the whole group a quarter turn to the left around its middle">↺ group 90°</button><button data-a="turng:1" title="Turn the whole group a quarter turn to the right around its middle">↻ group 90°</button></div>`;
 // layer and draw order
@@ -54,6 +54,7 @@ function edMapHTML(){const E=ED,d=E.d,T=d.tile,pc=E.probs.filter(p=>p.lv!='info'
 return `<h3>Map</h3><label class=edf><span>Name</span><input data-f=name maxlength=40 value="${edEsc(d.name)}"></label><label class=edf><span>About</span><textarea data-f=desc maxlength=240 rows=3>${edEsc(d.desc)}</textarea></label>
 <h4>Size (tiles of ${T}px)</h4><div class=edrow><input type=number data-f=nw min=${CMMIN[0]} max=${CMMAX} value="${d.w}" aria-label="Width in tiles"><span>×</span><input type=number data-f=nh min=${CMMIN[1]} max=${CMMAX} value="${d.h}" aria-label="Height in tiles"><button data-a=resize title="Change the map size">Apply</button></div><p class=edhint>${d.w*T}×${d.h*T} px. Resizing keeps the top-left corner in place.</p>
 <label class=edf><span>Default ground</span><select data-f=ground>${CMTER.map(t=>`<option value="${t.id}"${d.ground==t.id?' selected':''}>${edEsc(t.n)}</option>`).join('')}${CMTI[d.ground]?'':`<option selected>${edEsc(d.ground)} (missing)</option>`}</select></label>
+${edLtHTML()}
 <p class=edhint>${d.obj.filter(o=>!o.dc&&!o.fx).length} props & vehicles · ${d.obj.filter(o=>o.dc).length} decals · ${d.obj.filter(o=>o.fx).length} effects · ${d.walls.length} walls · ${d.areas.length} areas · ${d.paths.length} paths · ${d.feats.length} special features · ${d.spawns.length} spawn points · ${d.zones.length} zones${d.start?'':' · no player start'}</p>
 <div class=edrow><button data-a=savecopy title="Save a copy and keep editing the copy">Save as copy</button><button data-a=export title="Download this map as a JSON file">Export JSON</button></div>
 <p class=edhint>${pc?`<button class=lnk data-a="rt:probs">⚠ ${pc} problem${pc>1?'s':''}: see the Problems tab</button>`:'✓ No problems found.'}</p>

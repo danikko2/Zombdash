@@ -12,7 +12,7 @@ The game ships as **one self-contained file**, `index.html` (what GitHub Pages s
 | `src/css/game.css` | All the styles for menus and the HUD. |
 | `src/js/early-error-screen.js` | Tiny script that shows a "Startup error" box if the game fails to load. |
 | `src/js/modules.txt` | **Load order** of the game modules. |
-| `src/js/**` | The game, split into 114 modules (listed below). The Map Workshop is in `src/js/editor/`, the custom map format, loader and building kit in `src/js/world/`. |
+| `src/js/**` | The game, split into 117 modules (listed below). The Map Workshop is in `src/js/editor/`, the custom map format, loader and building kit in `src/js/world/`. |
 | `src/maps/` | Map files (`*.zombdash-map.json`) that ship with the game, embedded by the build with `{{json:maps/<file>}}`: `samples/town-block.zombdash-map.json` is the Workshop's sample map. |
 | `src/assets/sprites/` | `zombies.png` (zombie atlas) and `survivors.png` (player atlas). Frame positions are in `ZS` / `PS` in `render/sprites.js`. |
 | `src/assets/thumbs/map-NN.jpg` | Map preview pictures; `NN` is the map's number in `MP`. |
@@ -75,6 +75,8 @@ node tests/run.js spawn ammo # only suites whose name contains a word
 | Kit props (signs with text, portraits, wrecks, office / school / bath rows…) | `maps/props/kit-props.js` |
 | Openings the editor's Opening tool offers, room wall styles | `EDOPEN`, `EDROOMW` in `editor/kit-tools.js` |
 | Starter prefabs | `CMPFS` in `editor/prefab-starter.js` |
+| Blood colours, more blood, dead zombies (their zombie kinds), body parts, the blood trail path | `PDBLOOD` in `world/kit-decals.js`; `world/kit-gore.js` (`CMDZ`, `PDSKIN`, `PDSHIRT`, `PDPANTS`) |
+| Time of day: the looks, which props give light | `CMLT`, `CMLP` in `world/kit-lighting.js` |
 | Workshop sample maps | `CMSAMPLES` in `editor/samples.js` (files in `src/maps/samples/`) |
 
 Values changed in the in-game **GAME BALANCE** menu only live on that device; use its *Copy changes as a list* button and ask Claude to make them permanent in these files.
@@ -122,6 +124,9 @@ The kit lets custom maps be as detailed as the hand-coded maps. The whole format
 * **Drawing.** `cmPaintIt` sends each draw-list entry to `cmWallDraw`, `cmAreaDraw`, `cmPathDraw`, `cmDecDraw`, `cmFxBake` (an effect's still part) or the prop / vehicle drawing. Kit pieces of the same layer and order stack by `cmPri` (darkness, floors, rugs, decals, props, effects).
 * **Collision** (`cmColl`): walls by style (`walk` styles such as doorways make no box; `fl` 2 styles such as fences and bars let bullets through), solid areas (`cmAreaBoxes`: roofs, the stadium, pools, the skyline band), paths (`cmPathBoxes`: fences as chains of boxes, ponds and streams as rows of see-through boxes), and walk areas (`dock`, `bridge`) that dry the water tiles under them and cut pond / stream boxes away (`cmWalkR`, `cmMinus`).
 * **In the game.** `cmBuild` ends with `cmFeatHS(d)` and `HS.CX = cmFxData(d)`. `cmFeatHS` sets the same `HS` fields the built-in maps set: smoke effects → `SM`; `nospawn` → `HS.nx0…`, `HS.NS`, `NOGO` (and `cmSpawnAt` skips spawns inside them); `house` features and indoor floors → `HS.HO`; `roadgraph` → `HS.RG = {N, A}`; `cityhall` → `HS.CH`; `store` → `HS.ST`, its `gshelf` props → `HS.SHF`, `corral`/`cartrow` props → `HS.CRL`; `stree` props → `HS.TRK`. `HS.CX = {A, T, E}` holds the animated effects and areas (`cmFxAnim`, drawn under people next to the built-in maps' animations), the ones drawn over people (`cmFxTop`: fog, wisps) and portrait eyes; both are called from `drawW` (`render/world-and-hud.js`) and only draw what is on screen.
+* **Time of day** (`world/kit-lighting.js`): a map's `d.lt = {t, a}` (file `lighting`). `cmBuild` keeps `HS.LT = cmLightData(d)` (the time, the amount and the light sources `cmLightSrc` finds: light, flicker, fire, flare, glow, wisp, siren and hazard effects, lit-window decals, lamp / lot light / candle / lantern / fireplace / traffic light props). `drawW` calls `cmLight()` after the world (and before the aim marker and HUD) when `cmLtOn()`: it fills a small light-map canvas (half the screen's resolution, a quarter in low-memory mode) with the time's colour mixed with white by the amount, adds a radial light per source on screen (plus every living player, burning ground and fireballs; sirens take turns, hazards blink, flames flicker), then multiplies the world by it and adds a faint coloured glow (`cmLightPaint`). Floating texts are then drawn on top (`ftTexts` in `game/pickups.js`). The editor previews it with the same function (`edDraw`, still picture, the player's light at the start) and map thumbnails are darkened too. Built-in maps never have it.
+* **Turned effects:** an effect's `r` (file `rot`) turns everything it draws (`fxTurn` in `cmFxBake`, `cmFxEd`, `cmFxAnim`, `cmFxTop`); light sources of sirens and hazards turn with it.
+* **Decal options:** decals can have `opts` like effects (the dead zombie's kind, pool and mirror); `cmDecDraw` passes them, defaults filled in, as `f(g, v, K, t, O)`.
 * **Walk-behind.** `vehWrap` (`world/vehicles.js`) puts tall props on the walk-behind list: the old list plus every prop with `wb: 1` (kit and forest props), forwarding colour and text.
 * **Editor** (`editor/kit-tools.js`, `editor/kit-view.js`): the Room tool (O: drag a rectangle → floor + walls in the chosen style with a doorway; Interior wall mode), Opening (D: click a wall → doorway, window, storefront glass, automatic doors, roll-up / garage door, bars or a gap; the wall is split, `edGapSplit`), Area (A), Path (T: click points, Enter / double-click to finish; Backspace, Esc), Feature (K) and Prefab (G) tools. A selected path or road graph shows point handles (drag; Alt+click deletes; double-click on the line adds). Areas and paths are cached as small pictures per piece in the editor (`edKitImg`). Every action is one undo step (`edApply` can also carry a tile patch). Seven left tabs: Terrain, Build, Paths, Props, Decals, Prefabs, Markers.
 * **Prefabs** (`editor/prefabs.js`, starter set `editor/prefab-starter.js`): `edPfFrom` turns a selection (and optionally the tiles under it) into a prefab; `edPrefabPlace` places one as new, separate things with one undo step. Your prefabs live in IndexedDB (`kv` record `prefabs`).
@@ -205,7 +210,9 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 | `world/kit-areas.js` | Areas: floors, rugs, porches, steps, docks, pools, parking, intersections, courts, roofs, the stadium, the skyline, fog and darkness; their collision |
 | `world/kit-paths.js` | Paths: roads, highway lanes, trails, sidewalks, rails, streams, painted lines, fences and rails, ponds and patches; their collision; the road graph from roads |
 | `world/kit-walls.js` | Wall styles: windows, storefront glass, doorways, automatic / roll-up / garage doors, bars, planks, metal, siding, stone, barricades, sound walls, hedges and fences |
-| `world/kit-effects.js` | Effects: fountain spray, water, fire, smoke, flickering and still lights, sirens, hazard blinkers, flares, glows, wisps, ducks; `cmFxData` / `cmFxAnim` / `cmFxTop` for the game |
+| `world/kit-effects.js` | Effects: fountain spray, water, fire, smoke, flickering and still lights, sirens, hazard blinkers, flares, glows, wisps, ducks; turning them (`fxTurn`); `cmFxData` / `cmFxAnim` / `cmFxTop` for the game |
+| `world/kit-gore.js` | More blood (spray, smear, drops, big splatter, footprints, crawl marks), the blood trail path, dead zombies drawn from the zombie sprites, body parts |
+| `world/kit-lighting.js` | Time-of-day lighting: the looks (`CMLT`), light sources (`cmLightSrc`), the light map (`cmLightPaint`), `cmLight` for the game |
 | `world/map-store.js` | Custom map storage on the device (IndexedDB) |
 | `world/custom-maps.js` | Custom maps in the game: map keys, the Free Play list (CML), cmBuild(), painting in draw order, spawning from zones |
 | `world/wall-index.js` | Fast wall lookup grid |
@@ -226,6 +233,7 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 | `editor/workshop-campaign.js` | The campaign dialog: put a map in a free slot with a wave-20 boss, or play it instead of a campaign map (and restore) |
 | `editor/kit-view.js` | Drawing kit pieces in the editor: cached area / path pictures, effect frames, fog overlays, special features, point handles, minimap marks |
 | `editor/kit-tools.js` | The kit tools: Room, Opening, Area, Path (and road graph), Feature; their tabs, previews and property fields |
+| `editor/lighting-panel.js` | The Map panel's Time of day choice and Amount slider (live, one undo step per drag), the editor preview switch |
 | `editor/prefabs.js` | Prefabs: save a selection, place a prefab, the Prefabs tab, your prefabs on the device |
 | `editor/prefab-starter.js` | The 33 starter prefabs, laid out after the built-in maps |
 | `editor/samples.js` | Sample maps built into the Workshop (`CMSAMPLES`) |

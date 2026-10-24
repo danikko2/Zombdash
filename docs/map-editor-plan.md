@@ -3,13 +3,13 @@
 The full wish list is the "Map Workshop" prompt the owner attaches. This file records how it fits the game and what each step covers (steps 1–3 and the building kit are done; step 4, converting the built-in maps, is next). Read `docs/ARCHITECTURE.md` and `docs/map-format.md` too.
 
 ## Working on this repo
-- **Where the code lives:** the source is in `src/`, split into 114 modules whose load order is in `src/js/modules.txt`. Map files that ship with the game are in `src/maps/`.
+- **Where the code lives:** the source is in `src/`, split into 117 modules whose load order is in `src/js/modules.txt`. Map files that ship with the game are in `src/maps/`.
   - `tools/build.js` builds `index.html`, which GitHub Pages serves at https://danikko2.github.io/Zombdash/.
   - A GitHub Action rebuilds `index.html` whenever `src/` changes.
 - **Don't edit `index.html` by hand.** Before starting, run `node tools/build.js --check`. If it fails, someone edited `index.html` directly, and that change has to be moved into `src/` first.
 - **Publishing each change:**
   1. Run `node tools/build.js`.
-  2. Run `node tests/run.js` (24 suites, about 4 minutes). These exceptions are expected:
+  2. Run `node tests/run.js` (25 suites, about 4 minutes). These exceptions are expected:
      - `tutorial.js` camera zoom is a known failure.
      - The `campaign.js` Rusty check is flaky and retried automatically.
      - The `balance-editor-and-test-switches.js` ground-limit check fails about 1 run in 20 on the original game too (a kill can add two drops when one slot is left), so it is retried automatically as well.
@@ -152,6 +152,13 @@ The editor can now build maps as detailed as the hand-coded ones. Map format ver
   - Highway gore chevrons: use Hazard stripes decals. Light beams: only light pools.
   - The second spawn list some maps have (`HS.sp2`): use spawn points and zones.
   - Bosses that need these features (Ice Cream Man, Fire Chief, Penny, Mayor) still aren't offered for custom campaign maps; the features are there for the conversions.
+
+### Added after the kit (Oct 23, 2026, owner's request)
+- **Blood:** five blood colours on every blood decal (fresh, dark, dried, zombie green, black ooze), six more blood decals (spray, smear, drops, big splatter, bloody footprints, crawl marks) and a blood trail path.
+- **Bodies:** a dead zombie decal that draws a real zombie sprite lying down (11 zombie kinds, pool of blood, mirror), and body parts: arm, leg, head, hand, torso, guts, bones, skull, rib cage, covered body, body bag. They are decals: flat, never solid, turned and sized freely. Decals can now have options (`options` in the file).
+- **Time of day:** Off, Morning, Day, Dusk or Night with an Amount slider (0–100%) in the Map panel, shown live in the editor and drawn by the game every frame: lamps, light effects, fires, sirens, hazards, glows, lit windows and the players light the ground. Stored as `"lighting"` in the map file (format still version 3).
+- **Turning effects:** effects have a turn (`rot`), so hazard blinkers and sirens line up with the vehicle they are on (R in the editor, or Turn in the panel).
+- The demo map's hazard lights now match the crashed car, with a dead zombie and an arm beside it. Tests: `tests/suites/gore-and-lighting.js`.
 
 ## Building kit audit (Oct 23, 2026): what the 16 built-in maps draw or do, and the kit piece for it
 This is the checklist for the step 4 conversions. Maps: **Su** Suburb, **Wa** Warehouse, **Gr** Graveyard, **Sc** School, **OW** Old West, **Ne** Neighborhood, **MB** Military Base, **Ca** Campground, **Hw** Deadway Highway, **HM** Haunted Mansion, **EF** Enchanted Forest, **Ur** Urban Outskirts, **CP** City Park, **Dt** Downtown, **Mk** Hometown Market, **MS** Main Street. Every prop in `OB` (259 before the kit) and every vehicle in `HWV` (14) was already in the asset browser; everything below was drawn by map code or done by map systems. ✓ = a kit piece reproduces it; ◐ = approximated.

@@ -132,7 +132,7 @@ case 'mapset':E.sel=[];E.rt='props';E.pr=1;return edUI();case 'save':return edSa
 case 'pl':E.pl^=1;return edUI();case 'pr':E.pr^=1;return edUI();case 'bs-':E.brush=cl(E.brush-1,1,9);return edLeft();case 'bs+':E.brush=cl(E.brush+1,1,9);return edLeft();
 case 'del':return edDelete();case 'rot-':return edRotate(-15);case 'rot+':return edRotate(15);
 case 'resize':{const f=E.root.querySelector('[data-f=nw]'),g=E.root.querySelector('[data-f=nh]');return edResize(+f.value,+g.value)}}}
-function edInput(e){const f=e.target.dataset&&e.target.dataset.f,E=ED;if(!f||!E)return;if(f=='q2'){E.q2=e.target.value;const pos=e.target.selectionStart;edLeft();const el=E.root.querySelector('[data-f=q2]');if(el&&el.focus){el.focus();try{el.setSelectionRange(pos,pos)}catch(_){}}return}if(f=='dsc'){edKitField(f,e.target);return}if(f=='q'){E.q=e.target.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid()}else if(f=='brush'){E.brush=cl(+e.target.value,1,9);const v=E.root.querySelector('.edval');if(v)v.textContent=E.brush+'×'+E.brush;E.need=1}}
+function edInput(e){const f=e.target.dataset&&e.target.dataset.f,E=ED;if(!f||!E)return;if(edLtField(f,e.target,0))return;if(f=='q2'){E.q2=e.target.value;const pos=e.target.selectionStart;edLeft();const el=E.root.querySelector('[data-f=q2]');if(el&&el.focus){el.focus();try{el.setSelectionRange(pos,pos)}catch(_){}}return}if(f=='dsc'){edKitField(f,e.target);return}if(f=='q'){E.q=e.target.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid()}else if(f=='brush'){E.brush=cl(+e.target.value,1,9);const v=E.root.querySelector('.edval');if(v)v.textContent=E.brush+'×'+E.brush;E.need=1}}
 function edChange(e){const t=e.target,f=t.dataset&&t.dataset.f,E=ED;if(!f||!E)return;const num=+t.value,ok=isFinite(num)&&t.value!=='';
 if(f=='cat'){E.cat=t.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid();return}if(f=='q'||f=='q2'||f=='brush'||f=='nw'||f=='nh')return;if(edKitField(f,t))return;
 if(f=='vcolnew'||f=='pcolnew'){const v=String(t.value).toLowerCase();if(/^#[0-9a-f]{6}$/.test(v)){if(f=='vcolnew')E.vcol=v;else if(E.asset)E.pcol[E.asset.k]=v;E.need=1;edLeft()}return}
@@ -140,6 +140,7 @@ if(f=='wth'){E.wth=cl(ok?Math.round(num):8,4,64);t.value=E.wth;return}
 if(f=='name'){const v=String(t.value).replace(/[<>]/g,'').trim().slice(0,40)||'Untitled map';if(v!==E.d.name)edSet(E.d,{name:v},'Rename map');return}
 if(f=='desc'){const v=String(t.value).replace(/[<>]/g,'').slice(0,240);if(v!==E.d.desc)edSet(E.d,{desc:v},'Change description');return}
 if(f=='ground'){if(CMTI[t.value]&&t.value!==E.d.ground)edSet(E.d,{ground:t.value},'Change default ground');return}
+if(edLtField(f,t,1))return;
 return edPropChange(f,t)}
 // ----- tools -----
 function edTool(id,keepTab){const E=ED,t=EDT.find(x=>x[0]==id);if(!t)return;if(E.pd&&id!='path')edPathFinish();E.tool=id;E.tip='';if(id!='select')E.she=0;if(t[3]&&!keepTab)E.tab=t[3];if(id=='area'&&!keepTab){const T=cmArea(E.ak);E.tab=T&&T.cat=='ground'?'paths':T&&T.cat=='effect'?'decals':'build'}if(id!='select'&&id!='place')E.hov=null;if(id=='place'&&!E.asset)E.tab='assets';if(id=='place'&&!keepTab&&E.asset)E.tab=E.asset.t=='d'||E.asset.t=='x'?'decals':'assets';E.drag=null;E.need=1;if(E.cv)E.cv.style.cursor=id=='select'?'default':id=='place'?'copy':'crosshair';edUI()}
@@ -216,7 +217,7 @@ if(t=='brush'||t=='erase'){if(!edPaintOK())return;const S_=edStroke(t=='erase'?'
 if(t=='fill'){if(!edPaintOK())return;return edFill(tx,ty,0)}if(t=='rect'){if(!edPaintOK())return;E.drag={t:'rect',x0:tx,y0:ty,er:0,r:null};return}if(t=='pick')return edPick(tx,ty,e.shiftKey);
 if(t=='place'){const a=E.asset;if(!a)return edToast('Pick a prop or vehicle on the left first');const q=edSnapPt(wx,wy);let o;
 if(a.t=='d'){const T=cmDec(a.k);o={id:cmUid('d'),dc:a.k,x:q.x,y:q.y,r:E.rot,vr:Math.round(E.pvr*100)/100};if(E.dsc!==1)o.sc=E.dsc;if(T&&T.pal&&E.pcol['d:'+a.k])o.c=E.pcol['d:'+a.k]}
-else if(a.t=='x'){const T=cmFx(a.k);o={id:cmUid('x'),fx:a.k,x:q.x,y:q.y};if(E.dsc!==1)o.sc=E.dsc;if(T&&T.pal)o.c=E.pcol['x:'+a.k]||(T.def&&T.def.c)||T.pal[0][0];if(T&&T.def&&T.def.o)o.o=edClone(T.def.o)}
+else if(a.t=='x'){const T=cmFx(a.k);o={id:cmUid('x'),fx:a.k,x:q.x,y:q.y};if(E.rot)o.r=E.rot;if(E.dsc!==1)o.sc=E.dsc;if(T&&T.pal)o.c=E.pcol['x:'+a.k]||(T.def&&T.def.c)||T.pal[0][0];if(T&&T.def&&T.def.o)o.o=edClone(T.def.o)}
 else{o=a.t=='v'?{id:cmUid('v'),veh:a.k,x:q.x,y:q.y,r:E.rot,c:E.vcol}:{id:cmUid('p'),k:a.k,x:q.x,y:q.y,r:E.rot,vr:Math.round(E.pvr*100)/100};if(a.t=='p'&&E.pcol[a.k]&&edPalOf(o))o.c=E.pcol[a.k]}
 const ly=edTargetLy('o',o);if(!ly)return;o.ly=ly;E.pvr=Math.random();edAdd(d.obj,o,'Place '+a.n);return}
 if(t=='wall'){const q=edSnapPt(wx,wy);if(!e.altKey&&!edTargetLy('w'))return;E.drag={t:e.altKey?'cut':'wall',x0:q.x,y0:q.y,r:null};return}

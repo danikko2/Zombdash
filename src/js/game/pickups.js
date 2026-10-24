@@ -10,4 +10,6 @@ function drawDrops(){const t=performance.now()/1000,PX='"Press Start 2P", ui-mon
 for(const d of DR){if(d.l<3&&Math.floor(t*8)%2)continue;const b=Math.sin(t*3+d.ph)*3,y=d.y-14+b,c=d.k=='am'?AMI[d.a||'pa'].c:d.k=='cash'?'#5ae05a':d.k=='dd'?'#ffd84a':'#ff5a4a';
 X.fillStyle='rgba(0,0,0,.3)';X.beginPath();X.ellipse(d.x,d.y+2,9-b*.6,3,0,0,7);X.fill();X.globalAlpha=.22+.12*Math.sin(t*5+d.ph);X.fillStyle=c;X.beginPath();X.arc(d.x,y,15,0,7);X.fill();X.globalAlpha=1;
 if(d.k=='am')amDrawDrop(d,y);else if(d.k=='hp'){X.save();X.translate(d.x,y);X.scale(1.4,1.4);heart(-7,-6,1);X.restore()}else{X.font=(d.k=='cash'?'16px ':'12px ')+PX;X.textAlign='center';X.textBaseline='middle';X.lineWidth=4;X.strokeStyle='#070a08';const s=d.k=='cash'?'$':'2x';X.strokeText(s,d.x,y+1);X.fillStyle=c;X.fillText(s,d.x,y+1);X.textBaseline='alphabetic'}}
-X.font='18px VT323, ui-monospace, monospace';X.textAlign='center';for(const f of FT){X.globalAlpha=Math.min(1,f.l*2);X.lineWidth=4;X.strokeStyle='#070a08';X.strokeText(f.t,f.x,f.y);X.fillStyle=f.c;X.fillText(f.t,f.x,f.y)}X.globalAlpha=1}
+if(!cmLtOn())ftTexts()}
+// floating texts (+1 HP, FROZEN...); on a custom map with time-of-day lighting they are drawn after the lighting, so they stay readable
+function ftTexts(){X.font='18px VT323, ui-monospace, monospace';X.textAlign='center';for(const f of FT){X.globalAlpha=Math.min(1,f.l*2);X.lineWidth=4;X.strokeStyle='#070a08';X.strokeText(f.t,f.x,f.y);X.fillStyle=f.c;X.fillText(f.t,f.x,f.y)}X.globalAlpha=1}

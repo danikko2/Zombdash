@@ -39,7 +39,7 @@ function cmPaintIt(g,o,t){if(t=='w')return cmWallDraw(g,o);if(t=='a')return cmAr
 function cmBuild(d){const T=d.tile;WW=d.w*T;WH=d.h*T;WL=cmColl(d);
 const sp=d.spawns.filter(s=>s.on!==false).map(s=>[s.x,s.y]),zn=d.zones.filter(z=>z.on!==false).map(z=>[z.x,z.y,z.w,z.h]);
 const st=cmStart(d);HS={cx:cl(st.x,0,WW),cy:cl(st.y,0,WH),px:cl(st.x,8,WW-8),py:cl(st.y,8,WH-8),nx0:0,nx1:0,ny0:0,ny1:0,CM:d.id};if(sp.length||zn.length)HS.CZ={p:sp,z:zn};
-cmFeatHS(d);grid();BG.width=WW;BG.height=WH;cmPaint(BG.getContext('2d'),d);HS.CX=cmFxData(d)}
+cmFeatHS(d);grid();BG.width=WW;BG.height=WH;cmPaint(BG.getContext('2d'),d);HS.CX=cmFxData(d);HS.LT=cmLightData(d)}
 // what the map's special features, effects and props tell the game's systems (the same HS fields the built-in maps set)
 function cmFeatHS(d){const F=d.feats||[],R=f=>[f.x,f.y,f.x+f.w,f.y+f.h];
 SM=d.obj.filter(o=>o.fx&&cmFx(o.fx)&&cmFx(o.fx).sm).map(o=>({x:o.x,y:o.y}));

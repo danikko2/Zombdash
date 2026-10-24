@@ -1,9 +1,9 @@
 //# world/kit-decals.js — Building kit decals: flat, non-solid pictures painted on the ground that turn and scale (cracks, stains, oil, blood, skid marks, scorch, glass, debris, puddles, potholes, manholes, leaves, moss, shadows, light patches, painted words and arrows, hazard stripes, graffiti, chalk circles, cobwebs...)
 // ---------- decals ----------
 // A decal is drawn centred on (0,0) at its own size w×h (scale 1), then the map turns it (rot) and scales it (scale 0.25–4).
-// f(g,v,K,t): v is the piece's own random number (0..1, so two cracks never look the same), K the chosen colour in shades
-// (only for decals with a pal), t the text (only for decals with txt). Decals are painted into the ground picture: no collision.
-const CMDCAT=[['wear','Wear & tear'],['crash','Crash & fire'],['gore','Blood'],['nature','Nature'],['paint','Paint & markings'],['light','Shadows & light'],['spooky','Spooky'],['misc','Litter & other']];
+// f(g,v,K,t,O): v is the piece's own random number (0..1, so two cracks never look the same), K the chosen colour in shades
+// (only for decals with a pal), t the text (only for decals with txt), O the options (defaults filled in; decals with opts). Decals are painted into the ground picture: no collision.
+const CMDCAT=[['wear','Wear & tear'],['crash','Crash & fire'],['gore','Blood'],['body','Bodies & body parts'],['nature','Nature'],['paint','Paint & markings'],['light','Shadows & light'],['spooky','Spooky'],['misc','Litter & other']];
 function dcH(v,i,k){const q=Math.sin(v*913.7+i*12.9898+k*78.233)*43758.5453;return q-Math.floor(q)}
 function dcCrack(g,v,len,n,col,w){g.strokeStyle=col;g.lineWidth=w||1;g.lineCap='round';g.beginPath();let x=-len/2,y=(dcH(v,0,1)-.5)*8,a=(dcH(v,0,2)-.5)*.6;g.moveTo(x,y);const st=len/n;
 for(let i=0;i<n;i++){a+=(dcH(v,i,3)-.5)*1.1;x+=Math.cos(a)*st;y+=Math.sin(a)*st;g.lineTo(x,y);if(dcH(v,i,4)<.35){const b=a+(dcH(v,i,5)<.5?-1:1)*(.8+dcH(v,i,6)*.6);g.moveTo(x,y);g.lineTo(x+Math.cos(b)*st*.8,y+Math.sin(b)*st*.8);g.moveTo(x,y)}}g.stroke();g.lineCap='butt'}
@@ -14,6 +14,8 @@ const PDPAINT=[['#e8e8e0','White'],['#e3b92b','Yellow'],['#d8403a','Red'],['#2f6
 const PDGRAF=[['#ff3a8a','Pink'],['#3ae8ff','Cyan'],['#ffe03a','Yellow'],['#8aff3a','Lime'],['#c83aff','Purple'],['#ff7a1a','Orange'],['#e8e8e0','White'],['#16161a','Black']];
 const PDLEAF=[['#c8762a','Autumn'],['#a8462a','Red'],['#d8a43a','Gold'],['#5a8a3a','Green'],['#7a5a32','Brown']];
 const PDMAT=[['#7a3b3b','Red'],['#4a5a7a','Blue'],['#5a6a4a','Green'],['#6b4a2a','Brown'],['#3a3a40','Black']];
+// blood: fresh, dark, dried, zombie green, black ooze (kit-gore.js adds more blood and the bodies)
+const PDBLOOD=[['#7a1414','Fresh red'],['#560c12','Dark red'],['#4e2e1c','Dried brown'],['#4e6a1e','Zombie green'],['#26201c','Black ooze']];
 const PDLIGHT=[['#ffd27a','Warm'],['#c8e0ff','Cool'],['#ff9a4a','Fire'],['#b6ffd8','Ghost'],['#ff5a5a','Red']];
 const CMDK=[
 // wear & tear
@@ -35,10 +37,10 @@ const CMDK=[
 {id:'tiremarks',n:'Tire tracks',cat:'crash',w:110,h:20,f(g,v){g.fillStyle='rgba(20,16,12,.35)';for(const o of[-6,5])for(let x=-52;x<52;x+=3)g.fillRect(x,o+Math.sin(x/18+v*6)*2,2,3)}},
 {id:'ash',n:'Ash & soot',cat:'crash',w:70,h:44,f(g,v){dcBlob(g,0,0,30,'rgba(30,28,26,.4)',v,28);for(let i=0;i<20;i++){g.fillStyle=i%2?'rgba(120,116,110,.5)':'rgba(10,8,6,.5)';g.fillRect(-28+dcH(v,i,29)*56,-14+dcH(v,i,30)*28,2,1)}}},
 // blood
-{id:'blood',n:'Blood splat',cat:'gore',w:44,h:34,f(g,v){dcBlob(g,0,0,16,'#6e1010',v,31);dcBlob(g,-2,-1,10,'#8a1818',v,32);for(let i=0;i<7;i++){const a=dcH(v,i,33)*6.283,r=16+dcH(v,i,34)*6;dcEll(g,Math.cos(a)*r,Math.sin(a)*r*.7,1.5+dcH(v,i,35)*2,1.2,'#7a1414')}}},
-{id:'bloodpool',n:'Blood pool',cat:'gore',w:70,h:40,f(g,v){dcBlob(g,0,0,30,'#5a0c0c',v,36);dcBlob(g,-3,-2,22,'#7a1212',v,37);dcEll(g,-8,-6,8,2,'rgba(255,160,160,.25)')}},
-{id:'bloodtrail',n:'Blood trail',cat:'gore',w:120,h:24,f(g,v){for(let i=0;i<14;i++){const x=-56+i*8+dcH(v,i,38)*4,y=Math.sin(i*.7+v*5)*5;dcEll(g,x,y,2+dcH(v,i,39)*3,1.5+dcH(v,i,40)*1.5,i%3?'#7a1414':'#5a0c0c')}g.strokeStyle='rgba(110,16,16,.5)';g.lineWidth=3;g.beginPath();g.moveTo(-56,0);for(let x=-56;x<=56;x+=8)g.lineTo(x,Math.sin((x+56)/8*.7+v*5)*5);g.stroke()}},
-{id:'handprint',n:'Bloody handprints',cat:'gore',w:44,h:30,f(g,v){for(let k=0;k<2;k++){const ox=k?10:-10,oy=k?4:-4;dcEll(g,ox,oy,5,6,'#7a1414');for(let i=0;i<4;i++)g.fillRect(ox-5+i*3,oy-11+(i%3==1?-1:0),2,5);g.fillRect(ox+5,oy-3,4,2)}}},
+{id:'blood',n:'Blood splat',cat:'gore',w:44,h:34,pal:PDBLOOD,f(g,v,K){dcBlob(g,0,0,16,K.d,v,31);dcBlob(g,-2,-1,10,K.l,v,32);for(let i=0;i<7;i++){const a=dcH(v,i,33)*6.283,r=16+dcH(v,i,34)*6;dcEll(g,Math.cos(a)*r,Math.sin(a)*r*.7,1.5+dcH(v,i,35)*2,1.2,K.b)}}},
+{id:'bloodpool',n:'Blood pool',cat:'gore',w:70,h:40,pal:PDBLOOD,f(g,v,K){dcBlob(g,0,0,30,K.dd,v,36);dcBlob(g,-3,-2,22,K.b,v,37);dcEll(g,-8,-6,8,2,'rgba(255,200,200,.22)')}},
+{id:'bloodtrail',n:'Blood trail',cat:'gore',w:120,h:24,pal:PDBLOOD,f(g,v,K){for(let i=0;i<14;i++){const x=-56+i*8+dcH(v,i,38)*4,y=Math.sin(i*.7+v*5)*5;dcEll(g,x,y,2+dcH(v,i,39)*3,1.5+dcH(v,i,40)*1.5,i%3?K.b:K.dd)}g.globalAlpha*=.5;g.strokeStyle=K.d;g.lineWidth=3;g.beginPath();g.moveTo(-56,0);for(let x=-56;x<=56;x+=8)g.lineTo(x,Math.sin((x+56)/8*.7+v*5)*5);g.stroke()}},
+{id:'handprint',n:'Bloody handprints',cat:'gore',w:44,h:30,pal:PDBLOOD,f(g,v,K){for(let k=0;k<2;k++){const ox=k?10:-10,oy=k?4:-4;dcEll(g,ox,oy,5,6,K.b);for(let i=0;i<4;i++)g.fillRect(ox-5+i*3,oy-11+(i%3==1?-1:0),2,5);g.fillRect(ox+5,oy-3,4,2)}}},
 // nature
 {id:'leaves',n:'Leaf litter',cat:'nature',w:70,h:50,pal:PDLEAF,f(g,v,K){for(let i=0;i<34;i++){const a=dcH(v,i,41)*6.283,r=Math.sqrt(dcH(v,i,42))*30;const c=[K.b,K.d,K.l,'#7a5a32'][i%4];g.fillStyle=c;const x=Math.cos(a)*r,y=Math.sin(a)*r*.7;g.fillRect(x,y,3,2);if(i%3==0)g.fillRect(x+1,y-1,1,1)}}},
 {id:'twigs',n:'Twigs',cat:'nature',w:56,h:36,f(g,v){g.strokeStyle='#3a2a1a';g.lineWidth=1;g.beginPath();for(let i=0;i<9;i++){const x=-24+dcH(v,i,43)*48,y=-14+dcH(v,i,44)*28,a=dcH(v,i,45)*6.283,l=5+dcH(v,i,46)*9;g.moveTo(x,y);g.lineTo(x+Math.cos(a)*l,y+Math.sin(a)*l)}g.stroke()}},
@@ -78,5 +80,5 @@ g.lineWidth=3;g.strokeStyle=K.b;g.beginPath();g.moveTo(-30,0);for(let k=0;k<7;k+
 {id:'threshold',n:'Door threshold',cat:'misc',w:52,h:8,f(g){g.fillStyle='#c9a36a';g.fillRect(-26,-3,52,6);g.fillStyle='#a8804a';g.fillRect(-26,2,52,1)}}];
 for(const t of CMDK)cmAddDec(t);
 // draw a decal of a map (o: dc, x, y, r, sc, c, op, tx) into g
-function cmDecDraw(g,o){const T=cmDec(o.dc);if(!T)return;const v=o.vr!=null?o.vr:cmH(o.x,o.y,5),K=T.pal?pcK(cmCol(o.c,T.pal[0][0])):null,sc=cl(+o.sc||1,.25,4);
-g.save();g.translate(o.x,o.y);if(o.r)g.rotate(o.r*Math.PI/180);if(sc!==1)g.scale(sc,sc);g.globalAlpha=cl(o.op==null?1:+o.op,.05,1);try{T.f(g,v,K,T.txt?cmTxt(o.tx,T.txt):'')}finally{g.restore()}}
+function cmDecDraw(g,o){const T=cmDec(o.dc);if(!T)return;const v=o.vr!=null?o.vr:cmH(o.x,o.y,5),K=T.pal?pcK(cmCol(o.c,T.pal[0][0])):null,sc=cl(+o.sc||1,.25,4),O=T.opts?Object.assign({},T.def&&T.def.o,o.o):null;
+g.save();g.translate(o.x,o.y);if(o.r)g.rotate(o.r*Math.PI/180);if(sc!==1)g.scale(sc,sc);g.globalAlpha=cl(o.op==null?1:+o.op,.05,1);try{T.f(g,v,K,T.txt?cmTxt(o.tx,T.txt):'',O)}finally{g.restore()}}

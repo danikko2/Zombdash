@@ -6,6 +6,8 @@
 // roads layer is a second tile grid (rtr, an index into rpal, 0 = nothing) painted over it.
 // Older files are upgraded on load by CMMIG (1 -> 2 added layers, 2 -> 3 the building kit's layers); nothing in them is dropped.
 // Version 3 adds the building kit (world/kit-*.js): decals and effects (in obj), areas, paths and special features.
+// Later additions to version 3 (optional, so no version bump): "lighting" (time of day, world/kit-lighting.js), "rot" on effects,
+// "options" on decals (dead zombies).
 // functions and registries only: nothing here runs during the first map build at boot
 const CMVER=3,CMTILE=32,CMMIN=[20,15],CMMAX=128;
 function cmH(a,b,k){const v=Math.sin(a*12.9898+b*78.233+k*37.719)*43758.5453;return v-Math.floor(v)}
@@ -174,6 +176,7 @@ if(o.lk)p.locked=true;if(o.hd)p.editorHidden=true;return p}
 function cmWrite(d){const used=new Set(['.']),tu=new Set([d.ground]);for(let i=0;i<d.ter.length;i++)tu.add(d.pal[d.ter[i]]);
 const T=cmLeg([...tu],CMTI,used),rows=[];for(let y=0;y<d.h;y++){let s='';for(let x=0;x<d.w;x++)s+=T.by[d.pal[d.ter[y*d.w+x]]];rows.push(s)}
 const out=Object.assign({},d.extra||{},{format:'zombdash-map',version:CMVER,id:d.id,name:d.name,description:d.desc||'',tileSize:d.tile,width:d.w,height:d.h,ground:d.ground,terrain:{legend:T.L,rows}});
+if(d.lt&&typeof d.lt.t=='string'&&d.lt.t){out.lighting={time:d.lt.t,amount:Math.round(cl(+d.lt.a||0,0,1)*100)/100}}else delete out.lighting;
 const rd=cmSparse(d,d.rtr,d.rpal,CMTI);if(rd)out.roads=rd;else delete out.roads;
 const ov=cmSparse(d,d.ovl,d.opal,CMOI);if(ov)out.overlay=ov;else delete out.overlay;
 out.layers=d.layers.map(l=>{const q={id:l.id,name:l.n,kind:l.k=='t'?'tiles':'objects'};if(l.hid)q.editorHidden=true;if(l.lock)q.locked=true;return q});
@@ -181,8 +184,8 @@ out.props=d.obj.filter(o=>!o.veh&&!o.dc&&!o.fx).map(o=>{const p={id:o.id,kind:o.
 out.vehicles=d.obj.filter(o=>o.veh).map(o=>{const p={id:o.id,kind:o.veh,x:cmR1(o.x),y:cmR1(o.y),rot:cmR1(o.r||0)};if(o.c)p.color=o.c;if(o.dmg)p.damaged=true;if(o.burn)p.burnt=true;if(o.tx)p.text=o.tx;return cmWObj(o,p,1)});
 // the building kit (version 3): written only when the map has some
 const kit=(nm,L)=>{if(L.length)out[nm]=L;else delete out[nm]},opt=(o,p)=>{if(o.o&&Object.keys(o.o).length)p.options=Object.assign({},o.o);return p};
-kit('decals',d.obj.filter(o=>o.dc).map(o=>{const p={id:o.id,kind:o.dc,x:cmR1(o.x),y:cmR1(o.y)};if(o.r)p.rot=cmR1(o.r);if(o.sc!=null&&o.sc!==1)p.scale=Math.round(o.sc*100)/100;if(o.c)p.color=o.c;if(o.op!=null&&o.op!==1)p.opacity=Math.round(o.op*100)/100;if(o.tx)p.text=o.tx;if(o.vr!=null)p.var=Math.round(o.vr*100)/100;return cmWObj(o,p,0)}));
-kit('effects',d.obj.filter(o=>o.fx).map(o=>{const p={id:o.id,kind:o.fx,x:cmR1(o.x),y:cmR1(o.y)};if(o.sc!=null&&o.sc!==1)p.size=Math.round(o.sc*100)/100;if(o.c)p.color=o.c;return cmWObj(o,opt(o,p),0)}));
+kit('decals',d.obj.filter(o=>o.dc).map(o=>{const p={id:o.id,kind:o.dc,x:cmR1(o.x),y:cmR1(o.y)};if(o.r)p.rot=cmR1(o.r);if(o.sc!=null&&o.sc!==1)p.scale=Math.round(o.sc*100)/100;if(o.c)p.color=o.c;if(o.op!=null&&o.op!==1)p.opacity=Math.round(o.op*100)/100;if(o.tx)p.text=o.tx;if(o.vr!=null)p.var=Math.round(o.vr*100)/100;return cmWObj(o,opt(o,p),0)}));
+kit('effects',d.obj.filter(o=>o.fx).map(o=>{const p={id:o.id,kind:o.fx,x:cmR1(o.x),y:cmR1(o.y)};if(o.r)p.rot=cmR1(o.r);if(o.sc!=null&&o.sc!==1)p.size=Math.round(o.sc*100)/100;if(o.c)p.color=o.c;return cmWObj(o,opt(o,p),0)}));
 kit('areas',(d.areas||[]).map(o=>{const p={id:o.id,kind:o.a,x:cmR1(o.x),y:cmR1(o.y),w:cmR1(o.w),h:cmR1(o.h)};if(o.c)p.color=o.c;if(o.c2)p.color2=o.c2;if(o.tx)p.text=o.tx;return cmWObj(o,opt(o,p),0)}));
 kit('paths',(d.paths||[]).map(o=>{const p={id:o.id,kind:o.p,points:(o.pts||[]).map(q=>[cmR1(o.x+q[0]),cmR1(o.y+q[1])])};if(o.w)p.width=cmR1(o.w);if(o.c)p.color=o.c;if(o.sharp!=null)p.sharp=!!o.sharp;return cmWObj(o,opt(o,p),0)}));
 kit('features',(d.feats||[]).map(o=>{const p={id:o.id,kind:o.f};if(o.pts){p.nodes=o.pts.map(q=>[cmR1(o.x+q[0]),cmR1(o.y+q[1])]);p.edges=(o.e||[]).map(e=>[e[0],e[1]])}else{p.x=cmR1(o.x);p.y=cmR1(o.y);p.w=cmR1(o.w);p.h=cmR1(o.h)}const q=cmWObj(o,p,0);delete q.order;delete q.solid;return q}));
@@ -265,9 +268,9 @@ const opts=(p,o,nm,i)=>{if(p.options==null)return 1;const v=p.options;if(!v||typ
 for(const k of Object.keys(v)){if(n>=16||!/^[a-zA-Z]\w{0,15}$/.test(k))continue;const x=v[k];if(typeof x=='number'&&isFinite(x)||typeof x=='boolean')r[k]=x;else if(typeof x=='string')r[k]=x.replace(/[<>]/g,'').slice(0,24);else continue;n++}if(n)o.o=r;return 1};
 const ukit={};const ku=(t,k)=>{ukit[t+' "'+k+'"']=(ukit[t+' "'+k+'"']||0)+1};
 list(j.decals,'decals').forEach((p,i)=>{if(!p||typeof p.kind!='string'||!p.kind||!num(p.x)||!num(p.y))return bad('decals',i,'needs "kind", "x" and "y".');if(p.rot!=null&&!num(p.rot))return bad('decals',i,'has a "rot" that is not a number.');if(p.scale!=null&&!(num(p.scale)&&p.scale>0))return bad('decals',i,'has a "scale" that is not a positive number.');
-const o={id:uid(p.id,'d'),dc:p.kind,x:p.x,y:p.y,r:p.rot||0};if(p.scale!=null&&p.scale!==1)o.sc=cl(p.scale,.25,4);if(col(p.color))o.c=col(p.color);if(num(p.opacity)&&p.opacity!==1)o.op=cl(p.opacity,.05,1);if(typeof p.text=='string'&&p.text)o.tx=cmTxt(p.text,40);if(num(p.var))o.vr=cl(p.var,0,1);if(!obj(p,o,'decals',i,'o',0))return;d.obj.push(o);if(!cmDec(p.kind))ku('decal',p.kind)});
-list(j.effects,'effects').forEach((p,i)=>{if(!p||typeof p.kind!='string'||!p.kind||!num(p.x)||!num(p.y))return bad('effects',i,'needs "kind", "x" and "y".');if(p.size!=null&&!(num(p.size)&&p.size>0))return bad('effects',i,'has a "size" that is not a positive number.');
-const o={id:uid(p.id,'x'),fx:p.kind,x:p.x,y:p.y};if(p.size!=null&&p.size!==1)o.sc=cl(p.size,.25,4);if(col(p.color))o.c=col(p.color);if(!opts(p,o,'effects',i)||!obj(p,o,'effects',i,'o',0))return;d.obj.push(o);if(!cmFx(p.kind))ku('effect',p.kind)});
+const o={id:uid(p.id,'d'),dc:p.kind,x:p.x,y:p.y,r:p.rot||0};if(p.scale!=null&&p.scale!==1)o.sc=cl(p.scale,.25,4);if(col(p.color))o.c=col(p.color);if(num(p.opacity)&&p.opacity!==1)o.op=cl(p.opacity,.05,1);if(typeof p.text=='string'&&p.text)o.tx=cmTxt(p.text,40);if(num(p.var))o.vr=cl(p.var,0,1);if(!opts(p,o,'decals',i)||!obj(p,o,'decals',i,'o',0))return;d.obj.push(o);if(!cmDec(p.kind))ku('decal',p.kind)});
+list(j.effects,'effects').forEach((p,i)=>{if(!p||typeof p.kind!='string'||!p.kind||!num(p.x)||!num(p.y))return bad('effects',i,'needs "kind", "x" and "y".');if(p.size!=null&&!(num(p.size)&&p.size>0))return bad('effects',i,'has a "size" that is not a positive number.');if(p.rot!=null&&!num(p.rot))return bad('effects',i,'has a "rot" that is not a number.');
+const o={id:uid(p.id,'x'),fx:p.kind,x:p.x,y:p.y};if(p.rot)o.r=p.rot;if(p.size!=null&&p.size!==1)o.sc=cl(p.size,.25,4);if(col(p.color))o.c=col(p.color);if(!opts(p,o,'effects',i)||!obj(p,o,'effects',i,'o',0))return;d.obj.push(o);if(!cmFx(p.kind))ku('effect',p.kind)});
 list(j.areas,'areas').forEach((p,i)=>{if(!p||typeof p.kind!='string'||!p.kind||!num(p.x)||!num(p.y)||!num(p.w)||!num(p.h)||p.w<=0||p.h<=0)return bad('areas',i,'needs "kind", "x", "y" and a positive "w" and "h".');
 const o={id:uid(p.id,'a'),a:p.kind,x:p.x,y:p.y,w:p.w,h:p.h};if(col(p.color))o.c=col(p.color);if(col(p.color2))o.c2=col(p.color2);if(typeof p.text=='string'&&p.text)o.tx=cmTxt(p.text,40);if(!opts(p,o,'areas',i)||!obj(p,o,'areas',i,'a',0))return;d.areas.push(o);if(!cmArea(p.kind))ku('area',p.kind)});
 list(j.paths,'paths').forEach((p,i)=>{const P=p&&pts(p.points);if(!p||typeof p.kind!='string'||!p.kind||!P||P.length<2)return bad('paths',i,'needs "kind" and "points": a list of at least two [x, y].');if(P.length>400)return bad('paths',i,'has more than 400 points.');if(p.width!=null&&!(num(p.width)&&p.width>0))return bad('paths',i,'has a "width" that is not a positive number.');
@@ -282,13 +285,15 @@ for(const k in unk)Wn.push('Unknown '+(k.endsWith(' (vehicle)')?'vehicle "'+k.sl
 if(Array.isArray(j.order)){const pos={};j.order.forEach((id,i)=>{if(typeof id=='string')pos[id]=i});d.obj.forEach((o,i)=>o._o=pos[o.id]!=null?pos[o.id]:1e6+i);d.obj.sort((a,b)=>a._o-b._o);for(const o of d.obj)delete o._o}
 list(j.walls,'walls').forEach((q,i)=>{if(!q||!num(q.x)||!num(q.y)||!num(q.w)||!num(q.h)||q.w<=0||q.h<=0)return bad('walls',i,'needs "x", "y" and a positive "w" and "h".');const s=typeof q.style=='string'?q.style:'wall';if(!CMWI[s])Wn.push('Unknown wall style "'+s+'": drawn as a plain wall.');
 const o={id:uid(q.id,'w'),x:q.x,y:q.y,w:q.w,h:q.h,s};if(typeof q.color=='string'&&/^#[0-9a-f]{6}$/i.test(q.color))o.c=q.color.toLowerCase();if(!obj(q,o,'walls',i,'w',0))return;d.walls.push(o)});
+// time of day (world/kit-lighting.js): {"time": "day" | "morning" | "dusk" | "night", "amount": 0–1}
+const lg=j.lighting;if(lg!=null){if(typeof lg!='object'||Array.isArray(lg))E.push('"lighting" must be an object with "time" and "amount".');else if(lg.amount!=null&&!num(lg.amount))E.push('"lighting.amount" must be a number from 0 to 1.');else{const tm=typeof lg.time=='string'&&lg.time?lg.time.replace(/[<>]/g,'').slice(0,16):'day';if(!cmLtP(tm))Wn.push('Unknown time of day "'+tm+'": the map shows in plain daylight.');d.lt={t:tm,a:num(lg.amount)?cl(lg.amount,0,1):cmLtDef(tm)}}}
 const ps=j.playerStart;if(ps==null)Wn.push('No "playerStart": the player starts in the middle of the map.');else if(!num(ps.x)||!num(ps.y))E.push('"playerStart" needs "x" and "y".');else d.start={x:ps.x,y:ps.y};
 const zs_=j.zombieSpawns;if(zs_!=null&&typeof zs_!='object')E.push('"zombieSpawns" must be an object with "points" and "zones".');else if(zs_){
 list(zs_.points,'zombieSpawns.points').forEach((p,i)=>{if(!p||!num(p.x)||!num(p.y))return bad('zombieSpawns.points',i,'needs "x" and "y".');const o={id:uid(p.id,'s'),x:p.x,y:p.y,on:p.enabled!==false};if(!obj(p,o,'zombieSpawns.points',i,'s',0))return;d.spawns.push(o)});
 list(zs_.zones,'zombieSpawns.zones').forEach((p,i)=>{if(!p||!num(p.x)||!num(p.y)||!num(p.w)||!num(p.h)||p.w<=0||p.h<=0)return bad('zombieSpawns.zones',i,'needs "x", "y" and a positive "w" and "h".');const o={id:uid(p.id,'z'),x:p.x,y:p.y,w:p.w,h:p.h,on:p.enabled!==false};if(!obj(p,o,'zombieSpawns.zones',i,'z',0))return;d.zones.push(o)})}
 for(const id of newLy)Wn.push('Something is on a layer "'+id+'" that the file doesn\'t list: that layer was added.');
 // fields this version doesn't know are kept and written back unchanged
-const known=new Set(['format','version','id','name','description','tileSize','width','height','ground','terrain','roads','overlay','layers','props','vehicles','walls','playerStart','zombieSpawns','created','updated','order','decals','effects','areas','paths','features']);
+const known=new Set(['format','version','id','name','description','tileSize','width','height','ground','terrain','roads','overlay','layers','props','vehicles','walls','playerStart','zombieSpawns','created','updated','order','decals','effects','areas','paths','features','lighting']);
 for(const k in j)if(!known.has(k))d.extra[k]=j[k];
 const W_=w*CMTILE,H_=h*CMTILE,out=d.obj.filter(o=>o.x<0||o.y<0||o.x>W_||o.y>H_).length;if(out)Wn.push(out+' prop'+(out>1?'s are':' is')+' outside the map edges.');
 if(d.start&&(d.start.x<0||d.start.y<0||d.start.x>W_||d.start.y>H_))Wn.push('The player start is outside the map.');

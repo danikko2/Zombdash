@@ -46,6 +46,8 @@ if(!lo){const k=dpr*z,ox=-vx0*k,oy=-vy0*k;for(const it of edDL()){const o=it.o;i
 if(it.t=='a'||it.t=='l'){const b=edKitBox(o,it.t);if(inV(b.x0,b.y0,b.x1,b.y1))edKitLook(g,o,it.t);continue}if(o.fx){if(inV(o.x-200,o.y-200,o.x+200,o.y+200)){g.setTransform(k,0,0,k,ox,oy);edKitLook(g,o,'o')}continue}
 const sp=edSprite(o),r=sp?Math.max(sp.c.width,sp.c.height):30;if(!inV(o.x-r,o.y-r,o.x+r,o.y+r))continue;if(!sp){edObjLook(g,o,1);continue}if(!o.r){g.drawImage(sp.c,o.x-sp.ax,o.y-sp.ay);continue}
 const a=o.r*Math.PI/180,c=Math.cos(a)*k,s_=Math.sin(a)*k;g.setTransform(c,s_,-s_,c,ox+o.x*k,oy+o.y*k);g.drawImage(sp.c,-sp.ax,-sp.ay);g.setTransform(k,0,0,k,ox,oy)}}
+// time-of-day lighting over the map (Map panel: time, amount, show in the editor); the player's own light is shown at the start
+if(d.lt&&E.ltv!==0){g.setTransform(dpr*z,0,0,dpr*z,-vx0*z*dpr,-vy0*z*dpr);const L=edLtSrc();cmLightPaint(g,d.lt,d.start?L.concat([{x:d.start.x,y:d.start.y-10,r:150,c:'#fff2dc',i:.95,pl:1}]):L,vx0,vy0,w/z,h/z,Math.min(1,dpr*z*.5),0,1)}
 // collision
 if(E.coll){const C=edColl();g.lineWidth=px;for(const c of C){if(!inV(c[0],c[1],c[0]+c[2],c[1]+c[3]))continue;const col=c[4]==2?'70,160,255':c[4]==1?'255,170,40':'255,60,60';g.fillStyle='rgba('+col+',.32)';g.fillRect(c[0],c[1],c[2],c[3]);g.strokeStyle='rgba('+col+',.9)';g.strokeRect(c[0],c[1],c[2],c[3])}}
 // special features (editor only) and spawn zones
@@ -88,7 +90,7 @@ else if(D_.t=='wall'){edWallLook(g,{x:r.x,y:r.y,w:r.w,h:r.h,s:E.wall},.8);g.line
 else if(D_.t=='cut'){g.fillStyle='rgba(255,60,60,.25)';g.fillRect(r.x,r.y,r.w,r.h);g.setLineDash([5*px,4*px]);g.lineWidth=2*px;g.strokeStyle='#ff5a4a';g.strokeRect(r.x,r.y,r.w,r.h);g.setLineDash([])}
 else{g.fillStyle='rgba(216,64,58,.22)';g.fillRect(r.x,r.y,r.w,r.h);g.setLineDash([6*px,4*px]);g.lineWidth=2*px;g.strokeStyle='#ff6a5a';g.strokeRect(r.x,r.y,r.w,r.h);g.setLineDash([])}
 const lab=Math.round(r.w)+' × '+Math.round(r.h);g.save();g.setTransform(1,0,0,1,0,0);const dpr=g.canvas.width/E.cv.clientWidth;g.scale(dpr,dpr);g.font='16px VT323, monospace';g.textAlign='left';g.textBaseline='bottom';const sx=edSX(r.x+r.w)+6,sy=edSY(r.y+r.h)+18;g.fillStyle='rgba(0,0,0,.6)';g.fillRect(sx-3,sy-17,g.measureText(lab).width+6,17);g.fillStyle='#ffcf40';g.fillText(lab,sx,sy);g.restore();return}
-if(t=='place'&&E.asset&&!D_){const a=E.asset,p=edSnapPt(m.wx,m.wy),o=a.t=='v'?{veh:a.k,x:p.x,y:p.y,r:E.rot,c:E.vcol}:a.t=='d'?{dc:a.k,x:p.x,y:p.y,r:E.rot,sc:E.dsc,vr:Math.round(E.pvr*100)/100,c:E.pcol['d:'+a.k]}:a.t=='x'?{fx:a.k,x:p.x,y:p.y,sc:E.dsc,c:E.pcol['x:'+a.k]}:{k:a.k,x:p.x,y:p.y,r:E.rot,vr:E.pvr,c:E.pcol[a.k]};if(a.t=='x'){g.globalAlpha=.7;edKitLook(g,o,'o');g.globalAlpha=1;return}edObjLook(g,o,.6);const f=a.t=='p'&&cmFoot(o);if(f){g.lineWidth=px;g.strokeStyle='rgba(255,170,40,.9)';g.strokeRect(f[0],f[1],f[2],f[3])}return}
+if(t=='place'&&E.asset&&!D_){const a=E.asset,p=edSnapPt(m.wx,m.wy),o=a.t=='v'?{veh:a.k,x:p.x,y:p.y,r:E.rot,c:E.vcol}:a.t=='d'?{dc:a.k,x:p.x,y:p.y,r:E.rot,sc:E.dsc,vr:Math.round(E.pvr*100)/100,c:E.pcol['d:'+a.k]}:a.t=='x'?{fx:a.k,x:p.x,y:p.y,r:E.rot,sc:E.dsc,c:E.pcol['x:'+a.k]}:{k:a.k,x:p.x,y:p.y,r:E.rot,vr:E.pvr,c:E.pcol[a.k]};if(a.t=='x'){g.globalAlpha=.7;edKitLook(g,o,'o');g.globalAlpha=1;return}edObjLook(g,o,.6);const f=a.t=='p'&&cmFoot(o);if(f){g.lineWidth=px;g.strokeStyle='rgba(255,170,40,.9)';g.strokeRect(f[0],f[1],f[2],f[3])}return}
 if((t=='wall'||t=='zone')&&!D_){const p=edSnapPt(m.wx,m.wy);g.fillStyle='#ffcf40';g.fillRect(p.x-3*px,p.y-3*px,6*px,6*px)}}
 // ----- minimap -----
 function edMiniTex(){const E=ED,d=E.d,c=E.mmc||(E.mmc=document.createElement('canvas'));c.width=d.w;c.height=d.h;const q=c.getContext('2d'),im=q.createImageData(d.w,d.h),px=im.data,col={};
@@ -104,6 +106,7 @@ const vw=E.cv.clientWidth/E.cam.z,vh=E.cv.clientHeight/E.cam.z;g.strokeStyle='#f
 // ----- thumbnails (Workshop list and Free Play) -----
 // the real map painted small, the same way the game paints it, letterboxed into 4:3
 function edMakeThumb(d){const T=d.tile,MW=d.w*T,MH=d.h*T,k=Math.min(1,960/MW,720/MH),a=document.createElement('canvas');a.width=Math.ceil(MW*k);a.height=Math.ceil(MH*k);const g=a.getContext('2d');g.scale(k,k);
-try{cmGround(g,d,0,0,d.w,d.h,0);for(const{o,w,t}of cmDrawList(d,0)){if(w){cmWallDraw(g,o);continue}if(t=='a'||t=='l'||o.dc||o.fx){try{cmPaintIt(g,o,t)}catch(e){}continue}const s=edSprite(o);if(!s)continue;g.save();g.translate(o.x,o.y);if(o.r)g.rotate(o.r*Math.PI/180);g.drawImage(s.c,-s.ax,-s.ay);g.restore()}}catch(e){}
+try{cmGround(g,d,0,0,d.w,d.h,0);for(const{o,w,t}of cmDrawList(d,0)){if(w){cmWallDraw(g,o);continue}if(t=='a'||t=='l'||o.dc||o.fx){try{cmPaintIt(g,o,t)}catch(e){}continue}const s=edSprite(o);if(!s)continue;g.save();g.translate(o.x,o.y);if(o.r)g.rotate(o.r*Math.PI/180);g.drawImage(s.c,-s.ax,-s.ay);g.restore()}
+if(d.lt)cmLightPaint(g,d.lt,cmLightSrc(d),0,0,MW,MH,Math.min(.5,k*.5),0,1)}catch(e){}
 const o=document.createElement('canvas');o.width=400;o.height=300;const q=o.getContext('2d');q.fillStyle='#0a0f0b';q.fillRect(0,0,400,300);const s=Math.min(400/a.width,300/a.height),w=a.width*s,h=a.height*s;q.imageSmoothingEnabled=true;try{q.imageSmoothingQuality='high'}catch(e){}q.drawImage(a,(400-w)/2,(300-h)/2,w,h);
 a.width=a.height=0;let u='';try{u=o.toDataURL('image/jpeg',.82)}catch(e){}o.width=o.height=0;return u}

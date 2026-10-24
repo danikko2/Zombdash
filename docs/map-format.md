@@ -32,6 +32,7 @@ A Zombdash map is one JSON file. The Map Workshop writes it (**export**), reads 
 | `layers` | The layers, bottom to top. Optional: left out, you get the 11 default layers. |
 | `props`, `vehicles`, `walls` | Things from the step 1–2 format. |
 | `decals`, `effects`, `areas`, `paths`, `features` | The building kit (version 3). |
+| `lighting` | Time of day: `{"time": "day" \| "morning" \| "dusk" \| "night", "amount": 0–1}` ([below](#time-of-day-lighting)). Left out: the map looks as painted. |
 | `playerStart` | `{"x","y"}` where the run starts. Left out: the middle of the map (and the editor lists it as a problem). |
 | `zombieSpawns` | `{"points":[{"x","y","enabled"}], "zones":[{"x","y","w","h","enabled"}]}`. With none, zombies come from off-screen as on the built-in maps. Spawns inside a no-spawn feature are skipped. |
 | `created`, `updated` | ISO dates, written by the editor. |
@@ -132,18 +133,25 @@ Flat pictures on the ground: never solid, drawn under props.
 { "kind": "skid", "x": 470, "y": 596, "rot": 12, "scale": 1.3, "opacity": 0.8 }
 { "kind": "text", "x": 300, "y": 644, "text": "SLOW", "color": "#ffffff" }
 ```
-Fields: `kind`, `x`,`y` (the centre), `rot`, `scale` (0.25–4), `opacity` (0.05–1), `color` (decals marked *colour*), `text` (decals marked *text*), `var` (0–1, a variation).
+Fields: `kind`, `x`,`y` (the centre), `rot`, `scale` (0.25–4), `opacity` (0.05–1), `color` (decals marked *colour*), `text` (decals marked *text*), `options` (decals that have options: the dead zombie), `var` (0–1, a variation).
 
 | Group | Decals (size in px at scale 1) |
 |---|---|
 | Wear & tear | `crack` 70×30, `crack_big` 90×70, `crack_grass` 70×34, `oil` 60×34, `stain` 50×30, `patch` 60×40, `pothole` 46×30, `manhole` 26×26, `drain` 30×14, `puddle` 64×32 |
 | Crash & fire | `skid` 120×26, `scorch` 100×60, `glass` 54×40, `debris` 80×50, `tiremarks` 110×20, `ash` 70×44 |
-| Blood | `blood` 44×34, `bloodpool` 70×40, `bloodtrail` 120×24, `handprint` 44×30 |
+| Blood (all *colour*: `#7a1414` fresh red, `#560c12` dark red, `#4e2e1c` dried brown, `#4e6a1e` zombie green, `#26201c` black ooze; any `#rrggbb` works) | `blood` 44×34 splat, `bloodpool` 70×40, `bloodtrail` 120×24, `handprint` 44×30, `bloodspray` 84×40 (a spray from the left end), `bloodsmear` 76×32, `blooddrips` 54×40, `bloodsplash` 96×74 (big splatter), `bloodfoot` 124×30 (bloody footprints), `bloodcrawl` 124×40 (crawl marks with handprints) |
+| Bodies & body parts | `deadz` 68×48 dead zombie *colour* (the blood pool), `zarm` 48×20 severed arm, `zhand` 22×16 hand, `zhead` 28×28 head (arm, hand and head: *colour* = skin: `#7aa85a` zombie green, `#a8b86a` pale green, `#9aa0a0` grey, `#c89a7a` human, `#7a6a9a` bruised), `zleg` 58×22 leg (*colour* = trousers), `ztorso` 46×38 torso (*colour* = shirt), `guts` 58×34 (*colour* = blood), `bones` 58×36, `skull` 22×22, `ribcage` 38×30, `sheetbody` 70×30 covered body, `bodybag` 70×26 |
 | Nature | `leaves` 70×50 *colour*, `twigs` 56×36, `moss` 60×40, `wildflowers` 54×34, `grasspatch` 44×26, `mud` 60×36, `dirtpatch` 80×44, `lily` 50×34, `rocks` 50×30 |
 | Paint & markings | `text` 160×28 *colour, text 24*, `arrow` 70×26 *colour*, `arrow_turn` 50×60 *colour*, `stopline` 80×8 *colour*, `handicap` 46×88, `hazard` 100×12, `safety` 120×6 *colour*, `number` 30×30 *colour, text 4*, `graffiti` 70×30 *colour, text 12* |
 | Shadows & light | `shadow` 70×34, `treeshadow` 90×50, `lightpatch` 60×44 *colour*, `stainedglass` 50×40 |
 | Spooky | `chalk` 124×124 (chalk circle), `scrawl` 140×24 *colour, text 20*, `cobweb` 32×32, `footprints` 90×22 *colour* |
 | Litter & other | `paper` 50×34, `bullets` 40×30, `drag` 110×20, `mat` 36×16 *colour, text 8* (door mat), `threshold` 52×8 |
+
+**The dead zombie** (`deadz`) is a real zombie from the game, lying down. Its `options`: `z` which zombie, `"0"` walker, `"1"` runner, `"2"` brute, `"3"` lab coat, `"4"` big blue, `"5"` little blue, `"9"` bones, `"10"` toxic, `"11"` spitter, `"18"` exploder, `"19"` healer (default `"0"`); `pool` 0/1 a pool of blood under it (1); `flip` 0/1 mirrored (0). Turn it with `rot` so it lies any way.
+```json
+{ "kind": "deadz", "x": 1172, "y": 846, "rot": 12, "color": "#560c12", "options": { "z": "11", "pool": 1 } }
+{ "kind": "zarm", "x": 1240, "y": 852, "rot": 40, "color": "#a8b86a" }
+```
 
 ## Effects
 
@@ -152,7 +160,7 @@ Animated or lit things, drawn by the game every frame (the editor shows a still 
 { "kind": "siren", "x": 520, "y": 300, "options": { "m": "police" } }
 { "kind": "flicker", "x": 240, "y": 190, "color": "#c8e0ff", "size": 0.8, "options": { "flame": 0 } }
 ```
-Fields: `kind`, `x`,`y`, `size` (0.25–4), `color` (where noted), `options`.
+Fields: `kind`, `x`,`y`, `rot` (degrees: everything the effect draws turns with it, so hazard blinkers and sirens line up with a turned vehicle; a turned siren's two lamps light the ground where they are), `size` (0.25–4), `color` (where noted), `options`.
 
 | Kind | What it does | Options |
 |---|---|---|
@@ -228,6 +236,7 @@ Fields: `kind`, `points` (2–400 `[x, y]`; shapes need 3), `width`, `color`, `s
 | `stream` | A stream (blocks walking, bullets fly over) | 60, 20–200 | |
 | `line` | A painted line, *colour* | 4, 2–16 | `st` `solid dash double` |
 | `skid`, `ruts` | Long skid marks, wheel ruts | 14, 40 | |
+| `bloodline` | A blood trail along the points (a smear with drops along it), *colour* (the blood colours) | 10, 3–40 | |
 | `chain` `iron` `picket` `woodfence` `wire` `guardrail` `median` | Fences and rails: block walking, bullets pass. `picket` and `woodfence` take a *colour* | 6 (median 20) | |
 | `hedge` | A hedge, *colour*: blocks walking and bullets | 18, 10–40 | |
 | `sandbags`, `stonewall` | Low walls: block walking and bullets | 14 | |
@@ -236,6 +245,23 @@ Fields: `kind`, `points` (2–400 `[x, y]`; shapes need 3), `width`, `color`, `s
 | `beach` `clearing` `mosspatch` `dirtpatch` `gravelpatch` `asphaltpatch` `flowerbed` | Ground patches of any shape (`asphaltpatch` has `curb` 0/1) | | |
 
 Roads join up where they overlap; put a `junction` area over a crossing for crosswalks and stop lines. For a T, end one road at the edge of the other.
+
+## Time of day (lighting)
+```json
+"lighting": { "time": "night", "amount": 0.75 }
+```
+The game draws the light over the whole world every frame, so a map can be played in the morning, by day, at dusk or at night. `amount` (0–1) is how strong it is: 0 looks exactly as painted. The editor's Map panel (nothing selected) has the same choice and an **Amount** slider that changes the view live.
+
+| `time` | Look | Default amount |
+|---|---|---|
+| `day` | Bright midday sun; more adds warm sunlight | 0.5 |
+| `morning` | Soft, warm early light with a haze; lights show a little | 0.6 |
+| `dusk` | Orange-pink evening light; lights glow | 0.7 |
+| `night` | Dark blue; only lights light the ground | 0.75 |
+
+* **What gives light** (more the darker it is): `light` effects (light pools), `flicker` (flickers), `fire`, `flare`, `glow` and `wisp` effects, `siren` (the two lamps take turns, in their colours), `hazard` (blinks), `lightpatch` decals (lit windows), and the props `lamp` (street lamp), `plight` (lot light), `candle`, `lantern`, `bfplace` (fireplace) and `tlight` (traffic light, a little). Every player carries a soft light, so night maps stay playable; burning ground and fireballs light up too.
+* An unknown `time` loads with a warning and the map shows in daylight; `amount` is kept between 0 and 1.
+* It is drawn after the world and before the HUD; floating texts stay readable on top. Without multiply blending (very old browsers) the map shows as painted.
 
 ## Special features
 
@@ -281,7 +307,9 @@ Bosses that need these (the Ice Cream Man, the Fire Chief, Penny, the Mayor) sti
 
 **A crash.** Vehicles with `damaged`, turned across the road; `skid` decals behind them, `glass` and `debris` around, a `fire` and a `smoke` effect on one, a `siren` on a police car, `cone` props.
 
-**A spooky interior.** A `dark` area over the room, `flicker` effects (with `flame`) by the candles, `cobweb` and `blood` decals, a `fog` area outside.
+**A spooky interior.** A `dark` area over the room, `flicker` effects (with `flame`) by the candles, `cobweb` and `blood` decals, a `fog` area outside; or the whole map at `night`.
+
+**An aftermath.** `deadz` decals of different zombie kinds (turned, some mirrored, some without their pool), `zarm` / `zleg` / `zhead` / `guts` near them, a `bloodline` path where one was dragged, `bloodspray` and `bloodsplash` around them, `bloodfoot` leading away; a `sheetbody` or `bodybag` by a `siren` police car.
 
 ## A complete example
 
@@ -421,7 +449,7 @@ node tools/check-map.js --json map.json          # the results as JSON
 It runs the real game code from the built `index.html` (run `node tools/build.js` after changing `src/`), so it knows exactly the terrains, props, vehicles, wall styles and kit pieces the game knows. The exit code is 1 when a file has errors.
 
 * **Errors:** the game would refuse the file (not JSON, wrong format, newer version, bad sizes, short rows, broken entries).
-* **Warnings:** it loads, but something won't show or won't work: missing props / vehicles / terrain / kit pieces, the player start or a spawn inside something solid, spawns zombies can't walk from to the player, things outside the map, misspelt or out-of-range `options`, colours that aren't `#rrggbb`, `text` on things that show none or too long, areas smaller than their kind needs, odd path widths, `options` on decals, ids used twice.
+* **Warnings:** it loads, but something won't show or won't work: missing props / vehicles / terrain / kit pieces, a dead zombie kind that doesn't exist, `options` on decals that have none, a `lighting.amount` outside 0–1, the player start or a spawn inside something solid, spawns zombies can't walk from to the player, things outside the map, misspelt or out-of-range `options`, colours that aren't `#rrggbb`, `text` on things that show none or too long, areas smaller than their kind needs, odd path widths, `options` on decals, ids used twice.
 * **Notes:** worth a look (e.g. a `color` on a prop that comes in one look).
 
 ## Prefabs
