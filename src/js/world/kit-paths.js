@@ -56,8 +56,17 @@ function pthPond(g,P,o){const B=P.concat([P[0]]);cmLine(g,B,34,'#8a7a50');cmLine
 const bb=cmPolyBB(P),A=(bb.x1-bb.x0)*(bb.y1-bb.y0);g.fillStyle='rgba(220,240,255,.3)';for(let i=0;i<A/5000;i++)g.fillRect(bb.x0+cmR(o,i,51)*(bb.x1-bb.x0),bb.y0+cmR(o,i,52)*(bb.y1-bb.y0),8+i%3*4,2);
 if(po(o,'lily',1))for(let i=0;i<A/16000;i++){const x=bb.x0+cmR(o,i,53)*(bb.x1-bb.x0),y=bb.y0+cmR(o,i,54)*(bb.y1-bb.y0);if(!cmPolyIn(P,x,y)||cmPolyDist(B,x,y)<20)continue;g.fillStyle='#16111c';g.beginPath();g.arc(x,y,7,0,7);g.fill();g.fillStyle='#4a9a3a';g.beginPath();g.arc(x,y,6,.4,6.6);g.lineTo(x,y);g.fill();if(i%3==0){g.fillStyle='#ffb0d0';g.fillRect(x-1,y-2,3,3)}}g.restore();
 if(po(o,'reeds',1)){let i=0;cmAlong(B,70,(x,y)=>{if(cmR(o,i,55)<.6){g.fillStyle='#3a7a32';g.fillRect(x,y-8,2,10);g.fillRect(x+4,y-11,2,13);g.fillRect(x+8,y-7,2,9);g.fillStyle='#6a4a2a';g.fillRect(x+3,y-14,4,5)}i++})}}
+// draw fn clipped to the polygon P
+function pthClip(g,P,fn){g.save();g.beginPath();g.moveTo(P[0][0],P[0][1]);for(const p of P)g.lineTo(p[0],p[1]);g.closePath();g.clip();try{fn()}finally{g.restore()}}
+// forest floor (the Suburb's woods): 8px cells of earth, leaf litter, twigs, moss, pebbles, mushrooms and grass, a ragged edge; or churned dark earth
+function pthForest(g,P,o){if(P.length<3)return;const ch=po(o,'s','floor')=='churned',bb=cmPolyBB(P),C=ch?['#4e3c28','#57432c','#57432c']:['#5e4830','#6b5236','#654d33'];
+pthClip(g,P,()=>{for(let y=Math.floor(bb.y0/8)*8;y<bb.y1;y+=8)for(let x=Math.floor(bb.x0/8)*8;x<bb.x1;x+=8){const h=cmH(x*.37,y*1.7,7);g.fillStyle=h<.33?C[0]:h<.66?C[1]:C[2];g.fillRect(x,y,8,8)}
+if(ch)return;const A=(bb.x1-bb.x0)*(bb.y1-bb.y0);for(let i=0;i<A/800;i++){const x=bb.x0+cmR(o,i,121)*(bb.x1-bb.x0),y=bb.y0+cmR(o,i,122)*(bb.y1-bb.y0),k=cmR(o,i,123);
+if(k<.45){g.fillStyle=['#8a6a3a','#a0743a','#7a4a2a','#b08a4a'][i%4];g.fillRect(x,y,3,2)}else if(k<.6){g.fillStyle='#3e2e1e';g.fillRect(x,y,7,1)}else if(k<.75){g.fillStyle='#4f6a30';g.fillRect(x,y,4,3)}else if(k<.82){g.fillStyle='#16111c';g.fillRect(x-1,y-1,6,5);g.fillStyle='#8a8a84';g.fillRect(x,y,4,3)}
+else if(k<.84){g.fillStyle='#e8e0d0';g.fillRect(x,y+2,2,3);g.fillStyle='#c0392b';g.fillRect(x-1,y,4,2)}else if(k<.9){g.fillStyle='#3a8a38';g.fillRect(x,y,2,4);g.fillRect(x+3,y+1,2,3)}}});
+if(ch)return;let i=0;cmAlong(P.concat([P[0]]),6,(x,y)=>{i++;if(x<=bb.x0+1||x>=bb.x1-1||y<=bb.y0+1||y>=bb.y1-1)return;const h=cmH(x,y,8);g.fillStyle=C[0];g.fillRect(x-3,y-2-h*3,6,3+h*5);if(cmH(x,y,10)<.4){g.fillStyle='#3a8a38';g.fillRect(x-2,y+3,2,4)}})}
 const PPATCH={beach:['#c8b47a','#dcc78f',['#c4ae74','#efdcaa']],clearing:['#3f8a3a','#4fae4a',['#3a8a38','#62b85a']],moss:['#2f3c28','#3a4a30',['#4a5e36','#2a3424']],dirt:['#6e5236','#8b6b45',['#a8865a','#6e5236']],gravel:['#6e695f','#8a857a',['#a8a296','#5f5a52']],asphalt:['#8a8a84','#3e4046',['rgba(0,0,0,.14)','rgba(255,255,255,.05)']],flowers:['#3a2a1a','#5a4128',['#ff6a8a','#ffd84a','#ffffff','#9a7aff']]};
-function pthPatch(k){return(g,P,o)=>{const C=PPATCH[k],B=P.concat([P[0]]);cmLine(g,B,k=='asphalt'&&po(o,'curb',1)?10:6,C[0]);cmFillPoly(g,P,C[1]);const bb=cmPolyBB(P),A=(bb.x1-bb.x0)*(bb.y1-bb.y0);
+function pthPatch(k){return(g,P,o)=>{const C=PPATCH[k],B=P.concat([P[0]]);if(k=='clearing'){pthClip(g,P,()=>{const bb=cmPolyBB(P),T=CMTI.grass;for(let ty=Math.floor(bb.y0/32);ty*32<bb.y1;ty++)for(let tx=Math.floor(bb.x0/32);tx*32<bb.x1;tx++)T.f(g,tx*32,ty*32,tx,ty)})}else{cmLine(g,B,k=='asphalt'&&po(o,'curb',1)?10:6,C[0]);cmFillPoly(g,P,C[1])}const bb=cmPolyBB(P),A=(bb.x1-bb.x0)*(bb.y1-bb.y0);
 for(let i=0;i<A/(k=='flowers'?120:260);i++){const x=bb.x0+cmR(o,i,56)*(bb.x1-bb.x0),y=bb.y0+cmR(o,i,57)*(bb.y1-bb.y0);if(!cmPolyIn(P,x,y))continue;g.fillStyle=C[2][i%C[2].length];g.fillRect(x,y,k=='flowers'?3:2,k=='flowers'?3:2);if(k=='flowers'&&i%2){g.fillStyle='#3a7a2a';g.fillRect(x+1,y+3,1,3)}}}}
 const CMPK=[
 {id:'road',n:'Road',cat:'road',w:128,wr:[40,360],def:{o:{cl:'dash',curb:1,lanes:1,ends:'flat',s:'asphalt'}},opts:[['cl','Centre line',PPROAD],['lanes','Lanes each way',[1,4]],['edge','White edge lines','chk'],['curb','Curbs','chk'],['ends','Ends',[['flat','Flat'],['round','Cul-de-sac at the end'],['both','Cul-de-sac at both ends']]],['s','Surface',[['asphalt','Asphalt'],['dark','Dark asphalt'],['worn','Worn and cracked']]]],pri:-110,f:pthRoad},
@@ -90,7 +99,8 @@ const CMPK=[
 {id:'dirtpatch',n:'Dirt patch',cat:'shape',closed:1,pri:-115,f:pthPatch('dirt')},
 {id:'gravelpatch',n:'Gravel patch',cat:'shape',closed:1,pri:-115,f:pthPatch('gravel')},
 {id:'asphaltpatch',n:'Asphalt patch',cat:'shape',closed:1,def:{o:{curb:1}},opts:[['curb','Curb edge','chk']],pri:-116,f:pthPatch('asphalt')},
-{id:'flowerbed',n:'Flower bed',cat:'shape',closed:1,pri:-114,f:pthPatch('flowers')}];
+{id:'flowerbed',n:'Flower bed',cat:'shape',closed:1,pri:-114,f:pthPatch('flowers')},
+{id:'forest',n:'Forest floor',cat:'shape',closed:1,pri:-118,def:{o:{s:'floor'}},opts:[['s','Ground',[['floor','Forest floor (leaf litter)'],['churned','Churned earth']]]],f:pthForest}];
 for(const t of CMPK)cmAddPath(t);
 // the wall flag of a solid path
 function cmPFl(o){const T=cmPath(o.p);return T&&T.fl!=null?T.fl:1}

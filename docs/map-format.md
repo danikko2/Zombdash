@@ -6,7 +6,7 @@ A Zombdash map is one JSON file. The Map Workshop writes it (**export**), reads 
 1. Write the JSON (start from the [complete example](#a-complete-example) below).
 2. Check it: `node tools/build.js` once, then `node tools/check-map.js mymap.json`. Fix every error; read the warnings.
 3. Look at it: import it in the Workshop (**IMPORT**), or render it the way the tests do.
-4. To ship it with the game: put it in `src/maps/` and embed it with `{{json:maps/<file>.json}}` in a module (see `src/js/editor/samples.js`, which ships `src/maps/samples/town-block.zombdash-map.json` as a Workshop sample).
+4. To ship it with the game: put it in `src/maps/` and embed it with `{{json:maps/<file>.json}}` in a module (see `src/js/editor/samples.js`, which ships `src/maps/samples/town-block.zombdash-map.json` as a Workshop sample). A built-in map converted to a file is embedded in `BIMF` in `src/js/world/builtin-maps.js` (the Suburb is `src/maps/suburb.json`: a real, full-size example of the format).
 
 ## Basics
 
@@ -93,9 +93,10 @@ Leave out `layer` on a thing and it goes on the layer of its kind (`cmKindLy`). 
 ```
 * `kind` is a key of `OB`. The editor's prop browser lists every one with its name and category (`EDPN` in `editor/assets.js`); `tests/suites/building-kit.js` checks that every prop the 16 built-in maps place is there.
 * `color` (`#rrggbb`) for props that come in colours (69 of them; the editor shows swatches). Left out, the first colour.
-* `text` for props that show words; `|` starts a second line. Props with text, with their length limit and default: `signboard` (22, "SIGN"), `hwsign` (30, "EXIT 13|GRAVEYARD"), `billboard` (40, "VISIT|ZOMBVILLE"), `arrowsign` (30, "MANSION|CITY", one line per arrow), `streetsign` (16, "MAIN ST"), `pricesign` (14, "GAS & GO"), `awning` (24, "SHOP"), `storesign` (24), `aislesign` (10), `deptsign` (20), `nameplate` (26, "CITY HALL"), `archway` (40, "ZOMBDASH|CAMPGROUND"), `gatearch` (24, "REST IN PEACE").
+* `text` for props that show words; `|` starts a second line. Props with text, with their length limit and default: `signboard` (22, "SIGN"), `hwsign` (30, "EXIT 13|GRAVEYARD"), `dirsign` (30, "ZOMBDASH SCHOOL|1 MILE", the second line gets an arrow), `billboard` (40, "VISIT|ZOMBVILLE"), `arrowsign` (30, "MANSION|CITY", one line per arrow), `streetsign` (16, "MAIN ST"), `pricesign` (14, "GAS & GO"), `awning` (24, "SHOP"), `storesign` (24), `aislesign` (10), `deptsign` (20), `nameplate` (26, "CITY HALL"), `archway` (40, "ZOMBDASH|CAMPGROUND"), `gatearch` (24, "REST IN PEACE").
 * `var` (0–1) picks one of a prop's small random variations (left out: chosen from its position).
 * **Kit props** (`maps/props/kit-props.js`) are things the built-in maps used to draw in their own code: signs (above), `stopsign`, `portrait` (its eyes follow the nearest player in the game; the colour picks the painting: lady, gentleman, bride, ghoul, landscape or slashed), `chandelier` (fallen), `deadtwist`, `canopytree`, `blackpine`, `jet`, `planebody`, `planetail`, `planewing`, `heliwreck`, `container`, `boomgate`, `campring`, `coffin`, `opengrave`, `dirtpile`, `officedesk`, `chalkb`, `cubby`, `wclock`, `poster`, `lockrow`, `stalls`, `showers`, `cafeteria`, `acunit`, `wtank`, `fireesc`, `elevator`, `micro`, `coffeetable`, `garageshelf`, `tpole`, `bollard`.
+* **The Suburb's pieces** (also kit props): `foak` / `fpine` forest trees (their `var` picks the size and shade: `var = (size step × 3 + shade) / 100`, oak sizes 0–8, pine 0–5, shade 0–2; the trunk is see-through like a fence, so bullets fly through the woods), `ytree` yard tree, `ftrunk` fallen tree (`var = (length step 0–10 × 9 + leaf pattern 0–8) / 100`), `sstump` splintered stump, `smallcar` small crashed car (*colour*; its base is the middle of its back edge), `chopper` crashed helicopter (solid body), `dirsign` direction sign, `hplant` house plant seen from above, `flamp` floor lamp seen from above (gives light at night), `curtain` curtains for a window (*colour*).
 * **Walk-behind:** tall props (trees, lamps, signs, poles, shelves, the big vehicles…) are drawn in front of a player who walks behind them, as on the built-in maps.
 * Store features use `gshelf` (grocery shelves that Penny knocks over), `corral` and `cartrow` (cart corrals she sends carts from). Street trees `stree` stop the Fire Chief's hose.
 
@@ -138,10 +139,10 @@ Fields: `kind`, `x`,`y` (the centre), `rot`, `scale` (0.25–4), `opacity` (0.05
 | Group | Decals (size in px at scale 1) |
 |---|---|
 | Wear & tear | `crack` 70×30, `crack_big` 90×70, `crack_grass` 70×34, `oil` 60×34, `stain` 50×30, `patch` 60×40, `pothole` 46×30, `manhole` 26×26, `drain` 30×14, `puddle` 64×32 |
-| Crash & fire | `skid` 120×26, `scorch` 100×60, `glass` 54×40, `debris` 80×50, `tiremarks` 110×20, `ash` 70×44 |
+| Crash & fire | `skid` 120×26, `scorch` 100×60, `scorchround` 300×300 (round scorched ground), `glass` 54×40, `debris` 80×50, `tiremarks` 110×20, `ash` 70×44 |
 | Blood (all *colour*: `#7a1414` fresh red, `#560c12` dark red, `#4e2e1c` dried brown, `#4e6a1e` zombie green, `#26201c` black ooze; any `#rrggbb` works) | `blood` 44×34 splat, `bloodpool` 70×40, `bloodtrail` 120×24, `handprint` 44×30, `bloodspray` 84×40 (a spray from the left end), `bloodsmear` 76×32, `blooddrips` 54×40, `bloodsplash` 96×74 (big splatter), `bloodfoot` 124×30 (bloody footprints), `bloodcrawl` 124×40 (crawl marks with handprints) |
 | Bodies & body parts | `deadz` 68×48 dead zombie *colour* (the blood pool), `zarm` 48×20 severed arm, `zhand` 22×16 hand, `zhead` 28×28 head (arm, hand and head: *colour* = skin: `#7aa85a` zombie green, `#a8b86a` pale green, `#9aa0a0` grey, `#c89a7a` human, `#7a6a9a` bruised), `zleg` 58×22 leg (*colour* = trousers), `ztorso` 46×38 torso (*colour* = shirt), `guts` 58×34 (*colour* = blood), `bones` 58×36, `skull` 22×22, `ribcage` 38×30, `sheetbody` 70×30 covered body, `bodybag` 70×26 |
-| Nature | `leaves` 70×50 *colour*, `twigs` 56×36, `moss` 60×40, `wildflowers` 54×34, `grasspatch` 44×26, `mud` 60×36, `dirtpatch` 80×44, `lily` 50×34, `rocks` 50×30 |
+| Nature | `speck` 10×10 (one grass bit: `var` < 0.4 a flower, its colour from the first decimal; < 0.7 a tuft; else a pebble), `leaves` 70×50 *colour*, `twigs` 56×36, `moss` 60×40, `wildflowers` 54×34, `grasspatch` 44×26, `mud` 60×36, `dirtpatch` 80×44, `lily` 50×34, `rocks` 50×30 |
 | Paint & markings | `text` 160×28 *colour, text 24*, `arrow` 70×26 *colour*, `arrow_turn` 50×60 *colour*, `stopline` 80×8 *colour*, `handicap` 46×88, `hazard` 100×12, `safety` 120×6 *colour*, `number` 30×30 *colour, text 4*, `graffiti` 70×30 *colour, text 12* |
 | Shadows & light | `shadow` 70×34, `treeshadow` 90×50, `lightpatch` 60×44 *colour*, `stainedglass` 50×40 |
 | Spooky | `chalk` 124×124 (chalk circle), `scrawl` 140×24 *colour, text 20*, `cobweb` 32×32, `footprints` 90×22 *colour* |
@@ -188,7 +189,7 @@ Fields: `kind`, `x`,`y`,`w`,`h`, `color`, `color2` (the second colour, e.g. a ch
 
 | Kind | What it is | Options (defaults) |
 |---|---|---|
-| `floor` | A room floor, *colour + colour2* | `pt` pattern: `check tile plank board carpet marble plain concrete terrazzo metal charred` (check); `vert` 0/1 planks run up-down; `in` 0/1 indoor (1): indoor floors count as building interiors for the bosses |
+| `floor` | A room floor, *colour + colour2* (as small as 4×4, for wallpaper borders and strips) | `pt` pattern: `check tile plank board carpet marble plain concrete terrazzo metal charred` (check); `vert` 0/1 planks run up-down; `in` 0/1 indoor (1): indoor floors count as building interiors for the bosses |
 | `rug` | A rug with a border, *colour + colour2* | `pat` 0/1 pattern, `fringe` 0/1 |
 | `rugr` | A round rug, *colour + colour2* | |
 | `porch` | Porch / deck boards, *colour* | `posts` 0/1 |
@@ -210,6 +211,7 @@ Fields: `kind`, `x`,`y`,`w`,`h`, `color`, `color2` (the second colour, e.g. a ch
 | `fog` | Drifting fog over everything in the box (game only; the editor shows a tinted box), *colour* | `s` strength 0.3–3 |
 | `dark` | Darkness over the box (a dark interior), *colour* | `s` 0.05–0.8 (0.25) |
 | `shade` | Canopy shade under trees | |
+| `mowed` | Light mowing stripes over a lawn (20 px stripes every 40 px), min 40×40 | |
 
 Walk-in buildings never get a roof (the player has to see inside): put `roof` areas only on solid blocks, as the built-in maps do.
 
@@ -259,7 +261,7 @@ The game draws the light over the whole world every frame, so a map can be playe
 | `dusk` | Orange-pink evening light; lights glow | 0.7 |
 | `night` | Dark blue; only lights light the ground | 0.75 |
 
-* **What gives light** (more the darker it is): `light` effects (light pools), `flicker` (flickers), `fire`, `flare`, `glow` and `wisp` effects, `siren` (the two lamps take turns, in their colours), `hazard` (blinks), `lightpatch` decals (lit windows), and the props `lamp` (street lamp), `plight` (lot light), `candle`, `lantern`, `bfplace` (fireplace) and `tlight` (traffic light, a little). Every player carries a soft light, so night maps stay playable; burning ground and fireballs light up too.
+* **What gives light** (more the darker it is): `light` effects (light pools), `flicker` (flickers), `fire`, `flare`, `glow` and `wisp` effects, `siren` (the two lamps take turns, in their colours), `hazard` (blinks), `lightpatch` decals (lit windows), and the props `lamp` (street lamp), `plight` (lot light), `candle`, `lantern`, `bfplace` (fireplace), `flamp` (floor lamp) and `tlight` (traffic light, a little). Every player carries a soft light, so night maps stay playable; burning ground and fireballs light up too.
 * An unknown `time` loads with a warning and the map shows in daylight; `amount` is kept between 0 and 1.
 * It is drawn after the world and before the HUD; floating texts stay readable on top. Without multiply blending (very old browsers) the map shows as painted.
 
@@ -273,7 +275,8 @@ Map systems the game reads. They are never drawn in the game; the editor shows t
 
 | Kind | What the game does with it |
 |---|---|
-| `nospawn` (box) | Zombies never appear inside it, and spawn points or zones inside it are skipped (the first one is also the off-screen no-spawn box, `HS.nx0…`, and all of them go into `NOGO`). |
+| `nospawn` (box) | Zombies never appear inside it, and spawn points or zones inside it are skipped (the first one is also the off-screen no-spawn box, `HS.nx0…`, and all of them go into `NOGO`). Options: `skip` 0/1 (1) skip spawn points and zones inside it; `nogo` 0/1 (1) bosses don't land inside it. The Suburb uses `skip: 0, nogo: 0`: its box only stops zombies coming from off-screen. |
+| `menuview` (box) | Where the camera looks while the map is shown behind the menus (the middle of the box, `HS.cx`/`HS.cy`). |
 | `house` (box) | A building interior (`HS.HO`): bosses that look for players inside buildings check these. Indoor `floor` areas count too, so you rarely need this. |
 | `store` (box) | Penny's store (`HS.ST`): the `gshelf` props inside it are the shelves she knocks over (`HS.SHF`); every `corral` / `cartrow` prop on the map sends carts (`HS.CRL`). |
 | `cityhall` (box) | City Hall's roof (`HS.CH`): the Mayor stands at the top middle. |

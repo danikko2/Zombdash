@@ -6,12 +6,6 @@ wlAt.B={src:WL,n:WL.length,c,cw,ch}}
 function wlAt(x,y){const B=wlAt.B;if(!B||B.src!==WL||B.n!==WL.length)wlBuild();const Q=wlAt.B,i=Math.floor((x+64)/64),j=Math.floor((y+64)/64);if(!(i>=0&&j>=0&&i<Q.cw&&j<Q.ch))return wlAt.E||(wlAt.E=[]);return Q.c[j*Q.cw+i]||wlAt.E||(wlAt.E=[])}
 
 // green highway sign on the right side of the road
-function subSign(g,ry){const x=2065,py=ry-16,pw=164,ph=54,bx=x-pw/2,by=py-ph-44;
-g.fillStyle='rgba(0,0,0,.25)';g.fillRect(x-1,py-2,14,4);g.fillStyle='#16111c';g.fillRect(x-4,by+ph-2,8,py-by-ph+4);g.fillStyle='#8a9096';g.fillRect(x-3,by+ph,6,py-by-ph+1);g.fillStyle='#c8ccd0';g.fillRect(x-3,by+ph,2,py-by-ph+1);
-g.fillStyle='#16111c';g.fillRect(bx-2,by-2,pw+4,ph+4);g.fillStyle='#1d7a3e';g.fillRect(bx,by,pw,ph);g.fillStyle='#f4f1e6';g.fillRect(bx+3,by+3,pw-6,2);g.fillRect(bx+3,by+ph-5,pw-6,2);g.fillRect(bx+3,by+3,2,ph-6);g.fillRect(bx+pw-5,by+3,2,ph-6);
-g.textAlign='center';g.textBaseline='middle';g.fillStyle='#f4f1e6';g.font='bold 14px Arial, Helvetica, sans-serif';g.fillText('ZOMBDASH SCHOOL',x,by+17);g.font='bold 13px Arial, Helvetica, sans-serif';g.fillText('1 MILE',x-18,by+37);
-const ax=x+22,ay=by+37;g.fillRect(ax,ay-2,22,5);g.beginPath();g.moveTo(ax+20,ay-8);g.lineTo(ax+32,ay+.5);g.lineTo(ax+20,ay+9);g.fill();g.textAlign='left';g.textBaseline='alphabetic';
-g.fillStyle='rgba(0,0,0,.25)';g.fillRect(bx+pw-14,by+ph-10,6,3)}
 // zombies never spawn somewhere they can't walk out of (e.g. boxed in by trees)
 function fdBad(x,y){if(!fd||!gw||!fd.length)return 0;const i=Math.floor(x/gs),j=Math.floor(y/gs);if(i<0||j<0||i>=gw||j>=gh)return 0;return fd[j*gw+i]<0}
 

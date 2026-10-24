@@ -13,7 +13,7 @@ function cmLtP(id){return typeof id=='string'&&cmOwn(CMLTI,id)?CMLTI[id]:null}
 function cmLtDef(id){const p=cmLtP(id);return p?p.def:.75}
 // light sources a map's things give off: props (street and lot lamps, candles, lanterns, fireplaces), light effects, lit-window decals
 // {x, y, r radius, c colour, i strength, f how it moves ('flk' flicker, 'fire', 'flare', 'glow', 'blink', 'siren'), ph phase}
-const CMLP={lamp:[0,-6,90,'#ffe2a8',1],plight:[0,-6,130,'#f4f0ff',1],candle:[0,-8,34,'#ffb040',.9,'flk'],lantern:[0,-10,52,'#ffd27a',.95,'flk'],bfplace:[0,-6,70,'#ff9a3a',1,'fire'],tlight:[0,-30,22,'#9aff9a',.5]};
+const CMLP={lamp:[0,-6,90,'#ffe2a8',1],plight:[0,-6,130,'#f4f0ff',1],candle:[0,-8,34,'#ffb040',.9,'flk'],lantern:[0,-10,52,'#ffd27a',.95,'flk'],bfplace:[0,-6,70,'#ff9a3a',1,'fire'],tlight:[0,-30,22,'#9aff9a',.5],flamp:[0,-8,60,'#ffe6a0',.9]};
 function cmLtTurn(o,dx,dy){if(!o.r)return[o.x+dx,o.y+dy];const a=o.r*Math.PI/180,c=Math.cos(a),s=Math.sin(a);return[o.x+dx*c-dy*s,o.y+dx*s+dy*c]}
 function cmLightSrc(d){const L=[];for(const o of d.obj){const ph=cmH(o.x,o.y,9)*6.283;
 if(o.fx){const s=cl(+o.sc||1,.25,4),c=cmCol(o.c,'');switch(o.fx){
@@ -52,10 +52,10 @@ if(k>.25&&on.length){G.globalCompositeOperation='lighter';for(const[s,C,n,r]of o
 finally{G.restore()}return 1}
 // what cmBuild keeps for the game: HS.LT = {t, a, L}
 function cmLightData(d){const p=d.lt&&cmLtP(d.lt.t);if(!p||!(+d.lt.a>0))return null;return{t:d.lt.t,a:cl(+d.lt.a,0,1),L:cmLightSrc(d)}}
-function cmLtOn(){return!!(HS&&HS.LT&&cmIs(mapId)&&cmLtOK())}
+function cmLtOn(){return!!(HS&&HS.LT&&HS.CM&&cmLtOK())}
 // the game: called from drawW in world space (after everything in the world, before the aim marker and the HUD).
 // Every living player carries a soft light so night maps stay playable; burning ground and fireballs light up too.
-function cmLight(){const T=HS.LT;if(!T||!cmIs(mapId))return;const sx=Math.round(cam.x),sy=Math.round(cam.y),S=T.L.slice(),PP=typeof PL!='undefined'&&PL.length?PL:[P];
+function cmLight(){const T=HS.LT;if(!T||!HS.CM)return;const sx=Math.round(cam.x),sy=Math.round(cam.y),S=T.L.slice(),PP=typeof PL!='undefined'&&PL.length?PL:[P];
 for(const p of PP)if(p&&alive(p))S.push({x:p.x,y:p.y-10,r:150,c:'#fff2dc',i:.95,pl:1});
 for(const q of fr)S.push({x:q.x,y:q.y,r:80,c:'#ff9a3a',i:1,f:'fire',ph:q.x});for(const e of ep)if(e.k==3)S.push({x:e.x,y:e.y,r:40,c:'#ff7a2a',i:1});
 cmLightPaint(X,T,S,sx,sy,W,H,LMX?.25:.5,performance.now()/1000,0)}

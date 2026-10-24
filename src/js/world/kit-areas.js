@@ -104,7 +104,7 @@ if(x<cam.x-r||x>cam.x+W+r||y<cam.y-r||y>cam.y+H+r)continue;X.globalAlpha=.07;X.b
 // splash-pad jets and the bucket dump, like City Park's
 function arSplashAnim(o,t){const J=arJets(o);for(let i=0;i<J.length;i++){const[x,y]=J[i],hh=18+14*Math.abs(Math.sin(t*1.6+i*.9));X.globalAlpha=.55;X.strokeStyle='#bfe8ff';X.lineWidth=3;X.beginPath();X.moveTo(x,y);X.quadraticCurveTo(x+(i%2?6:-6),y-hh*1.6,x+(i%2?12:-12),y-2);X.stroke();X.globalAlpha=.8;X.fillStyle='#e8f8ff';for(let k=0;k<3;k++)X.fillRect(x+(i%2?1:-1)*(4+k*4)+Math.sin(t*9+k+i)*2,y-hh*(1.1-k*.3),2,2)}X.globalAlpha=1}
 const CMAK=[
-{id:'floor',n:'Floor',cat:'floor',fl:null,pal:PAFL,pal2:PAFL,def:{c:'#9a6a3c',o:{pt:'check',in:1}},opts:[['pt','Pattern',AFPAT],['vert','Boards run up and down','chk'],['in','Indoors (a building interior for bosses)','chk']],min:[16,16],pri:-100,f:arFloor},
+{id:'floor',n:'Floor',cat:'floor',fl:null,pal:PAFL,pal2:PAFL,def:{c:'#9a6a3c',o:{pt:'check',in:1}},opts:[['pt','Pattern',AFPAT],['vert','Boards run up and down','chk'],['in','Indoors (a building interior for bosses)','chk']],min:[4,4],pri:-100,f:arFloor},
 {id:'rug',n:'Rug',cat:'floor',fl:null,pal:PARUG,pal2:PATRIM,def:{c:'#5a1a2a',c2:'#a8862e',o:{pat:1,fringe:1}},opts:[['pat','Pattern','chk'],['fringe','Fringe','chk']],min:[16,16],pri:-50,f:arRug},
 {id:'rugr',n:'Round rug',cat:'floor',fl:null,pal:PARUG,pal2:PATRIM,def:{c:'#5a1a2a',c2:'#a8862e'},min:[16,16],pri:-50,f:arRugR},
 {id:'porch',n:'Porch / deck',cat:'build',fl:null,pal:[['#b8885a','Cedar'],['#9a6a3e','Brown'],['#c8b898','Grey wood'],['#e8e4dc','White']],def:{c:'#b8885a',o:{posts:1}},opts:[['posts','Corner posts','chk']],min:[16,16],pri:-60,f:arPorch},
@@ -130,6 +130,8 @@ const CMAK=[
 {id:'dark',n:'Darkness',cat:'effect',fl:null,pal:[['#0c0610','Night'],['#061018','Blue night'],['#140608','Red gloom'],['#06120a','Green gloom']],def:{c:'#0c0610',o:{s:.25}},opts:[['s','Strength',[.05,.8]]],min:[16,16],pri:-200,f:arDark},
 {id:'shade',n:'Canopy shade',cat:'effect',fl:null,min:[32,32],pri:-90,f:arShade}];
 for(const t of CMAK)cmAddArea(t);
+// light mowing stripes over a lawn (the Suburb's back yards): 20 px stripes every 40 px
+cmAddArea({id:'mowed',n:'Mowed lawn stripes',cat:'ground',fl:null,min:[40,40],pri:-116,f(g,o){g.fillStyle='rgba(255,255,255,.05)';for(let x=o.x;x<o.x+o.w;x+=40)g.fillRect(x,o.y,Math.min(20,o.x+o.w-x),o.h)}});
 // the wall flag of a solid area (the map maker can turn solid off, or on for pieces that aren't solid by default)
 function cmAFl(o){const T=cmArea(o.a);return T&&T.fl!=null?T.fl:1}
 // draw an area of a map

@@ -44,9 +44,9 @@ else if(o.k=='portrait'){const B=cmOB(o.k);if(B&&B.eyes)for(const e of B.eyes(o)
 for(const o of d.areas){const F=cmArea(o.a);if(!F)continue;const it={o,f:F,a:1,r:Math.hypot(o.w,o.h)/2+120};if(F.anim)A.push(it);if(F.top)T.push(it)}return A.length||T.length||E.length?{A,T,E}:null}
 function fxVis(it){const o=it.o;if(it.a)return o.x<cam.x+W+60&&o.x+o.w>cam.x-60&&o.y<cam.y+H+60&&o.y+o.h>cam.y-60;return fxOn(o.x,o.y,it.r)}
 // under people (called next to the built-in maps' animations)
-function cmFxAnim(){const C=HS.CX;if(!C||!cmIs(mapId))return;const t=performance.now()/1000;for(const it of C.A)if(fxVis(it)){if(!it.o.r||it.a){it.f.anim(it.o,t);continue}X.save();try{fxTurn(X,it.o);it.f.anim(it.o,t)}finally{X.restore()}}
+function cmFxAnim(){const C=HS.CX;if(!C||!HS.CM)return;const t=performance.now()/1000;for(const it of C.A)if(fxVis(it)){if(!it.o.r||it.a){it.f.anim(it.o,t);continue}X.save();try{fxTurn(X,it.o);it.f.anim(it.o,t)}finally{X.restore()}}
 // portrait eyes follow the nearest living player; now and then one pair glows red (as in the Haunted Mansion)
 if(C.E.length){const Q=(typeof PL!='undefined'&&PL.find(alive))||P,red=Math.floor(t/5)%C.E.length,rp=(t%5)<1.2;for(let i=0;i<C.E.length;i++){const e=C.E[i];if(!fxOn(e.x,e.y,10))continue;const a=Math.atan2(Q.y-e.y,Q.x-e.x),px=Math.round(e.x+Math.cos(a)*.9-.5),py=Math.round(e.y+Math.sin(a)*.9-.5);
 if(rp&&(i>>1)==(red>>1)){X.fillStyle='#ff2a1a';X.globalAlpha=.35;X.beginPath();X.arc(e.x,e.y,4,0,7);X.fill();X.globalAlpha=1;X.fillRect(px,py,2,2)}else{X.fillStyle='#16111c';X.fillRect(px,py,1,1)}}}}
 // over people (fog, wisps)
-function cmFxTop(){const C=HS.CX;if(!C||!cmIs(mapId))return;const t=performance.now()/1000;for(const it of C.T)if(it.a||fxVis(it)){if(!it.o.r||it.a){it.f.top(it.o,t);continue}X.save();try{fxTurn(X,it.o);it.f.top(it.o,t)}finally{X.restore()}}}
+function cmFxTop(){const C=HS.CX;if(!C||!HS.CM)return;const t=performance.now()/1000;for(const it of C.T)if(it.a||fxVis(it)){if(!it.o.r||it.a){it.f.top(it.o,t);continue}X.save();try{fxTurn(X,it.o);it.f.top(it.o,t)}finally{X.restore()}}}

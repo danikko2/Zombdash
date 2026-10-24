@@ -115,7 +115,7 @@ ok(olRow()===null,'no leaderboard score from a replaced map');
 // one click restores the original
 cMap();ok(ui.innerHTML.includes('crp')&&ui.innerHTML.includes('restore Suburb'),'the campaign map marks Suburb as replaced, with a restore link');
 ccBack(0);ok(!ccRep(0)&&!CCS.rep[0],'restore: one click');
-mapId=0;start();ok(mapId===0&&!CREP&&HS.CM===undefined,'Suburb plays the original again');over(1);
+mapId=0;start();ok(mapId===0&&!CREP&&HS.CM==='builtin-suburb','Suburb plays the original again (its own map file)');over(1);
 cpClear();localStorage[CPK]=JSON.stringify({v:1,t:Date.now(),an:'Tester',gm:'c',m:0,cr:dB.id,ci:0,d:1,w:6,k:0,p:{cash:0}});ok(!cpOK(),'a checkpoint from the replacement is not offered after a restore');cpClear();
 // a map is in one place: a slot or a replacement
 ccSetRep(dB.id,3);ccAssign(dB.id,4,1,7);ok(!ccRep(3)&&ccSlot(4,1).key===kB,'putting a replacement in a slot ends the replacement');

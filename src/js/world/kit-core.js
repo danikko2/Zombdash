@@ -15,11 +15,12 @@ function cmAddPath(t){if(!CMPAI[t.id])CMPA.push(t);CMPAI[t.id]=t}
 function cmAddFx(t){if(!CMFXI[t.id])CMFX.push(t);CMFXI[t.id]=t}
 // special features: rect ones are boxes (x,y,w,h); the road graph is nodes (pts, relative to x,y) and edges (e)
 const CMFEAT=[
-{id:'nospawn',n:'No-spawn zone',rect:1,col:'#ff9a3a',d:'Zombies never appear inside it (like the inside of the Haunted Mansion).'},
+{id:'nospawn',n:'No-spawn zone',rect:1,col:'#ff9a3a',d:'Zombies never appear inside it (like the inside of the Haunted Mansion).',def:{o:{skip:1,nogo:1}},opts:[['skip','Skip spawn points inside it','chk'],['nogo','Bosses don\'t land inside it','chk']]},
 {id:'house',n:'Building interior',rect:1,col:'#7ad0ff',d:'Bosses that look for players inside buildings check these boxes. Indoor floors count too.'},
 {id:'store',n:'Store (Penny)',rect:1,col:'#ffd84a',d:'Penny\'s fight: the store box; grocery shelves inside it get knocked over and cart corrals send carts.'},
 {id:'cityhall',n:'City Hall roof (Mayor)',rect:1,col:'#c8a0ff',d:'The Mayor watches from the top middle of this roof.'},
-{id:'roadgraph',n:'Boss road graph',graph:1,col:'#4ae0ff',d:'Where the ice cream truck, the fire engine and the police cruiser can drive: nodes joined by roads.'}];
+{id:'roadgraph',n:'Boss road graph',graph:1,col:'#4ae0ff',d:'Where the ice cream truck, the fire engine and the police cruiser can drive: nodes joined by roads.'},
+{id:'menuview',n:'Menu view',rect:1,col:'#e8e8e0',d:'Where the camera looks while this map is shown behind the menus (the middle of the box).'}];
 const CMFEI=Object.create(null);for(const f of CMFEAT)CMFEI[f.id]=f;
 // what a d.obj item is: 'p' prop, 'v' vehicle, 'd' decal, 'x' effect
 function cmOK(o){return o.dc?'d':o.fx?'x':o.veh?'v':'p'}

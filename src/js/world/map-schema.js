@@ -102,8 +102,9 @@ function cmDefLy(d,kind,o){const id=cmKindLy(kind,o),l=cmLy(d,id);if(l&&l.k=='o'
 // ----- collision: everything a custom map adds to WL -----
 function cmVeh(o){const s=cmHW(o.veh);if(!s)return null;return{k:o.veh,x:o.x,y:o.y,a:(o.r||0)*Math.PI/180,L:s[0],W:s[1],c:o.c||undefined,dmg:o.dmg?1:0,burn:o.burn?1:0,tx:o.tx||undefined}}
 // a solid prop's footprint (OB[k].c) turned with the prop, as a box
-function cmFoot(o){const B=cmOB(o.k);if(!B||!B.c)return null;const cw=B.c[0],ch=B.c[1],r=(((o.r||0)%360)+360)%360;if(!r)return[o.x-cw/2,o.y-ch,cw,ch,1];
-const a=r*Math.PI/180,c=Math.cos(a),s=Math.sin(a);let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const[px,py]of[[-cw/2,-ch],[cw/2,-ch],[-cw/2,0],[cw/2,0]]){const X_=o.x+px*c-py*s,Y_=o.y+px*s+py*c;x0=Math.min(x0,X_);y0=Math.min(y0,Y_);x1=Math.max(x1,X_);y1=Math.max(y1,Y_)}return[x0,y0,x1-x0,y1-y0,1]}
+// cf on a prop: its collision flag (2 = see-through, like the forest trees' trunks), else 1
+function cmFoot(o){const B=cmOB(o.k);if(!B||!B.c)return null;const cw=B.c[0],ch=B.c[1],r=(((o.r||0)%360)+360)%360,cf=B.cf||1;if(!r)return[o.x-cw/2,o.y-ch,cw,ch,cf];
+const a=r*Math.PI/180,c=Math.cos(a),s=Math.sin(a);let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const[px,py]of[[-cw/2,-ch],[cw/2,-ch],[-cw/2,0],[cw/2,0]]){const X_=o.x+px*c-py*s,Y_=o.y+px*s+py*c;x0=Math.min(x0,X_);y0=Math.min(y0,Y_);x1=Math.max(x1,X_);y1=Math.max(y1,Y_)}return[x0,y0,x1-x0,y1-y0,cf]}
 // a vehicle's collision, built by the same code the highway maps use (hwCol)
 function cmVehCol(o,out){const v=cmVeh(o);if(!v)return;const keep=WL;WL=[];try{hwCol(v)}finally{const r=WL;WL=keep;for(const w of r)out.push(w)}}
 // is it solid? sol true/false is the map maker's choice; without one: walls and vehicles are, props are when the prop has a base size
@@ -116,7 +117,7 @@ const r=s.r,cx=o.x+s.x,cy=o.y+s.y,n=Math.max(3,Math.ceil(r/4)),hs=2*r/n,out=[];f
 // a solid prop with no base size of its own (turned solid by the map maker): a strip along the bottom of its picture
 function cmAutoBox(o){const B=cmOB(o.k);if(!B)return null;const w=Math.max(6,B.w*.8),h=Math.max(6,Math.min(12,B.h*.4));return[o.x-w/2,o.y-h,w,h,1]}
 // the collision boxes of one prop or vehicle
-function cmObjBoxes(o){if(o.dc||o.fx||!cmSolid(o,'o'))return[];if(o.sh)return cmShapeBoxes(o,1);if(o.veh){const out=[];cmVehCol(o,out);return out}const f=cmFoot(o)||cmAutoBox(o);return f?[f]:[]}
+function cmObjBoxes(o){if(o.dc||o.fx||!cmSolid(o,'o'))return[];if(o.sh)return cmShapeBoxes(o,o.veh?1:(cmOB(o.k)||{}).cf||1);if(o.veh){const out=[];cmVehCol(o,out);return out}const f=cmFoot(o)||cmAutoBox(o);return f?[f]:[]}
 // turn a shape with its object (deg = how far the object turned): the offset turns; a box turned a quarter swaps width and height
 function cmTurnShape(s,deg){if(!s)return s;const a=deg*Math.PI/180,c=Math.cos(a),sn=Math.sin(a),q=((Math.round(deg/90)%4)+4)%4,qt=Math.abs(deg/90-Math.round(deg/90))<1e-9;
 if(s.t=='c'){const x=s.x*c-s.y*sn,y=s.x*sn+s.y*c;return{t:'c',x:cmR1(x),y:cmR1(y),r:s.r}}
@@ -188,7 +189,7 @@ kit('decals',d.obj.filter(o=>o.dc).map(o=>{const p={id:o.id,kind:o.dc,x:cmR1(o.x
 kit('effects',d.obj.filter(o=>o.fx).map(o=>{const p={id:o.id,kind:o.fx,x:cmR1(o.x),y:cmR1(o.y)};if(o.r)p.rot=cmR1(o.r);if(o.sc!=null&&o.sc!==1)p.size=Math.round(o.sc*100)/100;if(o.c)p.color=o.c;return cmWObj(o,opt(o,p),0)}));
 kit('areas',(d.areas||[]).map(o=>{const p={id:o.id,kind:o.a,x:cmR1(o.x),y:cmR1(o.y),w:cmR1(o.w),h:cmR1(o.h)};if(o.c)p.color=o.c;if(o.c2)p.color2=o.c2;if(o.tx)p.text=o.tx;return cmWObj(o,opt(o,p),0)}));
 kit('paths',(d.paths||[]).map(o=>{const p={id:o.id,kind:o.p,points:(o.pts||[]).map(q=>[cmR1(o.x+q[0]),cmR1(o.y+q[1])])};if(o.w)p.width=cmR1(o.w);if(o.c)p.color=o.c;if(o.sharp!=null)p.sharp=!!o.sharp;return cmWObj(o,opt(o,p),0)}));
-kit('features',(d.feats||[]).map(o=>{const p={id:o.id,kind:o.f};if(o.pts){p.nodes=o.pts.map(q=>[cmR1(o.x+q[0]),cmR1(o.y+q[1])]);p.edges=(o.e||[]).map(e=>[e[0],e[1]])}else{p.x=cmR1(o.x);p.y=cmR1(o.y);p.w=cmR1(o.w);p.h=cmR1(o.h)}const q=cmWObj(o,p,0);delete q.order;delete q.solid;return q}));
+kit('features',(d.feats||[]).map(o=>{const p={id:o.id,kind:o.f};if(o.pts){p.nodes=o.pts.map(q=>[cmR1(o.x+q[0]),cmR1(o.y+q[1])]);p.edges=(o.e||[]).map(e=>[e[0],e[1]])}else{p.x=cmR1(o.x);p.y=cmR1(o.y);p.w=cmR1(o.w);p.h=cmR1(o.h)}const q=cmWObj(o,opt(o,p),0);delete q.order;delete q.solid;return q}));
 out.walls=d.walls.map(w=>{const p={id:w.id,x:cmR1(w.x),y:cmR1(w.y),w:cmR1(w.w),h:cmR1(w.h),style:w.s||'wall'};if(w.c)p.color=w.c;return cmWObj(w,p,0)});
 if(d.start)out.playerStart={x:cmR1(d.start.x),y:cmR1(d.start.y)};else delete out.playerStart;
 out.zombieSpawns={points:d.spawns.map(s=>cmWObj(s,{id:s.id,x:cmR1(s.x),y:cmR1(s.y),enabled:s.on!==false},0)),zones:d.zones.map(z=>cmWObj(z,{id:z.id,x:cmR1(z.x),y:cmR1(z.y),w:cmR1(z.w),h:cmR1(z.h),enabled:z.on!==false},0))};
@@ -279,7 +280,7 @@ list(j.features,'features').forEach((p,i)=>{if(!p||typeof p.kind!='string'||!p.k
 if(p.nodes!=null){const N=pts(p.nodes);if(!N||!N.length)return bad('features',i,'has "nodes" that are not a list of [x, y].');const E=Array.isArray(p.edges)?p.edges:[];if(!E.every(e=>Array.isArray(e)&&e.length==2&&int(e[0])&&int(e[1])&&e[0]>=0&&e[1]>=0&&e[0]<N.length&&e[1]<N.length))return bad('features',i,'has "edges" that are not pairs of node numbers.');
 o={id:uid(p.id,'f'),f:p.kind,x:N[0][0],y:N[0][1],pts:N.map(q=>[q[0]-N[0][0],q[1]-N[0][1]]),e:E.map(e=>[e[0],e[1]])}}
 else{if(!num(p.x)||!num(p.y)||!num(p.w)||!num(p.h)||p.w<=0||p.h<=0)return bad('features',i,'needs "x", "y" and a positive "w" and "h" (or "nodes" and "edges" for a road graph).');o={id:uid(p.id,'f'),f:p.kind,x:p.x,y:p.y,w:p.w,h:p.h}}
-if(!obj(p,o,'features',i,'f',0))return;d.feats.push(o);if(!cmFeat(p.kind))ku('special feature',p.kind)});
+if(!opts(p,o,'features',i)||!obj(p,o,'features',i,'f',0))return;d.feats.push(o);if(!cmFeat(p.kind))ku('special feature',p.kind)});
 for(const k in ukit)Wn.push('Unknown '+k+' ('+ukit[k]+' placed): it is kept in the file but not shown in the game.');
 for(const k in unk)Wn.push('Unknown '+(k.endsWith(' (vehicle)')?'vehicle "'+k.slice(0,-10)+'"':'prop "'+k+'"')+' ('+unk[k]+' placed): it is kept in the file but not shown in the game.');
 if(Array.isArray(j.order)){const pos={};j.order.forEach((id,i)=>{if(typeof id=='string')pos[id]=i});d.obj.forEach((o,i)=>o._o=pos[o.id]!=null?pos[o.id]:1e6+i);d.obj.sort((a,b)=>a._o-b._o);for(const o of d.obj)delete o._o}

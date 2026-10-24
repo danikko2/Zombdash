@@ -1,21 +1,4 @@
-//# maps/props/houses.js — House builder used by several maps
-function mkHouse(bx,y1,hw,hh,gd,mir,o){
-const y0=y1-hh,x0=bx,x1=bx+hw,gx=x1+gd,yA=y0+hh*o.a,yB=y0+hh*o.b,hm=(yA+yB)/2,cx=x0+hw/2,kx=x0+hw*o.v1/2,b1=x0+hw*(o.v1+o.v2)/2,b2=x0+hw*(o.v2+1)/2,v1=x0+hw*o.v1,v2=x0+hw*o.v2,xm=x0+(hw+gd)/2,ry=y1+90;
-const keep=WL;WL=[];
-hwall(y0,x0,x1,[kx]);hwall(y1,x0,x1,[cx]);hwall(yA,x0,x1,[kx,b1,b2]);hwall(yB,x0,x1,[cx],45);
-WL.push([x0-3,y0-3,6,hh+6],[v1-3,y0,6,yA-y0],[v2-3,y0,6,yA-y0],[x1-3,y0-3,6,hm-26-y0+3],[x1-3,hm+26,6,y1-hm-23],[x1,yA-3,gd,6],[gx-3,yA-3,6,y1-yA+6],[x1,y1-3,15,6],[gx-15,y1-3,15,6],[gx-52,yB+25,44,80,1]);
-const A=WL;WL=keep;for(const w of A)WL.push(mir?[2*xm-w[0]-w[2],w[1],w[2],w[3],w[4]]:w);
-const M=x=>mir?2*xm-x:x;
-return{P:{x0,y0,x1,y1,yA,yB,v1,v2,kx,cx,gx,hw,hh,gd,mir,xm},y0,yA,yB,fx:M(cx),dx:M(x1+gd/2),bd:M(kx),bx0:Math.min(M(x0),M(x1)),bx1:Math.max(M(x0),M(x1)),gx0:Math.min(M(x1),M(gx)),gx1:Math.max(M(x1),M(gx)),
-paint(g,ph){g.save();if(mir){g.translate(2*xm,0);g.scale(-1,1)}
-if(ph==1){chk(g,x0,y0,v1-x0,yA-y0,'#d9d9d2','#c4c4bc');chk(g,v1,y0,v2-v1,yA-y0,o.c1[0],o.c1[1]);chk(g,v2,y0,x1-v2,yA-y0,o.c2[0],o.c2[1]);chk(g,x0,yA,hw,yB-yA,o.h[0],o.h[1]);chk(g,x0,yB,hw,y1-yB,o.l[0],o.l[1]);chk(g,x1,yA,gd,y1-yA,'#8d8d8d','#838383');
-g.fillStyle='#7a5a3a';g.fillRect(x0+6,y0+6,v1-x0-12,12);g.fillStyle='#333';g.fillRect(x0+14,y0+8,14,8);g.fillStyle='#8b5a2b';g.fillRect(kx-14,y0+hh*.14,28,22);
-[v1,v2].forEach((v,i)=>{g.fillStyle=i?'#e7d5e0':'#dfe6f5';g.fillRect(v+10,y0+14,32,44);g.fillStyle='#fff';g.fillRect(v+12,y0+16,28,10)});
-g.fillStyle='#8a3a3a';g.fillRect(cx-40,yB+(y1-yB)*.4,80,36);g.fillStyle='#7a3b3b';g.fillRect(x0+12,y1-40,70,22);g.fillStyle='#222';g.fillRect(x1-62,yB+12,50,10);g.fillStyle='#59a';g.fillRect(x1-58,yB+14,42,5);
-g.fillStyle='#b8b4a8';g.fillRect(cx-16,y1,32,ry-y1);g.fillRect(x1+15,y1,gd-30,ry-y1);
-g.fillStyle='#c9a36a';g.fillRect(cx-26,y1-3,52,6);g.fillRect(kx-26,y0-3,52,6);g.fillStyle='#6b4a2a';g.fillRect(cx-16,y1+5,32,8);g.fillRect(kx-16,y0-13,32,8);g.fillStyle='#6e6e6e';g.fillRect(x1+20,yA+60,30,18)}
-else{vDraw(g,gx-53,yB+24,46,82,g=>{g.fillStyle=o.car;g.fillRect(gx-52,yB+25,44,80);g.fillStyle='#8fc3e8';g.fillRect(gx-46,yB+40,32,14);g.fillRect(gx-46,yB+80,32,10);g.fillStyle='#e8e8c0';g.fillRect(gx-50,yB+101,10,4);g.fillRect(gx-20,yB+101,10,4)})}
-g.restore()}}}
+//# maps/props/houses.js — Props of the built-in maps (school, office, store, farm and play pieces, beds, couches, vehicles drawn as props) and the wheel helper (WHL)
 const WHL=(q,x,y,r,c)=>{q.strokeStyle=c;q.lineWidth=3;q.beginPath();q.arc(x,y,r,0,7);q.stroke();q.lineWidth=1;for(let a=0;a<6.28;a+=1.05){q.beginPath();q.moveTo(x,y);q.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r);q.stroke()}};
 Object.assign(OB,{
 sdesk:ob(26,26,[20,8],q=>{R_(q,'#a8793e',3,4,20,9);R_(q,'#c8995a',3,4,20,2);R_(q,'#6a6f7a',5,13,2,9);R_(q,'#6a6f7a',19,13,2,9);R_(q,'#3a6fb5',8,17,10,4);R_(q,'#2c5590',8,20,10,2)}),

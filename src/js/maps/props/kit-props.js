@@ -93,3 +93,49 @@ coffeetable:{w:58,h:36,c:[50,18],pc:PCAB,f:(g,x,y,v,col)=>S2(g,x,y,58,36,q=>{con
 garageshelf:ob(96,34,[92,14],q=>{R_(q,'#16111c',2,4,92,26);R_(q,'#6a6f7a',3,5,90,24);const C=['#b58a52','#3a6fb5','#c0392b','#3f8a42','#d8b92e','#8a909c'];for(let k=6,i=0;k<86;k+=13,i++)R_(q,C[i%6],3+k,8,10,18)}),
 tpole:Object.assign(ob(46,118,[6,6],q=>{R_(q,'#16111c',20,6,7,112);R_(q,'#6b4a2a',21,7,5,111);R_(q,'#16111c',2,16,42,5);R_(q,'#5a3a22',3,17,40,3);R_(q,'#8a909c',6,13,3,4);R_(q,'#8a909c',37,13,3,4);R_(q,'#3a3d46',30,26,10,12)}),{wb:1}),
 bollard:ob(14,22,[8,6],q=>{R_(q,'#16111c',3,4,8,17);R_(q,'#e0b030',4,5,6,15);R_(q,'#16111c',4,9,6,2);R_(q,'#16111c',4,14,6,2)})});
+// ----- forest trees (the Suburb's woods) -----
+// var picks the size and shade: var = (size step × 3 + shade) / 100 (pine: 13–18 px canopy radius, oak: 16–24). Trunks are
+// see-through (cf:2: bullets fly through the woods, as on the Suburb). The canopy joins the walk-behind list as one shared
+// picture per size and shade, so a forest of a thousand trees costs no extra memory (kpWB; sh:1 tells bgFree not to free it).
+function kpWB(g,cv,x,y,base,ch){if(!vRec.on||vRec.busy||vRec.nest||!vRec.L||!g||!g.getTransform||typeof BG=='undefined'||g.canvas!==BG)return;const T=g.getTransform();if(!T||T.a!==1||T.b!==0||T.c!==0||T.d!==1)return;
+vRec.L.push({x:x+T.e,y:y+T.f,w:cv.width,h:cv.height,cv,al:null,base:base+T.f,ch,sh:1})}
+function kpFTree(pine){const b=pine?13:16,n=pine?6:9;return{w:pine?44:56,h:pine?60:62,c:[12,12],cf:2,f(g,x,y,v){const i=Math.round(cl(+v||0,0,1)*100),s=i%3,r=b+Math.floor(i/3)%n,ty=y-6,sp=subSpr(pine,r,(s+.5)/3);
+g.fillStyle='rgba(0,0,0,.28)';g.beginPath();g.ellipse(x+4,ty+2,r*.9,r*.45,0,0,7);g.fill();g.fillStyle='#16111c';g.fillRect(x-4,ty-6,8,9);g.fillStyle='#5a3a22';g.fillRect(x-3,ty-6,6,8);
+const sx=Math.round(x-sp.width/2),sy=pine?Math.round(ty-10-sp.height+2):Math.round(ty-r*.7-sp.height/2);g.drawImage(sp,sx,sy);kpWB(g,sp,sx,sy,y,12)}}}
+Object.assign(OB,{foak:kpFTree(0),fpine:kpFTree(1)});
+// ----- the Suburb's yard, street and crash-site pieces -----
+// ytree: the round yard tree (trunk box 12×12 above its base). dirsign: a green direction sign with an arrow (line 1, then
+// line 2 with the arrow). smallcar: a small crashed car seen from above (its base is the middle of its back bumper when it
+// lies left to right; turn it with rot). chopper: the crashed helicopter with its broken tail and rotor (solid body).
+// ftrunk: a fallen tree (var = (length step × 9 + leaf pattern) / 100, length 58–80; the base is the middle of its bottom
+// edge). sstump: a splintered stump. hplant: a house plant seen from above. flamp: a floor lamp seen from above with its glow. curtain: curtains over a window.
+const PKCAR=[['#2f6fd0','Blue'],['#e0a82e','Yellow'],['#c0392b','Red'],['#3f8a42','Green'],['#e8e4d8','White'],['#26262c','Black']];
+const PKDIR=[['#1d7a3e','Green'],['#2a4a7a','Blue'],['#5a3a22','Brown'],['#6a1a1a','Red']];
+const PKCURT=[['#8a2a3a','Red'],['#2a3a6a','Blue'],['#3f6a3a','Green'],['#c8b48e','Beige'],['#5a3a6a','Purple']];
+function kpLog(g,x,y,L,v){const R=(c,a,b,w,h)=>{g.fillStyle=c;g.fillRect(x+a,y+b,w,h)};
+R('rgba(0,0,0,.25)',-2,4,L,8);R('#16111c',-1,-6,L+2,12);R('#6b4a2a',0,-5,L,10);R('#8a6038',0,-5,L,3);for(let i=8;i<L-4;i+=11){R('#4a3020',i,-3,6,1);R('#4a3020',i+4,1,5,1)}
+R('#d8b07a',-1,-4,3,8);R('#a8804a',0,-1,1,2);
+for(let i=0;i<5;i++){const bx=x+L-6+i*7+(v*13+i*5)%6,by=y-12+((i*11+v*7)%24);g.fillStyle='#16111c';g.beginPath();g.ellipse(bx,by,11,7,0,0,7);g.fill();g.fillStyle=i%2?'#2f6d2e':'#3c8a3a';g.beginPath();g.ellipse(bx,by-1,10,6,0,0,7);g.fill()}
+R('#5a3a22',L*.4,-9,3,4);R('#5a3a22',L*.65,5,3,5)}
+function kpFtrunk(v){const i=Math.round(cl(+v||0,0,1)*100);return{L:58+Math.min(10,Math.floor(i/9))*2.2,p:i%9}}
+Object.assign(OB,{
+ytree:{w:40,h:40,c:[12,12],f(g,x,y){g.fillStyle='#6b4a2a';g.fillRect(x-6,y-12,12,12);g.fillStyle='#2f7d32';g.beginPath();g.arc(x,y-18,19,0,7);g.fill();g.fillStyle='#3f9a3f';g.beginPath();g.arc(x-5,y-23,9,0,7);g.fill()}},
+dirsign:{w:168,h:104,c:[6,14],pc:PKDIR,txt:30,dt:'ZOMBDASH SCHOOL|1 MILE',f(g,x,y,v,col,t){const[a,b]=kpLines(cmTxt(t,30)||'ZOMBDASH SCHOOL|1 MILE'),K=pcK(pcCol(col,PKDIR)),py=y-2,pw=164,ph=54,bx=x-pw/2,by=py-ph-44,R=(c,a_,b_,w,h)=>{g.fillStyle=c;g.fillRect(a_,b_,w,h)};
+R('rgba(0,0,0,.25)',x-1,py-2,14,4);R('#16111c',x-4,by+ph-2,8,py-by-ph+4);R('#8a9096',x-3,by+ph,6,py-by-ph+1);R('#c8ccd0',x-3,by+ph,2,py-by-ph+1);
+R('#16111c',bx-2,by-2,pw+4,ph+4);R(K.b,bx,by,pw,ph);R('#f4f1e6',bx+3,by+3,pw-6,2);R('#f4f1e6',bx+3,by+ph-5,pw-6,2);R('#f4f1e6',bx+3,by+3,2,ph-6);R('#f4f1e6',bx+pw-5,by+3,2,ph-6);
+kpText(g,a.toUpperCase(),x,by+17,pw-14,14,'#f4f1e6');if(b)kpText(g,b.toUpperCase(),x-18,by+37,100,13,'#f4f1e6');
+g.fillStyle='#f4f1e6';const ax=x+22,ay=by+37;g.fillRect(ax,ay-2,22,5);g.beginPath();g.moveTo(ax+20,ay-8);g.lineTo(ax+32,ay+.5);g.lineTo(ax+20,ay+9);g.fill();R('rgba(0,0,0,.25)',bx+pw-14,by+ph-10,6,3)}},
+smallcar:{w:60,h:32,c:[54,26],pc:PKCAR,wb:1,f(g,x,y,v,col){const c=pcCol(col,PKCAR),cy=y-16,R=(k,a,b,w,h)=>{g.fillStyle=k;g.fillRect(x+a,cy+b,w,h)};
+R('#111',-25,-10,54,26);R(c,-27,-13,54,26);R('rgba(0,0,0,.25)',-27,-13,54,3);R('rgba(0,0,0,.25)',-27,10,54,3);R('#8fc3e8',-9,-10,16,20);R('#e8e8c0',23,-11,4,5);R('#e8e8c0',23,6,4,5);R('#3a2216',16,-9,11,18)}},
+chopper:{w:212,h:96,c:[80,32],f(g,x,y){const hx=x,hy=y-16;g.fillStyle='rgba(20,20,15,.5)';g.beginPath();g.ellipse(hx,hy+4,76,50,0,0,7);g.fill();
+// only the body is a walk-behind picture (as on the old Suburb): people's feet on it are drawn behind it
+vDraw(g,hx-46,hy-46,92,92,g=>{g.save();g.translate(hx,hy);g.rotate(.6);g.fillStyle='#333';g.fillRect(-30,13,60,4);g.fillStyle='#55664a';g.fillRect(-32,-12,64,24);g.fillStyle='#7fb3cf';g.fillRect(14,-9,16,18);g.fillStyle='#2a2a24';g.fillRect(-12,-12,18,24);g.fillStyle='#e8e8c0';g.fillRect(20,-9,1,18);g.restore()});
+g.save();g.translate(hx-74,hy-44);g.rotate(.5);g.fillStyle='#55664a';g.fillRect(-28,-4,56,8);g.fillRect(22,-14,6,14);g.restore();
+g.save();g.translate(hx+16,hy-38);g.rotate(.9);g.fillStyle='#2b2b2b';g.fillRect(-46,-2,92,4);g.rotate(2);g.fillRect(-30,-2,60,4);g.restore()}},
+ftrunk:{w:124,h:34,c:0,f(g,x,y,v){const F=kpFtrunk(v);kpLog(g,Math.round(x-(F.L+30)/2),y-12,F.L,F.p)}},
+sstump:{w:20,h:20,c:[12,8],f(g,x,y){const Y=y-5,R=(c,a,b,w,h)=>{g.fillStyle=c;g.fillRect(x+a,Y+b,w,h)};g.fillStyle='rgba(0,0,0,.25)';g.beginPath();g.ellipse(x+2,Y+3,8,4,0,0,7);g.fill();
+R('#16111c',-7,-6,14,11);R('#6b4a2a',-6,-5,12,9);R('#e0bc84',-5,-5,10,4);R('#e0bc84',-4,-10,3,6);R('#e0bc84',1,-12,2,8);R('#e0bc84',3,-8,2,4);R('#a8804a',-1,-4,2,2)}},
+hplant:{w:22,h:24,c:0,f(g,x,y){const cy=y-8;g.fillStyle='#16111c';g.beginPath();g.arc(x,cy,9,0,7);g.fill();g.fillStyle='#8a5a34';g.fillRect(x-4,cy-2,8,8);g.fillStyle='#3f8a3a';g.beginPath();g.arc(x,cy-3,8,0,7);g.fill();g.fillStyle='#5aaa4a';g.beginPath();g.arc(x-3,cy-6,3,0,7);g.fill()}},
+flamp:{w:56,h:60,c:0,f(g,x,y){const ly=y-8;g.fillStyle='rgba(255,230,140,.2)';g.beginPath();g.arc(x,ly,26,0,7);g.fill();g.fillStyle='#16111c';g.fillRect(x-8,ly-8,16,16);g.fillStyle='#e8c060';g.fillRect(x-7,ly-7,14,14);g.fillStyle='#f8e0a0';g.fillRect(x-5,ly-5,10,4)}},
+curtain:{w:58,h:10,c:0,pc:PKCURT,f(g,x,y,v,col){const c=pcCol(col,PKCURT),l=pcSh(c,1.22),R=(k,a,b,w,h)=>{g.fillStyle=k;g.fillRect(x+a,y+b,w,h)};
+R(c,-28,-7,10,7);R(c,18,-7,10,7);R('#16111c',-28,-8,56,1);R(l,-27,-6,3,5);R(l,19,-6,3,5)}}});

@@ -13,13 +13,13 @@ The game ships as **one self-contained file**, `index.html` (what GitHub Pages s
 | `src/js/early-error-screen.js` | Tiny script that shows a "Startup error" box if the game fails to load. |
 | `src/js/modules.txt` | **Load order** of the game modules. |
 | `src/js/**` | The game, split into 117 modules (listed below). The Map Workshop is in `src/js/editor/`, the custom map format, loader and building kit in `src/js/world/`. |
-| `src/maps/` | Map files (`*.zombdash-map.json`) that ship with the game, embedded by the build with `{{json:maps/<file>}}`: `samples/town-block.zombdash-map.json` is the Workshop's sample map. |
+| `src/maps/` | Map files that ship with the game, embedded by the build with `{{json:maps/<file>}}`: `suburb.json` is the Suburb (map 0, a built-in map made from a file, see "Built-in maps from map files"); `samples/town-block.zombdash-map.json` is the Workshop's sample map. |
 | `src/assets/sprites/` | `zombies.png` (zombie atlas) and `survivors.png` (player atlas). Frame positions are in `ZS` / `PS` in `render/sprites.js`. |
 | `src/assets/thumbs/map-NN.jpg` | Map preview pictures; `NN` is the map's number in `MP`. |
 | `src/assets/sounds/` | Recorded reload sounds (everything else is synthesized in `audio/sound.js`). |
 | `tools/build.js` | The build (Node, no packages needed). |
 | `tools/check-map.js` | The map checker: `node tools/check-map.js map.json` reports errors, missing assets and other problems in map files (see `docs/map-format.md`). |
-| `tests/run.js`, `tests/suites/` | Automated tests that load the real game in Node with a fake browser. |
+| `tests/run.js`, `tests/suites/` | Automated tests that load the real game in Node with a fake browser. `tests/fixtures/suburb-walls.json` is the old Suburb's collision, start, spawns and no-spawn box, which `tests/suites/suburb.js` checks the converted map against. |
 | `docs/` | This file, the map editor plan (`map-editor-plan.md`), the map file format (`map-format.md`) and the Supabase setup SQL for online accounts. |
 
 ## Build and test
@@ -57,6 +57,7 @@ node tests/run.js spawn ammo # only suites whose name contains a word
 | Survivor boss health and speed | `SVS` in `bosses/survivors.js` |
 | Easy / Normal / Hard multipliers | `core/difficulty.js` |
 | Map list and names | `MP` in `world/map-list-and-pathfinding.js`; descriptions `MPD` in `ui/map-and-survivor-select.js` |
+| The Suburb's layout (houses, furniture, forests, roads, spawns) | `src/maps/suburb.json` (a map file: edit a copy in the Workshop, export it, and replace the file; check it with `tools/check-map.js` and `tests/suites/suburb.js`) |
 | Campaign sections and map order | `SEC` in `campaign/sections.js`, `CORD` in `campaign/modes.js` |
 | Which survivor bosses custom campaign maps may use | `CCBOSS` / `CCNOT` in `campaign/custom-campaign.js` |
 | Skill tree | `SKB` in `ui/core-ui.js` |
@@ -130,8 +131,18 @@ The kit lets custom maps be as detailed as the hand-coded maps. The whole format
 * **Walk-behind.** `vehWrap` (`world/vehicles.js`) puts tall props on the walk-behind list: the old list plus every prop with `wb: 1` (kit and forest props), forwarding colour and text.
 * **Editor** (`editor/kit-tools.js`, `editor/kit-view.js`): the Room tool (O: drag a rectangle → floor + walls in the chosen style with a doorway; Interior wall mode), Opening (D: click a wall → doorway, window, storefront glass, automatic doors, roll-up / garage door, bars or a gap; the wall is split, `edGapSplit`), Area (A), Path (T: click points, Enter / double-click to finish; Backspace, Esc), Feature (K) and Prefab (G) tools. A selected path or road graph shows point handles (drag; Alt+click deletes; double-click on the line adds). Areas and paths are cached as small pictures per piece in the editor (`edKitImg`). Every action is one undo step (`edApply` can also carry a tile patch). Seven left tabs: Terrain, Build, Paths, Props, Decals, Prefabs, Markers.
 * **Prefabs** (`editor/prefabs.js`, starter set `editor/prefab-starter.js`): `edPfFrom` turns a selection (and optionally the tiles under it) into a prefab; `edPrefabPlace` places one as new, separate things with one undo step. Your prefabs live in IndexedDB (`kv` record `prefabs`).
-* **Samples** (`editor/samples.js`): `CMSAMPLES` are map files built into the game, listed under "Sample maps" in the Workshop (**ADD TO MY MAPS** / **EDIT A COPY**).
+* **Samples** (`editor/samples.js`): `CMSAMPLES` are map files built into the game, listed under "Sample maps" in the Workshop (**ADD TO MY MAPS** / **EDIT A COPY**). Built-in maps made from files are listed under "Built-in maps" (see below).
 * **Checker:** `tools/check-map.js` loads the built game in Node and runs `cmRead` + `cmLint` plus authoring checks on map files.
+
+### Built-in maps from map files (step 4)
+
+Built-in maps are being converted one by one from map code (`mapXxx()`) to map files. A converted map keeps its number in `MP`, so its campaign slot, survivor boss, progress bitmasks, best waves, leaderboard board and checkpoints don't change.
+
+* **`world/builtin-maps.js`:** `BIMF[mapId]` is the embedded map file (`{{json:maps/suburb.json}}` for map 0); `bimDoc(m)` reads it once with `cmRead` (a broken file throws: it is a build bug); `MP[m].f` is `()=>bimBuild(m)`, which calls `cmBuild`. So `build()` → `cmBuild` exactly as for a custom map, but `cmIs(m)` stays false and records use the built-in number. `HS.CM` (the map's id, here `builtin-suburb`) means "built from a map file": kit effects and time-of-day lighting check it. `cmBuild` also sets `HS.sp` from the spawn points, which the survivors' fallback position reads.
+* **Boot order:** the first `build()` now runs at the end of `world/builtin-maps.js` (after the editor modules), because the Suburb needs the map loader, every kit registry and the kit props (`maps/props/kit-props.js`), which load long after `world/map-list-and-pathfinding.js`.
+* **Editing:** the Workshop lists them under "Built-in maps" (`wsBuiltins`): **EDIT A COPY** / **ADD A COPY TO MY MAPS** (`wsBuiltin`) store your own copy with a new id; the built-in map only changes through `src/maps/*.json` in the repo.
+* **Shared walk-behind pictures:** walk-behind entries with `sh: 1` (the forest trees' canopies, one canvas per size and shade from `subSpr`, `kpWB` in `kit-props.js`) are not freed by `bgFree` when the next map is built.
+* **Converted so far:** the Suburb (map 0). `tests/suites/suburb.js` checks it against the old map's collision (`tests/fixtures/suburb-walls.json`).
 
 ### Custom map files
 
@@ -169,11 +180,11 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 
 | File | What's in it |
 |---|---|
-| `maps/suburb.js` | Suburb map (map 0) and shared wall helpers |
+| `maps/map-helpers.js` | Shared helpers of the built-in maps: walls with doorways (`hwall`, `vwall`), the pathfinding grid (`grid`), ground and checker floors, wall painting, trailers, parked cars, the round tree sprites (`subSpr`). The Suburb itself is `src/maps/suburb.json` |
 | `maps/warehouse.js` | Warehouse map |
 | `maps/graveyard.js` | Graveyard map |
 | `maps/props/objects.js` | Prop library: object sprites (OB), fences, scatter, put() and paintDec() |
-| `maps/props/houses.js` | House builder used by several maps |
+| `maps/props/houses.js` | Props of the built-in maps (school, office, store, farm and play pieces, beds, couches) and the wheel helper |
 | `maps/props/school-objects.js` | School props: lockers, cracks, signs and more objects |
 | `maps/school.js` | School map |
 | `maps/old-west.js` | Old West map |
@@ -182,7 +193,6 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 | `maps/military-camp-shared.js` | Shared pieces for Military Base and Campground |
 | `maps/military-base.js` | Military Base map |
 | `maps/campground.js` | Campground map |
-| `maps/suburb-details.js` | Suburb forests, crash lane, detailed houses |
 | `maps/school-details.js` | School extra detail and walk-behind objects |
 | `maps/highway.js` | Deadway Highway map |
 | `maps/haunted-mansion.js` | Haunted Mansion map |
@@ -237,6 +247,7 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 | `editor/prefabs.js` | Prefabs: save a selection, place a prefab, the Prefabs tab, your prefabs on the device |
 | `editor/prefab-starter.js` | The 33 starter prefabs, laid out after the built-in maps |
 | `editor/samples.js` | Sample maps built into the Workshop (`CMSAMPLES`) |
+| `world/builtin-maps.js` | Built-in maps made from map files (the Suburb, `src/maps/suburb.json`): `BIMF`, `bimBuild`, the Workshop's Built-in maps list (`wsBuiltins`), and the first map build at boot |
 
 ### Menus and screens (`src/js/ui/`)
 

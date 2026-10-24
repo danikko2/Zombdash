@@ -5,7 +5,7 @@ core/boot.js
 audio/sound.js
 data/tables.js
 core/state.js
-maps/suburb.js
+maps/map-helpers.js
 maps/warehouse.js
 maps/graveyard.js
 maps/props/objects.js
@@ -61,7 +61,6 @@ dev/test-code.js
 campaign/modes.js
 bosses/survivors.js
 campaign/lives.js
-maps/suburb-details.js
 world/wall-index.js
 maps/school-details.js
 world/vehicles.js
@@ -115,6 +114,7 @@ editor/playtest.js
 editor/workshop.js
 editor/workshop-campaign.js
 editor/samples.js
+world/builtin-maps.js
 core/main-loop.js
 intro/cutscene.js
 core/start.js

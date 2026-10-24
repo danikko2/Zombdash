@@ -29,7 +29,8 @@ function cmProp(g,o){const B=cmOB(o.k);if(!B)return;const v=o.vr!=null?o.vr:cmH(
 const L=vRec.L,n=L?L.length:0;g.save();g.translate(o.x,o.y);g.rotate(r*Math.PI/180);try{B.f(g,0,0,v,o.c,o.tx)}finally{g.restore()}
 // a turned sprite has no straight base line, so walk-behind uses its pixels instead
 if(L)for(let i=n;i<L.length;i++)delete L[i].base}
-function cmCar(g,o){const v=cmVeh(o);if(!v)return;const r=Math.hypot(v.L,v.W)/2+6;vDraw(g,v.x-r,v.y-r,r*2,r*2,q=>hwDraw(q,v))}
+// the walk-behind box hugs the turned car (a square around any turn wasted memory on long vehicles)
+function cmCar(g,o){const v=cmVeh(o);if(!v)return;const c=Math.abs(Math.cos(v.a)),s=Math.abs(Math.sin(v.a)),ex=c*v.L/2+s*v.W/2+8,ey=s*v.L/2+c*v.W/2+8;vDraw(g,v.x-ex,v.y-ey,ex*2,ey*2,q=>hwDraw(q,v))}
 function cmWallDraw(g,w){const s=CMWI[w.s]||CMWI.wall;s.f(g,w.x,w.y,w.w,w.h,w.c)}
 // everything is painted in layer order (hidden layers too: hiding is only for the editor)
 function cmPaint(g,d){cmGround(g,d,0,0,d.w,d.h,0);for(const it of cmDrawList(d,0))cmPaintIt(g,it.o,it.t)}
@@ -38,13 +39,16 @@ function cmPaintIt(g,o,t){if(t=='w')return cmWallDraw(g,o);if(t=='a')return cmAr
 // the map loader: everything a map function (mapXxx) does, from data
 function cmBuild(d){const T=d.tile;WW=d.w*T;WH=d.h*T;WL=cmColl(d);
 const sp=d.spawns.filter(s=>s.on!==false).map(s=>[s.x,s.y]),zn=d.zones.filter(z=>z.on!==false).map(z=>[z.x,z.y,z.w,z.h]);
-const st=cmStart(d);HS={cx:cl(st.x,0,WW),cy:cl(st.y,0,WH),px:cl(st.x,8,WW-8),py:cl(st.y,8,WH-8),nx0:0,nx1:0,ny0:0,ny1:0,CM:d.id};if(sp.length||zn.length)HS.CZ={p:sp,z:zn};
+const st=cmStart(d);HS={cx:cl(st.x,0,WW),cy:cl(st.y,0,WH),px:cl(st.x,8,WW-8),py:cl(st.y,8,WH-8),nx0:0,nx1:0,ny0:0,ny1:0,CM:d.id};if(sp.length||zn.length)HS.CZ={p:sp,z:zn};if(sp.length)HS.sp=sp;
 cmFeatHS(d);grid();BG.width=WW;BG.height=WH;cmPaint(BG.getContext('2d'),d);HS.CX=cmFxData(d);HS.LT=cmLightData(d)}
 // what the map's special features, effects and props tell the game's systems (the same HS fields the built-in maps set)
 function cmFeatHS(d){const F=d.feats||[],R=f=>[f.x,f.y,f.x+f.w,f.y+f.h];
 SM=d.obj.filter(o=>o.fx&&cmFx(o.fx)&&cmFx(o.fx).sm).map(o=>({x:o.x,y:o.y}));
 // no-spawn zones: the first is the game's no-spawn box for zombies from off-screen; spawn points and zones inside any are skipped
-const NS=F.filter(f=>f.f=='nospawn'&&f.w>0);if(NS.length){const r=R(NS[0]);HS.nx0=r[0];HS.ny0=r[1];HS.nx1=r[2];HS.ny1=r[3];HS.NS=NS.map(R);NOGO=HS.NS.slice()}
+// options: skip:0 keeps spawn points inside working, nogo:0 lets bosses land inside (the Suburb's box only stops zombies from off-screen)
+const NS=F.filter(f=>f.f=='nospawn'&&f.w>0),on=(f,k)=>!(f.o&&(f.o[k]===0||f.o[k]===false));if(NS.length){const r=R(NS[0]);HS.nx0=r[0];HS.ny0=r[1];HS.nx1=r[2];HS.ny1=r[3];HS.NS=NS.filter(f=>on(f,'skip')).map(R);NOGO=NS.filter(f=>on(f,'nogo')).map(R)}
+// the menu camera
+const MV=F.find(f=>f.f=='menuview'&&f.w>0);if(MV){HS.cx=MV.x+MV.w/2;HS.cy=MV.y+MV.h/2}
 // building interiors (bosses look for players inside): Building interior features and indoor floors
 const HO=F.filter(f=>f.f=='house'&&f.w>0).map(f=>({x:f.x,y:f.y,w:f.w,h:f.h}));for(const a of d.areas||[])if(a.a=='floor'&&(!a.o||a.o.in!==0&&a.o.in!==false))HO.push({x:a.x,y:a.y,w:a.w,h:a.h});if(HO.length)HS.HO=HO;
 // the boss road graph

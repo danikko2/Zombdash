@@ -303,7 +303,7 @@ LBY={s:[{inp:'km',ac:S.ac,ci:0,v:0,rdy:1},{inp:0,ac:'G',ci:1,v:0,rdy:1}]};setGM(
 for(let f=0;f<60;f++){for(const p of PL){p.hp=p.mx=99}tick(1)}ok(PL.every(p=>p.x>0&&p.y>0&&p.x<WW&&p.y<WH),'both players are on the map');ok(olRow()===null,'split screen posts no leaderboard score (as on every map)');MPn=0;LBY=null;
 // ---------- the rest of the game ----------
 menu();ok(/>PLAY<\\/button><button onclick="workshop\\(\\)">CREATE/.test(ui.innerHTML),'main menu: CREATE right under PLAY');
-for(let m=0;m<MP.length;m++){mapId=m;build();if(!(WW>0&&WL.length>0&&!HS.CZ)){ok(0,'built-in map '+m+' still builds');break}}ok(1,'every built-in map still builds as before');
+for(let m=0;m<MP.length;m++){mapId=m;build();if(!(WW>0&&WL.length>0&&(!HS.CZ||bimIs(m)))){ok(0,'built-in map '+m+' still builds');break}}ok(1,'every built-in map still builds as before');
 {mapId=2;sel=0;S.sw=1;start();wave=5;P.ac=S.ac;RUN0=Date.now()-60000;RUNW=1;const r=olRow();ok(r&&r.map===2&&!('cmap' in r),'a built-in map\\'s score row is unchanged');over(1)}
 // ---------- more terrain, road markings, house / forest props and prop colours ----------
 {const C=['carpet_grey','carpet_dkgrey','carpet_tan','carpet_black','carpet_red','carpet_green','carpet_blue'];ok(C.every(id=>CMTI[id]&&CMTI[id].carpet)&&CMTI.soil,'terrain: carpet in grey, dark grey, tan, black, red, green and blue, and farm soil');

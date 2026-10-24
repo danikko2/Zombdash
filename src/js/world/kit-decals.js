@@ -79,6 +79,9 @@ g.lineWidth=3;g.strokeStyle=K.b;g.beginPath();g.moveTo(-30,0);for(let k=0;k<7;k+
 {id:'mat',n:'Door mat',cat:'misc',w:36,h:16,pal:PDMAT,txt:8,f(g,v,K,t){g.fillStyle='#16111c';g.fillRect(-17,-7,34,14);g.fillStyle=K.b;g.fillRect(-16,-6,32,12);g.fillStyle=K.d;for(let x=-15;x<16;x+=3)g.fillRect(x,-6,1,12);if(t){dcFit(g,t.toUpperCase(),30,7);g.fillStyle=K.ll;g.textAlign='center';g.textBaseline='middle';g.fillText(t.toUpperCase(),0,1);g.textAlign='left';g.textBaseline='alphabetic'}}},
 {id:'threshold',n:'Door threshold',cat:'misc',w:52,h:8,f(g){g.fillStyle='#c9a36a';g.fillRect(-26,-3,52,6);g.fillStyle='#a8804a';g.fillRect(-26,2,52,1)}}];
 for(const t of CMDK)cmAddDec(t);
+// the Suburb's grass bits (var < .4 a flower: its colour from the first decimal; < .7 a tuft; otherwise a pebble) and the round scorch around its crash
+cmAddDec({id:'speck',n:'Grass bit (flower, tuft or pebble)',cat:'nature',w:10,h:10,f(g,v){if(v<.4){g.fillStyle=['#ff6a8a','#ffd84a','#ffffff','#9a7aff'][Math.floor(v*10)%4];g.fillRect(0,-3,3,3);g.fillStyle='#2f6b34';g.fillRect(1,0,1,3)}else if(v<.7){g.fillStyle='#2f6b34';g.fillRect(0,0,7,3);g.fillRect(2,-2,3,2)}else{g.fillStyle='#8f949e';g.fillRect(0,0,4,2);g.fillStyle='#6a6e78';g.fillRect(0,2,4,1)}}});
+cmAddDec({id:'scorchround',n:'Scorched ground (round)',cat:'crash',w:300,h:300,f(g){for(let r=150;r>10;r-=14)dcEll(g,0,0,r,r,'rgba(20,14,10,.07)')}});
 // draw a decal of a map (o: dc, x, y, r, sc, c, op, tx) into g
 function cmDecDraw(g,o){const T=cmDec(o.dc);if(!T)return;const v=o.vr!=null?o.vr:cmH(o.x,o.y,5),K=T.pal?pcK(cmCol(o.c,T.pal[0][0])):null,sc=cl(+o.sc||1,.25,4),O=T.opts?Object.assign({},T.def&&T.def.o,o.o):null;
 g.save();g.translate(o.x,o.y);if(o.r)g.rotate(o.r*Math.PI/180);if(sc!==1)g.scale(sc,sc);g.globalAlpha=cl(o.op==null?1:+o.op,.05,1);try{T.f(g,v,K,T.txt?cmTxt(o.tx,T.txt):'',O)}finally{g.restore()}}

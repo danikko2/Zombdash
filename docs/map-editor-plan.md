@@ -1,6 +1,6 @@
 # Zombdash map editor: plan and handoff (agreed Oct 20, 2026)
 
-The full wish list is the "Map Workshop" prompt the owner attaches. This file records how it fits the game and what each step covers (steps 1–3 and the building kit are done; step 4, converting the built-in maps, is next). Read `docs/ARCHITECTURE.md` and `docs/map-format.md` too.
+The full wish list is the "Map Workshop" prompt the owner attaches. This file records how it fits the game and what each step covers (steps 1–3 and the building kit are done; step 4, converting the built-in maps, is under way: the Suburb is converted). Read `docs/ARCHITECTURE.md` and `docs/map-format.md` too.
 
 ## Working on this repo
 - **Where the code lives:** the source is in `src/`, split into 117 modules whose load order is in `src/js/modules.txt`. Map files that ship with the game are in `src/maps/`.
@@ -9,7 +9,7 @@ The full wish list is the "Map Workshop" prompt the owner attaches. This file re
 - **Don't edit `index.html` by hand.** Before starting, run `node tools/build.js --check`. If it fails, someone edited `index.html` directly, and that change has to be moved into `src/` first.
 - **Publishing each change:**
   1. Run `node tools/build.js`.
-  2. Run `node tests/run.js` (25 suites, about 4 minutes). These exceptions are expected:
+  2. Run `node tests/run.js` (26 suites, about 3 minutes). These exceptions are expected:
      - `tutorial.js` camera zoom is a known failure.
      - The `campaign.js` Rusty check is flaky and retried automatically.
      - The `balance-editor-and-test-switches.js` ground-limit check fails about 1 run in 20 on the original game too (a kill can add two drops when one slot is left), so it is retried automatically as well.
@@ -117,6 +117,7 @@ The full wish list is the "Map Workshop" prompt the owner attaches. This file re
    - **Shipping:** converted maps are stored as `src/maps/*.json` and embedded by `tools/build.js`. The step 1 note says the loader is ready and the build needs to embed the files.
    - **Progress safety:** a converted map keeps its map number, campaign slot, boss, progress and leaderboard board, so players' progress is untouched.
    - **Small differences are allowed:** a converted map may look slightly different in painted details. The layout, walls, spawns and gameplay must match.
+   - **Converted:** the **Suburb** (map 0), Oct 24, 2026: see "Step 4 conversions" below.
 5. **Step 5:** gameplay pieces the owner picks (loot crates, doors, traps…).
 
 ## Building kit (done Oct 23, 2026)
@@ -255,14 +256,37 @@ This is the checklist for the step 4 conversions. Maps: **Su** Suburb, **Wa** Wa
 | Building interiors `HS.HO` (bosses look for players inside) | EF, Ur, CP, Dt, Mk, MS | ✓ `house` feature, indoor floors |
 | No-spawn rectangle `HS.nx0…` and no-go areas `NOGO` | HM, Mk, Ca, CP | ✓ `nospawn` feature |
 | Spawn point lists `HS.sp` / `HS.sp2` | most | ✓ spawn points and zones; ◐ the second list |
-| Map-only animation data (`HS.MN`, `HS.FS`, `HS.HL`, `HS.HB`, `HS.PK`) and School's own walk-behind pass | HM, EF, CP, Hw, Sc | ✓ `fog` / `flicker` / `portrait` (MN), `siren` (HL), `fire` (HB), `ducks` (PK), walk-behind props (School); ◐ the forest canopy (FS) |
+| Map-only animation data (`HS.MN`, `HS.FS`, `HS.HL`, `HS.HB`, `HS.PK`) and School's own walk-behind pass | HM, EF, CP, Hw, Sc | ✓ `fog` / `flicker` / `portrait` (MN), `siren` (HL), `fire` (HB), `ducks` (PK), walk-behind props (School); ◐ the forest canopy (FS): the Suburb's woods use walk-behind forest trees (`foak`, `fpine`) |
+
+## Step 4 conversions
+
+### Suburb (map 0): converted Oct 24, 2026
+- **The file:** `src/maps/suburb.json` (72×57 tiles; 1,405 props of which 1,240 forest trees, 3 vehicles, 136 walls, 145 decals, 35 areas, 35 paths, 3 effects, 106 spawn points, a no-spawn box and a menu view). It loads through the same loader as custom maps (`world/builtin-maps.js`: `MP[0].f = () => bimBuild(0)`), keeps map number 0 and so its campaign slot, survivor boss (Bill), progress, best waves, leaderboard board and checkpoints. `mapSuburb()`, `maps/suburb-details.js`, `mkHouse`, `subSign`, `subCan` and the map-0 branch of `paintDec` are gone; the shared helpers moved to `maps/map-helpers.js` (with `subSpr`, which the Highway, the School and the forest trees use).
+- **Same layout:** every coordinate is absolute and taken from the old map (a capture of its `WL`, trees, props, spawns and `HS`), so the middle house stays exactly where `tutGeo()` expects it; the tutorial is unchanged. The old collision is kept as `tests/fixtures/suburb-walls.json`; the converted map matches it pixel for pixel except 3 forest trunks that stood 2–4 px off the left edge and now stand on it.
+- **Editing:** the Workshop lists it under **Built-in maps**: EDIT A COPY / ADD A COPY TO MY MAPS make your own copy with a new id; the built-in Suburb only changes through the repo.
+- **Kit pieces added for it:** props `foak` / `fpine` (forest trees: see-through trunks, one shared walk-behind canopy picture per size and shade), `ytree` (yard tree), `ftrunk` (fallen tree), `sstump` (splintered stump), `smallcar` (small crashed car), `chopper` (crashed helicopter, only its body walk-behind), `dirsign` (direction sign with your text and an arrow), `hplant` (house plant from above), `flamp` (floor lamp, gives light), `curtain`; decals `speck` (grass bits) and `scorchround`; areas `mowed` (lawn stripes); paths `forest` (forest floor shape, with a churned-earth style) and grass `clearing` patches that paint real grass; features `menuview` (menu camera) and `nospawn` options `skip` / `nogo`; props can have a collision flag (`cf: 2` = see-through); floors can be as small as 4×4. No prefabs were added (the houses are laid out piece by piece).
+- **Engine changes:** the first map build at boot moved to the end of `world/builtin-maps.js` (the Suburb needs the loader and the kit props, which load late); `HS.CM` now means "built from a map file" (kit effects and lighting check it); `cmBuild` sets `HS.sp`; `bgFree` no longer frees shared walk-behind pictures (`sh: 1`); a custom map's turned vehicle gets a walk-behind box that hugs it instead of a square.
+- **Checks done before the swap:** side-by-side pictures of the whole map, each house, the street, the crash lane, both forests and the sign; the wall comparison above; all 106 spawns reach the player (path search from the start); campaign waves 1–19 played three times with zombies walking into the house (99.7% reached the player; the 2–3 that didn't were big zombies jammed in a doorway, as on the old map), the wave-20 survivor boss and the progress after it; a Free Play run (best wave, leaderboard board 0, checkpoint as map 0); the tutorial; split screen; low-memory mode; performance (below). `tests/suites/suburb.js` repeats these (waves 1–4 and 19 by default; `SUBURB_FULL=1 node tests/suites/suburb.js index.html` plays all of 1–19, about 8 minutes). The same playtest on the old map code (the last `index.html` before the swap) gave the same picture: a couple of big zombies (brutes, big blues) can jam in the front doorway on both; spitters and healers keep their distance on both; Bill took up to ~30 s to reach the player in the house on both.
+- **Performance and memory** (Chromium, 1280×800, five spots): frames 1.9 ms on average instead of 3.0 ms (the canopy is no longer redrawn every frame), the map builds in 0.15 s instead of 0.6 s, the JS heap is the same (10.4 MB vs 10.6 MB). Canvas memory is 0.4 MB higher (16.8 vs 16.3 MB; low-memory mode 4.8 vs 4.4 MB): the map is 4 px wider and 24 px taller (whole tiles), and the cars, sedans, bookshelves and helicopter body are walk-behind pictures.
+- **Visible differences** (allowed by "small differences"): the trails and the clearings' edges are smooth curves instead of 8 px steps; the trails have a lighter middle and stop a little before the forest edge; the crosswalk bars are thinner lines; furniture uses the kit props (beds with red covers, kit kitchen counters and stove, sink under the west window instead of a cabinet line across the back wall, grey garage cabinet and tool chest, tire stack, kit TV stands, coffee tables and sofas); wall pieces have the kit's lighter top edge; windows are 6 px kit windows; gate posts are siding pieces; the road edge lines and dashes have slightly different lengths; the 14 small dark streaks on the road and the debris bits by the crashed cars are gone (the road has its own speckle); splinters along the crash lane are small twig decals; the garage cars are kit sedans; the forest canopy hides a player standing behind a tree instead of every player under any canopy; the camera stops 24 px lower at the bottom edge.
+
+### Lessons for the next maps
+- **Capture first.** Run the old map once and dump `WL`, the tree and prop lists (wrap `paintDec`), spawns and `HS` to JSON; generate the map file from that capture plus the map's formulas with a small script, then compare `cmColl(doc)` with the old `WL` (rasterise both with a 0.2 px tolerance: the 0.1 px rounding of the file flips edge pixels otherwise). Keep the old collision as a test fixture before deleting the map code.
+- **Keep absolute coordinates** and round the map size up to whole tiles; nothing else needs moving.
+- **Flags:** old walls without a flag and with flag 1 behave the same in the game; flag 2 (see-through) must stay 2: use fence styles or `cf: 2` props.
+- **Painted furniture had no collision:** make furniture props `solid: false`, or zombie paths change.
+- **Indoor floors** (`in: 1`) add building interiors for the bosses: use `in: 0` when the old map had no `HS.HO`.
+- **No-spawn boxes** on the old maps only filter the off-screen spawn point; use `skip: 0` / `nogo: 0` when the map's spawn points sit inside the box or `NOGO` was empty.
+- **Thousands of props are fine** if their walk-behind pictures are shared (`kpWB` with `sh: 1`); a canvas per tree would cost tens of MB.
+- **In Node tests, don't give the player a huge max health:** the HUD draws one heart per point (a million hearts made each tick take 4 s). Mark the account `tut: 1` before starting a campaign run on map 0, or the tutorial starts instead.
+- **Watch the boot order:** anything the boot build needs must be loaded before `world/builtin-maps.js` runs it.
 
 ## What each map still needs before converting
 Everything else on each map can be built with the kit; the conversion still has to be laid out, compared side by side and playtested (walls, zombie paths, spawns, its survivor boss).
 
 | Map | Still needs / watch out for |
 |---|---|
-| Suburb | Forest canopy over players (use walk-behind trees). |
+| Suburb | **Converted (Oct 24, 2026).** |
 | Warehouse | Nothing new. |
 | Graveyard | Nothing new (chapel and mausoleum prefabs are a start; the mausoleum glow is a `glow` effect). |
 | School | Nothing new; its own walk-behind pass becomes ordinary walk-behind props. |
@@ -272,7 +296,7 @@ Everything else on each map can be built with the kit; the conversion still has 
 | Campground | Nothing new. |
 | Deadway Highway | Gore chevrons as hazard decals; a second spawn list as spawn points. |
 | Haunted Mansion | The grand staircase from steps areas; candles = `flicker`, fog = `fog`, inside = `nospawn`. |
-| Enchanted Forest | The canopy layer that hides players (`HS.FS`): not a kit piece yet; decide between walk-behind trees and a new canopy feature. |
+| Enchanted Forest | The canopy layer that hides players (`HS.FS`): the Suburb showed walk-behind trees work (shared canopy pictures, `kpWB`); its trees need their own kit tree props in the forest's colours. |
 | Urban Outskirts | Nothing new. |
 | City Park | Nothing new (road graph for the Ice Cream Man; splash pad, ponds, ducks). |
 | Downtown | Second spawn list as spawn points; lobbies with the Room tool next to tower roofs; street trees `stree`. |

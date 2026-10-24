@@ -5,7 +5,7 @@ function lowMem(){const o=S.lm||'a';if(o=='on')return true;if(o=='off')return fa
 LMX=lowMem();
 function setLM(v){S.lm=v;sv();LMX=lowMem();options(OPF)}
 // release the old map's canvases right away (iOS is slow to free canvas memory on its own)
-function bgFree(){try{for(const v of(HS&&HS.VH)||[]){if(v.cv){v.cv.width=0;v.cv.height=0;v.cv=null}v.al=null}if(BGL){BGL.width=0;BGL.height=0;BGL=null}}catch(e){}}
+function bgFree(){try{for(const v of(HS&&HS.VH)||[]){if(v.cv&&!v.sh){v.cv.width=0;v.cv.height=0}v.cv=null;v.al=null}if(BGL){BGL.width=0;BGL.height=0;BGL=null}}catch(e){}}
 // low-memory: keep the map background at half size (drawn back up with crisp pixels) and free the full-size one
 function bgLow(){LMX=lowMem();if(!LMX||typeof document=='undefined'||!document.createElement)return;try{const k=.5,c=document.createElement('canvas');c.width=Math.ceil(WW*k);c.height=Math.ceil(WH*k);const q=c.getContext('2d');if(!q||!q.drawImage)return;q.imageSmoothingEnabled=true;try{q.imageSmoothingQuality='high'}catch(e){}q.drawImage(BG,0,0,WW,WH,0,0,c.width,c.height);c.k=k;BGL=c;BG.width=1;BG.height=1}catch(e){BGL=null}}
 function bgDraw(x0,y0,w,h,dx,dy){if(BGL){const k=BGL.k,sm=X.imageSmoothingEnabled;X.imageSmoothingEnabled=false;X.drawImage(BGL,x0*k,y0*k,w*k,h*k,dx,dy,w,h);X.imageSmoothingEnabled=sm}else X.drawImage(BG,x0,y0,w,h,dx,dy,w,h)}
