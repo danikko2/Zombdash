@@ -34,11 +34,4 @@ if(V.base!=null?(e.y<V.base-V.ch/2&&ov(e,V.x,V.y,V.x+V.w,V.base)):(vOn(V,cx,e.fy
 X.save();X.beginPath();for(const e of B)X.rect(e.x0,e.y0,e.x1-e.x0,e.y1-e.y0);X.clip();X.drawImage(V.cv,V.x,V.y);X.restore();
 for(const e of E)if(!B.includes(e)&&B.some(b=>ov(b,e.x0,e.y0,e.x1,e.y1)&&e.y>b.y))schRe(e)}}
 function vS2(g,x,y,w,h,fn){vRec(g,x-w/2,y-h,w,h,q=>S2(q,x,y,w,h,fn));S2(g,x,y,w,h,fn)}
-// warehouse: green highway sign at the bottom left, left of the road, arrow pointing down-left
-function whSign(g,x,py){const pw=176,ph=58,bx=x-pw/2,by=py-ph-40;
-g.fillStyle='rgba(0,0,0,.25)';g.fillRect(x-1,py-2,14,4);g.fillStyle='#16111c';g.fillRect(x-4,by+ph-2,8,py-by-ph+4);g.fillStyle='#8a9096';g.fillRect(x-3,by+ph,6,py-by-ph+1);g.fillStyle='#c8ccd0';g.fillRect(x-3,by+ph,2,py-by-ph+1);
-g.fillStyle='#16111c';g.fillRect(bx-2,by-2,pw+4,ph+4);g.fillStyle='#1d7a3e';g.fillRect(bx,by,pw,ph);g.fillStyle='#f4f1e6';g.fillRect(bx+3,by+3,pw-6,2);g.fillRect(bx+3,by+ph-5,pw-6,2);g.fillRect(bx+3,by+3,2,ph-6);g.fillRect(bx+pw-5,by+3,2,ph-6);
-g.textAlign='center';g.textBaseline='middle';g.font='bold 14px Arial, Helvetica, sans-serif';g.fillText('HIGHWAY',x+20,by+19);g.fillText('ENTRANCE',x+20,by+38);
-g.save();g.translate(bx+30,by+ph/2);g.rotate(Math.PI*.75);g.fillRect(-12,-2.5,20,5);g.beginPath();g.moveTo(6,-8);g.lineTo(17,0);g.lineTo(6,8);g.fill();g.restore();g.textAlign='left';g.textBaseline='alphabetic';
-g.fillStyle='rgba(0,0,0,.25)';g.fillRect(bx+pw-14,by+ph-10,6,3)}
 

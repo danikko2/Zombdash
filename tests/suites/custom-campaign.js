@@ -144,7 +144,7 @@ crash='';try{CMV=4;cSlotPick(4,3)}catch(e){crash=e.message}ok(!crash&&ui.innerHT
 crash='';try{mapId=kE;setGM('c');start()}catch(e){crash=e.message}ok(!crash&&!cmIs(mapId)&&mode=='play','starting it anyway falls back to a campaign map, no crash '+crash);over(1);
 await workshop();ok(ui.innerHTML.includes('remove from campaign'),'the Workshop can take a broken map out of the campaign');{const i=CML.findIndex(e=>e.id===dE.id);wsCampOut(i)}ok(!CCS.slots['4:3'],'done');
 // a replacement whose map is gone: the original plays
-ccSetRep(dA.id,1);await msWrite([['put','maps',{id:dA.id,json:{format:'zombdash-map',version:99}}]]);await cmLoadAll();setGM('c');mapId=1;start();ok(mapId===1&&!CREP&&HS.CM===undefined,'a replacement that can\\'t be opened: the original map plays');over(1);
+ccSetRep(dA.id,1);await msWrite([['put','maps',{id:dA.id,json:{format:'zombdash-map',version:99}}]]);await cmLoadAll();setGM('c');mapId=1;start();ok(mapId===1&&!CREP&&HS.CM==='builtin-warehouse','a replacement that can\\'t be opened: the original map plays (its own map file)');over(1);
 // ---------- reload: everything comes back ----------
 await msWrite([['put','maps',{id:dA.id,json:cmWrite(dA)}]]);ccRestore(1);ccAssign(dA.id,1,4,9);CCLD=0;CCS={slots:{},rep:{}};await cmLoadAll();
 ok(ccSlot(1,4)&&ccSlot(1,4).b===9,'after a reload the slots come back from the device');

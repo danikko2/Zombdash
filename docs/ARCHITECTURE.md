@@ -12,14 +12,14 @@ The game ships as **one self-contained file**, `index.html` (what GitHub Pages s
 | `src/css/game.css` | All the styles for menus and the HUD. |
 | `src/js/early-error-screen.js` | Tiny script that shows a "Startup error" box if the game fails to load. |
 | `src/js/modules.txt` | **Load order** of the game modules. |
-| `src/js/**` | The game, split into 117 modules (listed below). The Map Workshop is in `src/js/editor/`, the custom map format, loader and building kit in `src/js/world/`. |
-| `src/maps/` | Map files that ship with the game, embedded by the build with `{{json:maps/<file>}}`: `suburb.json` is the Suburb (map 0, a built-in map made from a file, see "Built-in maps from map files"); `samples/town-block.zombdash-map.json` is the Workshop's sample map. |
+| `src/js/**` | The game, split into 116 modules (listed below). The Map Workshop is in `src/js/editor/`, the custom map format, loader and building kit in `src/js/world/`. |
+| `src/maps/` | Map files that ship with the game, embedded by the build with `{{json:maps/<file>}}`: `suburb.json` and `warehouse.json` are the Suburb and the Warehouse (maps 0 and 1, built-in maps made from files, see "Built-in maps from map files"); `samples/town-block.zombdash-map.json` is the Workshop's sample map. |
 | `src/assets/sprites/` | `zombies.png` (zombie atlas) and `survivors.png` (player atlas). Frame positions are in `ZS` / `PS` in `render/sprites.js`. |
 | `src/assets/thumbs/map-NN.jpg` | Map preview pictures; `NN` is the map's number in `MP`. |
 | `src/assets/sounds/` | Recorded reload sounds (everything else is synthesized in `audio/sound.js`). |
 | `tools/build.js` | The build (Node, no packages needed). |
 | `tools/check-map.js` | The map checker: `node tools/check-map.js map.json` reports errors, missing assets and other problems in map files (see `docs/map-format.md`). |
-| `tests/run.js`, `tests/suites/` | Automated tests that load the real game in Node with a fake browser. `tests/fixtures/suburb-walls.json` is the old Suburb's collision, start, spawns and no-spawn box, which `tests/suites/suburb.js` checks the converted map against. |
+| `tests/run.js`, `tests/suites/` | Automated tests that load the real game in Node with a fake browser. `tests/fixtures/suburb-walls.json` and `warehouse-walls.json` are the old maps' collision, start, spawns and no-spawn box, which `tests/suites/suburb.js` and `warehouse.js` check the converted maps against. |
 | `docs/` | This file, the map editor plan (`map-editor-plan.md`), the map file format (`map-format.md`) and the Supabase setup SQL for online accounts. |
 
 ## Build and test
@@ -57,7 +57,7 @@ node tests/run.js spawn ammo # only suites whose name contains a word
 | Survivor boss health and speed | `SVS` in `bosses/survivors.js` |
 | Easy / Normal / Hard multipliers | `core/difficulty.js` |
 | Map list and names | `MP` in `world/map-list-and-pathfinding.js`; descriptions `MPD` in `ui/map-and-survivor-select.js` |
-| The Suburb's layout (houses, furniture, forests, roads, spawns) | `src/maps/suburb.json` (a map file: edit a copy in the Workshop, export it, and replace the file; check it with `tools/check-map.js` and `tests/suites/suburb.js`) |
+| The Suburb's or the Warehouse's layout | `src/maps/suburb.json`, `src/maps/warehouse.json` (a map file: edit a copy in the Workshop, export it, and replace the file; check it with `tools/check-map.js` and `tests/suites/suburb.js`) |
 | Campaign sections and map order | `SEC` in `campaign/sections.js`, `CORD` in `campaign/modes.js` |
 | Which survivor bosses custom campaign maps may use | `CCBOSS` / `CCNOT` in `campaign/custom-campaign.js` |
 | Skill tree | `SKB` in `ui/core-ui.js` |
@@ -128,7 +128,9 @@ The kit lets custom maps be as detailed as the hand-coded maps. The whole format
 * **Time of day** (`world/kit-lighting.js`): a map's `d.lt = {t, a}` (file `lighting`). `cmBuild` keeps `HS.LT = cmLightData(d)` (the time, the amount and the light sources `cmLightSrc` finds: light, flicker, fire, flare, glow, wisp, siren and hazard effects, lit-window decals, lamp / lot light / candle / lantern / fireplace / traffic light props). `drawW` calls `cmLight()` after the world (and before the aim marker and HUD) when `cmLtOn()`: it fills a small light-map canvas (half the screen's resolution, a quarter in low-memory mode) with the time's colour mixed with white by the amount, adds a radial light per source on screen (plus every living player, burning ground and fireballs; sirens take turns, hazards blink, flames flicker), then multiplies the world by it and adds a faint coloured glow (`cmLightPaint`). Floating texts are then drawn on top (`ftTexts` in `game/pickups.js`). The editor previews it with the same function (`edDraw`, still picture, the player's light at the start) and map thumbnails are darkened too. Built-in maps never have it.
 * **Turned effects:** an effect's `r` (file `rot`) turns everything it draws (`fxTurn` in `cmFxBake`, `cmFxEd`, `cmFxAnim`, `cmFxTop`); light sources of sirens and hazards turn with it.
 * **Decal options:** decals can have `opts` like effects (the dead zombie's kind, pool and mirror); `cmDecDraw` passes them, defaults filled in, as `f(g, v, K, t, O)`.
-* **Walk-behind.** `vehWrap` (`world/vehicles.js`) puts tall props on the walk-behind list: the old list plus every prop with `wb: 1` (kit and forest props), forwarding colour and text.
+* **Walk-behind.** `vehWrap` (`world/vehicles.js`) puts tall props on the walk-behind list: the old list plus every prop with `wb: 1` (kit and forest props), forwarding colour and text. A custom map's vehicle gets a walk-behind box that hugs it, turned or not (`cmCar`).
+* **Light props and beams** (`maps/props/kit-props.js`, `world/kit-lighting.js`): a prop's `lt` lists its lamp heads `{dx, dy, r, w, a}`; `cmLightSrc` turns each into a light source with a beam (`cw` half-width and `ca` direction, from the prop's turn), which `cmLightPaint` fills as a soft wedge. Props with `nr: 1` (poles, towers, tripods) keep their picture standing when turned: `cmPR(o)` gives the turn of a thing's picture and is used by the game (`cmProp`, `cmFoot`) and the editor (drawing, selection, hit tests). `edLtAim` shows a selected light's beams in the editor.
+* **Vehicle stripes:** a vehicle's `c2` (file `color2`) becomes `hwDraw`'s stripe colour `st` (trailers and semis; the editor's Stripe swatches).
 * **Editor** (`editor/kit-tools.js`, `editor/kit-view.js`): the Room tool (O: drag a rectangle → floor + walls in the chosen style with a doorway; Interior wall mode), Opening (D: click a wall → doorway, window, storefront glass, automatic doors, roll-up / garage door, bars or a gap; the wall is split, `edGapSplit`), Area (A), Path (T: click points, Enter / double-click to finish; Backspace, Esc), Feature (K) and Prefab (G) tools. A selected path or road graph shows point handles (drag; Alt+click deletes; double-click on the line adds). Areas and paths are cached as small pictures per piece in the editor (`edKitImg`). Every action is one undo step (`edApply` can also carry a tile patch). Seven left tabs: Terrain, Build, Paths, Props, Decals, Prefabs, Markers.
 * **Prefabs** (`editor/prefabs.js`, starter set `editor/prefab-starter.js`): `edPfFrom` turns a selection (and optionally the tiles under it) into a prefab; `edPrefabPlace` places one as new, separate things with one undo step. Your prefabs live in IndexedDB (`kv` record `prefabs`).
 * **Samples** (`editor/samples.js`): `CMSAMPLES` are map files built into the game, listed under "Sample maps" in the Workshop (**ADD TO MY MAPS** / **EDIT A COPY**). Built-in maps made from files are listed under "Built-in maps" (see below).
@@ -138,11 +140,12 @@ The kit lets custom maps be as detailed as the hand-coded maps. The whole format
 
 Built-in maps are being converted one by one from map code (`mapXxx()`) to map files. A converted map keeps its number in `MP`, so its campaign slot, survivor boss, progress bitmasks, best waves, leaderboard board and checkpoints don't change.
 
-* **`world/builtin-maps.js`:** `BIMF[mapId]` is the embedded map file (`{{json:maps/suburb.json}}` for map 0); `bimDoc(m)` reads it once with `cmRead` (a broken file throws: it is a build bug); `MP[m].f` is `()=>bimBuild(m)`, which calls `cmBuild`. So `build()` → `cmBuild` exactly as for a custom map, but `cmIs(m)` stays false and records use the built-in number. `HS.CM` (the map's id, here `builtin-suburb`) means "built from a map file": kit effects and time-of-day lighting check it. `cmBuild` also sets `HS.sp` from the spawn points, which the survivors' fallback position reads.
+* **`world/builtin-maps.js`:** `BIMF[mapId]` is the embedded map file (`suburb.json` for map 0, `warehouse.json` for map 1); `bimDoc(m)` reads it with `cmRead` each time it is needed, so only the map being played stays in memory (a broken file throws: it is a build bug); `MP[m].f` is `()=>bimBuild(m)`, which calls `cmBuild`. So `build()` → `cmBuild` exactly as for a custom map, but `cmIs(m)` stays false and records use the built-in number. `HS.CM` (the map's id, here `builtin-suburb`) means "built from a map file": kit effects and time-of-day lighting check it. `cmBuild` also sets `HS.sp` from the spawn points, which the survivors' fallback position reads.
 * **Boot order:** the first `build()` now runs at the end of `world/builtin-maps.js` (after the editor modules), because the Suburb needs the map loader, every kit registry and the kit props (`maps/props/kit-props.js`), which load long after `world/map-list-and-pathfinding.js`.
 * **Editing:** the Workshop lists them under "Built-in maps" (`wsBuiltins`): **EDIT A COPY** / **ADD A COPY TO MY MAPS** (`wsBuiltin`) store your own copy with a new id; the built-in map only changes through `src/maps/*.json` in the repo.
 * **Shared walk-behind pictures:** walk-behind entries with `sh: 1` (the forest trees' canopies, one canvas per size and shade from `subSpr`, `kpWB` in `kit-props.js`) are not freed by `bgFree` when the next map is built.
-* **Converted so far:** the Suburb (map 0). `tests/suites/suburb.js` checks it against the old map's collision (`tests/fixtures/suburb-walls.json`).
+* **Converted so far:** the Suburb (map 0) and the Warehouse (map 1). `tests/suites/suburb.js` and `warehouse.js` check them against the old maps' collision (`tests/fixtures/*-walls.json`).
+* **Doorways** (`cmDoors`, `cmDoorBlocks` in `world/map-schema.js`): openings are gaps of 20–140 px between solid walls in line, plus walk-through pieces (doorway, automatic doors, roll-up); a prop or vehicle within 24 px of one (by its collision, or its base when it isn't solid) is listed by `cmLint` (Problems tab, `tools/check-map.js`). Props with `dk: 1` (awnings, wall and exit lights, curtains) belong at doors and are left out.
 
 ### Custom map files
 
@@ -181,7 +184,6 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 | File | What's in it |
 |---|---|
 | `maps/map-helpers.js` | Shared helpers of the built-in maps: walls with doorways (`hwall`, `vwall`), the pathfinding grid (`grid`), ground and checker floors, wall painting, trailers, parked cars, the round tree sprites (`subSpr`). The Suburb itself is `src/maps/suburb.json` |
-| `maps/warehouse.js` | Warehouse map |
 | `maps/graveyard.js` | Graveyard map |
 | `maps/props/objects.js` | Prop library: object sprites (OB), fences, scatter, put() and paintDec() |
 | `maps/props/houses.js` | Props of the built-in maps (school, office, store, farm and play pieces, beds, couches) and the wheel helper |

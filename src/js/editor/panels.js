@@ -41,6 +41,7 @@ else if(one)h+=`<p class=edhint>${one.o.veh?'Auto: the vehicle\'s whole body is 
 // kind-specific settings
 const V=O.filter(s=>s.o.veh),CO=O.filter(s=>edPalOf(s.o));if(CO.length&&CO.length==S.length){const c=edShared(CO,s=>edColOf(s.o)),P=edPalOf(CO[0].o);
 h+=`<h4>Colour</h4><div class=edcols>${P.map(([x,n])=>`<button data-a="ocol:${x}" class="${c===x?'on':''}" style="--c:${x}" title="${edEsc(n)}"${EDDIS}></button>`).join('')}</div><label class=edf title="Pick any colour"><span>Custom</span><input type=color data-f=ocol value="${c&&/^#[0-9a-f]{6}$/i.test(c)?c:P[0][0]}"${EDDIS}></label>${c===undefined?'<p class=edhint>Mixed colours: a pick colours all of them.</p>':''}`}
+if(V.length&&V.length==S.length&&V.every(s=>EDSTRIPE.includes(s.o.veh))){const c2=edShared(V,s=>s.o.c2||'');h+=`<h4>Stripe</h4><div class=edcols><button data-a="ost:" class="${c2===''?'on':''}" style="--c:#555" title="Auto (picked from its place)"${EDDIS}>A</button>${PVSTRIPE.map(([x,n])=>`<button data-a="ost:${x}" class="${c2===x?'on':''}" style="--c:${x}" title="${edEsc(n)}"${EDDIS}></button>`).join('')}</div>`}
 if(V.length&&V.length==S.length)h+=edPChk('Damaged','dmg',edShared(V,s=>!!s.o.dmg))+edPChk('Burnt out','burn',edShared(V,s=>!!s.o.burn));
 if(only('w')){const st=edShared(S,s=>s.o.s);h+=`<label class=edf><span>Style</span><select data-f=s${EDDIS}>${st===undefined?'<option value="" selected>— mixed —</option>':''}${CMWALL.map(w=>`<option value="${w.id}"${st===w.id?' selected':''}>${edEsc(w.n)}</option>`).join('')}${st&&!CMWI[st]?`<option selected>${edEsc(st)} (missing)</option>`:''}</select></label>`}
 if(S.every(s=>s.t=='s'||s.t=='z'))h+=edPChk('On','on',edShared(S,s=>s.o.on!==false),'Turned-off spawns stay on the map, but no zombies come out of them');
@@ -104,6 +105,8 @@ case 's':{const L=free.filter(s=>s.t=='w');if(!t.value||!need(L))return;return e
 case 'dmg':case 'burn':{const L=O.filter(s=>s.o.veh);if(!need(L))return;return edMut('Change vehicle',L.map(s=>s.o),()=>{for(const s of L){if(t.checked)s.o[f]=1;else delete s.o[f]}})}
 case 'ocol':{const v=String(t.value).toLowerCase();if(/^#[0-9a-f]{6}$/.test(v))edSetCol(free,v);else edRight();return}
 case 'lyname':return edLyRename(E.al,t.value)}}
+// vehicles with a stripe colour (color2): trailers and semis
+const EDSTRIPE=['trailer','semi'],PVSTRIPE=[['#c0392b','Red'],['#2f6fd0','Blue'],['#2f8a4a','Green'],['#d68a1c','Orange'],['#6a4a9a','Purple'],['#26262c','Black']];
 // colour every selected thing that takes a colour (one undo step)
 function edSetCol(free,c){const L=free.filter(s=>s.t=='o'&&edPalOf(s.o));if(L.length)edMut('Change colour',L.map(s=>s.o),()=>{for(const s of L)s.o.c=c})}
 // buttons in the right panel (edClick hands the ones it doesn't know to this); returns 1 when handled
@@ -114,7 +117,7 @@ if(a.startsWith('lysel:')){const id=a.slice(6),l=id&&cmLy(E.d,id);E.al=id;if(l&&
 if(a.startsWith('ord:')){const v=a.slice(4);edOrder(v=='front'||v=='back'?v:+v);return 1}
 if(a.startsWith('turng:')){edTurnGroup(+a.slice(6));return 1}
 if(a.startsWith('prob:')){edGoProb(+a.slice(5));return 1}
-if(a.startsWith('ocol:')){edSetCol(free,a.slice(5));return 1}if(a.startsWith('kc:')){edKitSetCol('c',a.slice(3));return 1}if(a.startsWith('kc2:')){edKitSetCol('c2',a.slice(4));return 1}if(a=='graphbuild'){edGraphBuild();return 1}if(a=='pfsave'){edPfAsk();return 1}
+if(a.startsWith('ocol:')){edSetCol(free,a.slice(5));return 1}if(a.startsWith('ost:')){const c=a.slice(4),L=free.filter(s=>s.o.veh&&EDSTRIPE.includes(s.o.veh));if(L.length)edMut('Change stripe',L.map(s=>s.o),()=>{for(const s of L){if(c)s.o.c2=c;else delete s.o.c2}});return 1}if(a.startsWith('kc:')){edKitSetCol('c',a.slice(3));return 1}if(a.startsWith('kc2:')){edKitSetCol('c2',a.slice(4));return 1}if(a=='graphbuild'){edGraphBuild();return 1}if(a=='pfsave'){edPfAsk();return 1}
 switch(a){case 'lyadd':edLyAdd();return 1;case 'lyup':if(E.al)edLyMove(E.al,1);return 1;case 'lydown':if(E.al)edLyMove(E.al,-1);return 1;case 'lydel':if(E.al)edLyDel(E.al);return 1;
 case 'lymovesel':if(E.al)edLyMoveSel(E.al);return 1;case 'lyunhide':edLyUnhide();return 1;
 case 'she':E.she=E.she?0:1;E.need=1;edRight();if(E.she)edToast('Drag the shape or its handles; Esc when done');return 1;

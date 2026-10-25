@@ -100,10 +100,10 @@ const c=o&&typeof EDPN!='undefined'&&cmOwn(EDPN,o.k)?EDPN[o.k][1]:'';return{buil
 function cmDefLy(d,kind,o){const id=cmKindLy(kind,o),l=cmLy(d,id);if(l&&l.k=='o')return id;const ol=d.layers.filter(q=>q.k=='o');return ol.length?ol[ol.length-1].id:null}
 
 // ----- collision: everything a custom map adds to WL -----
-function cmVeh(o){const s=cmHW(o.veh);if(!s)return null;return{k:o.veh,x:o.x,y:o.y,a:(o.r||0)*Math.PI/180,L:s[0],W:s[1],c:o.c||undefined,dmg:o.dmg?1:0,burn:o.burn?1:0,tx:o.tx||undefined}}
+function cmVeh(o){const s=cmHW(o.veh);if(!s)return null;return{k:o.veh,x:o.x,y:o.y,a:(o.r||0)*Math.PI/180,L:s[0],W:s[1],c:o.c||undefined,st:o.c2||undefined,dmg:o.dmg?1:0,burn:o.burn?1:0,tx:o.tx||undefined}}
 // a solid prop's footprint (OB[k].c) turned with the prop, as a box
 // cf on a prop: its collision flag (2 = see-through, like the forest trees' trunks), else 1
-function cmFoot(o){const B=cmOB(o.k);if(!B||!B.c)return null;const cw=B.c[0],ch=B.c[1],r=(((o.r||0)%360)+360)%360,cf=B.cf||1;if(!r)return[o.x-cw/2,o.y-ch,cw,ch,cf];
+function cmFoot(o){const B=cmOB(o.k);if(!B||!B.c)return null;const cw=B.c[0],ch=B.c[1],r=B.nr?0:(((o.r||0)%360)+360)%360,cf=B.cf||1;if(!r)return[o.x-cw/2,o.y-ch,cw,ch,cf];
 const a=r*Math.PI/180,c=Math.cos(a),s=Math.sin(a);let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const[px,py]of[[-cw/2,-ch],[cw/2,-ch],[-cw/2,0],[cw/2,0]]){const X_=o.x+px*c-py*s,Y_=o.y+px*s+py*c;x0=Math.min(x0,X_);y0=Math.min(y0,Y_);x1=Math.max(x1,X_);y1=Math.max(y1,Y_)}return[x0,y0,x1-x0,y1-y0,cf]}
 // a vehicle's collision, built by the same code the highway maps use (hwCol)
 function cmVehCol(o,out){const v=cmVeh(o);if(!v)return;const keep=WL;WL=[];try{hwCol(v)}finally{const r=WL;WL=keep;for(const w of r)out.push(w)}}
@@ -182,7 +182,7 @@ const rd=cmSparse(d,d.rtr,d.rpal,CMTI);if(rd)out.roads=rd;else delete out.roads;
 const ov=cmSparse(d,d.ovl,d.opal,CMOI);if(ov)out.overlay=ov;else delete out.overlay;
 out.layers=d.layers.map(l=>{const q={id:l.id,name:l.n,kind:l.k=='t'?'tiles':'objects'};if(l.hid)q.editorHidden=true;if(l.lock)q.locked=true;return q});
 out.props=d.obj.filter(o=>!o.veh&&!o.dc&&!o.fx).map(o=>{const p={id:o.id,kind:o.k,x:cmR1(o.x),y:cmR1(o.y)};if(o.r)p.rot=cmR1(o.r);if(o.vr!=null)p.var=Math.round(o.vr*100)/100;if(o.c)p.color=o.c;if(o.tx)p.text=o.tx;return cmWObj(o,p,1)});
-out.vehicles=d.obj.filter(o=>o.veh).map(o=>{const p={id:o.id,kind:o.veh,x:cmR1(o.x),y:cmR1(o.y),rot:cmR1(o.r||0)};if(o.c)p.color=o.c;if(o.dmg)p.damaged=true;if(o.burn)p.burnt=true;if(o.tx)p.text=o.tx;return cmWObj(o,p,1)});
+out.vehicles=d.obj.filter(o=>o.veh).map(o=>{const p={id:o.id,kind:o.veh,x:cmR1(o.x),y:cmR1(o.y),rot:cmR1(o.r||0)};if(o.c)p.color=o.c;if(o.c2)p.color2=o.c2;if(o.dmg)p.damaged=true;if(o.burn)p.burnt=true;if(o.tx)p.text=o.tx;return cmWObj(o,p,1)});
 // the building kit (version 3): written only when the map has some
 const kit=(nm,L)=>{if(L.length)out[nm]=L;else delete out[nm]},opt=(o,p)=>{if(o.o&&Object.keys(o.o).length)p.options=Object.assign({},o.o);return p};
 kit('decals',d.obj.filter(o=>o.dc).map(o=>{const p={id:o.id,kind:o.dc,x:cmR1(o.x),y:cmR1(o.y)};if(o.r)p.rot=cmR1(o.r);if(o.sc!=null&&o.sc!==1)p.scale=Math.round(o.sc*100)/100;if(o.c)p.color=o.c;if(o.op!=null&&o.op!==1)p.opacity=Math.round(o.op*100)/100;if(o.tx)p.text=o.tx;if(o.vr!=null)p.var=Math.round(o.vr*100)/100;return cmWObj(o,opt(o,p),0)}));
@@ -262,7 +262,7 @@ if(p.locked)o.lk=true;if(p.editorHidden)o.hd=true;return 1};
 list(j.props,'props').forEach((p,i)=>{if(!p||typeof p.kind!='string'||!num(p.x)||!num(p.y))return bad('props',i,'needs "kind", "x" and "y".');if(p.rot!=null&&!num(p.rot))return bad('props',i,'has a "rot" that is not a number.');
 const o={id:uid(p.id,'p'),k:p.kind,x:p.x,y:p.y,r:p.rot||0};if(num(p.var))o.vr=cl(p.var,0,1);if(typeof p.color=='string'&&/^#[0-9a-f]{6}$/i.test(p.color))o.c=p.color.toLowerCase();if(typeof p.text=='string'&&p.text)o.tx=cmTxt(p.text,40);if(!obj(p,o,'props',i,'o',1))return;d.obj.push(o);if(!cmOB(p.kind))unk[p.kind]=(unk[p.kind]||0)+1});
 list(j.vehicles,'vehicles').forEach((p,i)=>{if(!p||typeof p.kind!='string'||!num(p.x)||!num(p.y))return bad('vehicles',i,'needs "kind", "x" and "y".');if(p.rot!=null&&!num(p.rot))return bad('vehicles',i,'has a "rot" that is not a number.');
-const o={id:uid(p.id,'v'),veh:p.kind,x:p.x,y:p.y,r:p.rot||0};if(typeof p.color=='string'&&/^#[0-9a-f]{3,8}$/i.test(p.color))o.c=p.color;if(p.damaged)o.dmg=1;if(p.burnt)o.burn=1;if(typeof p.text=='string'&&p.text)o.tx=cmTxt(p.text,40);if(!obj(p,o,'vehicles',i,'o',1))return;d.obj.push(o);if(!cmHW(p.kind))unk[p.kind+' (vehicle)']=(unk[p.kind+' (vehicle)']||0)+1});
+const o={id:uid(p.id,'v'),veh:p.kind,x:p.x,y:p.y,r:p.rot||0};if(typeof p.color=='string'&&/^#[0-9a-f]{3,8}$/i.test(p.color))o.c=p.color;if(typeof p.color2=='string'&&/^#[0-9a-f]{3,8}$/i.test(p.color2))o.c2=p.color2;if(p.damaged)o.dmg=1;if(p.burnt)o.burn=1;if(typeof p.text=='string'&&p.text)o.tx=cmTxt(p.text,40);if(!obj(p,o,'vehicles',i,'o',1))return;d.obj.push(o);if(!cmHW(p.kind))unk[p.kind+' (vehicle)']=(unk[p.kind+' (vehicle)']||0)+1});
 // ----- the building kit (version 3) -----
 const col=c=>typeof c=='string'&&/^#[0-9a-f]{6}$/i.test(c)?c.toLowerCase():null,pts=a=>Array.isArray(a)&&a.every(q=>Array.isArray(q)&&q.length==2&&num(q[0])&&num(q[1]))?a:null;
 const opts=(p,o,nm,i)=>{if(p.options==null)return 1;const v=p.options;if(!v||typeof v!='object'||Array.isArray(v)){bad(nm,i,'has "options" that are not an object.');return 0}const r={};let n=0;
@@ -309,6 +309,20 @@ const F=new Int32Array(gw_*gh_).fill(-1),si=cl(Math.floor(st.x/g),0,gw_-1),sj=cl
 if(!b[q[0]]){F[q[0]]=0;for(let k=0;k<q.length;k++){const c=q[k],i=c%gw_,j=(c/gw_)|0;for(const[di,dj]of D){const a=i+di,e=j+dj;if(a<0||e<0||a>=gw_||e>=gh_)continue;const n=e*gw_+a;if(F[n]>=0||b[n])continue;if(di&&dj&&(b[j*gw_+a]||b[e*gw_+i]))continue;F[n]=F[c]+1;q.push(n)}}}
 return{g,gw:gw_,gh:gh_,b,F,at(x,y){const i=cl(Math.floor(x/g),0,gw_-1),j=cl(Math.floor(y/g),0,gh_-1);return j*gw_+i}}}
 // -> [{lv:'err'|'warn'|'info', m:text, x, y, ref:{t,o}}]; ref is what the editor selects when the problem is clicked
+// doorways: openings in solid walls (gaps 20–140 px between pieces in line, and walk-through pieces such as doorways)
+// {hz: the wall runs left–right, c: its middle line, a..b: the opening}
+function cmDoors(d){const D=[],H=[],V=[];for(const w of d.walls){if(Math.min(w.w,w.h)>14)continue;const walk=CMWI[w.s]&&CMWI[w.s].walk&&w.sol!==true;if(!walk&&!cmSolid(w,'w'))continue;(w.w>=w.h?H:V).push(w)}
+const scan=(L,hz)=>{const G=[];for(const w of L){const k=hz?w.y+w.h/2:w.x+w.w/2;let g=G.find(q=>Math.abs(q.k-k)<=2);if(!g)G.push(g={k,L:[]});g.L.push(w)}
+ for(const g of G){g.L.sort((a,b)=>hz?a.x-b.x:a.y-b.y);const walks=[];let end=null;for(const w of g.L){const s=hz?w.x:w.y,e=s+(hz?w.w:w.h);if(CMWI[w.s]&&CMWI[w.s].walk&&w.sol!==true){walks.push([s,e]);D.push({hz,c:g.k,a:s,b:e});continue}
+  if(end!=null&&s-end>=20&&s-end<=140&&!walks.some(q=>q[0]<s&&q[1]>end))D.push({hz,c:g.k,a:end,b:s});end=end==null?e:Math.max(end,e)}}};
+scan(H,1);scan(V,0);return D}
+// props and vehicles standing in a doorway (within 24 px of the opening, either side): solid ones by their collision,
+// the others by their base, so furniture that only looks in the way counts too. Props made for doorways (dk:1: awnings,
+// wall lights, exit lights, curtains) are left out.
+function cmDoorBlocks(d){const D=cmDoors(d),out=[],hit=(b,r)=>b[0]<r[2]&&b[0]+b[2]>r[0]&&b[1]<r[3]&&b[1]+b[3]>r[1];
+const R=D.map(q=>q.hz?[q.a+2,q.c-24,q.b-2,q.c+24]:[q.c-24,q.a+2,q.c+24,q.b-2]);
+for(const o of d.obj){if(o.dc||o.fx||(cmOB(o.k)||{}).dk)continue;let B=cmObjBoxes(o);if(!B.length&&!o.veh){const f=cmFoot(o);B=f?[f]:[[o.x-6,o.y-6,12,6]]}
+ const i=R.findIndex(r=>B.some(b=>hit(b,r)));if(i>=0)out.push({o,door:D[i]})}return out}
 function cmLint(d){const R=[],C=cmColl(d),M=cmWalk(d,C),W_=d.w*d.tile,H_=d.h*d.tile,st=cmStart(d),stOK=!M.b[M.at(st.x,st.y)];
 const outM=(x0,y0,x1,y1)=>x1<0||y1<0||x0>W_||y0>H_;
 if(!d.start){R.push({lv:'warn',m:'No player start: the player starts in the middle of the map. Use the Player start tool (S) to place one.',x:st.x,y:st.y});if(!stOK)R.push({lv:'err',m:'The middle of the map, where the run starts without a player start, is inside something solid.',x:st.x,y:st.y})}
@@ -326,6 +340,8 @@ for(const w of d.walls)if(outM(w.x,w.y,w.x+w.w,w.y+w.h))OUT.push({m:'A wall is o
 for(const a of d.areas||[])if(outM(a.x,a.y,a.x+a.w,a.y+a.h))OUT.push({m:'An area ('+((cmArea(a.a)||{n:a.a}).n)+') is outside the map.',ref:{t:'a',o:a},x:a.x+a.w/2,y:a.y+a.h/2});
 for(const l of d.paths||[]){const b=cmPolyBB(cmPathRaw(l));if(outM(b.x0,b.y0,b.x1,b.y1))OUT.push({m:'A path ('+((cmPath(l.p)||{n:l.p}).n)+') is outside the map.',ref:{t:'l',o:l},x:l.x,y:l.y})}
 OUT.slice(0,12).forEach(p=>R.push(Object.assign({lv:'warn'},p)));if(OUT.length>12)R.push({lv:'warn',m:(OUT.length-12)+' more things are outside the map.',x:OUT[12].x,y:OUT[12].y,ref:OUT[12].ref});
+// props in doorways
+{const DB=cmDoorBlocks(d);DB.slice(0,12).forEach(q=>R.push({lv:'warn',m:(q.o.veh?'A vehicle':'A prop ('+((typeof EDPN!='undefined'&&EDPN[q.o.k]||[q.o.k])[0])+')')+' stands in a doorway: move it so the way is clear.',x:q.o.x,y:q.o.y,ref:{t:'o',o:q.o}}));if(DB.length>12)R.push({lv:'warn',m:(DB.length-12)+' more props stand in doorways.',x:DB[12].o.x,y:DB[12].o.y,ref:{t:'o',o:DB[12].o}})}
 // missing assets
 const unk=Object.create(null),miss=(t,nm,kind,o,ref)=>{const k=t+':'+kind;if(!unk[k])unk[k]={n:0,o,nm,kind,ref};unk[k].n++};
 for(const o of d.obj){if(o.dc){if(!cmDec(o.dc))miss('d','decal',o.dc,o,'o')}else if(o.fx){if(!cmFx(o.fx))miss('x','effect',o.fx,o,'o')}else if(o.veh){if(!cmHW(o.veh))miss('v','vehicle',o.veh,o,'o')}else if(!cmOB(o.k))miss('p','prop',o.k,o,'o')}

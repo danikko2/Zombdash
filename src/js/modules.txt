@@ -6,7 +6,6 @@ audio/sound.js
 data/tables.js
 core/state.js
 maps/map-helpers.js
-maps/warehouse.js
 maps/graveyard.js
 maps/props/objects.js
 maps/props/houses.js

@@ -13,3 +13,6 @@ if(f=='ltt'){if(!commit)return 1;const v=String(t.value||''),p=cmLtP(v);if(!v){i
 if(f=='lta'){if(!d.lt)return 1;const A={t:d.lt.t,a:cl((+t.value||0)/100,0,1)};if(!commit){if(!E.ltB)E.ltB=d.lt;d.lt=A;E.need=1;E.mmNeed=1;const el=E.root&&E.root.querySelector('#edltv');if(el)el.textContent=Math.round(A.a*100)+'%';return 1}
 const B=E.ltB||d.lt;E.ltB=null;d.lt=B;if(B&&B.a===A.a){edRight();return 1}edSet(d,{lt:A},'Change the light amount');return 1}
 if(f=='ltv'){E.ltv=t.checked?1:0;E.need=1;return 1}return 0}
+// a selected light prop shows where its beams reach (dashed), with or without the lighting shown
+function edLtAim(g,o,lw){if(!o||o.veh||o.dc||o.fx)return;const B=cmOB(o.k);if(!B||!B.lt)return;g.save();g.strokeStyle='rgba(255,226,140,.9)';g.lineWidth=lw;g.setLineDash([5*lw,4*lw]);
+for(const s of cmLightSrc({obj:[o]})){g.beginPath();if(s.cw){g.moveTo(s.x,s.y);g.arc(s.x,s.y,s.r,s.ca-s.cw,s.ca+s.cw);g.closePath()}else g.arc(s.x,s.y,s.r,0,7);g.stroke()}g.setLineDash([]);g.restore()}

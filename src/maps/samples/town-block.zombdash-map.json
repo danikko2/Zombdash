@@ -138,13 +138,7 @@
    "x": 258,
    "y": 196
   },
-  {
-   "id": "p44",
-   "kind": "dress_w",
-   "x": 236,
-   "y": 282,
-   "color": "#7a5232"
-  },
+  {"id": "p44", "kind": "dress_w", "x": 221, "y": 225, "color": "#7a5232", "rot": 270},
   {
    "id": "p45",
    "kind": "plant",
@@ -163,36 +157,16 @@
    "x": 430,
    "y": 282
   },
-  {
-   "id": "p48",
-   "kind": "msink",
-   "x": 372,
-   "y": 278
-  },
+  {"id": "p48", "kind": "msink", "x": 375, "y": 240, "rot": 270},
   {
    "id": "p50",
    "kind": "kc_corner",
    "x": 466,
    "y": 196
   },
-  {
-   "id": "p51",
-   "kind": "kc_long",
-   "x": 516,
-   "y": 192
-  },
-  {
-   "id": "p52",
-   "kind": "kc_sink",
-   "x": 574,
-   "y": 192
-  },
-  {
-   "id": "p53",
-   "kind": "kc_range",
-   "x": 620,
-   "y": 194
-  },
+  {"id": "p51", "kind": "kc_long", "x": 611, "y": 240, "rot": 90},
+  {"id": "p52", "kind": "kc_sink", "x": 509, "y": 192},
+  {"id": "p53", "kind": "kc_range", "x": 599, "y": 194},
   {
    "id": "p54",
    "kind": "kfridge",
@@ -205,31 +179,15 @@
    "x": 580,
    "y": 276
   },
-  {
-   "id": "p56",
-   "kind": "micro",
-   "x": 516,
-   "y": 174
-  },
+  {"id": "p56", "kind": "micro", "x": 624, "y": 232},
   {
    "id": "p58",
    "kind": "tvs_tv",
    "x": 300,
    "y": 330
   },
-  {
-   "id": "p59",
-   "kind": "sofa3",
-   "x": 300,
-   "y": 428,
-   "color": "#4a6ab0"
-  },
-  {
-   "id": "p60",
-   "kind": "coffeetable",
-   "x": 300,
-   "y": 392
-  },
+  {"id": "p59", "kind": "sofa3", "x": 300, "y": 420, "color": "#4a6ab0"},
+  {"id": "p60", "kind": "coffeetable", "x": 300, "y": 384},
   {
    "id": "p61",
    "kind": "armch",
@@ -267,12 +225,7 @@
    "x": 606,
    "y": 330
   },
-  {
-   "id": "p68",
-   "kind": "tirestack",
-   "x": 486,
-   "y": 440
-  },
+  {"id": "p68", "kind": "tirestack", "x": 486, "y": 410},
   {
    "id": "p75",
    "kind": "canopytree",
@@ -452,12 +405,7 @@
    "x": 1720,
    "y": 300
   },
-  {
-   "id": "p134",
-   "kind": "barrel",
-   "x": 1740,
-   "y": 306
-  },
+  {"id": "p134", "kind": "barrel", "x": 1700, "y": 312},
   {
    "id": "p135",
    "kind": "shelf",

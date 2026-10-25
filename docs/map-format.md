@@ -45,7 +45,7 @@ A Zombdash map is one JSON file. The Map Workshop writes it (**export**), reads 
 ```
 `rows` has `height` strings of `width` characters; each character is a key of `legend`. `roads` is a second tile layer over the terrain, and `overlay` holds blood, burn and road markings; in both, `.` means nothing there.
 
-* **Terrain** (`CMTER`): `grass dirt asphalt concrete sidewalk sand gravel mud water wood tile soil`, carpet `carpet_grey carpet_dkgrey carpet_tan carpet_black carpet_red carpet_green carpet_blue`, and the kit terrains `grass_dark grass_dry grass_olive grass_park forest moss leaves asphalt_dark asphalt_worn runway cobble pavers brick_pave slabs rubber_blue rubber_red terrazzo plank_dark boards checker checker_red marble linoleum metal tile_blue tile_green tile_white charred hay water_deep pool`.
+* **Terrain** (`CMTER`): `grass dirt asphalt concrete sidewalk sand gravel mud water wood tile soil`, carpet `carpet_grey carpet_dkgrey carpet_tan carpet_black carpet_red carpet_green carpet_blue`, and the kit terrains `grass_dark grass_dry grass_olive grass_park forest moss leaves lot asphalt_dark asphalt_worn runway cobble pavers brick_pave slabs rubber_blue rubber_red terrazzo plank_dark boards checker checker_red marble linoleum metal tile_blue tile_green tile_white charred hay water_deep pool`.
   * `water`, `water_deep` and `pool` block walking; bullets fly over them. Water draws a shoreline (wet sand on natural ground, a stone lip on paving) where it meets other ground.
   * Sidewalk-like terrains (`sidewalk`, `slabs`, `pavers`, `brick_pave`) draw a curb where they meet a road terrain (`asphalt`, `asphalt_dark`, `asphalt_worn`, `cobble`, `runway`), so painted streets get curbs that join up by themselves.
 * **Overlays:** `blood burn`, and road markings `yline ydash wline wdash xwalk` (a marking joins up with the same marking on the next tile).
@@ -97,6 +97,9 @@ Leave out `layer` on a thing and it goes on the layer of its kind (`cmKindLy`). 
 * `var` (0–1) picks one of a prop's small random variations (left out: chosen from its position).
 * **Kit props** (`maps/props/kit-props.js`) are things the built-in maps used to draw in their own code: signs (above), `stopsign`, `portrait` (its eyes follow the nearest player in the game; the colour picks the painting: lady, gentleman, bride, ghoul, landscape or slashed), `chandelier` (fallen), `deadtwist`, `canopytree`, `blackpine`, `jet`, `planebody`, `planetail`, `planewing`, `heliwreck`, `container`, `boomgate`, `campring`, `coffin`, `opengrave`, `dirtpile`, `officedesk`, `chalkb`, `cubby`, `wclock`, `poster`, `lockrow`, `stalls`, `showers`, `cafeteria`, `acunit`, `wtank`, `fireesc`, `elevator`, `micro`, `coffeetable`, `garageshelf`, `tpole`, `bollard`.
 * **The Suburb's pieces** (also kit props): `foak` / `fpine` forest trees (their `var` picks the size and shade: `var = (size step × 3 + shade) / 100`, oak sizes 0–8, pine 0–5, shade 0–2; the trunk is see-through like a fence, so bullets fly through the woods), `ytree` yard tree, `ftrunk` fallen tree (`var = (length step 0–10 × 9 + leaf pattern 0–8) / 100`), `sstump` splintered stump, `smallcar` small crashed car (*colour*; its base is the middle of its back edge), `chopper` crashed helicopter (solid body), `dirsign` direction sign, `hplant` house plant seen from above, `flamp` floor lamp seen from above (gives light at night), `curtain` curtains for a window (*colour*).
+* **The Warehouse's pieces:** `wcont` small shipping container (*colour*), `guardbooth`, `lotgate` gate post with a short arm reaching left, `deskpc` desk with a computer, `ochair` office chair from above, `fcab` grey filing cabinet, `sinkrow` washroom counter with two sinks (`var` ≥ 0.5 puts the mirror on the left), `wc` toilet from above, `lockstrip` five lockers from above (`var` ≥ 0.5: wider, shallower lockers), `exitsign` green exit light, `dirsign2` direction sign with the arrow on the left (30, "HIGHWAY|ENTRANCE"), `firebarrel` burning barrel from above, `btable` break-room table.
+* **Lights** (the Lights group in the prop browser): `spotlight`, `floodlight` (pole with two lamps), `floodtower` (light tower), `walllight`, `worklight` (tripod), `searchlight`; plus `lamp`, `plight`, `flamp`, `lantern`, `exitsign`, `firebarrel`. Their *colour* is the light's colour. Spot lights, flood lights and the others in the first list shine a **beam**: turned 0 it points down the screen, and `rot` aims it. Poles, towers, tripods and the searchlight keep standing when turned (only the beam turns). Beams light the ground at dusk and night ([lighting](#time-of-day-lighting)); the editor draws a selected light's beams as a dashed outline.
+* **Doorways stay clear:** the checker and the editor's Problems list warn about any prop or vehicle within 24 px of a doorway (a gap of 20–140 px between walls in line, or a doorway / automatic door / roll-up piece): solid ones by their collision, others by their base. Awnings, wall lights, exit lights and curtains belong at doors and are left out.
 * **Walk-behind:** tall props (trees, lamps, signs, poles, shelves, the big vehicles…) are drawn in front of a player who walks behind them, as on the built-in maps.
 * Store features use `gshelf` (grocery shelves that Penny knocks over), `corral` and `cartrow` (cart corrals she sends carts from). Street trees `stree` stop the Fire Chief's hose.
 
@@ -106,7 +109,7 @@ Leave out `layer` on a thing and it goes on the layer of its kind (`cmKindLy`). 
 { "kind": "police", "x": 640, "y": 480, "rot": 90, "color": "#26262c", "damaged": true }
 { "kind": "ftruck", "x": 300, "y": 900, "rot": 0, "text": "TACO LOCO" }
 ```
-`kind`: `sedan suv pickup van limo police amb fire bus semi cab trailer hmv mtruck taxi ftruck`. `rot` turns it (at 0 it lies left to right). `color` repaints cars; `damaged` dents and cracks them. `text` (up to 16) is the name on a `trailer`'s or food truck's (`ftruck`) roof. Vehicles are solid along their real outline and people walk behind them.
+`kind`: `hatch sedan suv pickup van limo police amb fire bus semi cab trailer hmv mtruck taxi ftruck` (`hatch` is the parked car of the Warehouse and Neighborhood lots, 88×36). `color2` is the stripe colour of a `trailer` or `semi` (left out: picked from its place). `rot` turns it (at 0 it lies left to right). `color` repaints cars; `damaged` dents and cracks them. `text` (up to 16) is the name on a `trailer`'s or food truck's (`ftruck`) roof. Vehicles are solid along their real outline and people walk behind them.
 
 ## Walls
 
@@ -138,7 +141,7 @@ Fields: `kind`, `x`,`y` (the centre), `rot`, `scale` (0.25–4), `opacity` (0.05
 
 | Group | Decals (size in px at scale 1) |
 |---|---|
-| Wear & tear | `crack` 70×30, `crack_big` 90×70, `crack_grass` 70×34, `oil` 60×34, `stain` 50×30, `patch` 60×40, `pothole` 46×30, `manhole` 26×26, `drain` 30×14, `puddle` 64×32 |
+| Wear & tear | `lotspeck` 52×6 (a lot bit: `var` < 0.35 a dark streak, longer with a bigger `var`; < 0.7 a grey chip; else a yellow paint chip), `crack` 70×30, `crack_big` 90×70, `crack_grass` 70×34, `oil` 60×34, `stain` 50×30, `patch` 60×40, `pothole` 46×30, `manhole` 26×26, `drain` 30×14, `puddle` 64×32 |
 | Crash & fire | `skid` 120×26, `scorch` 100×60, `scorchround` 300×300 (round scorched ground), `glass` 54×40, `debris` 80×50, `tiremarks` 110×20, `ash` 70×44 |
 | Blood (all *colour*: `#7a1414` fresh red, `#560c12` dark red, `#4e2e1c` dried brown, `#4e6a1e` zombie green, `#26201c` black ooze; any `#rrggbb` works) | `blood` 44×34 splat, `bloodpool` 70×40, `bloodtrail` 120×24, `handprint` 44×30, `bloodspray` 84×40 (a spray from the left end), `bloodsmear` 76×32, `blooddrips` 54×40, `bloodsplash` 96×74 (big splatter), `bloodfoot` 124×30 (bloody footprints), `bloodcrawl` 124×40 (crawl marks with handprints) |
 | Bodies & body parts | `deadz` 68×48 dead zombie *colour* (the blood pool), `zarm` 48×20 severed arm, `zhand` 22×16 hand, `zhead` 28×28 head (arm, hand and head: *colour* = skin: `#7aa85a` zombie green, `#a8b86a` pale green, `#9aa0a0` grey, `#c89a7a` human, `#7a6a9a` bruised), `zleg` 58×22 leg (*colour* = trousers), `ztorso` 46×38 torso (*colour* = shirt), `guts` 58×34 (*colour* = blood), `bones` 58×36, `skull` 22×22, `ribcage` 38×30, `sheetbody` 70×30 covered body, `bodybag` 70×26 |
@@ -197,11 +200,11 @@ Fields: `kind`, `x`,`y`,`w`,`h`, `color`, `color2` (the second colour, e.g. a ch
 | `dock`, `bridge` | Boards you can walk on over water: water tiles under them are dry and ponds / streams are cut away, *colour* | |
 | `pool` | A swimming pool with a coping: solid, as on Main Street, *colour + colour2*, min 40×40 | |
 | `canopy` | A gas station canopy you walk under, *colour*, `text` (24), min 60×60 | |
-| `paving` | A paved patch | `s` `asphalt concrete slabs gravel dirt sand grass`; `cracks` 0/1; `curb` 0/1 |
+| `paving` | A paved patch | `s` `asphalt concrete slabs gravel dirt sand grass turf` (turf: a dark lawn); `cracks` 0/1; `curb` 0/1 |
 | `parking` | Parking stall lines, *colour*, min 40×40 | `rows` `auto 1 2`; `sw` stall width 36–80 (50); `num` 0/1 numbers |
 | `junction` | A road crossing with zebra crosswalks and stop lines (put it where two roads cross), min 60×60 | `cn ce cs cw` 0/1 crosswalk on each side; `stop` 0/1; `s` `asphalt dark` |
 | `zebra` | A crosswalk, *colour* | |
-| `hazardband` | Yellow and black hazard stripes | |
+| `hazardband` | Yellow and black hazard stripes | `st` `diag blocks` (diag: slanted stripes; blocks: squares along the band, as at the Warehouse's doors) |
 | `court` | A basketball court, *colour* (lines), min 120×80 | `s` `none asphalt wood blue` |
 | `helipad` | A helipad, min 60×60 | |
 | `sandbox`, `splash` (splash pad with animated jets), `garden` (crop bed) | Park and yard ground | |
@@ -261,7 +264,7 @@ The game draws the light over the whole world every frame, so a map can be playe
 | `dusk` | Orange-pink evening light; lights glow | 0.7 |
 | `night` | Dark blue; only lights light the ground | 0.75 |
 
-* **What gives light** (more the darker it is): `light` effects (light pools), `flicker` (flickers), `fire`, `flare`, `glow` and `wisp` effects, `siren` (the two lamps take turns, in their colours), `hazard` (blinks), `lightpatch` decals (lit windows), and the props `lamp` (street lamp), `plight` (lot light), `candle`, `lantern`, `bfplace` (fireplace), `flamp` (floor lamp) and `tlight` (traffic light, a little). Every player carries a soft light, so night maps stay playable; burning ground and fireballs light up too.
+* **What gives light** (more the darker it is): `light` effects (light pools), `flicker` (flickers), `fire`, `flare`, `glow` and `wisp` effects, `siren` (the two lamps take turns, in their colours), `hazard` (blinks), `lightpatch` decals (lit windows), and the props `lamp` (street lamp), `plight` (lot light), `candle`, `lantern`, `bfplace` (fireplace), `flamp` (floor lamp), `exitsign`, `firebarrel`, the beam lights (`spotlight`, `floodlight`, `floodtower`, `walllight`, `worklight`, `searchlight`) and `tlight` (traffic light, a little). Every player carries a soft light, so night maps stay playable; burning ground and fireballs light up too.
 * An unknown `time` loads with a warning and the map shows in daylight; `amount` is kept between 0 and 1.
 * It is drawn after the world and before the HUD; floating texts stay readable on top. Without multiply blending (very old browsers) the map shows as painted.
 
@@ -386,9 +389,9 @@ Checked by `tests/suites/building-kit.js` (it must load with no problems), so it
     { "kind": "coffeetable", "x": 240, "y": 318 },
     { "kind": "tvs_tv", "x": 240, "y": 196 },
     { "kind": "bookshelf", "x": 186, "y": 196 },
-    { "kind": "kfridge", "x": 344, "y": 200 },
-    { "kind": "kc_long", "x": 400, "y": 192 },
-    { "kind": "kc_range", "x": 452, "y": 194 },
+    { "kind": "kfridge", "x": 360, "y": 200 },
+    { "kind": "kc_long", "x": 405, "y": 192 },
+    { "kind": "kc_range", "x": 454, "y": 194 },
     { "kind": "ktable", "x": 410, "y": 252 },
     { "kind": "plant", "x": 466, "y": 372 },
     { "kind": "canopytree", "x": 600, "y": 230 },

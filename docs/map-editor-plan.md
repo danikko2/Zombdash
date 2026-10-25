@@ -1,16 +1,16 @@
 # Zombdash map editor: plan and handoff (agreed Oct 20, 2026)
 
-The full wish list is the "Map Workshop" prompt the owner attaches. This file records how it fits the game and what each step covers (steps 1–3 and the building kit are done; step 4, converting the built-in maps, is under way: the Suburb is converted). Read `docs/ARCHITECTURE.md` and `docs/map-format.md` too.
+The full wish list is the "Map Workshop" prompt the owner attaches. This file records how it fits the game and what each step covers (steps 1–3 and the building kit are done; step 4, converting the built-in maps, is under way: the Suburb and the Warehouse are converted). Read `docs/ARCHITECTURE.md` and `docs/map-format.md` too.
 
 ## Working on this repo
-- **Where the code lives:** the source is in `src/`, split into 117 modules whose load order is in `src/js/modules.txt`. Map files that ship with the game are in `src/maps/`.
+- **Where the code lives:** the source is in `src/`, split into 116 modules whose load order is in `src/js/modules.txt`. Map files that ship with the game are in `src/maps/`.
   - `tools/build.js` builds `index.html`, which GitHub Pages serves at https://danikko2.github.io/Zombdash/.
   - A GitHub Action rebuilds `index.html` whenever `src/` changes.
 - **Don't edit `index.html` by hand.** Before starting, run `node tools/build.js --check`. If it fails, someone edited `index.html` directly, and that change has to be moved into `src/` first.
 - **Publishing each change:**
   1. Run `node tools/build.js`.
-  2. Run `node tests/run.js` (26 suites, about 3 minutes). These exceptions are expected:
-     - `tutorial.js` camera zoom is a known failure.
+  2. Run `node tests/run.js` (27 suites, about 3 minutes). These exceptions are expected:
+     - `tutorial.js` camera zoom is a known failure. Cause (found Oct 25, 2026): the suite plays at 390×800, a phone, which the game turns to landscape (800×390). The tutorial only zooms in when the house fits the screen (`tutZ`: at least 1×, at most 2.6×), and 390 px is shorter than the house (380 px plus margins), so it stays at 1× on phones by design and the two zoom checks can't pass there; at 1280×800 they pass. The proposed fix only touches the test (check the zoom at a desktop size, and expect no zoom on a phone); it waits for the owner's yes.
      - The `campaign.js` Rusty check is flaky and retried automatically.
      - The `balance-editor-and-test-switches.js` ground-limit check fails about 1 run in 20 on the original game too (a kill can add two drops when one slot is left), so it is retried automatically as well.
   3. Commit and push to `main`.
@@ -117,7 +117,7 @@ The full wish list is the "Map Workshop" prompt the owner attaches. This file re
    - **Shipping:** converted maps are stored as `src/maps/*.json` and embedded by `tools/build.js`. The step 1 note says the loader is ready and the build needs to embed the files.
    - **Progress safety:** a converted map keeps its map number, campaign slot, boss, progress and leaderboard board, so players' progress is untouched.
    - **Small differences are allowed:** a converted map may look slightly different in painted details. The layout, walls, spawns and gameplay must match.
-   - **Converted:** the **Suburb** (map 0), Oct 24, 2026: see "Step 4 conversions" below.
+   - **Converted:** the **Suburb** (map 0), Oct 24, 2026, and the **Warehouse** (map 1), Oct 25, 2026: see "Step 4 conversions" below.
 5. **Step 5:** gameplay pieces the owner picks (loot crates, doors, traps…).
 
 ## Building kit (done Oct 23, 2026)
@@ -160,6 +160,7 @@ The editor can now build maps as detailed as the hand-coded ones. Map format ver
 - **Time of day:** Off, Morning, Day, Dusk or Night with an Amount slider (0–100%) in the Map panel, shown live in the editor and drawn by the game every frame: lamps, light effects, fires, sirens, hazards, glows, lit windows and the players light the ground. Stored as `"lighting"` in the map file (format still version 3).
 - **Turning effects:** effects have a turn (`rot`), so hazard blinkers and sirens line up with the vehicle they are on (R in the editor, or Turn in the panel).
 - The demo map's hazard lights now match the crashed car, with a dead zombie and an arm beside it. Tests: `tests/suites/gore-and-lighting.js`.
+- **Lights (Oct 25, 2026):** spot light, flood light on a pole, light tower, wall light, work light on a tripod and searchlight props, each shining a beam in its colour at dusk and night; R turns the beam (poles, towers and tripods stay standing). Lamps, lot lights, floor lamps, lanterns, exit lights and burning barrels are in the same new Lights group. Tests: `tests/suites/gore-and-lighting.js`.
 
 ## Building kit audit (Oct 23, 2026): what the 16 built-in maps draw or do, and the kit piece for it
 This is the checklist for the step 4 conversions. Maps: **Su** Suburb, **Wa** Warehouse, **Gr** Graveyard, **Sc** School, **OW** Old West, **Ne** Neighborhood, **MB** Military Base, **Ca** Campground, **Hw** Deadway Highway, **HM** Haunted Mansion, **EF** Enchanted Forest, **Ur** Urban Outskirts, **CP** City Park, **Dt** Downtown, **Mk** Hometown Market, **MS** Main Street. Every prop in `OB` (259 before the kit) and every vehicle in `HWV` (14) was already in the asset browser; everything below was drawn by map code or done by map systems. ✓ = a kit piece reproduces it; ◐ = approximated.
@@ -270,6 +271,16 @@ This is the checklist for the step 4 conversions. Maps: **Su** Suburb, **Wa** Wa
 - **Performance and memory** (Chromium, 1280×800, five spots): frames 1.9 ms on average instead of 3.0 ms (the canopy is no longer redrawn every frame), the map builds in 0.15 s instead of 0.6 s, the JS heap is the same (10.4 MB vs 10.6 MB). Canvas memory is 0.4 MB higher (16.8 vs 16.3 MB; low-memory mode 4.8 vs 4.4 MB): the map is 4 px wider and 24 px taller (whole tiles), and the cars, sedans, bookshelves and helicopter body are walk-behind pictures.
 - **Visible differences** (allowed by "small differences"): the trails and the clearings' edges are smooth curves instead of 8 px steps; the trails have a lighter middle and stop a little before the forest edge; the crosswalk bars are thinner lines; furniture uses the kit props (beds with red covers, kit kitchen counters and stove, sink under the west window instead of a cabinet line across the back wall, grey garage cabinet and tool chest, tire stack, kit TV stands, coffee tables and sofas); wall pieces have the kit's lighter top edge; windows are 6 px kit windows; gate posts are siding pieces; the road edge lines and dashes have slightly different lengths; the 14 small dark streaks on the road and the debris bits by the crashed cars are gone (the road has its own speckle); splinters along the crash lane are small twig decals; the garage cars are kit sedans; the forest canopy hides a player standing behind a tree instead of every player under any canopy; the camera stops 24 px lower at the bottom edge.
 
+### Warehouse (map 1): converted Oct 25, 2026
+- **The file:** `src/maps/warehouse.json` (57×57 tiles on the new grey `lot` terrain; 95 props, 45 vehicles (34 trailers, 11 parked cars), 28 walls, 222 decals, 13 areas, 109 paths (lot and road markings), the burning barrel's smoke, a no-spawn box and a menu view; no spawn points, so zombies still come from off-screen as before). Same loader and records as the Suburb (`BIMF[1]`); map 1 keeps its campaign slot (third in Hometown), its survivor boss, progress, best waves, leaderboard board and checkpoints. `maps/warehouse.js`, `whSign` and the map-1 branch of `paintDec` are gone.
+- **Collision:** identical to the old map, box for box (141 boxes), kept as `tests/fixtures/warehouse-walls.json`. Every doorway (the four ways in, the office door, six office doors) is clear: no prop stands in one.
+- **New kit pieces for it:** props `wcont` (small container), `guardbooth`, `lotgate`, `deskpc`, `ochair`, `fcab`, `sinkrow`, `wc`, `lockstrip`, `exitsign`, `dirsign2`, `firebarrel`, `btable`; the `hatch` vehicle (the old lots' parked car); a stripe colour for trailers and semis (`color2`, Stripe swatches in the editor); terrain `lot`; paving surface `turf` (dark lawn); hazard band style `blocks`; decal `lotspeck`. Lights (owner's request): `spotlight`, `floodlight`, `floodtower`, `walllight`, `worklight`, `searchlight`, with beams that turn with the prop, and a Lights group in the prop browser.
+- **Checks:** before/after pictures of the whole lot, the building, the offices, the gate, the three trailer lots, the parked cars, the containers, the barrel and the sign; the collision comparison; every open spot on the map's edges reaches the player; campaign waves 1–19 played on both the old and the new map (every zombie reached the player on both) and the survivor boss (it fights from about 250 px once it sees the player, on both); Free Play; split screen; low-memory mode; performance: frames the same (about 1.3 ms), canvas memory 0.4 MB higher (the map is 24 px bigger each way: whole tiles), 0.2 MB higher in low-memory mode.
+- **Visible differences:** trailers are the kit trailer, 12 px longer (same collision, set by a shape); walls are kit concrete walls (lighter top edge, joints every 48 px); the road's dashes and lane lines have the kit line's spacing; the lot numbers and STOP are kit text decals (a slightly different font); oil stains are kit oil decals; the office plants are round house plants seen from above; the vertical locker row is 2 px wider.
+
+### Doorways (Oct 25, 2026, owner's request)
+No prop may block a doorway. `cmDoorBlocks` finds props and vehicles within 24 px of an opening (solid ones by their collision, others by their base) and the Problems list and `tools/check-map.js` warn about them. Fixed on the Suburb: the dressers now stand against the bedroom side walls, the hall plants moved away from the bedroom and garage doors, the garage cabinet, tool chest and tires moved out of the house door and the garage opening, the stove and fridge moved off the back doors, one kitchen table moved 4 px, and the trash can by the middle house's back door moved 10 px (the only collision change; the Suburb test allows it). Fixed on the Elm & 3rd sample and on the example in `docs/map-format.md` too. Both converted maps' tests check it.
+
 ### Lessons for the next maps
 - **Capture first.** Run the old map once and dump `WL`, the tree and prop lists (wrap `paintDec`), spawns and `HS` to JSON; generate the map file from that capture plus the map's formulas with a small script, then compare `cmColl(doc)` with the old `WL` (rasterise both with a 0.2 px tolerance: the 0.1 px rounding of the file flips edge pixels otherwise). Keep the old collision as a test fixture before deleting the map code.
 - **Keep absolute coordinates** and round the map size up to whole tiles; nothing else needs moving.
@@ -280,6 +291,11 @@ This is the checklist for the step 4 conversions. Maps: **Su** Suburb, **Wa** Wa
 - **Thousands of props are fine** if their walk-behind pictures are shared (`kpWB` with `sh: 1`); a canvas per tree would cost tens of MB.
 - **In Node tests, don't give the player a huge max health:** the HUD draws one heart per point (a million hearts made each tick take 4 s). Mark the account `tut: 1` before starting a campaign run on map 0, or the tutorial starts instead.
 - **Watch the boot order:** anything the boot build needs must be loaded before `world/builtin-maps.js` runs it.
+- **Check doorways while laying out furniture:** run `node tools/check-map.js` (or look at the Problems tab); copy the old positions, then move anything it lists.
+- **Paint order matters:** things the old map painted before a floor (oil stains under the building) must be left out or they show on top of the floor; floors painted after a bigger floor need a higher `order`.
+- **A prop's default `var` is random:** set `var` on props whose look depends on it (the locker rows).
+- **Boss checks:** some survivor bosses fight from a distance; compare a boss's behaviour with the old map before calling a difference a bug (the same playtest can run on the last `index.html` from git).
+- **Free Play needs the map unlocked** in a browser check (`S.ac.cp = 8`), or `start()` quietly plays the Suburb.
 
 ## What each map still needs before converting
 Everything else on each map can be built with the kit; the conversion still has to be laid out, compared side by side and playtested (walls, zombie paths, spawns, its survivor boss).
@@ -287,7 +303,7 @@ Everything else on each map can be built with the kit; the conversion still has 
 | Map | Still needs / watch out for |
 |---|---|
 | Suburb | **Converted (Oct 24, 2026).** |
-| Warehouse | Nothing new. |
+| Warehouse | **Converted (Oct 25, 2026).** |
 | Graveyard | Nothing new (chapel and mausoleum prefabs are a start; the mausoleum glow is a `glow` effect). |
 | School | Nothing new; its own walk-behind pass becomes ordinary walk-behind props. |
 | Old West | Nothing new (barn prefab for the stables, `bars` for the sheriff). |

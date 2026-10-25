@@ -139,3 +139,51 @@ hplant:{w:22,h:24,c:0,f(g,x,y){const cy=y-8;g.fillStyle='#16111c';g.beginPath();
 flamp:{w:56,h:60,c:0,f(g,x,y){const ly=y-8;g.fillStyle='rgba(255,230,140,.2)';g.beginPath();g.arc(x,ly,26,0,7);g.fill();g.fillStyle='#16111c';g.fillRect(x-8,ly-8,16,16);g.fillStyle='#e8c060';g.fillRect(x-7,ly-7,14,14);g.fillStyle='#f8e0a0';g.fillRect(x-5,ly-5,10,4)}},
 curtain:{w:58,h:10,c:0,pc:PKCURT,f(g,x,y,v,col){const c=pcCol(col,PKCURT),l=pcSh(c,1.22),R=(k,a,b,w,h)=>{g.fillStyle=k;g.fillRect(x+a,y+b,w,h)};
 R(c,-28,-7,10,7);R(c,18,-7,10,7);R('#16111c',-28,-8,56,1);R(l,-27,-6,3,5);R(l,19,-6,3,5)}}});
+// ----- lights: spot lights, flood lights, a light tower, a wall light, a work light, a searchlight -----
+// lt: the lamp heads. Each is a beam that lights the ground at dusk and night (kit-lighting.js): dx,dy from the base, r reach,
+// w half its width in degrees, a its angle from straight ahead. A prop's turn (rot) aims the beams; turned 0 they shine down the
+// screen. nr:1 keeps the picture standing when turned (poles, towers, tripods), so only the light turns. The colour is the light's.
+const PKLT=[['#fff2c8','Warm white'],['#e8f0ff','Cool white'],['#ffc860','Sodium yellow'],['#ff5a4a','Red'],['#6aff8a','Green'],['#6aa8ff','Blue']];
+function kpLens(q,x,y,w,h,K){R_(q,'#16111c',x-1,y-1,w+2,h+2);R_(q,K.b,x,y,w,h);R_(q,'#ffffff',x+1,y,Math.max(1,w-2),1)}
+Object.assign(OB,{
+spotlight:Object.assign(obc(28,24,[16,10],PKLT,(q,v,K)=>{R_(q,'#16111c',3,13,22,10);R_(q,'#3a3d46',4,14,20,8);R_(q,'#5a5e68',4,14,20,2);R_(q,'#16111c',5,3,18,14);R_(q,'#4a4e58',6,4,16,12);R_(q,'#6a6e78',6,4,16,3);kpLens(q,8,15,12,4,K)}),{lt:[{dx:0,dy:-6,r:230,w:16}]}),
+walllight:Object.assign(obc(24,18,0,PKLT,(q,v,K)=>{R_(q,'#16111c',3,1,18,8);R_(q,'#3a3d46',4,2,16,6);R_(q,'#2a2c32',11,7,2,3);R_(q,'#16111c',5,8,14,8);R_(q,'#4a4e58',6,9,12,6);kpLens(q,7,13,10,3,K)}),{lt:[{dx:0,dy:-4,r:160,w:48}]}),
+floodlight:Object.assign(obc(56,120,[8,8],PKLT,(q,v,K)=>{R_(q,'#16111c',24,20,8,94);R_(q,'#6a6e78',25,20,6,92);R_(q,'#8a8f96',25,20,2,92);R_(q,'#16111c',19,111,18,8);R_(q,'#4a4e58',20,112,16,6);R_(q,'#16111c',5,13,46,6);R_(q,'#4a4e58',6,14,44,4);
+for(const x of[4,32]){R_(q,'#16111c',x-1,3,22,14);R_(q,'#3a3d46',x,4,20,12);R_(q,'#5a5e68',x,4,20,3);kpLens(q,x+2,12,16,4,K)}}),{nr:1,wb:1,lt:[{dx:-10,dy:-6,r:280,w:34,a:-10},{dx:10,dy:-6,r:280,w:34,a:10}]}),
+floodtower:Object.assign(obc(76,176,[24,12],PKLT,(q,v,K)=>{q.strokeStyle='#16111c';q.lineWidth=4;const L=(a,b,c,d)=>{q.beginPath();q.moveTo(a,b);q.lineTo(c,d);q.stroke()};L(16,172,31,32);L(60,172,45,32);
+q.strokeStyle='#8a8f96';q.lineWidth=2;L(16,172,31,32);L(60,172,45,32);q.lineWidth=1;q.strokeStyle='#6a6e78';for(let y=48;y<168;y+=24){const a=16+(172-y)/140*15,b=60-(172-y)/140*15,a2=16+(172-y-24)/140*15,b2=60-(172-y-24)/140*15;L(a,y,b2,y-24);L(b,y,a2,y-24);L(a,y,b,y)}
+R_(q,'#16111c',12,166,52,8);R_(q,'#4a4e58',13,167,50,6);R_(q,'#16111c',13,3,50,32);R_(q,'#2a2c32',14,4,48,30);for(let j=0;j<2;j++)for(let i=0;i<2;i++){R_(q,'#4a4e58',16+i*24,6+j*14,20,12);kpLens(q,18+i*24,13+j*14,16,4,K)}}),{nr:1,wb:1,lt:[{dx:-14,dy:-8,r:420,w:44,a:-14},{dx:14,dy:-8,r:420,w:44,a:14}]}),
+worklight:Object.assign(obc(44,56,[18,8],PKLT,(q,v,K)=>{q.strokeStyle='#16111c';q.lineWidth=3;const L=(a,b,c,d)=>{q.beginPath();q.moveTo(a,b);q.lineTo(c,d);q.stroke()};L(22,24,6,54);L(22,24,38,54);L(22,18,22,54);q.strokeStyle='#8a8f96';q.lineWidth=1;L(22,24,6,54);L(22,24,38,54);L(22,18,22,54);
+R_(q,'#16111c',5,13,34,4);R_(q,'#3a3d46',6,14,32,2);for(const x of[4,24]){R_(q,'#16111c',x-1,3,18,14);R_(q,'#e0b030',x,4,16,12);R_(q,'#a87a1a',x,13,16,3);kpLens(q,x+2,6,12,6,K)}}),{nr:1,wb:1,lt:[{dx:0,dy:-6,r:240,w:38}]}),
+searchlight:Object.assign(obc(44,46,[28,12],PKLT,(q,v,K)=>{R_(q,'#16111c',7,37,30,9);R_(q,'#3a3d46',8,38,28,7);R_(q,'#16111c',9,20,6,20);R_(q,'#16111c',29,20,6,20);R_(q,'#5a5e68',10,21,4,18);R_(q,'#5a5e68',30,21,4,18);
+q.fillStyle='#16111c';q.beginPath();q.arc(22,20,16,0,7);q.fill();q.fillStyle='#5a5f68';q.beginPath();q.arc(22,20,15,0,7);q.fill();q.fillStyle=K.b;q.beginPath();q.arc(22,20,11,0,7);q.fill();q.fillStyle='rgba(255,255,255,.75)';q.beginPath();q.arc(18,16,4,0,7);q.fill()}),{nr:1,wb:1,lt:[{dx:0,dy:-8,r:460,w:7}]})});
+// ----- the Warehouse's pieces -----
+// wcont: a small shipping container (90×28). guardbooth: the lot's guard booth. lotgate: a gate post with a short red and white
+// arm reaching left. deskpc: an office desk with a computer; ochair: an office chair from above; fcab: a grey filing cabinet.
+// sinkrow: a washroom counter with two sinks and a mirror strip (var ≥ 0.5 puts the mirror on the left). wc: a toilet from above.
+// lockstrip: five lockers from above (var ≥ 0.5: wider, shallower lockers, a longer row). exitsign: a green exit light (glows at night).
+// dirsign2: a direction sign with the arrow on the left pointing down-left. firebarrel: a burning barrel from above (glows).
+// btable: a break-room table from above.
+const PKWC=[['#b5483a','Red'],['#3a6fb5','Blue'],['#4f8a4a','Green'],['#c9a02e','Yellow'],['#7a4a8a','Purple'],['#d07a2a','Orange']];
+function kpR(g){return(c,x,y,w,h)=>{g.fillStyle=c;g.fillRect(x,y,w,h)}}
+Object.assign(OB,{
+wcont:{w:92,h:30,c:[90,28],pc:PKWC,f(g,x,y,v,col){const R=kpR(g),c=pcCol(col,PKWC),X=x-45,Y=y-28;R('#222',X-1,Y-1,92,30);R(c,X,Y,90,28);for(let k=6;k<90;k+=8)R('rgba(0,0,0,.22)',X+k,Y,2,28)}},
+guardbooth:{w:98,h:86,c:[96,84],wb:1,f(g,x,y){const R=kpR(g),X=x-48,Y=y-84;R('#16111c',X-1,Y-1,98,86);R('#6c7686',X,Y,96,84);R('#8a95a8',X,Y,96,10);R('#55606f',X+6,Y+16,84,62);R('#14101a',X,Y+54,8,22);R('#8fc3e8',X,Y+20,6,26);R('#3a3d46',X+50,Y+20,28,20);R('#8a909c',X+52,Y+22,24,4);R('#e8c53a',X+20,Y+2,56,4)}},
+lotgate:{w:196,h:22,c:[10,16],f(g,x,y){const R=kpR(g);R('#3a3d46',x-5,y-16,10,16);R('#8a909c',x-3,y-14,6,4);R('#16111c',x-98,y-12,98,8);for(let i=0;i<8;i++)R(i%2?'#e8e8e4':'#d83a3a',x-13-12*i,y-11,12,6);R('#e0443a',x-2,y-20,4,4)}},
+deskpc:{w:82,h:42,c:[80,28],f(g,x,y){const R=kpR(g);R('#7a5a3a',x-40,y-28,80,28);R('#a8703a',x-40,y-28,80,5);R('#222',x-12,y-40,24,14);R('#59a',x-10,y-38,20,9)}},
+ochair:{w:18,h:16,c:0,f(g,x,y){kpR(g)('#3a3d46',x-8,y-14,16,14)}},
+fcab:{w:24,h:42,c:[22,40],f(g,x,y){const R=kpR(g);R('#6b7078',x-11,y-40,22,40);for(const d of[36,24,12])R('#8a909c',x-9,y-d,18,6)}},
+sinkrow:{w:24,h:72,c:[16,70],f(g,x,y,v){const R=kpR(g);R('#8a909c',x-8,y-70,16,70);R('#fff',x-5,y-62,10,12);R('#fff',x-5,y-38,10,12);R('#8fc3e8',(+v||0)>=.5?x-10:x+8,y-66,2,60)}},
+wc:{w:16,h:30,c:0,f(g,x,y){const R=kpR(g);R('#fff',x-7,y-14,14,14);R('#dfe6ea',x-5,y-28,10,10)}},
+lockstrip:{w:114,h:22,c:[92,18],f(g,x,y,v){const R=kpR(g),big=(+v||0)>=.5,s=big?22:18,L=s*5,D=big?14:18;R('#16111c',x-L/2-1,y-D-1,L+2,D+2);for(let i=0;i<5;i++){const lx=x-L/2+i*s;R(i%2?(big?'#6a6f7a':'#3a6fb5'):(big?'#3a6fb5':'#6a6f7a'),lx,y-D,s-2,D);R('#16111c',lx+4,y-D+3,8,1);R('#16111c',lx+4,y-D+6,8,1)}}},
+exitsign:{w:26,h:10,c:0,f(g,x,y){kpR(g)('#3fd25a',x-12,y-8,24,8)}},
+dirsign2:{w:180,h:102,c:[8,10],cf:2,pc:PKDIR,txt:30,dt:'HIGHWAY|ENTRANCE',wb:1,f(g,x,y,v,col,t){const[a,b]=kpLines(cmTxt(t,30)||'HIGHWAY|ENTRANCE'),K=pcK(pcCol(col,PKDIR)),R=kpR(g),py=y,pw=176,ph=58,bx=x-pw/2,by=py-ph-40;
+R('rgba(0,0,0,.25)',x-1,py-2,14,4);R('#16111c',x-4,by+ph-2,8,py-by-ph+4);R('#8a9096',x-3,by+ph,6,py-by-ph+1);R('#c8ccd0',x-3,by+ph,2,py-by-ph+1);
+R('#16111c',bx-2,by-2,pw+4,ph+4);R(K.b,bx,by,pw,ph);R('#f4f1e6',bx+3,by+3,pw-6,2);R('#f4f1e6',bx+3,by+ph-5,pw-6,2);R('#f4f1e6',bx+3,by+3,2,ph-6);R('#f4f1e6',bx+pw-5,by+3,2,ph-6);
+kpText(g,a.toUpperCase(),x+20,by+19,pw-60,14,'#f4f1e6');if(b)kpText(g,b.toUpperCase(),x+20,by+38,pw-60,14,'#f4f1e6');
+g.save();g.translate(bx+30,by+ph/2);g.rotate(Math.PI*.75);g.fillStyle='#f4f1e6';g.fillRect(-12,-2.5,20,5);g.beginPath();g.moveTo(6,-8);g.lineTo(17,0);g.lineTo(6,8);g.fill();g.restore();R('rgba(0,0,0,.25)',bx+pw-14,by+ph-10,6,3)}},
+firebarrel:{w:42,h:48,c:[12,12],f(g,x,y){const cy=y-6;g.fillStyle='rgba(255,140,40,.25)';g.beginPath();g.arc(x,cy,20,0,7);g.fill();const R=kpR(g);R('#8a3a22',x-6,cy-6,12,12);R('#ff9a2e',x-4,cy-4,8,8)}},
+btable:{w:52,h:22,c:[50,12],f(g,x,y){const R=kpR(g);R('#a8703a',x-25,y-12,50,12);R('#7a5a3a',x-23,y,4,8);R('#7a5a3a',x+19,y,4,8)}}});
+
+// props that belong at doorways (cmDoorBlocks leaves them out)
+for(const k of['awning','walllight','exitsign','curtain'])if(OB[k])OB[k].dk=1;

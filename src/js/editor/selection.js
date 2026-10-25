@@ -46,7 +46,7 @@ function edOnPath(o,x,y){const P=cmPathSm(o),T=cmPath(o.p),z=ED.cam.z;if(P.lengt
 // world box around one thing / a group
 function edBB(it){const o=it.o;if(it.t=='w'||it.t=='z'||it.t=='a'||it.t=='f'&&!o.pts)return{x0:o.x,y0:o.y,x1:o.x+o.w,y1:o.y+o.h};
 if(it.t=='l'||it.t=='f'){const b=cmPolyBB(o.pts.map(p=>[o.x+p[0],o.y+p[1]])),m=it.t=='l'?(o.w||(cmPath(o.p)||{w:8}).w)/2:0;return{x0:b.x0-m,y0:b.y0-m,x1:b.x1+m,y1:b.y1+m}}if(it.t!='o')return{x0:o.x,y0:o.y,x1:o.x,y1:o.y};
-const b=edBox(o),a=(o.r||0)*Math.PI/180,c=Math.cos(a),s=Math.sin(a);let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const[px,py]of[[b.x0,b.y0],[b.x1,b.y0],[b.x0,b.y1],[b.x1,b.y1]]){const X_=o.x+px*c-py*s,Y_=o.y+px*s+py*c;x0=Math.min(x0,X_);y0=Math.min(y0,Y_);x1=Math.max(x1,X_);y1=Math.max(y1,Y_)}return{x0,y0,x1,y1}}
+const b=edBox(o),a=cmPR(o)*Math.PI/180,c=Math.cos(a),s=Math.sin(a);let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const[px,py]of[[b.x0,b.y0],[b.x1,b.y0],[b.x0,b.y1],[b.x1,b.y1]]){const X_=o.x+px*c-py*s,Y_=o.y+px*s+py*c;x0=Math.min(x0,X_);y0=Math.min(y0,Y_);x1=Math.max(x1,X_);y1=Math.max(y1,Y_)}return{x0,y0,x1,y1}}
 function edBBAll(L){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const it of L){const b=edBB(it);x0=Math.min(x0,b.x0);y0=Math.min(y0,b.y0);x1=Math.max(x1,b.x1);y1=Math.max(y1,b.y1)}return{x0,y0,x1,y1}}
 // everything that could be selected, in a fixed order
 function edAllItems(){const d=ED.d,L=[];if(d.start)L.push({t:'p',o:d.start});for(const o of d.spawns)L.push({t:'s',o});for(const o of d.obj)L.push({t:'o',o});for(const o of d.walls)L.push({t:'w',o});for(const o of d.areas)L.push({t:'a',o});for(const o of d.paths)L.push({t:'l',o});for(const o of d.zones)L.push({t:'z',o});for(const o of d.feats)L.push({t:'f',o});return L}

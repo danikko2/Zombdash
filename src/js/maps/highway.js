@@ -3,7 +3,7 @@
 // (functions only: they run during map builds, possibly at boot)
 function hwH(i,k){const v=Math.sin(i*12.9898+k*78.233+3.3)*43758.5453;return v-Math.floor(v)}
 function hwSh(c,k){const n=parseInt(c.slice(1),16),f=v=>Math.max(0,Math.min(255,Math.round(v*k)));return '#'+[(n>>16)&255,(n>>8)&255,n&255].map(v=>f(v).toString(16).padStart(2,'0')).join('')}
-function HWV(k){return {sedan:[80,36],suv:[88,40],pickup:[94,40],van:[92,42],limo:[150,38],police:[84,36],amb:[106,44],fire:[178,48],bus:[206,46],semi:[292,48],cab:[66,46],trailer:[222,48],hmv:[98,48],mtruck:[170,50],taxi:[80,36],ftruck:[140,50]}[k]}
+function HWV(k){return {hatch:[88,36],sedan:[80,36],suv:[88,40],pickup:[94,40],van:[92,42],limo:[150,38],police:[84,36],amb:[106,44],fire:[178,48],bus:[206,46],semi:[292,48],cab:[66,46],trailer:[222,48],hmv:[98,48],mtruck:[170,50],taxi:[80,36],ftruck:[140,50]}[k]}
 // exit ramp centerline (cubic) then straight off the bottom of the map
 function hwRamp(){const P0=[1630,990],P1=[1900,1000],P2=[2250,1150],P3=[2420,1420],pts=[];for(let i=0;i<=40;i++){const t=i/40,u=1-t;pts.push([u*u*u*P0[0]+3*u*u*t*P1[0]+3*u*t*t*P2[0]+t*t*t*P3[0],u*u*u*P0[1]+3*u*u*t*P1[1]+3*u*t*t*P2[1]+t*t*t*P3[1]])}for(let i=1;i<=8;i++)pts.push([2420+i*6.5,1420+i*52]);return pts}
 function hwOff(pts,d){return pts.map((p,i)=>{const a=pts[Math.max(0,i-1)],b=pts[Math.min(pts.length-1,i+1)],dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy)||1;return[p[0]-dy/L*d,p[1]+dx/L*d]})}
@@ -49,6 +49,7 @@ const car=(hood,ws,roof,rw)=>{O(hl,ht,L,W);R(col,hl,ht,L,W);R(dk,hl,ht,L,3);R(dk
 const xw=hr-hood-ws;R(gl,xw,ht+4,ws,W-8);R('rgba(255,255,255,.3)',xw+2,ht+5,2,W-12);R(lt,xw-roof,ht+5,roof,W-10);R(gld,xw-roof-rw,ht+5,rw,W-10);
 R('#16111c',xw+ws-3,ht-2,4,2);R('#16111c',xw+ws-3,W/2,4,2);R('#fff4c0',hr-4,ht+3,3,6);R('#fff4c0',hr-4,W/2-9,3,6);R('#c0392b',hl,ht+3,2,6);R('#c0392b',hl,W/2-9,2,6);return xw};
 switch(v.k){
+case 'hatch':car2(g,hl,ht,col);if(v.dmg){R('rgba(20,16,12,.35)',hl+52,ht+6,18,10);R('#bfe3f5',hl+60,ht+14,3,3)}break;
 case 'sedan':case 'suv':case 'van':{const xw=v.k=='van'?car(12,10,52,4):v.k=='suv'?car(18,10,40,6):car(20,10,28,8);if(v.k=='suv'){R(dk,xw-36,ht+6,30,2);R(dk,xw-36,W/2-8,30,2)}if(v.k=='van'){R(dk,hl+8,-1,44,2)}break}
 case 'police':{const xw=car(20,10,28,8);R('#f4f4f0',xw-24,ht,22,W);R('#f4f4f0',hr-10,ht,8,W);R('#16111c',xw-26,ht,1,W);R('#d8d8d4',xw-22,ht+5,18,W-10);
 O(xw-14,ht+5,6,W-10);R('#c0392b',xw-14,ht+5,6,(W-10)/2);R('#2f6fd0',xw-14,0,6,(W-10)/2);R('#e8c040',xw-30,-2,4,4);break}

@@ -128,6 +128,14 @@ const r=run(w('a.json',j)),o=r.stdout;ok(r.status===0&&/options\\.z" is "99"/.te
 
 // ---------- the demo map, and nothing clashes ----------
 {const d=cmRead(JSON.stringify(CMSAMPLES[0])).doc,hz=d.obj.find(o=>o.fx=='hazard'),car=d.obj.find(o=>o.veh&&o.dmg&&Math.abs(o.x-1200)<2);ok(hz&&car&&hz.r==car.r&&d.obj.some(o=>o.dc=='deadz')&&d.obj.some(o=>o.dc=='zarm'),'Demo map: the hazard lights are turned to match the crashed car; a dead zombie and an arm by the crash')}
+// ---------- light props: spot lights and flood lights ----------
+{const K=['spotlight','floodlight','floodtower','walllight','worklight','searchlight'];ok(K.every(k=>OB[k]&&OB[k].lt&&OB[k].lt.length&&EDPN[k]&&EDPN[k][1]=='lights'),'six light props, in the Lights group of the prop browser');
+ const fl={id:'L1',k:'floodlight',x:400,y:400,r:90,c:'#ffc860'},S0=cmLightSrc({obj:[fl]});ok(S0.length==2&&S0.every(s=>s.cw>0&&s.c=='#ffc860'&&Math.abs(s.ca-Math.PI)<.3),'a floodlight turned 90° aims its two beams to the left, in its colour');
+ ok(cmPR(fl)===0&&cmPR({k:'spotlight',r:90})===90&&cmPR({veh:'sedan',r:30})===30,'poles, towers and tripods stay standing when turned (only their light turns); spotlights and vehicles turn');
+ ok(same(cmFoot(fl),cmFoot(Object.assign({},fl,{r:0}))),'a standing light keeps its footing when turned');
+ const sl=cmLightSrc({obj:[{k:'searchlight',x:0,y:0}]})[0];ok(sl.r>=400&&sl.cw<.2&&Math.abs(sl.ca-Math.PI/2)<1e-9,'the searchlight is a long narrow beam, straight down the screen when not turned');
+ LOG.length=0;const g=document.createElement('canvas').getContext('2d');ok(cmLightPaint(g,{t:'night',a:.8},S0,0,0,800,800,.5,0,1)===1,'beams paint into the night light map');
+ ok(typeof edLtAim=='function','the editor shows the beams of a selected light')}
 {const h=FS.readFileSync(process.argv[2],'utf8'),c={};for(const m of h.matchAll(/function ([A-Za-z_$][\\w$]*)\\s*\\(/g))c[m[1]]=(c[m[1]]||0)+1;const dup=Object.keys(c).filter(k=>c[k]>1).sort();
 ok(same(dup,['dtBox','tv']),'No function in the game is defined twice by accident (only the two old ones: '+dup.join(', ')+')')}
 console.log('TOTAL fails '+fails+' of '+n);

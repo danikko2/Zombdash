@@ -25,12 +25,14 @@ async function cmLoadAll(){const [metas,maps]=await Promise.all([msAll('meta'),m
 for(const m of metas||[]){const rec=byId[m.id],r=rec?cmRead(rec.json):{doc:null,errors:['The map data is missing.'],warnings:[]};L.push({id:m.id,key:cmKeyOf(m.id),meta:m,doc:r.doc,errors:r.errors,warnings:r.warnings})}
 L.sort((a,b)=>String(a.meta.name||'').localeCompare(String(b.meta.name||''),undefined,{sensitivity:'base'}));CML=L;CMLOK=1;try{await ccLoad()}catch(e){}return L}
 // paint a whole custom map (ground, walls, props, vehicles) into g; used for the game's background and for thumbnails
-function cmProp(g,o){const B=cmOB(o.k);if(!B)return;const v=o.vr!=null?o.vr:cmH(o.x,o.y,3),r=o.r||0;if(!r){B.f(g,o.x,o.y,v,o.c,o.tx);return}
+// how far a thing's picture turns: upright lights (nr:1) keep their picture standing, their turn only aims the light
+function cmPR(o){if(!o||!o.r)return 0;if(o.veh||o.dc||o.fx)return o.r;const B=cmOB(o.k);return B&&B.nr?0:o.r}
+function cmProp(g,o){const B=cmOB(o.k);if(!B)return;const v=o.vr!=null?o.vr:cmH(o.x,o.y,3),r=cmPR(o);if(!r){B.f(g,o.x,o.y,v,o.c,o.tx);return}
 const L=vRec.L,n=L?L.length:0;g.save();g.translate(o.x,o.y);g.rotate(r*Math.PI/180);try{B.f(g,0,0,v,o.c,o.tx)}finally{g.restore()}
 // a turned sprite has no straight base line, so walk-behind uses its pixels instead
 if(L)for(let i=n;i<L.length;i++)delete L[i].base}
 // the walk-behind box hugs the turned car (a square around any turn wasted memory on long vehicles)
-function cmCar(g,o){const v=cmVeh(o);if(!v)return;const c=Math.abs(Math.cos(v.a)),s=Math.abs(Math.sin(v.a)),ex=c*v.L/2+s*v.W/2+8,ey=s*v.L/2+c*v.W/2+8;vDraw(g,v.x-ex,v.y-ey,ex*2,ey*2,q=>hwDraw(q,v))}
+function cmCar(g,o){const v=cmVeh(o);if(!v)return;const c=Math.abs(Math.cos(v.a)),s=Math.abs(Math.sin(v.a)),ex=c*v.L/2+s*v.W/2+4,ey=s*v.L/2+c*v.W/2+4;vDraw(g,v.x-ex,v.y-ey,ex*2,ey*2,q=>hwDraw(q,v))}
 function cmWallDraw(g,w){const s=CMWI[w.s]||CMWI.wall;s.f(g,w.x,w.y,w.w,w.h,w.c)}
 // everything is painted in layer order (hidden layers too: hiding is only for the editor)
 function cmPaint(g,d){cmGround(g,d,0,0,d.w,d.h,0);for(const it of cmDrawList(d,0))cmPaintIt(g,it.o,it.t)}
