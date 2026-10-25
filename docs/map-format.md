@@ -109,7 +109,7 @@ Leave out `layer` on a thing and it goes on the layer of its kind (`cmKindLy`). 
 { "kind": "police", "x": 640, "y": 480, "rot": 90, "color": "#26262c", "damaged": true }
 { "kind": "ftruck", "x": 300, "y": 900, "rot": 0, "text": "TACO LOCO" }
 ```
-`kind`: `hatch sedan suv pickup van limo police amb fire bus semi cab trailer hmv mtruck taxi ftruck` (`hatch` is the parked car of the Warehouse and Neighborhood lots, 88×36). `color2` is the stripe colour of a `trailer` or `semi` (left out: picked from its place). `rot` turns it (at 0 it lies left to right). `color` repaints cars; `damaged` dents and cracks them. `text` (up to 16) is the name on a `trailer`'s or food truck's (`ftruck`) roof. Vehicles are solid along their real outline and people walk behind them.
+`kind`: `hatch sedan suv pickup van limo police amb fire bus semi cab trailer hmv mtruck taxi ftruck` (`hatch` is the parked car of the Warehouse and Neighborhood lots, 88×36). `color2` is the stripe colour of a `trailer` or `semi` (`"none"`: no stripe; left out: picked from its place). `rot` turns it (at 0 it lies left to right). `color` repaints cars; `damaged` dents and cracks them. `text` (up to 16) is the name on a `trailer`'s or food truck's (`ftruck`) roof. Vehicles are solid along their real outline and people walk behind them.
 
 ## Walls
 

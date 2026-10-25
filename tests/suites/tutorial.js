@@ -17,7 +17,8 @@ const ok=(c,m)=>{LOG((c?'PASS ':'FAIL ')+m);if(!c)errs.push(m)};
 S.ac.name='T';S.ac.un=[0];delete S.ac.cp;S.ac.lv=1;
 // ---- tutorial ----
 setGM('c');mapId=0;sel=0;start();ok(TUT&&TUT.ph==0&&wave==0&&mode=='play','new player: campaign on Suburb starts in the tutorial');
-const GG=TUT.G;ok(P.x>GG.x0&&P.x<GG.x1&&P.y>GG.y0&&P.y<GG.y1,'player starts inside the house');ok(tutZ()>1,'camera zoomed in ('+tutZ().toFixed(2)+'x)');
+const GG=TUT.G;ok(P.x>GG.x0&&P.x<GG.x1&&P.y>GG.y0&&P.y<GG.y1,'player starts inside the house');// the tutorial zooms in only as far as the whole house fits; on a phone (landscape, about 390 px tall) it already fills the view
+const FITZ=Math.min(W/(GG.gx-GG.x0+90),(H-(H<520?80:200))/(GG.y1-GG.y0+60));if(FITZ>1)ok(tutZ()>1,'camera zoomed in ('+tutZ().toFixed(2)+'x)');else ok(tutZ()==1,'small screen: the house already fills the view, so no zoom ('+W+'×'+H+')');
 // try to walk out of the front door straight away: blocked
 for(let f=0;f<200;f++){keys.s=1;tick(1)}keys.s=0;ok(P.y<GG.y1+2,'front door blocked during the lesson (y '+(P.y|0)+')');
 for(let f=0;f<120;f++){keys.a=f<60;keys.d=f>=60;tick(1)}keys.a=keys.d=0;tick(80);ok(TUT.ph>=1,'moving advances to aim+shoot ('+TUT.ph+')');
@@ -26,10 +27,15 @@ const z=zs[0];ok(z.x>GG.x0&&z.x<GG.x1&&z.y>GG.y0&&z.y<GG.y1,'zombie is inside th
 let ff=0;for(;ff<900&&zs.length;ff++){mouse.d=1;const zz=zs[0];if(zz){const c=cam,v=tutZ();mouse.x=(zz.x-c.x)*v;mouse.y=(zz.y-c.y)*v}tick(1)}mouse.d=0;ok(!zs.length,'player kills the zombie by aiming at it ('+ff+' frames)');
 tick(60);ok(TUT.ph==3,'ready message: walk through the front door');ok(P.hp==P.mx,'can not get hurt in the tutorial');
 P.x=GG.cx;P.y=GG.y1-30;for(let i=0;i<120&&TUT&&TUT.ph<4;i++){keys.s=1;tick(1)}keys.s=0;ok(TUT&&TUT.ph==4,'walking out the front door starts the zoom out');
-const z1=tutZ();tick(40);ok(TUT&&tutZ()<z1,'camera zooming out');tick(120);ok(!TUT&&wave==1&&mode=='play'&&tutZ()==1,'wave 1 starts at normal zoom');ok(S.ac.tut==1,'tutorial marked done');
+const z1=tutZ();tick(40);if(z1>1)ok(TUT&&tutZ()<z1,'camera zooming out');else ok(TUT&&tutZ()==1,'small screen: the camera stays at normal zoom while the tutorial ends');tick(120);ok(!TUT&&wave==1&&mode=='play'&&tutZ()==1,'wave 1 starts at normal zoom');ok(S.ac.tut==1,'tutorial marked done');
 setGM('c');mapId=0;start();ok(!TUT&&wave==1,'second time: no tutorial');
 TUTF=1;start();ok(TUT&&TUT.ph==0,'replay tutorial option works');
 S.ac.cp=8;setGM('f');mapId=0;start();ok(!TUT,'free play: no tutorial');
+// on a desktop screen the tutorial zooms in on the house and back out when the player walks out of the front door
+{const w0=innerWidth,h0=innerHeight;global.innerWidth=1280;global.innerHeight=800;rs();TUTF=1;setGM('c');mapId=0;start();const G2=TUT&&TUT.G;ok(TUT&&W==1280&&tutZ()>1,'desktop: camera zoomed in ('+tutZ().toFixed(2)+'x)');
+ for(let f=0;f<120;f++){keys.a=f<60;keys.d=f>=60;tick(1)}keys.a=keys.d=0;tick(80);mouse.x=W/2+100;mouse.y=H/2;mouse.d=1;tick(150);mouse.d=0;
+ for(let f=0;f<900&&zs.length;f++){mouse.d=1;const zz=zs[0];if(zz){const v=tutZ();mouse.x=(zz.x-cam.x)*v;mouse.y=(zz.y-cam.y)*v}tick(1)}mouse.d=0;tick(60);ok(TUT&&TUT.ph==3,'desktop: the lesson plays through to the front door');P.x=G2.cx;P.y=G2.y1-30;for(let i=0;i<120&&TUT&&TUT.ph<4;i++){keys.s=1;tick(1)}keys.s=0;const zd=tutZ();tick(40);ok(TUT&&TUT.ph==4&&tutZ()<zd,'desktop: camera zooming out');tick(120);ok(!TUT&&tutZ()==1,'desktop: back to normal zoom for wave 1');
+ global.innerWidth=w0;global.innerHeight=h0;rs()}
 // ---- a lost life replays the same wave ----
 setGM('c');S.ac.cp=8;mapId=1;sel=0;start();P.mx=5;P.hp=5;
 wave=9;zs=[];toSp=0;nextWave();for(let i=0;i<300&&(toSp>0||bossQ>=0);i++){P.hp=P.mx;P.inv=1;tick(1)}

@@ -29,7 +29,7 @@ const near=(a,b,e)=>Math.abs(a-b)<=(e||.11);
 const L=cmLint(r.doc).filter(p=>p.lv=='err'||p.lv=='warn');ok(!L.length,'nothing in the Problems list '+L.map(p=>p.m).slice(0,2).join('; '));
 const D=r.doc;ok(D.w==57&&D.h==57&&D.ground=='lot'&&D.obj.filter(o=>o.veh=='trailer').length==34&&D.obj.filter(o=>o.veh=='hatch').length==11,'the map has the Warehouse\\'s size, its 34 trailers and 11 parked cars');
 ok(D.obj.filter(o=>!o.dc&&!o.fx&&!o.veh).every(o=>cmOB(o.k))&&['wcont','guardbooth','lotgate','deskpc','fcab','sinkrow','wc','lockstrip','exitsign','dirsign2','firebarrel','btable'].every(k=>D.obj.some(o=>o.k==k)),'every prop is a real kit prop, including the new Warehouse pieces');
-ok(D.obj.filter(o=>o.veh=='trailer').every(o=>/^#[0-9a-f]{6}$/.test(o.c2||'')),'trailers keep their stripe colours (color2)');
+ok(D.obj.filter(o=>o.veh=='trailer').every(o=>o.c2=='none')&&cmVeh(D.obj.find(o=>o.veh=='trailer')).st=='none','the trailers are plain, with no stripe (color2 "none")');
 ok(!cmDoorBlocks(D).length&&cmDoors(D).length>=10,'no prop stands in any of its '+cmDoors(D).length+' doorways');}
 mapId=1;S.mp=1;setGM('f');build();
 ok(HS.CM==='builtin-warehouse'&&WW==1824&&WH==1824&&BG.width==WW,'map 1 builds from warehouse.json through the custom-map loader');
@@ -90,6 +90,7 @@ await wsBuiltin(1,0);{const e=CML.find(q=>q.doc&&q.doc.name=='Warehouse (my copy
  const D=cmDoors(d);ok(D.length==2&&D.some(q=>q.hz&&near(q.a,200)&&near(q.b,252))&&D.some(q=>near(q.a,460)&&near(q.b,504)),'doorways are found: a gap between walls and a doorway piece');
  const B=cmDoorBlocks(d);ok(B.length==1&&B[0].o.k=='kfridge','a fridge in front of a gap is reported; an exit light by a door is not');ok(cmLint(d).some(p=>/stands in a doorway/.test(p.m)),'the Problems list says so');
  const out=cmWrite(d);ok(out.vehicles.find(v=>v.kind=='trailer').color2=='#6a4a9a'&&cmVeh(d.obj.find(o=>o.veh=='trailer')).st=='#6a4a9a','a trailer keeps its stripe colour (color2) when saved, and draws with it');
+ {const r2=cmRead(JSON.stringify(Object.assign({},J,{vehicles:[{kind:'trailer',x:300,y:400,rot:0,color2:'none'}]})));ok(r2.doc.obj.find(o=>o.veh).c2=='none'&&cmWrite(r2.doc).vehicles[0].color2=='none','"none" (no stripe) loads and saves too')}
  ok(HWV('hatch')&&EDVN.hatch&&CMTI.lot&&EDPN.wcont&&EDPN.dirsign2,'the hatchback, the lot terrain and the new props are in the editor')}
 mapId=1;build();ok(HS.CM==='builtin-warehouse','map 1 is still the built-in Warehouse');
 console.log('TOTAL fails '+fails+' of '+n);

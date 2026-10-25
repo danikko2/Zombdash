@@ -8,7 +8,7 @@ function ground(a,b,c,t){BG.width=WW;BG.height=WH;const g=BG.getContext('2d');fo
 function chk(g,x,y,w,h,a,b){for(let j=0;j<h;j+=16)for(let i=0;i<w;i+=16){g.fillStyle=((i+j)/16)%2?a:b;g.fillRect(x+i,y+j,Math.min(16,w-i),Math.min(16,h-j))}}
 function wl(g,d,l){for(const w of WL){if(w[4])continue;g.fillStyle=d;g.fillRect(w[0],w[1],w[2],w[3]);g.fillStyle=l;g.fillRect(w[0]+1,w[1]+1,Math.max(0,w[2]-2),Math.max(0,w[3]-2))}}
 function trl(g,L,W,col,st){vRec(g,-L/2-1,-W/2-4,L+2,W+8,q=>trl(q,L,W,col,st));g.fillStyle='#16111c';g.fillRect(-L/2-1,-W/2-1,L+2,W+2);g.fillStyle=col;g.fillRect(-L/2,-W/2,L,W);g.fillStyle='rgba(0,0,0,.14)';for(let i=14;i<L-6;i+=14)g.fillRect(-L/2+i,-W/2,2,W);
-g.fillStyle='rgba(255,255,255,.35)';g.fillRect(-L/2,-W/2,L,4);g.fillStyle=st;g.fillRect(-L/2+10,-6,L-50,12);g.fillStyle='rgba(255,255,255,.55)';g.fillRect(-L/2+16,-2,L-62,3);
+g.fillStyle='rgba(255,255,255,.35)';g.fillRect(-L/2,-W/2,L,4);if(st!=='none'){g.fillStyle=st;g.fillRect(-L/2+10,-6,L-50,12);g.fillStyle='rgba(255,255,255,.55)';g.fillRect(-L/2+16,-2,L-62,3)}
 g.fillStyle='#3a3d46';g.fillRect(-L/2,-W/2,7,W);g.fillStyle='#16111c';g.fillRect(-L/2+3,-W/2+4,1,W-8);g.fillRect(-L/2+5,-W/2+4,1,W-8);
 g.fillStyle='#26262c';for(const sy of[-1,1])for(const wx of[-L/2+26,-L/2+44])g.fillRect(wx,sy*(W/2+1)-3,14,6);
 g.fillStyle='#8a909c';for(const sy of[-1,1])g.fillRect(L/2-46,sy*(W/2-5)-2,6,5);g.fillStyle='#3a3d46';g.fillRect(L/2-6,-W/2,6,W)}
