@@ -150,6 +150,28 @@ const r=run(w('a.json',j)),o=r.stdout;ok(r.status===0&&/options\\.z" is "99"/.te
  // (the test canvas is a stand-in that keeps no pixels, so the even fill is checked by its numbers; the night picture checks the look)
  ok(!rl[0].cw&&rl[0].r>=Math.hypot(300,160)/2,'room lights reach every corner of the room, with no beam direction');
  ok(cmLtP('day').lit===0&&cmLtP('night').lit>0,'no room light in the day; full at night')}
+// ---------- walls block light ----------
+{const inP=(V,x,y)=>{let c=0;for(let i=0,j=V.length-2;i<V.length;j=i,i+=2){const xi=V[i],yi=V[i+1],xj=V[j],yj=V[j+1];if((yi>y)!=(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)c^=1}return!!c};
+ const W=(x,y,w,h,s)=>({x,y,w,h,s:s||'concrete'});
+ const B=cmLtBlk({walls:[W(0,0,100,6),W(0,20,100,6,'window'),W(0,40,100,6,'glass'),W(0,60,100,6,'fence'),W(0,80,100,6,'door'),W(0,100,100,6,'hidden'),W(0,120,100,6,'brick')],areas:[{a:'roof',x:300,y:300,w:100,h:80,c:'#888888',c2:'#666666',o:{}}]});
+ ok(same(B.R.map(r=>r[1]),[0,120,300]),'what stops light: solid walls and roofs; windows, glass, fences, doorways and invisible blockers let it through ('+B.R.map(r=>r[1]).join(',')+')');
+ const d={obj:[{id:'a',k:'lamp',x:200,y:200},{id:'b',k:'lamp',x:900,y:900},{id:'c',k:'floodlight',x:200,y:100}],walls:[W(150,240,100,8)],areas:[]};
+ const L=cmLightSrc(d),la=L[0],lb=L[1],fl=L.filter(s=>s.cw);
+ ok(la.vis&&la.vis.length>=48&&inP(la.vis,200,230)&&inP(la.vis,200,160)&&!inP(la.vis,200,262)&&!inP(la.vis,180,275),'a wall below a lamp stops its light: lit above the wall, dark behind it');
+ ok(inP(la.vis,135,248)&&inP(la.vis,265,248),'past the ends of the wall the light goes on');
+ ok(inP(la.vis,200,242),'the face of the wall towards the lamp is lit');
+ ok(lb.vis===0,'a light with no wall in reach is not cut at all');
+ ok(fl.length==2&&fl.every(s=>s.vis&&s.vis[0]===s.x&&s.vis[1]===s.y)&&!inP(fl[0].vis,200,300),'flood light beams are cut by walls too (the outline starts at the lamp)');
+ ok(L.O&&L.O.R.length==1,'the walls are kept with the lights, for lights that move');
+ const sh=cmLightSrc({obj:[{id:'w',k:'lamp',x:200,y:249}],walls:[W(150,240,100,8)],areas:[]})[0];ok(!sh.vis,'a lamp fixed on a wall is not stopped by that wall');
+ // a room light: its whole room stays lit, the spill only leaves through the doorway
+ const rm={obj:[],areas:[{a:'roomlight',x:100,y:100,w:200,h:100}],walls:[W(97,97,206,6),W(97,197,80,6),W(223,197,80,6),W(97,103,6,94),W(297,103,6,94)]};
+ const rl=cmLightSrc(rm)[0];ok(rl.rect&&rl.vis&&inP(rl.vis,200,215)&&!inP(rl.vis,120,215)&&!inP(rl.vis,200,85),'room lights spill out of the doorway but not through the walls');
+ // players' lights are cut as they move; still lights are not worked out again every frame
+ const keep=cmLtVis;let calls=0;cmLtVis=function(){calls++;return keep.apply(null,arguments)};
+ const S=L.slice();S.O=L.O;S.push({x:200,y:200,r:150,c:'#fff2dc',i:.95,pl:1});const g=document.createElement('canvas').getContext('2d');cmLightPaint(g,{t:'night',a:.8},S,0,0,1000,1000,.5,0,0);cmLtVis=keep;
+ ok(calls==1,'when painting, only the moving light (the player) gets its outline worked out ('+calls+')');
+ const src=FS.readFileSync(process.argv[2],'utf8');ok(src.includes('S=T.L.slice();S.O=T.L.O')&&src.includes('L2.O=L.O'),'the game and the editor preview pass the walls on with the light list')}
 {const h=FS.readFileSync(process.argv[2],'utf8'),c={};for(const m of h.matchAll(/function ([A-Za-z_$][\\w$]*)\\s*\\(/g))c[m[1]]=(c[m[1]]||0)+1;const dup=Object.keys(c).filter(k=>c[k]>1).sort();
 ok(same(dup,['dtBox','tv']),'No function in the game is defined twice by accident (only the two old ones: '+dup.join(', ')+')')}
 console.log('TOTAL fails '+fails+' of '+n);

@@ -47,7 +47,7 @@ if(it.t=='a'||it.t=='l'){const b=edKitBox(o,it.t);if(inV(b.x0,b.y0,b.x1,b.y1))ed
 const sp=edSprite(o),r=sp?Math.max(sp.c.width,sp.c.height):30;if(!inV(o.x-r,o.y-r,o.x+r,o.y+r))continue;if(!sp){edObjLook(g,o,1);continue}const pr=cmPR(o);if(!pr){g.drawImage(sp.c,o.x-sp.ax,o.y-sp.ay);continue}
 const a=pr*Math.PI/180,c=Math.cos(a)*k,s_=Math.sin(a)*k;g.setTransform(c,s_,-s_,c,ox+o.x*k,oy+o.y*k);g.drawImage(sp.c,-sp.ax,-sp.ay);g.setTransform(k,0,0,k,ox,oy)}}
 // time-of-day lighting over the map (Map panel: time, amount, show in the editor); the player's own light is shown at the start
-if(d.lt&&E.ltv!==0){g.setTransform(dpr*z,0,0,dpr*z,-vx0*z*dpr,-vy0*z*dpr);const L=edLtSrc();cmLightPaint(g,d.lt,d.start?L.concat([{x:d.start.x,y:d.start.y-10,r:150,c:'#fff2dc',i:.95,pl:1}]):L,vx0,vy0,w/z,h/z,Math.min(1,dpr*z*.5),0,1)}
+if(d.lt&&E.ltv!==0){g.setTransform(dpr*z,0,0,dpr*z,-vx0*z*dpr,-vy0*z*dpr);const L=edLtSrc(),L2=d.start?L.concat([{x:d.start.x,y:d.start.y-10,r:150,c:'#fff2dc',i:.95,pl:1}]):L;L2.O=L.O;cmLightPaint(g,d.lt,L2,vx0,vy0,w/z,h/z,Math.min(1,dpr*z*.5),0,1)}
 // collision
 if(E.coll){const C=edColl();g.lineWidth=px;for(const c of C){if(!inV(c[0],c[1],c[0]+c[2],c[1]+c[3]))continue;const col=c[4]==2?'70,160,255':c[4]==1?'255,170,40':'255,60,60';g.fillStyle='rgba('+col+',.32)';g.fillRect(c[0],c[1],c[2],c[3]);g.strokeStyle='rgba('+col+',.9)';g.strokeRect(c[0],c[1],c[2],c[3])}}
 // special features (editor only) and spawn zones
