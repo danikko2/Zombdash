@@ -199,5 +199,8 @@ sclock:{w:14,h:14,c:0,f(g,x,y){const cy=y-7;g.fillStyle='#16111c';g.beginPath();
 // a restroom sign over a door
 wcsign:{w:18,h:12,c:0,pc:PKWCS,f(g,x,y,v,col){const R=kpR(g);R('#16111c',x-9,y-12,18,12);R(pcCol(col,PKWCS),x-8,y-11,16,10);R('#f4f1e6',x-1,y-9,2,6)}}});
 
+// lights that flicker now and then (a failing bulb): the same lights with a 'fault' lamp head; half the lens is dim, so the editor tells them apart
+{const fl=(k,mk)=>{const B=OB[k],f=B.f;return Object.assign({},B,{lt:B.lt.map(h=>Object.assign({},h,{f:'fault'})),f(g,x,y,...a){f.call(this,g,x,y,...a);g.fillStyle='rgba(40,40,52,.6)';mk(g,x,y)}})};
+ Object.assign(OB,{ceilflk:fl('ceillight',(g,x,y)=>{g.beginPath();g.arc(x,y-9,5,Math.PI/2,Math.PI*1.5);g.closePath();g.fill()}),wallflk:fl('walllight',(g,x,y)=>g.fillRect(x-5,y-5,5,3))})}
 // props that belong at doorways (cmDoorBlocks leaves them out)
-for(const k of['awning','walllight','exitsign','curtain','wcsign','banner'])if(OB[k])OB[k].dk=1;
+for(const k of['awning','walllight','wallflk','exitsign','curtain','wcsign','banner'])if(OB[k])OB[k].dk=1;

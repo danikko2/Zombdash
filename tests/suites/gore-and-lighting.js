@@ -142,6 +142,12 @@ const r=run(w('a.json',j)),o=r.stdout;ok(r.status===0&&/options\\.z" is "99"/.te
  ok(sl.y<0&&sl.y>-40,'the searchlight beam starts at its lamp head');
  // ceiling light and room lights
  ok(OB.ceillight&&EDPN.ceillight&&EDPN.ceillight[1]=='lights','a ceiling light prop, in the Lights group');
+ {const L=cmLightSrc({obj:[{id:'f1',k:'ceilflk',x:100,y:100},{id:'f2',k:'wallflk',x:300,y:100,r:90}],walls:[],areas:[]}),[c,w]=L;
+  ok(EDPN.ceilflk&&EDPN.ceilflk[1]=='lights'&&EDPN.wallflk&&EDPN.wallflk[1]=='lights'&&OB.ceilflk.eo&&OB.wallflk.dk,'a ceiling light and a wall light that flicker, in the Lights group (the ceiling one shows only in the editor; the wall one may stand at a door)');
+  ok(L.length==2&&c.f=='fault'&&w.f=='fault'&&w.cw>0&&!c.cw&&Math.abs(w.ca-Math.PI)<.01,'their lights flicker (a wall light keeps its beam and its aim)');
+  let off=0,flips=0,pv=1;for(let i=0;i<3000;i++){const n=cmLtNow(c,i*.01,0);if(n<.5)off++;if((n<.5)!=(pv<.5))flips++;pv=n}
+  ok(off>0&&off<3000*.2&&flips>=6,'they stay on most of the time and now and then stutter off and on ('+Math.round(off/30)+'% off, '+flips+' changes in 30 s)');
+  ok(cmLtNow(c,1.234,1)===1&&!cmLtStill(c)&&!cmLtStill(w),'still pictures show them on; the game never caches them, so they flicker')}
  {const B=OB.ceillight,f=B.f;let c=0;B.f=function(){c++;return f.apply(this,arguments)};cmProp(document.createElement('canvas').getContext('2d'),{k:'ceillight',x:50,y:50});B.f=f;ok(B.eo&&c==0&&cmLightSrc({obj:[{k:'ceillight',x:50,y:50}]}).length==1,'in the game the ceiling light fixture is not drawn, only its light (the editor still shows it)')}
  const cl=cmLightSrc({obj:[{k:'ceillight',x:100,y:100}]});ok(cl.length==1&&!cl[0].cw&&cl[0].r>=100&&Math.abs(cl[0].y-91)<2,'the ceiling light glows all round from the middle of the fixture');
  const ra=CMAK.find(a=>a.id=='roomlight');ok(ra&&ra.ed&&ra.cat=='effect','a Room lights area in the Effects group');

@@ -28,7 +28,7 @@ case'siren':{const m=po(o,'m','police'),P=m=='police'?[['#ff2a2a',0],['#3a7aff',
 if(o.dc){if(o.dc=='lightpatch'){const s=cl(+o.sc||1,.25,4);L.push({x:o.x,y:o.y,r:34*s,c:cmCol(o.c,'#ffd27a'),i:.75})}continue}
 if(o.veh)continue;const P=CMLP[o.k];if(P){const p=cmLtTurn(o,P[0],P[1]);L.push({x:p[0],y:p[1],r:P[2],c:P[3],i:P[4],f:P[5],ph});continue}
 // light props (spot lights, flood lights…): each lamp head is a beam (w = half its width in degrees; 0 = all round) aimed the way the prop is turned
-const B=cmOB(o.k);if(B&&B.lt){const c=cmCol(o.c,B.pc?B.pc[0][0]:'#fff2c8');for(const h of B.lt){const p=B.nr?[o.x+h.dx,o.y+h.dy]:cmLtTurn(o,h.dx,h.dy),s={x:p[0],y:p[1],r:h.r,c,i:h.i||1,ph};if(h.w){s.cw=h.w*Math.PI/180;s.ca=((o.r||0)+90+(h.a||0))*Math.PI/180}L.push(s)}}}
+const B=cmOB(o.k);if(B&&B.lt){const c=cmCol(o.c,B.pc?B.pc[0][0]:'#fff2c8');for(const h of B.lt){const p=B.nr?[o.x+h.dx,o.y+h.dy]:cmLtTurn(o,h.dx,h.dy),s={x:p[0],y:p[1],r:h.r,c,i:h.i||1,ph};if(h.f)s.f=h.f;if(h.w){s.cw=h.w*Math.PI/180;s.ca=((o.r||0)+90+(h.a||0))*Math.PI/180}L.push(s)}}}
 // room lights: an area that lights its whole box (a room with the lights on), with a soft spill past its edges
 for(const a of d.areas||[]){if(a.a!='roomlight')continue;const s_=cl(+((a.o||{}).s??1)||1,.3,1.5);L.push({rect:[a.x,a.y,a.w,a.h],x:a.x+a.w/2,y:a.y+a.h/2,r:Math.hypot(a.w,a.h)/2+24,c:cmCol(a.c,'#fff2c8'),i:s_,ph:0})}
 // walls block light: each source keeps the outline of what it can see (vis), worked out once here; L.O keeps the walls for lights that move
@@ -63,7 +63,9 @@ return P}
 function cmLtClip(q,V,R){q.beginPath();q.moveTo(V[0],V[1]);for(let i=2;i<V.length;i+=2)q.lineTo(V[i],V[i+1]);q.closePath();
 if(R){q.moveTo(R[0],R[1]);q.lineTo(R[0]+R[2],R[1]);q.lineTo(R[0]+R[2],R[1]+R[3]);q.lineTo(R[0],R[1]+R[3]);q.closePath()}q.clip()}
 // how bright a source is now (0..1); st=1: a still picture (editor, thumbnails) where everything is on
-function cmLtNow(s,t,st){if(st)return s.f=='glow'?.85:1;switch(s.f){case'flk':return .8+.2*Math.sin(t*11+s.ph)*Math.sin(t*7.3+s.ph*1.7);case'fire':return .86+.1*Math.sin(t*13+s.ph)+.04*Math.sin(t*31+s.ph);
+function cmLtNow(s,t,st){if(st)return s.f=='glow'?.85:1;switch(s.f){// fault: a failing bulb or tube: steady, then every 3.5–9 s (its own rhythm) it stutters off and on for under a second
+case'fault':{const P=3.5+(s.ph/6.283)*5.5,u=(t+s.ph*7)%P;if(u>.85)return 1;return cmH(Math.floor(u*16),s.ph*100,77)<.5?.08:1}
+case'flk':return .8+.2*Math.sin(t*11+s.ph)*Math.sin(t*7.3+s.ph*1.7);case'fire':return .86+.1*Math.sin(t*13+s.ph)+.04*Math.sin(t*31+s.ph);
 case'flare':return .78+.22*Math.random();case'glow':return .6+.4*Math.sin(t*1.7+s.ph);case'blink':return((t*1.3+s.ph)%1)<.5?1:0;
 case'siren':{const k=Math.floor(t*6+s.ph*6)%4;return(s.sd==0?k<2:s.sd==1?k>=2:s.sd==2?k%2==0:s.sd==3?k%2==1:Math.floor(t*9+s.ph*9)%3==0)?1:0}default:return 1}}
 function cmLtMix(c,a){const n=parseInt(c.slice(1),16),m=x=>Math.round(255-(255-x)*a);return'rgb('+m(n>>16)+','+m(n>>8&255)+','+m(n&255)+')'}
