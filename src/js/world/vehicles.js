@@ -24,7 +24,7 @@ function fgEnts(vx0,vy0,vx1,vy1){const E=[],V=P;
 for(const p of PL){if(p.dead)continue;P=p;if(p.dn)E.push({p,y:p.y,fy:p.y+10,x0:p.x-26,x1:p.x+26,y0:p.y-22,y1:p.y+18});else{const o=pfr();E.push({p,y:p.y,fy:o.by-2,x0:p.x-o.w/2-12,x1:p.x+o.w/2+12,y0:o.by-o.h-10,y1:o.by+5})}}P=V;
 for(const z of zs){if(z.hp<=0)continue;const T=ZT[z.t];if(z.x<vx0-60||z.x>vx1+60||z.y<vy0-60||z.y>vy1+60)continue;if(T.sv){const k=typeof SVK=='number'?SVK:1;E.push({z,y:z.y,fy:z.y+17*k,x0:z.x-26*k,x1:z.x+26*k,y0:z.y-32*k,y1:z.y+24*k})}else{const r=T.r||12;E.push({z,y:z.y,fy:z.y+r*.9,x0:z.x-r*1.9,x1:z.x+r*1.9,y0:z.y-r*2.7,y1:z.y+r*1.5})}}
 return E}
-function vehFg(){const L=HS.VH;if(mapId===3||!L||!L.length||typeof document=='undefined'||!document.createElement)return;
+function vehFg(){const L=HS.VH;if(!L||!L.length||typeof document=='undefined'||!document.createElement)return;
 const vx0=cam.x-30,vy0=cam.y-30,vx1=cam.x+W+30,vy1=cam.y+H+30;let E=null;
 const ov=(a,x0,y0,x1,y1)=>a.x1>x0&&a.x0<x1&&a.y1>y0&&a.y0<y1;
 for(const V of L){if(V.x+V.w<vx0||V.x>vx1||V.y+V.h<vy0||V.y>vy1)continue;E=E||fgEnts(vx0,vy0,vx1,vy1);
@@ -32,6 +32,8 @@ let B=null;for(const e of E){const cx=e.p?e.p.x:e.z.x;
 // sprites with a base line (shelves, conveyors, buses...): behind = standing north of the middle of its footprint, so it never flickers through gaps
 if(V.base!=null?(e.y<V.base-V.ch/2&&ov(e,V.x,V.y,V.x+V.w,V.base)):(vOn(V,cx,e.fy)||vOn(V,cx-4,e.fy)||vOn(V,cx+4,e.fy)))(B||(B=[])).push(e)}if(!B)continue;
 X.save();X.beginPath();for(const e of B)X.rect(e.x0,e.y0,e.x1-e.x0,e.y1-e.y0);X.clip();X.drawImage(V.cv,V.x,V.y);X.restore();
-for(const e of E)if(!B.includes(e)&&B.some(b=>ov(b,e.x0,e.y0,e.x1,e.y1)&&e.y>b.y))schRe(e)}}
+for(const e of E)if(!B.includes(e)&&B.some(b=>ov(b,e.x0,e.y0,e.x1,e.y1)&&e.y>b.y))fgRe(e)}}
+// paint a player or zombie back over a walk-behind picture they stand in front of
+function fgRe(e){if(e.z){zDr(e.z);return}const V=P;P=e.p;if(P.dn)drawDown();else if(P.inv<=0||Math.floor(P.inv*20)%2)drawP();P=V}
 function vS2(g,x,y,w,h,fn){vRec(g,x-w/2,y-h,w,h,q=>S2(q,x,y,w,h,fn));S2(g,x,y,w,h,fn)}
 

@@ -9,7 +9,7 @@ The full wish list is the "Map Workshop" prompt the owner attaches. This file re
 - **Don't edit `index.html` by hand.** Before starting, run `node tools/build.js --check`. If it fails, someone edited `index.html` directly, and that change has to be moved into `src/` first.
 - **Publishing each change:**
   1. Run `node tools/build.js`.
-  2. Run `node tests/run.js` (27 suites, about 3 minutes). Every suite must pass; two checks are random and retried automatically:
+  2. Run `node tests/run.js` (28 suites, about 3 minutes). Every suite must pass; two checks are random and retried automatically:
      - The `campaign.js` Rusty check is flaky and retried automatically.
      - The `balance-editor-and-test-switches.js` ground-limit check fails about 1 run in 20 on the original game too (a kill can add two drops when one slot is left), so it is retried automatically as well.
      - The old `tutorial.js` camera zoom failure is fixed (Oct 25, 2026): the suite plays at phone size, where the tutorial doesn't zoom because the house already fills the screen (by design); the test now expects that on a phone and checks the zoom in and out on a desktop screen.
@@ -117,7 +117,7 @@ The full wish list is the "Map Workshop" prompt the owner attaches. This file re
    - **Shipping:** converted maps are stored as `src/maps/*.json` and embedded by `tools/build.js`. The step 1 note says the loader is ready and the build needs to embed the files.
    - **Progress safety:** a converted map keeps its map number, campaign slot, boss, progress and leaderboard board, so players' progress is untouched.
    - **Small differences are allowed:** a converted map may look slightly different in painted details. The layout, walls, spawns and gameplay must match.
-   - **Converted:** the **Suburb** (map 0), Oct 24, 2026, and the **Warehouse** (map 1), Oct 25, 2026: see "Step 4 conversions" below.
+   - **Converted:** the **Suburb** (map 0), Oct 24, 2026, the **Warehouse** (map 1), Oct 25, 2026, and the **School** (map 3), Oct 26, 2026: see "Step 4 conversions" below.
 5. **Step 5:** gameplay pieces the owner picks (loot crates, doors, traps…).
 
 ## Building kit (done Oct 23, 2026)
@@ -280,6 +280,15 @@ This is the checklist for the step 4 conversions. Maps: **Su** Suburb, **Wa** Wa
 - **Checks:** before/after pictures of the whole lot, the building, the offices, the gate, the three trailer lots, the parked cars, the containers, the barrel and the sign; the collision comparison; every open spot on the map's edges reaches the player; campaign waves 1–19 played on both the old and the new map (every zombie reached the player on both) and the survivor boss (it fights from about 250 px once it sees the player, on both); Free Play; split screen; low-memory mode; performance: frames the same (about 1.3 ms), canvas memory 0.4 MB higher (the map is 24 px bigger each way: whole tiles), 0.2 MB higher in low-memory mode.
 - **Visible differences:** trailers are the kit trailer, 12 px longer (same collision, set by a shape), and plain: no coloured stripe (owner's request, Oct 25, 2026); walls are kit concrete walls (lighter top edge, joints every 48 px); the road's dashes and lane lines have the kit line's spacing; the lot numbers and STOP are kit text decals (a slightly different font); oil stains are kit oil decals; the office plants are round house plants seen from above; the vertical locker row is 2 px wider.
 
+### School (map 3): converted Oct 26, 2026
+- **The file:** `src/maps/school.json` (69×57 tiles on the new `grass_school` terrain; 772 props, 136 walls, 166 decals, 3 effects (the fountain spray, smoke from the bus and the kitchen), 92 areas, 49 paths, 11 features: the building's no-spawn box, nine boxes over the woods, a menu view; no spawn points). `BIMF[3]`; map 3 keeps its campaign slot (second in Hometown), its survivor boss, progress, best waves, leaderboard board and checkpoints. `maps/school.js`, `maps/school-details.js` (its own walk-behind pass `schFg`, the fountain animation `schAnim`, the woods check `schWd`), the map-3 branch of `paintDec` and the map-3 exceptions in `build()` and `vehFg` are gone; `fgRe` (vehicles.js) is the old `schRe`.
+- **Changed on purpose (owner's request):** the three top classrooms have 16 desks each (was 6–7) and the big classroom 20 (was 10), in rows with aisles of at least 28 px; the three long offices (410 px deep) are now eight rooms: a reception with a counter and waiting chairs, a short corridor to the back door with the principal's and the counselor's offices off it, a nurse's office and a records room, the teachers' lounge and a janitor's closet (new walls and five new doors); more detail (a sixth cafeteria table instead of the odd desk, vending machines and a milk cooler, bins, office furniture, wall clocks); windows let into the outside walls (the old map only painted them on) and lights: ceiling lights and room lights in every room and hall, exit lights inside the eight outside doors and wall lights outside them, flood lights on the court, lot lights, lamps; the School is set at **dusk** (`lighting: dusk, 0.55`).
+- **Collision:** every old wall is still there (windows are wall pieces too); the new office walls, the moved trophy case and the extra desks and tables are the only new blocks; tree trunks stay see-through. Kept as `tests/fixtures/school-walls.json`. No prop stands in any of its doorways.
+- **New kit pieces for it** (`world/kit-school.js`, `maps/props/kit-props.js`): areas `lockers`, `board` (chalkboard, whiteboard, cork, posters), `cubbies`, `counter` (solid; plain, sinks, towel dispensers), `kline` (kitchen line), `plaza` (round plaza with flower beds), `walkway`, `sandlot` (playground sand with a ragged edge); props `stall` (toilet stall divider), `banner`, `wcsign` (restroom sign), `sclock` (small wall clock); decals `crest`, `lawnbit`; terrain `grass_school`; forest trees go up to the School's shade-tree sizes (oak `var` steps 0–12, pine 0–11).
+- **Game changes that came with it:** random off-screen spawns now keep out of every no-spawn zone of a map file (not only the first), a zone at the map's edge also covers the strip just outside it, and after 24 tries a zombie starts at a random allowed spot on the edge (`spBad`); the woods behind the School use this. Lights that never change are drawn once into a picture of the whole map (`cmLtCache`), and the glow is only drawn when the light strength is over 0.5: the School's frames went from about 18 ms to 7 ms in the software-rendered test browser (2 ms with the lights off; the old map was 2 ms).
+- **Checks:** before/after pictures of every part of the map; dusk and night pictures; every room reachable; zombies never come out of the woods; campaign waves 1–19 (every zombie reached the player) and the survivor boss; Free Play; split screen; low-memory mode; the Workshop copy.
+- **Visible differences:** the court is the kit court (keys and three-point arcs); the sidewalk is kit slabs (speckled); the wall clocks, posters, lockers and chalkboards are kit pieces drawn like the old ones; the commons' terrazzo flecks are gone; the trees are the forest kit trees (the same pictures).
+
 ### Doorways (Oct 25, 2026, owner's request)
 No prop may block a doorway. `cmDoorBlocks` finds props and vehicles within 24 px of an opening (solid ones by their collision, others by their base) and the Problems list and `tools/check-map.js` warn about them. Fixed on the Suburb: the dressers now stand against the bedroom side walls, the hall plants moved away from the bedroom and garage doors, the garage cabinet, tool chest and tires moved out of the house door and the garage opening, the stove and fridge moved off the back doors, one kitchen table moved 4 px, and the trash can by the middle house's back door moved 10 px (the only collision change; the Suburb test allows it). Fixed on the Elm & 3rd sample and on the example in `docs/map-format.md` too. Both converted maps' tests check it.
 
@@ -298,6 +307,9 @@ No prop may block a doorway. `cmDoorBlocks` finds props and vehicles within 24 p
 - **A prop's default `var` is random:** set `var` on props whose look depends on it (the locker rows).
 - **Boss checks:** some survivor bosses fight from a distance; compare a boss's behaviour with the old map before calling a difference a bug (the same playtest can run on the last `index.html` from git).
 - **Free Play needs the map unlocked** in a browser check (`S.ac.cp = 8`), or `start()` quietly plays the Suburb.
+- **Survivor bosses dodge:** clear `iv` (short invulnerability) before a test's knock-out hit, or the hit is blocked now and then.
+- **Lots of lights cost a full-screen blend or two, not one per light:** still lights are cached; keep flickering ones few.
+- **A map with woods along an edge:** cover them with no-spawn zones (`skip` on); a zone touching the edge covers the strip just outside it too.
 
 ## What each map still needs before converting
 Everything else on each map can be built with the kit; the conversion still has to be laid out, compared side by side and playtested (walls, zombie paths, spawns, its survivor boss).
@@ -307,7 +319,7 @@ Everything else on each map can be built with the kit; the conversion still has 
 | Suburb | **Converted (Oct 24, 2026).** |
 | Warehouse | **Converted (Oct 25, 2026).** |
 | Graveyard | Nothing new (chapel and mausoleum prefabs are a start; the mausoleum glow is a `glow` effect). |
-| School | Nothing new; its own walk-behind pass becomes ordinary walk-behind props. |
+| School | **Converted (Oct 26, 2026).** |
 | Old West | Nothing new (barn prefab for the stables, `bars` for the sheriff). |
 | Neighborhood | Nothing new (cul-de-sac = road with round end; decorative house roofs only on solid blocks). |
 | Military Base | Nothing new (hangar, barracks, tent camp, checkpoint prefabs). |

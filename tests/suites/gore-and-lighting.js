@@ -171,7 +171,14 @@ const r=run(w('a.json',j)),o=r.stdout;ok(r.status===0&&/options\\.z" is "99"/.te
  const keep=cmLtVis;let calls=0;cmLtVis=function(){calls++;return keep.apply(null,arguments)};
  const S=L.slice();S.O=L.O;S.push({x:200,y:200,r:150,c:'#fff2dc',i:.95,pl:1});const g=document.createElement('canvas').getContext('2d');cmLightPaint(g,{t:'night',a:.8},S,0,0,1000,1000,.5,0,0);cmLtVis=keep;
  ok(calls==1,'when painting, only the moving light (the player) gets its outline worked out ('+calls+')');
- const src=FS.readFileSync(process.argv[2],'utf8');ok(src.includes('S=T.L.slice();S.O=T.L.O')&&src.includes('L2.O=L.O'),'the game and the editor preview pass the walls on with the light list')}
+ // lights that never change are drawn once into a picture of the whole map; flickering and moving ones every frame
+ {const T={t:'night',a:.8,L:cmLightSrc({obj:[{id:'l1',k:'lamp',x:100,y:100},{id:'l2',k:'candle',x:200,y:100},{id:'l3',k:'floodlight',x:300,y:300}],walls:[],areas:[{a:'roomlight',x:400,y:400,w:100,h:100}]})};
+  const K=cmLtCache(T,.5);ok(K&&K.cv&&K.gv&&K.dyn.length==1&&K.dyn[0].f=='flk'&&cmLtCache(T,.5)===K,'still lights (lamp, flood light, room light) go into the map picture once; the flickering candle stays live');
+  ok(cmLtCache(T,.25)!==K&&T.K.res==.25,'a different light-map size (low-memory mode) makes a new picture');
+  ok(!cmLtCache({t:'day',a:.8,L:T.L},.5),'no picture by day (nothing is lit)');
+  const K2=cmLtCache({t:'dusk',a:.5,L:T.L},.5);ok(K2&&!K2.gv,'at dusk the glow is too faint to draw, so there is no glow picture');
+  ok(cmLtStill({x:0,y:0,r:10})&&!cmLtStill({x:0,y:0,r:10,pl:1})&&!cmLtStill({x:0,y:0,r:10,f:'siren'}),'player lights, sirens, flickers and fires are never cached')}
+ const src=FS.readFileSync(process.argv[2],'utf8');ok(src.includes('S=(K?K.dyn:T.L).slice();S.O=T.L.O')&&src.includes('L2.O=L.O'),'the game and the editor preview pass the walls on with the light list')}
 {const h=FS.readFileSync(process.argv[2],'utf8'),c={};for(const m of h.matchAll(/function ([A-Za-z_$][\\w$]*)\\s*\\(/g))c[m[1]]=(c[m[1]]||0)+1;const dup=Object.keys(c).filter(k=>c[k]>1).sort();
 ok(same(dup,['dtBox','tv']),'No function in the game is defined twice by accident (only the two old ones: '+dup.join(', ')+')')}
 console.log('TOTAL fails '+fails+' of '+n);

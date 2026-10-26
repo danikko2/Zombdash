@@ -10,7 +10,6 @@ maps/graveyard.js
 maps/props/objects.js
 maps/props/houses.js
 maps/props/school-objects.js
-maps/school.js
 maps/old-west.js
 maps/props/furniture.js
 maps/neighborhood.js
@@ -29,6 +28,7 @@ world/kit-walls.js
 world/kit-effects.js
 world/kit-gore.js
 world/kit-lighting.js
+world/kit-school.js
 world/map-store.js
 world/custom-maps.js
 ui/core-ui.js
@@ -61,7 +61,6 @@ campaign/modes.js
 bosses/survivors.js
 campaign/lives.js
 world/wall-index.js
-maps/school-details.js
 world/vehicles.js
 maps/highway.js
 bosses/officer-ray.js

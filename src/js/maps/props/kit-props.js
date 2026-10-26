@@ -99,7 +99,7 @@ bollard:ob(14,22,[8,6],q=>{R_(q,'#16111c',3,4,8,17);R_(q,'#e0b030',4,5,6,15);R_(
 // picture per size and shade, so a forest of a thousand trees costs no extra memory (kpWB; sh:1 tells bgFree not to free it).
 function kpWB(g,cv,x,y,base,ch){if(!vRec.on||vRec.busy||vRec.nest||!vRec.L||!g||!g.getTransform||typeof BG=='undefined'||g.canvas!==BG)return;const T=g.getTransform();if(!T||T.a!==1||T.b!==0||T.c!==0||T.d!==1)return;
 vRec.L.push({x:x+T.e,y:y+T.f,w:cv.width,h:cv.height,cv,al:null,base:base+T.f,ch,sh:1})}
-function kpFTree(pine){const b=pine?13:16,n=pine?6:9;return{w:pine?44:56,h:pine?60:62,c:[12,12],cf:2,f(g,x,y,v){const i=Math.round(cl(+v||0,0,1)*100),s=i%3,r=b+Math.floor(i/3)%n,ty=y-6,sp=subSpr(pine,r,(s+.5)/3);
+function kpFTree(pine){const b=pine?13:16,n=pine?12:13;return{w:pine?44:56,h:pine?60:62,c:[12,12],cf:2,f(g,x,y,v){const i=Math.round(cl(+v||0,0,1)*100),s=i%3,r=b+Math.floor(i/3)%n,ty=y-6,sp=subSpr(pine,r,(s+.5)/3);
 g.fillStyle='rgba(0,0,0,.28)';g.beginPath();g.ellipse(x+4,ty+2,r*.9,r*.45,0,0,7);g.fill();g.fillStyle='#16111c';g.fillRect(x-4,ty-6,8,9);g.fillStyle='#5a3a22';g.fillRect(x-3,ty-6,6,8);
 const sx=Math.round(x-sp.width/2),sy=pine?Math.round(ty-10-sp.height+2):Math.round(ty-r*.7-sp.height/2);g.drawImage(sp,sx,sy);kpWB(g,sp,sx,sy,y,12)}}}
 Object.assign(OB,{foak:kpFTree(0),fpine:kpFTree(1)});
@@ -187,5 +187,17 @@ g.save();g.translate(bx+30,by+ph/2);g.rotate(Math.PI*.75);g.fillStyle='#f4f1e6';
 firebarrel:{w:42,h:48,c:[12,12],f(g,x,y){const cy=y-6;g.fillStyle='rgba(255,140,40,.25)';g.beginPath();g.arc(x,cy,20,0,7);g.fill();const R=kpR(g);R('#8a3a22',x-6,cy-6,12,12);R('#ff9a2e',x-4,cy-4,8,8)}},
 btable:{w:52,h:22,c:[50,12],f(g,x,y){const R=kpR(g);R('#a8703a',x-25,y-12,50,12);R('#7a5a3a',x-23,y,4,8);R('#7a5a3a',x+19,y,4,8)}}});
 
+// ---------- the School's pieces (seen from above, on a wall or the floor) ----------
+const PKSTALL=[['#8a909c','Grey'],['#c8c0a8','Beige'],['#5a7a98','Blue'],['#7a9a6a','Green']],PKBAN=[['#7a2828','Red'],['#2a3a6a','Navy'],['#2f5a3a','Green'],['#d8aa32','Gold']],PKWCS=[['#4a90e2','Boys (blue)'],['#d85a9a','Girls (pink)'],['#3f8a42','All (green)']];
+Object.assign(OB,{
+// toilet stall divider: 4×56, solid; turn it 90° to run left–right
+stall:{w:4,h:56,c:[4,56],pc:PKSTALL,f(g,x,y,v,col){kpR(g)(pcCol(col,PKSTALL),x-2,y-56,4,56)}},
+// a banner hung on a wall, with words
+banner:{w:300,h:16,c:0,pc:PKBAN,txt:24,dt:'HOME OF THE ZOMBIES',f(g,x,y,v,col,t){const c=pcCol(col,PKBAN),R=kpR(g);R('#16111c',x-149,y-15,298,15);R(c,x-148,y-14,296,13);kpText(g,(cmTxt(t,24)||'HOME OF THE ZOMBIES').toUpperCase(),x,y-8,286,10,c=='#d8aa32'?'#7a2828':'#d8aa32')}},
+// a small wall clock seen from above (on a classroom's front wall)
+sclock:{w:14,h:14,c:0,f(g,x,y){const cy=y-7;g.fillStyle='#16111c';g.beginPath();g.arc(x,cy,6,0,7);g.fill();g.fillStyle='#f4f1e6';g.beginPath();g.arc(x,cy,5,0,7);g.fill();const R=kpR(g);R('#16111c',x-1,cy-4,1,5);R('#16111c',x-1,cy,4,1)}},
+// a restroom sign over a door
+wcsign:{w:18,h:12,c:0,pc:PKWCS,f(g,x,y,v,col){const R=kpR(g);R('#16111c',x-9,y-12,18,12);R(pcCol(col,PKWCS),x-8,y-11,16,10);R('#f4f1e6',x-1,y-9,2,6)}}});
+
 // props that belong at doorways (cmDoorBlocks leaves them out)
-for(const k of['awning','walllight','exitsign','curtain'])if(OB[k])OB[k].dk=1;
+for(const k of['awning','walllight','exitsign','curtain','wcsign','banner'])if(OB[k])OB[k].dk=1;

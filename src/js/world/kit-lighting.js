@@ -74,27 +74,40 @@ function cmLtOK(){if(CMLTOK===null){try{const q=document.createElement('canvas')
 let CMLC=null;
 // draw the lighting of lt with light sources L over the world box (wx,wy,ww,wh) of G, whose transform maps the world;
 // res = light-map pixels per world pixel (light is soft, so a quarter to a half is plenty); t = seconds; st = still picture
-function cmLightPaint(G,lt,L,wx,wy,ww,wh,res,t,st){const P_=lt&&cmLtP(lt.t),a=lt?cl(+lt.a||0,0,1):0;if(!P_||a<=0||!G||!cmLtOK())return 0;
-const w=Math.max(1,Math.ceil(ww*res)),h=Math.max(1,Math.ceil(wh*res));if(!CMLC)CMLC=document.createElement('canvas');if(CMLC.width!==w)CMLC.width=w;if(CMLC.height!==h)CMLC.height=h;const q=CMLC.getContext('2d');if(!q)return 0;
-q.setTransform(1,0,0,1,0,0);q.globalCompositeOperation='source-over';q.globalAlpha=1;q.fillStyle=cmLtMix(P_.mul,a);q.fillRect(0,0,w,h);const k=P_.lit*a,on=[];
-if(k>.02){q.globalCompositeOperation='lighter';q.setTransform(res,0,0,res,-wx*res,-wy*res);for(const s of L){const n=cmLtNow(s,t,st);if(n<=0||s.x<wx-s.r||s.x>wx+ww+s.r||s.y<wy-s.r||s.y>wy+wh+s.r)continue;
-const r=s.r*(s.f=='flk'||s.f=='fire'?(.9+.1*n):1),C=cmLtRGB(s.c),m=x=>Math.round(x+(255-x)*.45),al=Math.min(1,k*s.i*n*1.15),gr=q.createRadialGradient(s.x,s.y,0,s.x,s.y,r);
+// one light source into the light map q (world transform set, adding with 'lighter'); n = how bright it is now. Returns its glow (or null)
+function cmLtOne(q,s,k,n,L){const r=s.r*(s.f=='flk'||s.f=='fire'?(.9+.1*n):1),C=cmLtRGB(s.c),m=x=>Math.round(x+(255-x)*.45),al=Math.min(1,k*s.i*n*1.15),gr=q.createRadialGradient(s.x,s.y,0,s.x,s.y,r);
 gr.addColorStop(0,'rgba('+m(C[0])+','+m(C[1])+','+m(C[2])+','+al+')');gr.addColorStop(.45,'rgba('+m(C[0])+','+m(C[1])+','+m(C[2])+','+al*.55+')');gr.addColorStop(1,'rgba('+C[0]+','+C[1]+','+C[2]+',0)');q.fillStyle=gr;
 // walls: lights that don't move have their outline already; players' lights and fires get theirs now
 const V=s.vis!==undefined?s.vis:L.O?cmLtVis(L.O,s.x,s.y,r):0;if(V){q.save();cmLtClip(q,V,s.rect)}
-if(s.rect){const[rx,ry,rw,rh]=s.rect;q.fillStyle='rgba('+m(C[0])+','+m(C[1])+','+m(C[2])+',1)';for(const[pd,f]of[[22,.12],[12,.16],[5,.22],[0,1]]){q.globalAlpha=Math.min(1,al*f);q.fillRect(rx-pd,ry-pd,rw+pd*2,rh+pd*2)}q.globalAlpha=1;if(V)q.restore();continue}
-if(s.cw){for(const[k2,a2]of[[1.45,.4],[1,1]]){q.globalAlpha=a2;q.beginPath();q.moveTo(s.x,s.y);q.arc(s.x,s.y,r,s.ca-s.cw*k2,s.ca+s.cw*k2);q.closePath();q.fill()}q.globalAlpha=1}else q.fillRect(s.x-r,s.y-r,r*2,r*2);if(V)q.restore();if(!s.pl)on.push([s,C,n,s.cw?Math.min(r,60):r,V])}}
+if(s.rect){const[rx,ry,rw,rh]=s.rect;q.fillStyle='rgba('+m(C[0])+','+m(C[1])+','+m(C[2])+',1)';for(const[pd,f]of[[22,.12],[12,.16],[5,.22],[0,1]]){q.globalAlpha=Math.min(1,al*f);q.fillRect(rx-pd,ry-pd,rw+pd*2,rh+pd*2)}q.globalAlpha=1;if(V)q.restore();return null}
+if(s.cw){for(const[k2,a2]of[[1.45,.4],[1,1]]){q.globalAlpha=a2;q.beginPath();q.moveTo(s.x,s.y);q.arc(s.x,s.y,r,s.ca-s.cw*k2,s.ca+s.cw*k2);q.closePath();q.fill()}q.globalAlpha=1}else q.fillRect(s.x-r,s.y-r,r*2,r*2);if(V)q.restore();return s.pl?null:[s,C,n,s.cw?Math.min(r,60):r,V]}
+// a soft coloured glow round a light (drawn over the world with 'lighter'), stronger the darker it is; only once it is fairly dark
+// (light strength k over 0.5: at dusk it would be too faint to see, and it costs a full-screen blend)
+function cmLtGlow(G,e,k){const[s,C,n,r,V]=e,R=r*.6,gr=G.createRadialGradient(s.x,s.y,0,s.x,s.y,R);gr.addColorStop(0,'rgba('+C[0]+','+C[1]+','+C[2]+','+(.2*k*s.i*n).toFixed(3)+')');gr.addColorStop(1,'rgba('+C[0]+','+C[1]+','+C[2]+',0)');G.fillStyle=gr;if(V){G.save();cmLtClip(G,V)}G.fillRect(s.x-R,s.y-R,R*2,R*2);if(V)G.restore()}
+// K (optional, the game's): the lights that never change, already drawn into pictures of the whole map (cmLtCache); L is then only the rest
+function cmLightPaint(G,lt,L,wx,wy,ww,wh,res,t,st,K){const P_=lt&&cmLtP(lt.t),a=lt?cl(+lt.a||0,0,1):0;if(!P_||a<=0||!G||!cmLtOK())return 0;
+const w=Math.max(1,Math.ceil(ww*res)),h=Math.max(1,Math.ceil(wh*res));if(!CMLC)CMLC=document.createElement('canvas');if(CMLC.width!==w)CMLC.width=w;if(CMLC.height!==h)CMLC.height=h;const q=CMLC.getContext('2d');if(!q)return 0;
+q.setTransform(1,0,0,1,0,0);q.globalCompositeOperation='source-over';q.globalAlpha=1;q.fillStyle=cmLtMix(P_.mul,a);q.fillRect(0,0,w,h);const k=P_.lit*a,on=[];
+if(k>.02){q.globalCompositeOperation='lighter';q.setTransform(res,0,0,res,-wx*res,-wy*res);if(K)q.drawImage(K.cv,wx*K.res,wy*K.res,ww*K.res,wh*K.res,wx,wy,ww,wh);
+ for(const s of L){const n=cmLtNow(s,t,st);if(n<=0||s.x<wx-s.r||s.x>wx+ww+s.r||s.y<wy-s.r||s.y>wy+wh+s.r)continue;const e=cmLtOne(q,s,k,n,L);if(e)on.push(e)}}
 G.save();try{G.globalCompositeOperation='multiply';G.globalAlpha=1;G.imageSmoothingEnabled=true;G.drawImage(CMLC,0,0,w,h,wx,wy,ww,wh);
 if(P_.scr){G.globalCompositeOperation='screen';G.fillStyle='rgba('+P_.scr+','+(P_.sa*a).toFixed(3)+')';G.fillRect(wx,wy,ww,wh)}
-// a soft coloured glow around the lights, stronger the darker it is
-if(k>.25&&on.length){G.globalCompositeOperation='lighter';for(const[s,C,n,r,V]of on){const R=r*.6,gr=G.createRadialGradient(s.x,s.y,0,s.x,s.y,R);gr.addColorStop(0,'rgba('+C[0]+','+C[1]+','+C[2]+','+(.2*k*s.i*n).toFixed(3)+')');gr.addColorStop(1,'rgba('+C[0]+','+C[1]+','+C[2]+',0)');G.fillStyle=gr;if(V){G.save();cmLtClip(G,V)}G.fillRect(s.x-R,s.y-R,R*2,R*2);if(V)G.restore()}}}
+if(k>.5){G.globalCompositeOperation='lighter';if(K&&K.gv)G.drawImage(K.gv,wx*K.res,wy*K.res,ww*K.res,wh*K.res,wx,wy,ww,wh);for(const e of on)cmLtGlow(G,e,k)}}
 finally{G.restore()}return 1}
+// lights that never change (no flicker, blink or siren; not a player's) are drawn once, light and glow, into two pictures of the
+// whole map (at most 2048 px across); each frame copies its part of them and adds only the others
+function cmLtStill(s){return!s.f&&!s.pl}
+function cmLtCache(T,res){const P_=cmLtP(T.t),k=P_?P_.lit*cl(+T.a||0,0,1):0;if(k<=.02||typeof document=='undefined')return null;const r=Math.min(res,2048/Math.max(WW,WH)),key=r+':'+WW+'x'+WH;if(T.K&&T.K.key===key)return T.K;
+const w=Math.max(1,Math.ceil(WW*r)),h=Math.max(1,Math.ceil(WH*r)),mk=()=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c},cv=mk(),gv=k>.5?mk():null,q=cv.getContext('2d'),g=gv&&gv.getContext('2d');if(!q||(gv&&!g))return null;
+q.setTransform(r,0,0,r,0,0);q.globalCompositeOperation='lighter';if(g){g.setTransform(r,0,0,r,0,0);g.globalCompositeOperation='lighter'}
+for(const s of T.L){if(!cmLtStill(s))continue;const e=cmLtOne(q,s,k,1,T.L);if(e&&g)cmLtGlow(g,e,k)}
+return T.K={key,cv,gv,res:r,dyn:T.L.filter(s=>!cmLtStill(s))}}
 // what cmBuild keeps for the game: HS.LT = {t, a, L}
 function cmLightData(d){const p=d.lt&&cmLtP(d.lt.t);if(!p||!(+d.lt.a>0))return null;return{t:d.lt.t,a:cl(+d.lt.a,0,1),L:cmLightSrc(d)}}
 function cmLtOn(){return!!(HS&&HS.LT&&HS.CM&&cmLtOK())}
 // the game: called from drawW in world space (after everything in the world, before the aim marker and the HUD).
 // Every living player carries a soft light so night maps stay playable; burning ground and fireballs light up too.
-function cmLight(){const T=HS.LT;if(!T||!HS.CM)return;const sx=Math.round(cam.x),sy=Math.round(cam.y),S=T.L.slice();S.O=T.L.O;const PP=typeof PL!='undefined'&&PL.length?PL:[P];
+function cmLight(){const T=HS.LT;if(!T||!HS.CM)return;const sx=Math.round(cam.x),sy=Math.round(cam.y),res=LMX?.25:.5,K=cmLtCache(T,res),S=(K?K.dyn:T.L).slice();S.O=T.L.O;const PP=typeof PL!='undefined'&&PL.length?PL:[P];
 for(const p of PP)if(p&&alive(p))S.push({x:p.x,y:p.y-10,r:150,c:'#fff2dc',i:.95,pl:1});
 for(const q of fr)S.push({x:q.x,y:q.y,r:80,c:'#ff9a3a',i:1,f:'fire',ph:q.x});for(const e of ep)if(e.k==3)S.push({x:e.x,y:e.y,r:40,c:'#ff7a2a',i:1});
-cmLightPaint(X,T,S,sx,sy,W,H,LMX?.25:.5,performance.now()/1000,0)}
+cmLightPaint(X,T,S,sx,sy,W,H,res,performance.now()/1000,0,K)}
