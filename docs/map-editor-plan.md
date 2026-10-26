@@ -160,6 +160,7 @@ The editor can now build maps as detailed as the hand-coded ones. Map format ver
 - **Time of day:** Off, Morning, Day, Dusk or Night with an Amount slider (0–100%) in the Map panel, shown live in the editor and drawn by the game every frame: lamps, light effects, fires, sirens, hazards, glows, lit windows and the players light the ground. Stored as `"lighting"` in the map file (format still version 3).
 - **Turning effects:** effects have a turn (`rot`), so hazard blinkers and sirens line up with the vehicle they are on (R in the editor, or Turn in the panel).
 - The demo map's hazard lights now match the crashed car, with a dead zombie and an arm beside it. Tests: `tests/suites/gore-and-lighting.js`.
+- **Lights at the lamp, room lights (Oct 26, 2026):** the flood light pole, light tower, work light and searchlight beams now start at the lamps in the picture instead of the foot of the pole. New `ceillight` prop (round ceiling fixture, light all round) and `roomlight` area (Effects group) that lights a whole room evenly in a chosen colour and brightness.
 - **Lights (Oct 25, 2026):** spot light, flood light on a pole, light tower, wall light, work light on a tripod and searchlight props, each shining a beam in its colour at dusk and night; R turns the beam (poles, towers and tripods stay standing). Lamps, lot lights, floor lamps, lanterns, exit lights and burning barrels are in the same new Lights group. Tests: `tests/suites/gore-and-lighting.js`.
 
 ## Building kit audit (Oct 23, 2026): what the 16 built-in maps draw or do, and the kit piece for it

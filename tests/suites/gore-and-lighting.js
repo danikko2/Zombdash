@@ -135,7 +135,21 @@ const r=run(w('a.json',j)),o=r.stdout;ok(r.status===0&&/options\\.z" is "99"/.te
  ok(same(cmFoot(fl),cmFoot(Object.assign({},fl,{r:0}))),'a standing light keeps its footing when turned');
  const sl=cmLightSrc({obj:[{k:'searchlight',x:0,y:0}]})[0];ok(sl.r>=400&&sl.cw<.2&&Math.abs(sl.ca-Math.PI/2)<1e-9,'the searchlight is a long narrow beam, straight down the screen when not turned');
  LOG.length=0;const g=document.createElement('canvas').getContext('2d');ok(cmLightPaint(g,{t:'night',a:.8},S0,0,0,800,800,.5,0,1)===1,'beams paint into the night light map');
- ok(typeof edLtAim=='function','the editor shows the beams of a selected light')}
+ ok(typeof edLtAim=='function','the editor shows the beams of a selected light');
+ // the light starts at the lamp at the top of the picture, not at the foot of the pole
+ const top={floodlight:90,floodtower:140,worklight:40};for(const k in top){const A=cmLightSrc({obj:[{k,x:400,y:400}]}),B=cmLightSrc({obj:[{k,x:400,y:400,r:135}]});
+  ok(A.length==2&&A.every(s=>s.y<=400-top[k]&&Math.abs(s.x-400)<20)&&same(A.map(s=>[s.x,s.y]),B.map(s=>[s.x,s.y])),k+': both beams start at the lamps on top ('+A.map(s=>Math.round(s.y-400)).join(', ')+' px above the foot), and stay there when the light is turned')}
+ ok(sl.y<0&&sl.y>-40,'the searchlight beam starts at its lamp head');
+ // ceiling light and room lights
+ ok(OB.ceillight&&EDPN.ceillight&&EDPN.ceillight[1]=='lights','a ceiling light prop, in the Lights group');
+ const cl=cmLightSrc({obj:[{k:'ceillight',x:100,y:100}]});ok(cl.length==1&&!cl[0].cw&&cl[0].r>=100&&Math.abs(cl[0].y-91)<2,'the ceiling light glows all round from the middle of the fixture');
+ const ra=CMAK.find(a=>a.id=='roomlight');ok(ra&&ra.ed&&ra.cat=='effect','a Room lights area in the Effects group');
+ const rl=cmLightSrc({obj:[],areas:[{a:'roomlight',x:100,y:200,w:300,h:160,c:'#f0f4ff',o:{s:1.2}}]});ok(rl.length==1&&same(rl[0].rect,[100,200,300,160])&&rl[0].c=='#f0f4ff'&&Math.abs(rl[0].i-1.2)<1e-9&&rl[0].x==250&&rl[0].y==280,'a Room lights area lights its whole box, in its colour and brightness');
+ ok(cmLightSrc({obj:[],areas:[{a:'roomlight',x:0,y:0,w:50,h:50}]})[0].c=='#fff2c8','room lights are warm white by default');
+ ok(cmLightPaint(g,{t:'night',a:.8},rl,0,0,800,800,.5,0,1)===1,'room lights paint into the night light map');
+ // (the test canvas is a stand-in that keeps no pixels, so the even fill is checked by its numbers; the night picture checks the look)
+ ok(!rl[0].cw&&rl[0].r>=Math.hypot(300,160)/2,'room lights reach every corner of the room, with no beam direction');
+ ok(cmLtP('day').lit===0&&cmLtP('night').lit>0,'no room light in the day; full at night')}
 {const h=FS.readFileSync(process.argv[2],'utf8'),c={};for(const m of h.matchAll(/function ([A-Za-z_$][\\w$]*)\\s*\\(/g))c[m[1]]=(c[m[1]]||0)+1;const dup=Object.keys(c).filter(k=>c[k]>1).sort();
 ok(same(dup,['dtBox','tv']),'No function in the game is defined twice by accident (only the two old ones: '+dup.join(', ')+')')}
 console.log('TOTAL fails '+fails+' of '+n);

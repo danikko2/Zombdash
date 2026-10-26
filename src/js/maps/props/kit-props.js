@@ -140,7 +140,8 @@ flamp:{w:56,h:60,c:0,f(g,x,y){const ly=y-8;g.fillStyle='rgba(255,230,140,.2)';g.
 curtain:{w:58,h:10,c:0,pc:PKCURT,f(g,x,y,v,col){const c=pcCol(col,PKCURT),l=pcSh(c,1.22),R=(k,a,b,w,h)=>{g.fillStyle=k;g.fillRect(x+a,y+b,w,h)};
 R(c,-28,-7,10,7);R(c,18,-7,10,7);R('#16111c',-28,-8,56,1);R(l,-27,-6,3,5);R(l,19,-6,3,5)}}});
 // ----- lights: spot lights, flood lights, a light tower, a wall light, a work light, a searchlight -----
-// lt: the lamp heads. Each is a beam that lights the ground at dusk and night (kit-lighting.js): dx,dy from the base, r reach,
+// lt: the lamp heads. Each is a beam that lights the ground at dusk and night (kit-lighting.js): dx,dy from the base (where the lamp
+// is in the picture, so the beam starts at the lamp on top of a pole, tower or tripod), r reach,
 // w half its width in degrees, a its angle from straight ahead. A prop's turn (rot) aims the beams; turned 0 they shine down the
 // screen. nr:1 keeps the picture standing when turned (poles, towers, tripods), so only the light turns. The colour is the light's.
 const PKLT=[['#fff2c8','Warm white'],['#e8f0ff','Cool white'],['#ffc860','Sodium yellow'],['#ff5a4a','Red'],['#6aff8a','Green'],['#6aa8ff','Blue']];
@@ -149,14 +150,15 @@ Object.assign(OB,{
 spotlight:Object.assign(obc(28,24,[16,10],PKLT,(q,v,K)=>{R_(q,'#16111c',3,13,22,10);R_(q,'#3a3d46',4,14,20,8);R_(q,'#5a5e68',4,14,20,2);R_(q,'#16111c',5,3,18,14);R_(q,'#4a4e58',6,4,16,12);R_(q,'#6a6e78',6,4,16,3);kpLens(q,8,15,12,4,K)}),{lt:[{dx:0,dy:-6,r:230,w:16}]}),
 walllight:Object.assign(obc(24,18,0,PKLT,(q,v,K)=>{R_(q,'#16111c',3,1,18,8);R_(q,'#3a3d46',4,2,16,6);R_(q,'#2a2c32',11,7,2,3);R_(q,'#16111c',5,8,14,8);R_(q,'#4a4e58',6,9,12,6);kpLens(q,7,13,10,3,K)}),{lt:[{dx:0,dy:-4,r:160,w:48}]}),
 floodlight:Object.assign(obc(56,120,[8,8],PKLT,(q,v,K)=>{R_(q,'#16111c',24,20,8,94);R_(q,'#6a6e78',25,20,6,92);R_(q,'#8a8f96',25,20,2,92);R_(q,'#16111c',19,111,18,8);R_(q,'#4a4e58',20,112,16,6);R_(q,'#16111c',5,13,46,6);R_(q,'#4a4e58',6,14,44,4);
-for(const x of[4,32]){R_(q,'#16111c',x-1,3,22,14);R_(q,'#3a3d46',x,4,20,12);R_(q,'#5a5e68',x,4,20,3);kpLens(q,x+2,12,16,4,K)}}),{nr:1,wb:1,lt:[{dx:-10,dy:-6,r:280,w:34,a:-10},{dx:10,dy:-6,r:280,w:34,a:10}]}),
+for(const x of[4,32]){R_(q,'#16111c',x-1,3,22,14);R_(q,'#3a3d46',x,4,20,12);R_(q,'#5a5e68',x,4,20,3);kpLens(q,x+2,12,16,4,K)}}),{nr:1,wb:1,lt:[{dx:-14,dy:-106,r:400,w:30,a:-8},{dx:14,dy:-106,r:400,w:30,a:8}]}),
 floodtower:Object.assign(obc(76,176,[24,12],PKLT,(q,v,K)=>{q.strokeStyle='#16111c';q.lineWidth=4;const L=(a,b,c,d)=>{q.beginPath();q.moveTo(a,b);q.lineTo(c,d);q.stroke()};L(16,172,31,32);L(60,172,45,32);
 q.strokeStyle='#8a8f96';q.lineWidth=2;L(16,172,31,32);L(60,172,45,32);q.lineWidth=1;q.strokeStyle='#6a6e78';for(let y=48;y<168;y+=24){const a=16+(172-y)/140*15,b=60-(172-y)/140*15,a2=16+(172-y-24)/140*15,b2=60-(172-y-24)/140*15;L(a,y,b2,y-24);L(b,y,a2,y-24);L(a,y,b,y)}
-R_(q,'#16111c',12,166,52,8);R_(q,'#4a4e58',13,167,50,6);R_(q,'#16111c',13,3,50,32);R_(q,'#2a2c32',14,4,48,30);for(let j=0;j<2;j++)for(let i=0;i<2;i++){R_(q,'#4a4e58',16+i*24,6+j*14,20,12);kpLens(q,18+i*24,13+j*14,16,4,K)}}),{nr:1,wb:1,lt:[{dx:-14,dy:-8,r:420,w:44,a:-14},{dx:14,dy:-8,r:420,w:44,a:14}]}),
+R_(q,'#16111c',12,166,52,8);R_(q,'#4a4e58',13,167,50,6);R_(q,'#16111c',13,3,50,32);R_(q,'#2a2c32',14,4,48,30);for(let j=0;j<2;j++)for(let i=0;i<2;i++){R_(q,'#4a4e58',16+i*24,6+j*14,20,12);kpLens(q,18+i*24,13+j*14,16,4,K)}}),{nr:1,wb:1,lt:[{dx:-12,dy:-156,r:560,w:40,a:-12},{dx:12,dy:-156,r:560,w:40,a:12}]}),
 worklight:Object.assign(obc(44,56,[18,8],PKLT,(q,v,K)=>{q.strokeStyle='#16111c';q.lineWidth=3;const L=(a,b,c,d)=>{q.beginPath();q.moveTo(a,b);q.lineTo(c,d);q.stroke()};L(22,24,6,54);L(22,24,38,54);L(22,18,22,54);q.strokeStyle='#8a8f96';q.lineWidth=1;L(22,24,6,54);L(22,24,38,54);L(22,18,22,54);
-R_(q,'#16111c',5,13,34,4);R_(q,'#3a3d46',6,14,32,2);for(const x of[4,24]){R_(q,'#16111c',x-1,3,18,14);R_(q,'#e0b030',x,4,16,12);R_(q,'#a87a1a',x,13,16,3);kpLens(q,x+2,6,12,6,K)}}),{nr:1,wb:1,lt:[{dx:0,dy:-6,r:240,w:38}]}),
+R_(q,'#16111c',5,13,34,4);R_(q,'#3a3d46',6,14,32,2);for(const x of[4,24]){R_(q,'#16111c',x-1,3,18,14);R_(q,'#e0b030',x,4,16,12);R_(q,'#a87a1a',x,13,16,3);kpLens(q,x+2,6,12,6,K)}}),{nr:1,wb:1,lt:[{dx:-10,dy:-47,r:280,w:30,a:-6},{dx:10,dy:-47,r:280,w:30,a:6}]}),
+ceillight:Object.assign(obc(18,18,0,PKLT,(q,v,K)=>{q.fillStyle='#16111c';q.beginPath();q.arc(9,9,8,0,7);q.fill();q.fillStyle='#d8dce2';q.beginPath();q.arc(9,9,7,0,7);q.fill();q.fillStyle=K.b;q.beginPath();q.arc(9,9,5,0,7);q.fill();q.fillStyle='rgba(255,255,255,.8)';q.fillRect(6,6,3,2)}),{lt:[{dx:0,dy:-9,r:120,w:0}]}),
 searchlight:Object.assign(obc(44,46,[28,12],PKLT,(q,v,K)=>{R_(q,'#16111c',7,37,30,9);R_(q,'#3a3d46',8,38,28,7);R_(q,'#16111c',9,20,6,20);R_(q,'#16111c',29,20,6,20);R_(q,'#5a5e68',10,21,4,18);R_(q,'#5a5e68',30,21,4,18);
-q.fillStyle='#16111c';q.beginPath();q.arc(22,20,16,0,7);q.fill();q.fillStyle='#5a5f68';q.beginPath();q.arc(22,20,15,0,7);q.fill();q.fillStyle=K.b;q.beginPath();q.arc(22,20,11,0,7);q.fill();q.fillStyle='rgba(255,255,255,.75)';q.beginPath();q.arc(18,16,4,0,7);q.fill()}),{nr:1,wb:1,lt:[{dx:0,dy:-8,r:460,w:7}]})});
+q.fillStyle='#16111c';q.beginPath();q.arc(22,20,16,0,7);q.fill();q.fillStyle='#5a5f68';q.beginPath();q.arc(22,20,15,0,7);q.fill();q.fillStyle=K.b;q.beginPath();q.arc(22,20,11,0,7);q.fill();q.fillStyle='rgba(255,255,255,.75)';q.beginPath();q.arc(18,16,4,0,7);q.fill()}),{nr:1,wb:1,lt:[{dx:0,dy:-26,r:480,w:7}]})});
 // ----- the Warehouse's pieces -----
 // wcont: a small shipping container (90×28). guardbooth: the lot's guard booth. lotgate: a gate post with a short red and white
 // arm reaching left. deskpc: an office desk with a computer; ochair: an office chair from above; fcab: a grey filing cabinet.

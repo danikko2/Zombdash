@@ -127,6 +127,7 @@ const CMAK=[
 {id:'stadium',n:'Stadium',cat:'struct',fl:1,pal:[['#b83a32','Red'],['#2f6fd0','Blue'],['#3f8a3a','Green'],['#e0b030','Gold']],pal2:[['#2f4a8a','Navy'],['#b83a32','Red'],['#16161a','Black']],txt:24,def:{c:'#b83a32',o:{dome:1}},opts:[['dome','Closed dome','chk']],min:[300,200],pri:0,f:arStadium,coll(o,out){if(cmSolid(o,'a'))arStadiumColl(o,out)}},
 {id:'skyline',n:'City skyline (backdrop)',cat:'struct',fl:2,def:{o:{wall:'concrete',graf:1}},opts:[['wall','Wall',[['concrete','Sound wall'],['hedge','Hedge']]],['graf','Graffiti','chk']],min:[100,60],pri:0,f:arSkyline},
 {id:'fog',n:'Fog',cat:'effect',fl:null,pal:[['#c8d0d8','Grey'],['#b8ffd8','Ghostly green'],['#d8c8ff','Violet']],def:{c:'#c8d0d8',o:{s:1}},opts:[['s','Thickness',[.3,3]]],min:[100,100],pri:100,f:g=>0,top:arFogTop,ed:1},
+{id:'roomlight',n:'Room lights (lights on)',cat:'effect',fl:null,pal:[['#fff2c8','Warm white'],['#f0f4ff','Cool white'],['#e4ffe8','Fluorescent'],['#ffd8a0','Dim yellow']],def:{c:'#fff2c8',o:{s:1}},opts:[['s','Brightness',[.3,1.5]]],min:[16,16],pri:100,f:g=>0,ed:1},
 {id:'dark',n:'Darkness',cat:'effect',fl:null,pal:[['#0c0610','Night'],['#061018','Blue night'],['#140608','Red gloom'],['#06120a','Green gloom']],def:{c:'#0c0610',o:{s:.25}},opts:[['s','Strength',[.05,.8]]],min:[16,16],pri:-200,f:arDark},
 {id:'shade',n:'Canopy shade',cat:'effect',fl:null,min:[32,32],pri:-90,f:arShade}];
 for(const t of CMAK)cmAddArea(t);

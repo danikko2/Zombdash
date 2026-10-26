@@ -28,7 +28,9 @@ case'siren':{const m=po(o,'m','police'),P=m=='police'?[['#ff2a2a',0],['#3a7aff',
 if(o.dc){if(o.dc=='lightpatch'){const s=cl(+o.sc||1,.25,4);L.push({x:o.x,y:o.y,r:34*s,c:cmCol(o.c,'#ffd27a'),i:.75})}continue}
 if(o.veh)continue;const P=CMLP[o.k];if(P){const p=cmLtTurn(o,P[0],P[1]);L.push({x:p[0],y:p[1],r:P[2],c:P[3],i:P[4],f:P[5],ph});continue}
 // light props (spot lights, flood lights…): each lamp head is a beam (w = half its width in degrees; 0 = all round) aimed the way the prop is turned
-const B=cmOB(o.k);if(B&&B.lt){const c=cmCol(o.c,B.pc?B.pc[0][0]:'#fff2c8');for(const h of B.lt){const p=B.nr?[o.x+h.dx,o.y+h.dy]:cmLtTurn(o,h.dx,h.dy),s={x:p[0],y:p[1],r:h.r,c,i:h.i||1,ph};if(h.w){s.cw=h.w*Math.PI/180;s.ca=((o.r||0)+90+(h.a||0))*Math.PI/180}L.push(s)}}}return L}
+const B=cmOB(o.k);if(B&&B.lt){const c=cmCol(o.c,B.pc?B.pc[0][0]:'#fff2c8');for(const h of B.lt){const p=B.nr?[o.x+h.dx,o.y+h.dy]:cmLtTurn(o,h.dx,h.dy),s={x:p[0],y:p[1],r:h.r,c,i:h.i||1,ph};if(h.w){s.cw=h.w*Math.PI/180;s.ca=((o.r||0)+90+(h.a||0))*Math.PI/180}L.push(s)}}}
+// room lights: an area that lights its whole box (a room with the lights on), with a soft spill past its edges
+for(const a of d.areas||[]){if(a.a!='roomlight')continue;const s_=cl(+((a.o||{}).s??1)||1,.3,1.5);L.push({rect:[a.x,a.y,a.w,a.h],x:a.x+a.w/2,y:a.y+a.h/2,r:Math.hypot(a.w,a.h)/2+24,c:cmCol(a.c,'#fff2c8'),i:s_,ph:0})}return L}
 // how bright a source is now (0..1); st=1: a still picture (editor, thumbnails) where everything is on
 function cmLtNow(s,t,st){if(st)return s.f=='glow'?.85:1;switch(s.f){case'flk':return .8+.2*Math.sin(t*11+s.ph)*Math.sin(t*7.3+s.ph*1.7);case'fire':return .86+.1*Math.sin(t*13+s.ph)+.04*Math.sin(t*31+s.ph);
 case'flare':return .78+.22*Math.random();case'glow':return .6+.4*Math.sin(t*1.7+s.ph);case'blink':return((t*1.3+s.ph)%1)<.5?1:0;
@@ -47,6 +49,7 @@ q.setTransform(1,0,0,1,0,0);q.globalCompositeOperation='source-over';q.globalAlp
 if(k>.02){q.globalCompositeOperation='lighter';q.setTransform(res,0,0,res,-wx*res,-wy*res);for(const s of L){const n=cmLtNow(s,t,st);if(n<=0||s.x<wx-s.r||s.x>wx+ww+s.r||s.y<wy-s.r||s.y>wy+wh+s.r)continue;
 const r=s.r*(s.f=='flk'||s.f=='fire'?(.9+.1*n):1),C=cmLtRGB(s.c),m=x=>Math.round(x+(255-x)*.45),al=Math.min(1,k*s.i*n*1.15),gr=q.createRadialGradient(s.x,s.y,0,s.x,s.y,r);
 gr.addColorStop(0,'rgba('+m(C[0])+','+m(C[1])+','+m(C[2])+','+al+')');gr.addColorStop(.45,'rgba('+m(C[0])+','+m(C[1])+','+m(C[2])+','+al*.55+')');gr.addColorStop(1,'rgba('+C[0]+','+C[1]+','+C[2]+',0)');q.fillStyle=gr;
+if(s.rect){const[rx,ry,rw,rh]=s.rect;q.fillStyle='rgba('+m(C[0])+','+m(C[1])+','+m(C[2])+',1)';for(const[pd,f]of[[22,.12],[12,.16],[5,.22],[0,1]]){q.globalAlpha=Math.min(1,al*f);q.fillRect(rx-pd,ry-pd,rw+pd*2,rh+pd*2)}q.globalAlpha=1;continue}
 if(s.cw){for(const[k2,a2]of[[1.45,.4],[1,1]]){q.globalAlpha=a2;q.beginPath();q.moveTo(s.x,s.y);q.arc(s.x,s.y,r,s.ca-s.cw*k2,s.ca+s.cw*k2);q.closePath();q.fill()}q.globalAlpha=1}else q.fillRect(s.x-r,s.y-r,r*2,r*2);if(!s.pl)on.push([s,C,n,s.cw?Math.min(r,60):r])}}
 G.save();try{G.globalCompositeOperation='multiply';G.globalAlpha=1;G.imageSmoothingEnabled=true;G.drawImage(CMLC,0,0,w,h,wx,wy,ww,wh);
 if(P_.scr){G.globalCompositeOperation='screen';G.fillStyle='rgba('+P_.scr+','+(P_.sa*a).toFixed(3)+')';G.fillRect(wx,wy,ww,wh)}
