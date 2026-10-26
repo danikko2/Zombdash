@@ -47,7 +47,7 @@ if(alive(P)&&Math.hypot(P.x-z.x,P.y-z.y)<(T.cr||T.r)+8&&P.inv<=0&&!(z.alt>4)&&z.
 for(const b of bs){P=b.o||PL[0];KG=b.g??-1;let hit=0;const ox=b.px??b.x,oy=b.py??b.y;b.px=b.py=undefined;for(let k=0;k<2&&!hit;k++){b.x+=b.vx*dt/2;b.y+=b.vy*dt/2;if(wlAt(b.x,b.y).some(w=>w[4]!=2&&b.x>w[0]&&b.x<w[0]+w[2]&&b.y>w[1]&&b.y<w[1]+w[3]))hit=1}b.l-=dt;
 if(b.rk)pt.push({x:b.x,y:b.y,vx:0,vy:0,l:.3,c:'#999'});
 if(!hit)for(const z of bHitOrd(b,ox,oy))if(z.hp>0&&z!==b.hz&&(z.tk?(tkIn(z,b.x,b.y,3)||tkIn(z,(ox+b.x)/2,(oy+b.y)/2,3)||tkIn(z,ox,oy,3)):svSegD(z.x,z.y,ox,oy,b.x,b.y)<(z.hr||ZT[z.t].hr||ZT[z.t].r)+3)&&!(z.alt>4)){hit=1;if(!b.rk){hurt(z,b.d,b.vx*.15,b.vy*.15);if(b.cr){FT.push({x:z.x,y:z.y-18,t:'CRIT',c:'#ffcf40',l:.6});for(let q=0;q<5;q++)pt.push({x:z.x,y:z.y,vx:(Math.random()-.5)*160,vy:(Math.random()-.5)*160,l:.3,c:'#ffd84a'})}if(b.pc>0){b.pc--;b.hz=z;hit=0}};break}
-if(hit||(b.l<=0&&b.rk)){if(b.rk)boom(b.x,b.y,b.d);b.l=0}}
-KG=-1;P=PL[0];pickups(dt);P=PL[0];if(pend){pend=0;over();return}zs.push(...nq);nq=[];bs=bs.filter(b=>b.l>0);zs=zs.filter(z=>z.hp>0);
+if(hit||(b.l<=0&&b.rk)){if(b.rk)boom(b.x,b.y,b.d);if(b.ab)xbHit(b);b.l=0}}
+ckUpd(dt);KG=-1;P=PL[0];pickups(dt);P=PL[0];if(pend){pend=0;over();return}zs.push(...nq);nq=[];bs=bs.filter(b=>b.l>0);zs=zs.filter(z=>z.hp>0);
 for(const p of pt){p.x+=p.vx*dt;p.y+=p.vy*dt;p.l-=dt}pt=pt.filter(p=>p.l>0);if(LMX&&pt.length>260)pt.splice(0,pt.length-260);
 if(TUT)tutUpd(dt);else if(KN){KN.t+=dt;if(KN.t>=5.5&&!KN.done){KN.done=1;campWin()}}else if(toSp==0&&zs.length==0&&bossQ<0){if(!(ET>0)){ET=15;for(const d of DR)d.l=Math.max(d.l,15.5);for(const p of PL)if(p.dn){p.dn=0;p.rv=0;p.hp=Math.max(1,Math.ceil(p.mx*.34));p.inv=2}}else{ET-=dt;if(ET<=0||(S.qs&&!DR.length&&ET<13.5)){ET=0;shop()}}}}

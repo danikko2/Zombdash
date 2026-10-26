@@ -36,4 +36,4 @@ if(k=='a'||k=='arrowleft')cycCh(s,-1);else if(k=='d'||k=='arrowright')cycCh(s,1)
 else if(k=='c')cycV(s,1);else if(k=='m'){setGM(GMD=='c'?'f':'c');mapFix(lobAcs())}else if(k=='q')lbMap(-1);else if(k=='e')lbMap(1);else if(k=='enter'||k==' '){if(s.rdy&&LBY.s.every(s=>s.rdy))return startMP();s.rdy=s.rdy?0:1;sfx(s.rdy?'buy':'click')}
 else if(k=='escape'){if(s.rdy)s.rdy=0;else LBY.s.splice(LBY.s.indexOf(s),1)}else return;rL()}
 function startMP(){const sl=LBY&&LBY.s;if(!sl||!sl.length){sfx('deny');return}WRC=WRP=null;TUT=null;livesInit();RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];GCC=[];CWIN=null;KN=null;RH=null;SVB=0;ccRunBack();mapFix(lobAcs());ccRunRep();MPn=sl.length;plan();BB=[];build();
-PL=sl.map((s,i)=>{const A=s.ac=='G'?guest():s.ac;if(!A.g)A.lc=s.ci;return mkP(s.ci,A,s.inp,i,s.v)});P=PL[0];zs=[];bs=[];pt=[];wave=swEff()-1;kills=0;ET=0;PRE=0;sv();if(swEff()>1){PRE=1;shop()}else nextWave()}
+PL=sl.map((s,i)=>{const A=s.ac=='G'?guest():s.ac;if(!A.g)A.lc=s.ci;return mkP(s.ci,A,s.inp,i,s.v)});P=PL[0];zs=[];bs=[];pt=[];ckClear();wave=swEff()-1;kills=0;ET=0;PRE=0;sv();if(swEff()>1){PRE=1;shop()}else nextWave()}

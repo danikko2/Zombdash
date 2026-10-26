@@ -33,6 +33,6 @@ DR=[];const z=mk(2,P.x+5,P.y);for(let k=0;k<200&&!DR.some(d=>d.k=='am');k++)drop
 // keys pick slots
 P.cur=P.own[0];document&&0;
 // split-screen shop items
-ok(RDY(P)==WP.length+3+6,'MP shop items include 5 ammo + sell');
+ok(RDY(P)==WP.length+3+Object.keys(AMI).length+1,'MP shop items include every ammo type ('+Object.keys(AMI).length+') + sell');
 console.log('TOTAL errors',errs.length,errs);`;
 globalThis.LOG=m=>require("fs").writeSync(2,m+"\n");new Function("docL","ivs","errs","started_",out)(docL,ivs,errs);

@@ -77,6 +77,7 @@ bosses/ice-cream-and-fire-chief.js
 maps/graveyard-details.js
 core/difficulty.js
 weapons/ammo-and-inventory.js
+weapons/chickens.js
 campaign/sections.js
 campaign/map-screens.js
 maps/hometown-market.js

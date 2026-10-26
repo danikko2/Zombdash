@@ -4,12 +4,17 @@
 // and only apply while test mode is on; turning test mode off puts every default back.
 var BALR=[],BALM={},BALD={},BALO={},BALT='guns',BALTO=0;
 const BALG=[['guns','Guns'],['ammo','Ammo'],['caps','Caps'],['zhp','Zombie HP'],['bhp','Boss HP'],['php','Player HP'],['spd','Speed'],['drop','Drops'],['zc','Zombie count']];
-const BAMO=[['pa','Pistol'],['ri','Rifle'],['sh','Shotgun'],['rk','Rockets'],['bl','Belts'],['rand','Random']];
+const BAMO=[['pa','Pistol'],['ri','Rifle'],['sh','Shotgun'],['rk','Rockets'],['bl','Belts'],['ar','Arrows'],['rand','Random']];
 function balInit(){if(BALR.length)return;
  // id = short stable name used in S.bal and in settings codes; the label key is kept so older saves still load
  const add=(id,g,sub,lab,o,f,mn,mx,st,opt)=>{const e={id,k:id,g,sub,lab,o,f,mn,mx,st,opt};BALR.push(e);BALM[id]=e;BALD[id]=o[f];BALO[g+'|'+(sub||'')+'|'+lab]=id};
  const up=(v,m,s)=>Math.max(m,Math.ceil(v/s)*s);
- WP.forEach((w,i)=>{const n=w.n+(i==0?' (Dual Pistols get 2× mag)':'');add('gD'+i,'guns',n,'Damage',w,'d',.25,up(w.d*3,10,1),.25);add('gM'+i,'guns',n,'Magazine',MAG,i,1,up(MAG[i]*4,20,10),1);add('gP'+i,'guns',n,'Store price',w,'cost',0,up(w.cost*3,1000,100),10)});
+ WP.forEach((w,i)=>{const n=w.n+(i==0?' (Dual Pistols get 2× mag)':w.ck?' (damage = each bite on a boss; mag in chickens)':'');add('gD'+i,'guns',n,'Damage',w,'d',.25,up(w.d*3,10,1),.25);add('gM'+i,'guns',n,'Magazine',MAG,i,1,up(MAG[i]*4,20,10),1);add('gP'+i,'guns',n,'Store price',w,'cost',0,up(w.cost*3,1000,100),10);
+  // the Crossbow and the Chicken Gun also have their fire rate and the chickens' rules here
+  if(w.ab||w.ck)add('gR'+i,'guns',n,'Seconds between shots',w,'r',.05,3,.05);
+  if(w.ab)add('gV'+i,'guns',n,'Bolt speed',w,'bv',200,1500,10);
+  if(w.ck){add('kR','guns',n,'Rockets per chicken',w,'apr',1,10,1);add('kM','guns',n,'Chickens out at once',CKG,'max',1,10,1);add('kA','guns',n,'Fewest zombies a chicken eats',CKG,'n0',1,30,1);add('kB','guns',n,'Most zombies a chicken eats',CKG,'n1',1,30,1);
+   add('kH','guns',n,'Zombie health that counts as 2 eaten',CKG,'big',1,60,.5);add('kS','guns',n,'Chicken flying speed',CKG,'sp',60,800,10);add('kI','guns',n,'Seconds with nothing to eat before it pops',CKG,'idle',1,30,.5)}});
  for(const k in AMI){const a=AMI[k];add('aX'+k,'ammo',a.n,'Max carried',a,'max',0,up(a.max*3,50,50),a.max>=200?10:1);add('aB'+k,'ammo',a.n,'Amount per purchase',a,'buy',1,up(a.buy*3,20,10),a.buy>=100?5:1);add('aC'+k,'ammo',a.n,'Store price',a,'cost',0,up(a.cost*4,200,50),5);add('aD'+k,'ammo',a.n,'Pickup size',a,'drop',0,up(a.drop*3,20,10),a.drop>=100?5:1)}
  ['Easy','Normal','Hard'].forEach((d,i)=>add('cR'+i,'caps','Ranged cap (free play + campaign)',d+' %',ZCFG.cap.rg,i,0,100,1));
  ['Easy','Normal','Hard'].forEach((d,i)=>add('cS'+i,'caps','Special cap (free play)',d+' %',ZCFG.cap.sp,i,0,100,1));

@@ -12,9 +12,9 @@ The game ships as **one self-contained file**, `index.html` (what GitHub Pages s
 | `src/css/game.css` | All the styles for menus and the HUD. |
 | `src/js/early-error-screen.js` | Tiny script that shows a "Startup error" box if the game fails to load. |
 | `src/js/modules.txt` | **Load order** of the game modules. |
-| `src/js/**` | The game, split into 115 modules (listed below). The Map Workshop is in `src/js/editor/`, the custom map format, loader and building kit in `src/js/world/`. |
+| `src/js/**` | The game, split into 116 modules (listed below). The Map Workshop is in `src/js/editor/`, the custom map format, loader and building kit in `src/js/world/`. |
 | `src/maps/` | Map files that ship with the game, embedded by the build with `{{json:maps/<file>}}`: `suburb.json`, `warehouse.json` and `school.json` are the Suburb, the Warehouse and the School (maps 0, 1 and 3, built-in maps made from files, see "Built-in maps from map files"); `samples/town-block.zombdash-map.json` is the Workshop's sample map. |
-| `src/assets/sprites/` | `zombies.png` (zombie atlas) and `survivors.png` (player atlas). Frame positions are in `ZS` / `PS` in `render/sprites.js`. |
+| `src/assets/sprites/` | `zombies.png` (zombie atlas, plus the Chicken Gun's rubber chicken and the Crossbow's bolt: `ZS.chicken`, `ZS.bolt`) and `survivors.png` (player atlas, with every gun in each survivor's hand). Frame positions are in `ZS` / `PS` in `render/sprites.js`. New frames go below the old ones so nothing moves. |
 | `src/assets/thumbs/map-NN.jpg` | Map preview pictures; `NN` is the map's number in `MP`. |
 | `src/assets/sounds/` | Recorded reload sounds (everything else is synthesized in `audio/sound.js`). |
 | `tools/build.js` | The build (Node, no packages needed). |
@@ -50,6 +50,8 @@ node tests/run.js spawn ammo # only suites whose name contains a word
 | Survivors: health, speed, starting gun, unlock price | `CH` in `data/tables.js` |
 | Zombie / wave boss health, speed, size, cash per kill | `ZT` in `data/tables.js` |
 | Magazine sizes, ammo types (max, per purchase, price, pickup size) | `MAG`, `AMI` in `weapons/ammo-and-inventory.js` |
+| Fire and reload sounds of each gun | `FSN`, `RLS` in `weapons/ammo-and-inventory.js` |
+| Crossbow bolts (speed, life) and the Chicken Gun (rockets per chicken; how many chickens are out at once, how many zombies each eats, the health that counts as two, their speed) | `WP` (`bv`, `bl`, `apr`) in `data/tables.js`, `CKG` in `weapons/chickens.js` |
 | What each zombie / boss drops and how often | `DROPT`, `DROPG` in `game/drop-table.js` |
 | Zombie tiers, special/ranged caps, new-type schedule, campaign sections | `ZC`, `ZCFG` in `zombies/spawn-system.js` |
 | Exploder, Healer, Rotwood tuning | `ZX`, `ZH`, `ZR` in `zombies/spawn-system.js` |
@@ -355,6 +357,9 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 | File | What's in it |
 |---|---|
 | `weapons/ammo-and-inventory.js` | Inventory, ammo types (AMI), magazines (MAG), reloads, ammo HUD, reload sounds |
+| `weapons/chickens.js` | The Crossbow's bolts and the Chicken Gun's rubber chickens: hunting, eating, ballooning, popping, blood splatters, their sounds |
+
+**Adding a gun.** A gun is its index in `WP`; give it an entry at the same index in `AMT`, `MAG`, `RLT`, `RLS`, `FSN` (`weapons/ammo-and-inventory.js`) and `MZ`, `FS` (`render/sprites.js`), and a frame in every survivor's `PS[ci].gun` (it is also the store and armory picture). Keep the arm pixels exactly as in the other gun frames, or `armMask` (camos) changes. Levels, camos, the store, the inventory and the GAME BALANCE guns tab pick it up by themselves. Gun progress codes accept 11 guns or more (`gDec`), and Outbreak stays at 11 Gold guns (`OBK`).
 
 ### Phones and saves (`src/js/system/`)
 

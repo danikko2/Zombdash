@@ -16,7 +16,7 @@ docL.pointerdown[0]();endIntro();
 const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
 const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)errs.push(m)};
 S.ac.name='T';S.ac.un=[0];const A=S.ac;
-ok(CH.length>=9&&CH[8].n=='Hank'&&PS[8].walk.length==6&&PS[8].idle.length==4&&PS[8].gun.length==11,'Hank exists with full sprite set');
+ok(CH.length>=9&&CH[8].n=='Hank'&&PS[8].walk.length==6&&PS[8].idle.length==4&&PS[8].gun.length==WP.length,'Hank exists with full sprite set');
 ok(MUN[4]==8,'Old West boss is Hank');A.un.push(8);
 // dual pistol rate + damage
 sel=8;start();P.mx=P.hp=999;zs=[];toSp=0;ok(P.cur==0&&wN(8,0)=='Dual Pistols','starts with Dual Pistols');
