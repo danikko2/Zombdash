@@ -142,6 +142,7 @@ const r=run(w('a.json',j)),o=r.stdout;ok(r.status===0&&/options\\.z" is "99"/.te
  ok(sl.y<0&&sl.y>-40,'the searchlight beam starts at its lamp head');
  // ceiling light and room lights
  ok(OB.ceillight&&EDPN.ceillight&&EDPN.ceillight[1]=='lights','a ceiling light prop, in the Lights group');
+ {const B=OB.ceillight,f=B.f;let c=0;B.f=function(){c++;return f.apply(this,arguments)};cmProp(document.createElement('canvas').getContext('2d'),{k:'ceillight',x:50,y:50});B.f=f;ok(B.eo&&c==0&&cmLightSrc({obj:[{k:'ceillight',x:50,y:50}]}).length==1,'in the game the ceiling light fixture is not drawn, only its light (the editor still shows it)')}
  const cl=cmLightSrc({obj:[{k:'ceillight',x:100,y:100}]});ok(cl.length==1&&!cl[0].cw&&cl[0].r>=100&&Math.abs(cl[0].y-91)<2,'the ceiling light glows all round from the middle of the fixture');
  const ra=CMAK.find(a=>a.id=='roomlight');ok(ra&&ra.ed&&ra.cat=='effect','a Room lights area in the Effects group');
  const rl=cmLightSrc({obj:[],areas:[{a:'roomlight',x:100,y:200,w:300,h:160,c:'#f0f4ff',o:{s:1.2}}]});ok(rl.length==1&&same(rl[0].rect,[100,200,300,160])&&rl[0].c=='#f0f4ff'&&Math.abs(rl[0].i-1.2)<1e-9&&rl[0].x==250&&rl[0].y==280,'a Room lights area lights its whole box, in its colour and brightness');

@@ -106,7 +106,7 @@ const vw=E.cv.clientWidth/E.cam.z,vh=E.cv.clientHeight/E.cam.z;g.strokeStyle='#f
 // ----- thumbnails (Workshop list and Free Play) -----
 // the real map painted small, the same way the game paints it, letterboxed into 4:3
 function edMakeThumb(d){const T=d.tile,MW=d.w*T,MH=d.h*T,k=Math.min(1,960/MW,720/MH),a=document.createElement('canvas');a.width=Math.ceil(MW*k);a.height=Math.ceil(MH*k);const g=a.getContext('2d');g.scale(k,k);
-try{cmGround(g,d,0,0,d.w,d.h,0);for(const{o,w,t}of cmDrawList(d,0)){if(w){cmWallDraw(g,o);continue}if(t=='a'||t=='l'||o.dc||o.fx){try{cmPaintIt(g,o,t)}catch(e){}continue}const s=edSprite(o);if(!s)continue;const pr=cmPR(o);g.save();g.translate(o.x,o.y);if(pr)g.rotate(pr*Math.PI/180);g.drawImage(s.c,-s.ax,-s.ay);g.restore()}
+try{cmGround(g,d,0,0,d.w,d.h,0);for(const{o,w,t}of cmDrawList(d,0)){if(w){cmWallDraw(g,o);continue}if(t=='a'||t=='l'||o.dc||o.fx){try{cmPaintIt(g,o,t)}catch(e){}continue}if((cmOB(o.k)||{}).eo)continue;const s=edSprite(o);if(!s)continue;const pr=cmPR(o);g.save();g.translate(o.x,o.y);if(pr)g.rotate(pr*Math.PI/180);g.drawImage(s.c,-s.ax,-s.ay);g.restore()}
 if(d.lt)cmLightPaint(g,d.lt,cmLightSrc(d),0,0,MW,MH,Math.min(.5,k*.5),0,1)}catch(e){}
 const o=document.createElement('canvas');o.width=400;o.height=300;const q=o.getContext('2d');q.fillStyle='#0a0f0b';q.fillRect(0,0,400,300);const s=Math.min(400/a.width,300/a.height),w=a.width*s,h=a.height*s;q.imageSmoothingEnabled=true;try{q.imageSmoothingQuality='high'}catch(e){}q.drawImage(a,(400-w)/2,(300-h)/2,w,h);
 a.width=a.height=0;let u='';try{u=o.toDataURL('image/jpeg',.82)}catch(e){}o.width=o.height=0;return u}

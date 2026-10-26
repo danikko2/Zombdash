@@ -27,7 +27,8 @@ L.sort((a,b)=>String(a.meta.name||'').localeCompare(String(b.meta.name||''),unde
 // paint a whole custom map (ground, walls, props, vehicles) into g; used for the game's background and for thumbnails
 // how far a thing's picture turns: upright lights (nr:1) keep their picture standing, their turn only aims the light
 function cmPR(o){if(!o||!o.r)return 0;if(o.veh||o.dc||o.fx)return o.r;const B=cmOB(o.k);return B&&B.nr?0:o.r}
-function cmProp(g,o){const B=cmOB(o.k);if(!B)return;const v=o.vr!=null?o.vr:cmH(o.x,o.y,3),r=cmPR(o);if(!r){B.f(g,o.x,o.y,v,o.c,o.tx);return}
+// props marked eo (editor only: the ceiling light) are drawn in the editor only; in the game just their light shows
+function cmProp(g,o){const B=cmOB(o.k);if(!B||B.eo)return;const v=o.vr!=null?o.vr:cmH(o.x,o.y,3),r=cmPR(o);if(!r){B.f(g,o.x,o.y,v,o.c,o.tx);return}
 const L=vRec.L,n=L?L.length:0;g.save();g.translate(o.x,o.y);g.rotate(r*Math.PI/180);try{B.f(g,0,0,v,o.c,o.tx)}finally{g.restore()}
 // a turned sprite has no straight base line, so walk-behind uses its pixels instead
 if(L)for(let i=n;i<L.length;i++)delete L[i].base}
