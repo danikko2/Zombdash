@@ -1,12 +1,12 @@
 //# weapons/ammo-and-inventory.js — Inventory, ammo types (AMI), magazines (MAG), reloads, ammo HUD, reload sounds
 // ---------- inventory (4 weapon slots) + ammo: magazines, reserves by ammo type, reloads, drops, shop ----------
 var INV=4;
-var AMT=['pa','pa','sh','ri','rk','sh','ri','ri','bl','sh','bl','ar','rk','ar','rk','ar'];
+var AMT=['pa','pa','sh','ri','rk','sh','ri','ri','bl','sh','bl','ar','rk','ar','rk','ar','rk'];
 function RDY(p){return shopIt(p).length}
 var AMI={pa:{n:'Pistol ammo',s:'PISTOL',c:'#e8c040',buy:300,cost:30,max:1200,drop:60},ri:{n:'Rifle rounds',s:'RIFLE',c:'#d88a3a',buy:200,cost:40,max:800,drop:40},sh:{n:'Shotgun shells',s:'SHELLS',c:'#d84a3a',buy:8,cost:40,max:160,drop:6},rk:{n:'Rockets',s:'ROCKETS',c:'#8a9a6a',buy:10,cost:90,max:36,drop:5},bl:{n:'Ammo belts',s:'BELTS',c:'#c8b070',buy:300,cost:70,max:1200,drop:150},ar:{n:'Arrows',s:'ARROWS',c:'#8fc0e0',buy:100,cost:40,max:500,drop:20}};
-var MAG=[18,45,6,30,1,8,30,40,100,8,120,10,3,6,1,10],RLT=[1.25,1.3,1.7,1.4,2.2,1.9,1.6,1.4,2.4,1.9,2.4,1.6,2.2,1.9,2.5,1.6];
+var MAG=[18,45,6,30,1,8,30,40,100,8,120,10,3,6,1,10,1],RLT=[1.25,1.3,1.7,1.4,2.2,1.9,1.6,1.4,2.4,1.9,2.4,1.6,2.2,1.9,2.5,1.6,3];
 // fire sound of each gun
-var FSN=['pistol','smg','shotgun','rifle','rocket','hshotgun','hrifle','laser','minigun','lshotgun','lminigun','crossbow','chickgun','blastbow','deathrow','firebow'];
+var FSN=['pistol','smg','shotgun','rifle','rocket','hshotgun','hrifle','laser','minigun','lshotgun','lminigun','crossbow','chickgun','blastbow','deathrow','firebow','lifesaver'];
 // ammo used per round: the Chicken Gun takes 2 rockets for every chicken (WP apr); reserves are counted in rounds
 function AMP(i){return WP[i]&&WP[i].apr>1?WP[i].apr:1}
 // what each enemy type tends to drop
@@ -81,7 +81,7 @@ let pk=0;for(let i=0;i<n;i++)pk=Math.max(pk,Math.abs(o[i]));const sc=pk>0?({lz:.
 var RLREC={pi:'data:audio/mpeg;base64,{{asset:sounds/reload-pistol.mp3}}',ar:'data:audio/mpeg;base64,{{asset:sounds/reload-rifle.mp3}}',gr:'data:audio/mpeg;base64,{{asset:sounds/reload-heavy.mp3}}',sg:'data:audio/mpeg;base64,{{asset:sounds/reload-shotgun.mp3}}'},RLRU={pi:['pi',1.08,.36],sm:['pi',1.035,.36],ri:['ar',1.06,.4],sh:['sg',.95,.55],rk:['ar',.65,.47],bl:['gr',.55,.48]};
 function rlDecode(c){if(!c||!c.decodeAudioData||(AU.rdc===c))return;AU.rdc=c;AU.rd={};for(const k in RLREC){try{const s=atob(RLREC[k].split(',')[1]),u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);const ok=b=>{AU.rd[k]=b},p=c.decodeAudioData(u.buffer,ok,()=>{});if(p&&p.then)p.then(ok).catch(()=>{})}catch(e){}}}
 function rlPlay(k,t,d){const c=AU.c;rlDecode(c);{const r=RLRU[k],b=r&&AU.rd&&AU.rdc===c&&AU.rd[r[0]];if(b){const s=c.createBufferSource(),g=c.createGain();s.buffer=b;s.playbackRate.value=r[1];g.gain.value=r[2];s.connect(g);g.connect(d);s.start(t);return b.duration/r[1]}}AU.rb=AU.rb||{};if(!AU.rb[k]||AU.rb[k].c!==c){const sr=c.sampleRate||44100,data=rlBuild(k,sr),b=c.createBuffer(1,data.length,sr);const ch=b.getChannelData(0);if(ch&&ch.set)ch.set(data);AU.rb[k]={c,b}}const s=c.createBufferSource();s.buffer=AU.rb[k].b;s.connect(d);s.start(t);return RLD[k]}
-var RLS=['rlpi','rlsm','rlsh','rlri','rlrk','rlsh','rlri','rlri','rlbl','rlsh','rlbl','rlxb','rlck','rlxb','rldr','rlxb'];
+var RLS=['rlpi','rlsm','rlsh','rlri','rlrk','rlsh','rlri','rlri','rlbl','rlsh','rlbl','rlxb','rlck','rlxb','rldr','rlxb','rlls'];
 Object.assign(SF,{rlpi:(t,d)=>rlPlay('pi',t,d),rlsm:(t,d)=>rlPlay('sm',t,d),rlsh:(t,d)=>rlPlay('sh',t,d),rlri:(t,d)=>rlPlay('ri',t,d),rlrk:(t,d)=>rlPlay('rk',t,d),rlbl:(t,d)=>rlPlay('bl',t,d),rllz:(t,d)=>rlPlay('lz',t,d),rlxb:(t,d)=>rlPlay('xb',t,d),
 // Chicken Gun: the rocket reload with a rubber squeak as each chicken is stuffed in
 rlck:(t,d)=>{const l=rlPlay('rk',t,d);vox('square',820,560,t+.3,.16,.07,d,2600,22,40,.01);vox('square',760,1050,t+1.05,.18,.06,d,2600,22,40,.01);return l}});

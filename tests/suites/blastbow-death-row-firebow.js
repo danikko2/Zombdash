@@ -21,7 +21,7 @@ const secs=s=>tick(Math.round(s/.016));
 const ix=n=>WP.findIndex(w=>w.n==n),XB=ix('Crossbow'),BB=ix('Blastbow'),DW=ix('Death Row'),FB=ix('Firebow');
 const near=(a,b,e)=>Math.abs(a-b)<(e||1e-6);
 // ---------- tables ----------
-ok(BB==13&&DW==14&&FB==15&&WP.length==16,'Blastbow, Death Row and Firebow are guns 14, 15 and 16 (the older guns keep their numbers)');
+ok(BB==13&&DW==14&&FB==15&&WP.length>=16,'Blastbow, Death Row and Firebow are guns 14, 15 and 16 (the older guns keep their numbers)');
 ok(WP[BB].cost==1800&&WP[DW].cost==2500&&WP[FB].cost==850,'prices: Blastbow $1800, Death Row $2500, Firebow $850');
 ok(AMT[BB]=='ar'&&AMT[FB]=='ar'&&AMT[DW]=='rk','the Blastbow and the Firebow shoot arrows, Death Row uses rockets');
 ok(MAG[DW]==1&&RLT[DW]==2.5&&WP[DW].d==10&&WP[DW].dx==3&&WP[DW].zn==15,'Death Row: one shot a magazine, 2.5 s reload, 10-13 damage, up to 15 zombies');
@@ -132,11 +132,11 @@ m=arm(DW);const C5=[];for(let i=0;i<10;i++)C5.push(at(0,m.x+100+i*40,m.y,1000));
 clr();m=arm(FB);const Z5=at(0,m.x+100,m.y,1000);shoot();for(let i=0;i<40&&bs.length;i++)tick(1);secs(2);ok(near(Z5.hp,1000-WP[FB].d-WP[FB].bd),'fire now lasts 1 s');
 devOff();ok(WP[DW].zn==15&&RLT[DW]==2.5&&WP[FB].bt==3&&WP[BB].br==70,'test mode off puts the defaults back');devSet();balOpen('guns');balReset(0);devOff();
 // ---------- older progress keeps working ----------
-{const A={name:'Old'};wpA(A);ok(A.wp.length==16&&A.cm.length==16,'gun progress grows to 16 guns');const full=gEnc(S.ac).split('_');const B={},C2={};
- ok(gDec(full.slice(0,11).join('_'),B)&&B.wp.length==16&&gDec(full.slice(0,13).join('_'),C2)&&C2.wp.length==16&&C2.wp[15].l==1,'account codes from before (11 and 13 guns) still load');const D={};ok(gDec(gEnc(S.ac),D)&&D.wp.length==16,'new codes carry 16 guns')}
+{const A={name:'Old'};wpA(A);ok(A.wp.length==WP.length&&A.cm.length==WP.length,'gun progress grows to every gun');const full=gEnc(S.ac).split('_');const B={},C2={};
+ ok(gDec(full.slice(0,11).join('_'),B)&&B.wp.length==WP.length&&gDec(full.slice(0,13).join('_'),C2)&&C2.wp.length==WP.length&&C2.wp[15].l==1,'account codes from before (11 and 13 guns) still load');const D={};ok(gDec(gEnc(S.ac),D)&&D.wp.length==WP.length,'new codes carry every gun')}
 {const A={};wpA(A);for(let g=0;g<11;g++)Object.assign(A.wp[g],{k:999,n:99,m:99,h:999,b:9});ok(camoOK(A,BB,9)&&cProg(A,0,9)=='11/11','Outbreak camo still unlocks at 11 Gold guns')}
 CPR={v:1,w:3,k:0,gm:'f',m:0,ci:0,d:1,p:{cash:10,hp:5,mx:5,ar:0,own:[0,11],cur:11,mg:[18,45,6,30,1,8,30,40,100,8,120,10,3],am:{pa:0,ri:50,sh:0,rk:0,bl:0,ar:40},paid:{}}};setGM('f');mapId=0;sel=0;start();CPR=null;
-ok(P.mg.length==16&&P.mg[BB]==6&&P.mg[DW]==1&&P.mg[FB]==10&&P.am.ar==40,'a checkpoint saved before these guns resumes with their magazines ready');
+ok(P.mg.length==WP.length&&P.mg[BB]==6&&P.mg[DW]==1&&P.mg[FB]==10&&P.am.ar==40,'a checkpoint saved before these guns resumes with their magazines ready');
 armory(DW);ok(['Blastbow','Death Row','Firebow'].every(n=>ui.innerHTML.includes(n)),'the armory lists them with levels and camos');
 ok(!ERRS.length,'no game errors: '+ERRS.join(' | '));
 }

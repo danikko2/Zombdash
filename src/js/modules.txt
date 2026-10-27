@@ -79,6 +79,7 @@ core/difficulty.js
 weapons/ammo-and-inventory.js
 weapons/chickens.js
 weapons/bows-and-lightning.js
+weapons/life-saver.js
 campaign/sections.js
 campaign/map-screens.js
 maps/hometown-market.js
