@@ -7,7 +7,8 @@
 // seconds pops as well. A player can have CKG.max chickens out at once; each chicken uses WP apr rockets.
 var CK=[],CKS=[];
 var CKG={max:3,n0:5,n1:8,big:8,sp:260,idle:5,eat:.45,rng:650};
-function ckClear(){CK=[];CKS=[]}
+// (also clears the Blastbow's bolts, Death Row's lightning and scorch marks: weapons/bows-and-lightning.js)
+function ckClear(){CK=[];CKS=[];spClear()}
 // chickens a player has out (not yet popped)
 function ckOut(p){let n=0;for(const c of CK)if(c.o===p&&!c.dead)n++;return n}
 // can this player fire now? Only the Chicken Gun is limited
@@ -60,11 +61,13 @@ for(const c of CK){if(c.dead)continue;let an=A&&A.fly,fps=12,sc=.8*(1+.05*Math.m
  X.fillStyle='rgba(0,0,0,.25)';X.beginPath();X.ellipse(c.x,c.y+6,9*sc,3,0,0,7);X.fill();
  if(!ok){X.fillStyle='#f2cc3a';X.fillRect(c.x-6*sc,c.y-hv-6*sc,12*sc,10*sc);continue}
  const f=an[Math.floor(t*fps+c.ph)%an.length],w=f[2]/1.6*sc,h=f[3]/1.6*sc;X.save();X.translate(c.x,c.y+6-hv);X.scale(fl,1);X.imageSmoothingEnabled=false;X.drawImage(SPR,f[0],f[1],f[2],f[3],-w/2,-h,w,h);X.restore()}}
-// ---------- Crossbow bolts ----------
-function xbDraw(b){const f=typeof ZS!='undefined'&&ZS.bolt&&ZS.bolt.fly[0],a=Math.atan2(b.vy,b.vx);
+// ---------- Crossbow bolts (also the Blastbow's and the Firebow's) ----------
+function xbDraw(b){const W=WP[b.g]||{},k=W.bb?'bbolt':W.fb?'fbolt':'bolt',Z=typeof ZS!='undefined'&&ZS[k],f=Z&&Z.fly[Z.fly.length>1?(performance.now()/80|0)%Z.fly.length:0],a=Math.atan2(b.vy,b.vx);
 if(!f||!SPR.naturalWidth){X.strokeStyle='#c89a58';X.lineWidth=2;X.beginPath();X.moveTo(b.x,b.y);X.lineTo(b.x-Math.cos(a)*14,b.y-Math.sin(a)*14);X.stroke();return}
-const w=f[2]/1.6,h=f[3]/1.6;X.save();X.translate(b.x,b.y);X.rotate(a);X.imageSmoothingEnabled=false;if(b.dd){X.globalAlpha=.35;X.fillStyle='#ffd84a';X.fillRect(-w+1,-h/2-1,w,h+2);X.globalAlpha=1}X.drawImage(SPR,f[0],f[1],f[2],f[3],-w+2,-h/2,w,h);X.restore()}
-function xbHit(b){for(let i=0;i<4;i++)pt.push({x:b.x,y:b.y,vx:(Math.random()-.5)*130,vy:(Math.random()-.5)*130,l:.25,c:i%2?'#c89a58':'#e8e0c8'})}
+const w=f[2]/1.6,h=f[3]/1.6;X.save();X.translate(b.x,b.y);X.rotate(a);X.imageSmoothingEnabled=false;if(b.dd){X.globalAlpha=.35;X.fillStyle='#ffd84a';X.fillRect(-w+1,-h/2-1,w,h+2);X.globalAlpha=1}X.drawImage(SPR,f[0],f[1],f[2],f[3],-w+2,-h/2,w,h);
+if(W.bb&&(performance.now()/250|0)%2){X.fillStyle='#ff3a2a';X.fillRect(-6,-3,3,3)}if(W.fb){X.globalAlpha=.35;X.fillStyle='#ff9a2e';X.beginPath();X.arc(0,0,5,0,7);X.fill();X.globalAlpha=1}X.restore()}
+// a bolt's end: the Blastbow's sticks where it is (hit or not), the Firebow's sets the zombie it hit on fire
+function xbHit(b,hit){const W=WP[b.g]||{};if(W.bb)return bbStick(b);if(!hit)return;if(W.fb&&b.zh&&b.zh.hp>0)fbLight(b.zh,b);for(let i=0;i<4;i++)pt.push({x:b.x,y:b.y,vx:(Math.random()-.5)*130,vy:(Math.random()-.5)*130,l:.25,c:i%2?'#c89a58':'#e8e0c8'})}
 // ---------- sounds ----------
 Object.assign(SF,{
 // crossbow: the string's twang, the slap of the limbs and a dry wooden thunk

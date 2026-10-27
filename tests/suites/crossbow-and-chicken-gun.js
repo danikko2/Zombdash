@@ -20,12 +20,12 @@ const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();
 const secs=s=>tick(Math.round(s/.016));
 const XB=WP.findIndex(w=>w.n=='Crossbow'),CG=WP.findIndex(w=>w.n=='Chicken Gun');
 // ---------- tables ----------
-ok(XB==11&&CG==12&&WP.length==13,'Crossbow and Chicken Gun are guns 12 and 13 (the 11 older guns keep their numbers)');
+ok(XB==11&&CG==12&&WP.length>=13,'Crossbow and Chicken Gun are guns 12 and 13 (the 11 older guns keep their numbers)');
 ok(WP[XB].cost==500&&WP[XB].r==.75&&WP[XB].d==4&&WP[XB].p==1,'Crossbow: $500, one shot every 0.75 s, 4 damage');
 ok(AMT[XB]=='ar'&&AMI.ar&&AMI.ar.buy==100&&AMI.ar.cost==40&&AMI.ar.max==500&&MAG[XB]==10,'Crossbow uses arrows: 100 for $40, carry up to 500, 10-bolt magazine');
 ok(WP[CG].cost==2000&&WP[CG].ck&&AMT[CG]=='rk'&&WP[CG].apr==2&&MAG[CG]==3,'Chicken Gun: $2000, 3 chickens a magazine, each chicken uses 2 rockets');
 ok(CKG.max==3&&CKG.n0==5&&CKG.n1==8&&CKG.big==8,'chickens: 3 out at once, eat 5-8, health 8 or more counts as two');
-ok([RLS,RLT,MAG,AMT,MZ,FS,FSN].every(a=>a.length==WP.length),'every per-gun table has an entry for all 13 guns');
+ok([RLS,RLT,MAG,AMT,MZ,FS,FSN].every(a=>a.length==WP.length),'every per-gun table has an entry for every gun');
 ok(FSN.every(n=>typeof SF[n]=='function')&&RLS.every(n=>typeof SF[n]=='function')&&SF.ckinflate&&SF.ckpop,'fire, reload and chicken sounds exist');
 ok(MAG.slice(0,11).join()=='18,45,6,30,1,8,30,40,100,8,120'&&WP[4].d==25&&WP[7].cost==4000&&AMI.rk.max==36&&AMI.pa.buy==300,'older guns and ammo keep their values');
 // ---------- sprites ----------
@@ -109,10 +109,10 @@ ok(CKG.n0==2&&CKG.n1==2&&WP[CG].apr==3&&WP[XB].r==.5,'sliders change the chicken
 setGM('f');start();nextWave();toSp=0;keep();clr();P.own.push(CG);P.mg[CG]=3;launch();ok(CK[0]&&CK[0].m==2,'a chicken now eats 2');P.mg[CG]=0;P.am.rk=7;P.rl=0;amRel(P);secs(RLT[CG]+.3);ok(P.mg[CG]==2&&P.am.rk==1,'and costs 3 rockets');
 devOff();ok(CKG.n0==5&&CKG.n1==8&&WP[CG].apr==2&&WP[XB].r==.75,'test mode off puts the defaults back');devSet();balOpen('guns');balReset(0);devOff();
 // ---------- older progress keeps working ----------
-{const A={name:'Old'};wpA(A);ok(A.wp.length==13&&A.cm.length==13,'gun progress grows to 13 guns');const c11=gEnc(S.ac).split('_').slice(0,11).join('_'),B={};ok(gDec(c11,B)&&B.wp.length==13&&B.wp[12].l==1,'an account code from before the new guns still loads');const C={};ok(gDec(gEnc(S.ac),C)&&C.wp.length==13,'new codes carry 13 guns')}
+{const A={name:'Old'};wpA(A);ok(A.wp.length==WP.length&&A.cm.length==WP.length,'gun progress grows to every gun ('+WP.length+')');const c11=gEnc(S.ac).split('_').slice(0,11).join('_'),B={};ok(gDec(c11,B)&&B.wp.length==WP.length&&B.wp[12].l==1,'an account code from before the new guns still loads');const C={};ok(gDec(gEnc(S.ac),C)&&C.wp.length==WP.length,'new codes carry every gun')}
 {const A={};wpA(A);for(let g=0;g<11;g++)Object.assign(A.wp[g],{k:999,n:99,m:99,h:999,b:9});ok(golds(A)==11&&camoOK(A,0,9)&&camoOK(A,CG,9)&&cProg(A,0,9)=='11/11','Outbreak camo still unlocks at 11 Gold guns, so nobody loses it')}
 CPR={v:1,w:3,k:0,gm:'f',m:0,ci:0,d:1,p:{cash:10,hp:5,mx:5,ar:0,own:[0,3],cur:3,mg:[18,45,6,30,1,8,30,40,100,8,120],am:{pa:0,ri:50,sh:0,rk:0,bl:0},paid:{}}};setGM('f');mapId=0;sel=0;start();CPR=null;
-ok(P.mg.length==13&&P.mg[XB]==10&&P.am.ar===0&&P.am.ri==50,'a checkpoint saved before the new guns resumes with arrows and the new magazines');P.cash=100000;amBuy('ar');ok(P.am.ar==100,'and can buy arrows');
+ok(P.mg.length==WP.length&&P.mg[XB]==10&&P.am.ar===0&&P.am.ri==50,'a checkpoint saved before the new guns resumes with arrows and the new magazines');P.cash=100000;amBuy('ar');ok(P.am.ar==100,'and can buy arrows');
 armory(CG);ok(ui.innerHTML.includes('Chicken Gun')&&ui.innerHTML.includes('Crossbow')&&ui.innerHTML.includes('Outbreak at 11'),'armory lists the new guns with levels and camos');
 ok(!ERRS.length,'no game errors: '+ERRS.join(' | '));
 }

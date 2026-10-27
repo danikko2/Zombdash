@@ -3,13 +3,13 @@
 The full wish list is the "Map Workshop" prompt the owner attaches. This file records how it fits the game and what each step covers (steps 1–3 and the building kit are done; step 4, converting the built-in maps, is under way: the Suburb and the Warehouse are converted). Read `docs/ARCHITECTURE.md` and `docs/map-format.md` too.
 
 ## Working on this repo
-- **Where the code lives:** the source is in `src/`, split into 116 modules whose load order is in `src/js/modules.txt`. Map files that ship with the game are in `src/maps/`.
+- **Where the code lives:** the source is in `src/`, split into 117 modules whose load order is in `src/js/modules.txt`. Map files that ship with the game are in `src/maps/`.
   - `tools/build.js` builds `index.html`, which GitHub Pages serves at https://danikko2.github.io/Zombdash/.
   - A GitHub Action rebuilds `index.html` whenever `src/` changes.
 - **Don't edit `index.html` by hand.** Before starting, run `node tools/build.js --check`. If it fails, someone edited `index.html` directly, and that change has to be moved into `src/` first.
 - **Publishing each change:**
   1. Run `node tools/build.js`.
-  2. Run `node tests/run.js` (29 suites, about 3 minutes). Every suite must pass; two checks are random and retried automatically:
+  2. Run `node tests/run.js` (30 suites, about 3 minutes). Every suite must pass; two checks are random and retried automatically:
      - The `campaign.js` Rusty check is flaky and retried automatically.
      - The `balance-editor-and-test-switches.js` ground-limit check fails about 1 run in 20 on the original game too (a kill can add two drops when one slot is left), so it is retried automatically as well.
      - The old `tutorial.js` camera zoom failure is fixed (Oct 25, 2026): the suite plays at phone size, where the tutorial doesn't zoom because the house already fills the screen (by design); the test now expects that on a phone and checks the zoom in and out on a desktop screen.
