@@ -202,5 +202,49 @@ wcsign:{w:18,h:12,c:0,pc:PKWCS,f(g,x,y,v,col){const R=kpR(g);R('#16111c',x-9,y-1
 // lights that flicker now and then (a failing bulb): the same lights with a 'fault' lamp head; half the lens is dim, so the editor tells them apart
 {const fl=(k,mk)=>{const B=OB[k],f=B.f;return Object.assign({},B,{lt:B.lt.map(h=>Object.assign({},h,{f:'fault'})),f(g,x,y,...a){f.call(this,g,x,y,...a);g.fillStyle='rgba(40,40,52,.6)';mk(g,x,y)}})};
  Object.assign(OB,{ceilflk:fl('ceillight',(g,x,y)=>{g.beginPath();g.arc(x,y-9,5,Math.PI/2,Math.PI*1.5);g.closePath();g.fill()}),wallflk:fl('walllight',(g,x,y)=>g.fillRect(x-5,y-5,5,3))})}
+// ---------- Hometown Market's pieces ----------
+// hanging signs (ov:1): in the game they hang from the ceiling, drawn over players and zombies (cmFxTop; see-through while someone is
+// under one) with only a soft shadow on the floor; the editor draws them like any prop. The base is the floor spot under the sign.
+const PKHS=[['#c0392b','Red'],['#2f6fd0','Blue'],['#2f8a4a','Green'],['#e08a1c','Orange'],['#6a4a9a','Purple'],['#b8783c','Brown'],['#16a0a0','Teal'],['#c8407a','Pink'],['#3a3d46','Charcoal']];
+const PKLANE=[['#3a3d46','Charcoal'],['#c0392b','Red'],['#2f6fd0','Blue'],['#2f8a4a','Green'],['#8a5a32','Wood']];
+function kpWires(q,x1,x2,y,y0){q.fillStyle='#5a5e68';q.fillRect(x1,y0,1,y-y0);q.fillRect(x2,y0,1,y-y0)}
+Object.assign(OB,{
+hsign:{w:170,h:96,c:0,ov:1,sw:150,pc:PKHS,txt:18,dt:'PRODUCE',f:(g,x,y,v,col,t)=>S2(g,x,y,170,96,q=>{const K=pcK(pcCol(col,PKHS)),T=(cmTxt(t,18)||'PRODUCE').toUpperCase();kpWires(q,24,145,54,30);
+ R_(q,K.dd,6,54,158,30);R_(q,K.b,7,55,156,26);R_(q,K.ll,7,55,156,3);R_(q,K.d,7,78,156,3);kpText(q,T,85,68,146,16,'#f8f6ee',0,'rgba(0,0,0,.35)')})},
+haisle:{w:100,h:100,c:0,ov:1,sw:84,pc:PKHS,txt:30,dt:'1|CEREAL|SNACKS',f:(g,x,y,v,col,t)=>S2(g,x,y,100,100,q=>{const K=pcK(pcCol(col,PKHS)),L=String(cmTxt(t,30)||'1|CEREAL|SNACKS').toUpperCase().split('|');kpWires(q,20,79,44,28);
+ R_(q,K.dd,6,44,88,46);R_(q,K.b,7,45,86,15);R_(q,K.ll,7,45,86,2);kpText(q,'AISLE '+(L[0]||''),50,53,80,11,'#f8f6ee');R_(q,'#f4f2ea',7,60,86,29);R_(q,'#d8d6ce',7,86,86,3);
+ kpText(q,L[1]||'',50,67,80,9,'#26262c');kpText(q,L[2]||'',50,79,80,9,'#26262c')})},
+// a checkout lane: belt with a divider, register, card reader on the customer's side (right), bagging well, the lane's number light
+lane:{w:56,h:128,c:[26,100],wb:1,pc:PKLANE,txt:2,dt:'1',f:(g,x,y,v,col,t)=>S2(g,x,y,56,128,q=>{const K=pcK(pcCol(col,PKLANE)),n=String(cmTxt(t,2)||'1');
+ R_(q,'#16111c',14,25,28,103);R_(q,K.b,15,26,26,101);R_(q,K.d,15,122,26,5);R_(q,'#c8ccd4',18,28,20,92);
+ R_(q,'#26262a',20,30,16,56);for(let k=33;k<86;k+=5)R_(q,'#3c3c44',20,k,16,1);R_(q,'#e8e4d8',19,58,18,3);R_(q,'#c8a050',23,40,6,5);R_(q,'#d84a3a',28,48,5,6);R_(q,'#7ab84a',22,70,7,4);
+ R_(q,'#16111c',19,90,12,9);R_(q,'#2a3a4a',20,91,10,7);R_(q,'#3aff7a',21,92,6,1);R_(q,'#8a909c',21,100,8,4);R_(q,'#16111c',35,92,6,8);R_(q,'#c8ccd4',36,93,4,3);R_(q,'#3aff7a',37,97,2,1);
+ R_(q,'#b8bcc4',18,106,20,13);R_(q,'#f8f8f4',20,108,7,9);R_(q,'#f8f8f4',29,109,7,8);R_(q,'#d8d8d0',22,108,3,1);R_(q,'#d8d8d0',31,109,3,1);
+ R_(q,'#8a909c',15,6,2,20);const lit=(+n||0)%2?'#3aff7a':'#ffd84a';R_(q,'#16111c',9,0,14,13);R_(q,lit,10,1,12,11);kpText(q,n,16,7,11,9,'#16111c')})},
+// an impulse rack (candy, gum, magazines) at a lane's entrance
+candy:{w:22,h:44,c:[16,12],wb:1,f:(g,x,y)=>S2(g,x,y,22,44,q=>{R_(q,'#16111c',2,2,18,40);R_(q,'#5a5e68',3,3,16,38);for(let r=0;r<4;r++){R_(q,'#3a3d46',3,6+r*9,16,1);for(let c=0;c<4;c++)R_(q,['#e8403a','#ffd84a','#3a9ae8','#7ad04a','#c84ab8','#f08a2a'][(r*3+c)%6],4+c*4,7+r*9,3,6)}R_(q,'#8a909c',3,38,16,3)})}});
+// shelves like the grocery gondola but with other stock: wine and spirits bottles, pharmacy bottles and boxes
+function kpGond(q,v,C,bt){R_(q,'#16111c',2,4,112,40);R_(q,bt?'#6a4a32':'#c8ccd4',3,5,110,38);for(let r=0;r<3;r++){R_(q,bt?'#4a3222':'#9aa0aa',3,16+r*12,110,2);for(let i=0;i<(bt?18:13);i++){const c=C[(i*5+r*3+Math.floor(v*7))%C.length];if(bt){R_(q,c,5+i*6,8+r*12,4,8);R_(q,c,6+i*6,6+r*12,2,2);R_(q,'rgba(255,255,255,.35)',5+i*6,9+r*12,1,4)}else R_(q,c,5+i*8,7+r*12,6,8)}}}
+Object.assign(OB,{
+wineshelf:ob(116,46,[110,16],(q,v)=>kpGond(q,v,['#5a1a2a','#2a4a2a','#7a2a3a','#c8b070','#3a2a1a','#8a1a2a','#e8e0c8','#1a3a22'],1)),
+rxshelf:ob(116,46,[110,16],(q,v)=>kpGond(q,v,['#f4f4f0','#e88a2a','#f4f4f0','#3a8ad0','#e8e4d8','#d84a4a','#f4f4f0','#7ac04a'],0)),
+// a self-checkout station: screen, scanner bed, bagging rack with bags
+selfco:{w:36,h:52,c:[28,14],wb:1,f:(g,x,y)=>S2(g,x,y,36,52,q=>{R_(q,'#16111c',3,22,30,28);R_(q,'#5a5e68',4,23,28,26);R_(q,'#c8ccd4',4,23,28,8);R_(q,'#2a2a30',7,25,12,4);R_(q,'#d84a3a',9,26,4,1);
+ R_(q,'#8a909c',16,4,3,20);R_(q,'#16111c',10,1,16,12);R_(q,'#2a4a6a',11,2,14,10);R_(q,'#7ad0ff',12,3,8,2);R_(q,'#3aff7a',12,7,4,3);R_(q,'#f8f8f4',22,33,8,10);R_(q,'#d8d8d0',24,33,3,1);R_(q,'#3a3d46',7,36,10,8);R_(q,'#ffd84a',8,37,3,2)})},
+// a cash machine set in the wall
+atm:{w:28,h:46,c:[24,10],wb:1,f:(g,x,y)=>S2(g,x,y,28,46,q=>{R_(q,'#16111c',2,2,24,42);R_(q,'#3a5a8a',3,3,22,40);R_(q,'#2a3a5a',3,3,22,8);kpText(q,'ATM',14,7,20,7,'#f8f6ee');R_(q,'#16111c',6,13,16,11);R_(q,'#7ad0ff',7,14,14,9);R_(q,'#c8ccd4',6,27,16,8);for(let r=0;r<3;r++)for(let c=0;c<3;c++)R_(q,'#5a5e68',8+c*4,28+r*2,3,1);R_(q,'#16111c',8,37,12,2);R_(q,'#3aff7a',18,37,2,2)})},
+// an ICE merchandiser (outdoor freezer)
+icebox:{w:66,h:46,c:[60,16],wb:1,f:(g,x,y)=>S2(g,x,y,66,46,q=>{R_(q,'#16111c',2,6,62,38);R_(q,'#e8f0f8',3,7,60,36);R_(q,'#2f6fd0',3,7,60,10);kpText(q,'ICE',33,12,40,9,'#f8f6ee');for(const x of[6,35])R_(q,'#c8d8e8',x,20,25,20),R_(q,'#9ab8d0',x+20,28,3,4);R_(q,'#9aa0aa',3,40,60,3)})},
+// a propane exchange cage with tanks
+propane:{w:58,h:52,c:[52,16],wb:1,f:(g,x,y)=>S2(g,x,y,58,52,q=>{R_(q,'#16111c',2,4,54,46);R_(q,'#3a3d46',3,5,52,44);for(let r=0;r<2;r++)for(let c=0;c<4;c++){const X=6+c*12,Y=10+r*18;R_(q,'#e8e8e4',X,Y,9,14);R_(q,'#c8ccd4',X+6,Y,3,14);R_(q,'#8a909c',X+3,Y-2,3,3)}
+ R_(q,'#d84a3a',3,5,52,4);for(let x=6;x<56;x+=6)R_(q,'rgba(220,224,230,.55)',x,9,1,40);for(let y=14;y<48;y+=6)R_(q,'rgba(220,224,230,.4)',3,y,52,1)})},
+// a wooden bin of pumpkins
+pumpkins:{w:64,h:40,c:[58,14],f:(g,x,y)=>S2(g,x,y,64,40,q=>{R_(q,'#16111c',2,14,60,24);R_(q,'#8a5a32',3,15,58,22);for(let k=18;k<36;k+=6)R_(q,'#6b4426',3,k,58,1);
+ for(const[px,py,r]of[[12,15,7],[26,12,8],[41,14,7],[53,16,6],[19,7,6],[35,6,6],[48,8,5]]){q.fillStyle='#16111c';q.beginPath();q.arc(px,py,r+1,0,7);q.fill();q.fillStyle='#e8781c';q.beginPath();q.arc(px,py,r,0,7);q.fill();q.fillStyle='#c85a10';q.fillRect(px-1,py-r+1,2,r*2-2);q.fillStyle='#4a7a2a';q.fillRect(px-1,py-r-2,2,3)}})},
+// a pallet of soil and mulch bags
+soilbags:{w:60,h:40,c:[54,16],f:(g,x,y)=>S2(g,x,y,60,40,q=>{R_(q,'#16111c',3,32,54,7);R_(q,'#a8703a',4,33,52,5);for(let r=0;r<3;r++)for(let c=0;c<2;c++){const X=5+c*25+(r%2)*2,Y=8+r*8;R_(q,'#16111c',X,Y,25,9);R_(q,(r+c)%2?'#5a3a22':'#3a6a2a',X+1,Y+1,23,7);R_(q,'#e8d8a0',X+8,Y+3,8,2)}})},
+// a flower stand: buckets of cut flowers on tiers
+flowers:{w:70,h:44,c:[64,14],wb:1,f:(g,x,y)=>S2(g,x,y,70,44,q=>{R_(q,'#16111c',2,26,66,16);R_(q,'#3a6a3a',3,27,64,14);R_(q,'#2a5a2a',3,33,64,1);
+ const C=['#ff6a8a','#ffd84a','#f8f8f4','#c86aff','#ff8a3a','#e8304a'];for(let r=0;r<2;r++)for(let i=0;i<7;i++){const X=6+i*9,Y=10+r*12;R_(q,'#2f6b34',X+2,Y+4,2,7);q.fillStyle=C[(i+r*3)%6];q.beginPath();q.arc(X+3,Y+3,4,0,7);q.fill();R_(q,'#9aa0aa',X,Y+9,7,5)}})}});
 // props that belong at doorways (cmDoorBlocks leaves them out)
-for(const k of['awning','walllight','wallflk','exitsign','curtain','wcsign','banner'])if(OB[k])OB[k].dk=1;
+for(const k of['awning','walllight','wallflk','exitsign','curtain','wcsign','banner','deptsign','hsign','haisle'])if(OB[k])OB[k].dk=1;

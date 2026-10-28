@@ -1,8 +1,8 @@
-//# world/builtin-maps.js — Built-in maps made from map files: the Suburb (map 0) is src/maps/suburb.json, the Warehouse (map 1) src/maps/warehouse.json, the School (map 3) src/maps/school.json, built by the custom-map loader (cmBuild); the first map build at boot
+//# world/builtin-maps.js — Built-in maps made from map files: the Suburb (map 0) is src/maps/suburb.json, the Warehouse (map 1) src/maps/warehouse.json, the School (map 3) src/maps/school.json, Hometown Market (map 14) src/maps/market.json, built by the custom-map loader (cmBuild); the first map build at boot
 // ---------- built-in maps from map files ----------
 // BIMF[mapId] is the map file (embedded by tools/build.js). The map keeps its built-in number, so its campaign slot, records,
 // leaderboard board, checkpoints and boss stay those of map 0. The Workshop offers a copy to edit (wsBuiltins).
-const BIMF={0:{{json:maps/suburb.json}},1:{{json:maps/warehouse.json}},3:{{json:maps/school.json}}};
+const BIMF={0:{{json:maps/suburb.json}},1:{{json:maps/warehouse.json}},3:{{json:maps/school.json}},14:{{json:maps/market.json}}};
 function bimIs(m){return!!(typeof BIMF!='undefined'&&BIMF[m])}
 // the map's document, read fresh each time (so only the map being played is in memory; cmRead checks it, and a broken file is a build bug, so it throws)
 function bimDoc(m){const r=cmRead(JSON.stringify(BIMF[m]));if(!r.doc)throw new Error('built-in map '+m+': '+(r.errors||[]).join('; '));return r.doc}

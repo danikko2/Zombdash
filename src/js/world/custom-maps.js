@@ -27,8 +27,9 @@ L.sort((a,b)=>String(a.meta.name||'').localeCompare(String(b.meta.name||''),unde
 // paint a whole custom map (ground, walls, props, vehicles) into g; used for the game's background and for thumbnails
 // how far a thing's picture turns: upright lights (nr:1) keep their picture standing, their turn only aims the light
 function cmPR(o){if(!o||!o.r)return 0;if(o.veh||o.dc||o.fx)return o.r;const B=cmOB(o.k);return B&&B.nr?0:o.r}
-// props marked eo (editor only: the ceiling light) are drawn in the editor only; in the game just their light shows
-function cmProp(g,o){const B=cmOB(o.k);if(!B||B.eo)return;const v=o.vr!=null?o.vr:cmH(o.x,o.y,3),r=cmPR(o);if(!r){B.f(g,o.x,o.y,v,o.c,o.tx);return}
+// props marked eo (editor only: the ceiling light) are drawn in the editor only; in the game just their light shows.
+// Props marked ov (overhead: hanging signs) leave only a shadow on the floor; cmFxTop draws them over people
+function cmProp(g,o){const B=cmOB(o.k);if(!B||B.eo)return;if(B.ov){g.fillStyle='rgba(0,0,0,.07)';g.fillRect(o.x-B.sw/2,o.y-5,B.sw,6);return}const v=o.vr!=null?o.vr:cmH(o.x,o.y,3),r=cmPR(o);if(!r){B.f(g,o.x,o.y,v,o.c,o.tx);return}
 const L=vRec.L,n=L?L.length:0;g.save();g.translate(o.x,o.y);g.rotate(r*Math.PI/180);try{B.f(g,0,0,v,o.c,o.tx)}finally{g.restore()}
 // a turned sprite has no straight base line, so walk-behind uses its pixels instead
 if(L)for(let i=n;i<L.length;i++)delete L[i].base}
@@ -56,9 +57,9 @@ const MV=F.find(f=>f.f=='menuview'&&f.w>0);if(MV){HS.cx=MV.x+MV.w/2;HS.cy=MV.y+M
 const HO=F.filter(f=>f.f=='house'&&f.w>0).map(f=>({x:f.x,y:f.y,w:f.w,h:f.h}));for(const a of d.areas||[])if(a.a=='floor'&&(!a.o||a.o.in!==0&&a.o.in!==false))HO.push({x:a.x,y:a.y,w:a.w,h:a.h});if(HO.length)HS.HO=HO;
 // the boss road graph
 const G=F.find(f=>f.f=='roadgraph'&&f.pts&&f.pts.length>1);if(G){const N=G.pts.map(p=>[G.x+p[0],G.y+p[1]]),A=N.map(()=>[]);for(const e of G.e||[]){if(!A[e[0]]||!A[e[1]]||e[0]===e[1])continue;if(!A[e[0]].includes(e[1]))A[e[0]].push(e[1]);if(!A[e[1]].includes(e[0]))A[e[1]].push(e[0])}HS.RG={N,A}}
-// the Mayor's roof, Penny's store
+// the Mayor's roof, Penny's store (carts come from the corrals and cart rows outside the store, as on the old map)
 const C=F.find(f=>f.f=='cityhall'&&f.w>0);if(C)HS.CH={x:C.x+C.w/2,y:C.y+40,rx:C.x,ry:C.y,rw:C.w,rh:C.h};
-const S_=F.find(f=>f.f=='store'&&f.w>0);if(S_){HS.ST=R(S_);HS.SHF=d.obj.filter(o=>o.k=='gshelf'&&o.x>S_.x&&o.x<S_.x+S_.w&&o.y>S_.y&&o.y<S_.y+S_.h).map(o=>[o.x,o.y-24]);HS.CRL=d.obj.filter(o=>o.k=='corral'||o.k=='cartrow').map(o=>[o.x,o.y])}
+const S_=F.find(f=>f.f=='store'&&f.w>0);if(S_){HS.ST=R(S_);HS.SHF=d.obj.filter(o=>o.k=='gshelf'&&o.x>S_.x&&o.x<S_.x+S_.w&&o.y>S_.y&&o.y<S_.y+S_.h).map(o=>[o.x,o.y-24]);HS.CRL=d.obj.filter(o=>(o.k=='corral'||o.k=='cartrow')&&!(o.x>S_.x&&o.x<S_.x+S_.w&&o.y>S_.y&&o.y<S_.y+S_.h)).map(o=>[o.x,o.y])}
 // street trees stop the fire hose (as on Downtown)
 const TK=d.obj.filter(o=>o.k=='stree').map(o=>[o.x,o.y-4]);if(TK.length)HS.TRK=TK}
 // where the next zombie appears on a custom map with spawn points or zones (spawnZ calls this)

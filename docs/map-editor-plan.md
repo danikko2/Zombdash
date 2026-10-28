@@ -9,7 +9,7 @@ The full wish list is the "Map Workshop" prompt the owner attaches. This file re
 - **Don't edit `index.html` by hand.** Before starting, run `node tools/build.js --check`. If it fails, someone edited `index.html` directly, and that change has to be moved into `src/` first.
 - **Publishing each change:**
   1. Run `node tools/build.js`.
-  2. Run `node tests/run.js` (31 suites, about 3 minutes). Every suite must pass; two checks are random and retried automatically:
+  2. Run `node tests/run.js` (32 suites, about 4 minutes). Every suite must pass; two checks are random and retried automatically:
      - The `campaign.js` Rusty check is flaky and retried automatically.
      - The `balance-editor-and-test-switches.js` ground-limit check fails about 1 run in 20 on the original game too (a kill can add two drops when one slot is left), so it is retried automatically as well.
      - The old `tutorial.js` camera zoom failure is fixed (Oct 25, 2026): the suite plays at phone size, where the tutorial doesn't zoom because the house already fills the screen (by design); the test now expects that on a phone and checks the zoom in and out on a desktop screen.
@@ -117,7 +117,7 @@ The full wish list is the "Map Workshop" prompt the owner attaches. This file re
    - **Shipping:** converted maps are stored as `src/maps/*.json` and embedded by `tools/build.js`. The step 1 note says the loader is ready and the build needs to embed the files.
    - **Progress safety:** a converted map keeps its map number, campaign slot, boss, progress and leaderboard board, so players' progress is untouched.
    - **Small differences are allowed:** a converted map may look slightly different in painted details. The layout, walls, spawns and gameplay must match.
-   - **Converted:** the **Suburb** (map 0), Oct 24, 2026, the **Warehouse** (map 1), Oct 25, 2026, and the **School** (map 3), Oct 26, 2026: see "Step 4 conversions" below.
+   - **Converted:** the **Suburb** (map 0), Oct 24, 2026, the **Warehouse** (map 1), Oct 25, 2026, the **School** (map 3), Oct 26, 2026, and **Hometown Market** (map 14), Oct 28, 2026: see "Step 4 conversions" below.
 5. **Step 5:** gameplay pieces the owner picks (loot crates, doors, traps…).
 
 ## Building kit (done Oct 23, 2026)
@@ -289,6 +289,13 @@ This is the checklist for the step 4 conversions. Maps: **Su** Suburb, **Wa** Wa
 - **Checks:** before/after pictures of every part of the map; dusk and night pictures; every room reachable; zombies never come out of the woods; campaign waves 1–19 (every zombie reached the player) and the survivor boss; Free Play; split screen; low-memory mode; the Workshop copy.
 - **Visible differences:** the court is the kit court (keys and three-point arcs); the sidewalk is kit slabs (speckled); the wall clocks, posters, lockers and chalkboards are kit pieces drawn like the old ones; the commons' terrazzo flecks are gone; the trees are the forest kit trees (the same pictures).
 
+### Hometown Market (map 14): converted and redesigned Oct 28, 2026 (owner's request)
+- **The file:** `src/maps/market.json` (80×97 tiles on the new `grass_market` lawn, a little bigger than the old map's 75×78: a deeper truck yard; about 360 props, 57 vehicles, 45 walls, 130 decals, 65 areas, 171 paths; the store, building interior, no-spawn box, menu view and road graph features; 12 spawn points round the edges as before). `BIMF[14]`; map 14 keeps its campaign slot (fourth in Hometown), Penny, best waves, leaderboard board and checkpoints. `maps/hometown-market.js` (`mapGrocery`, `grH`) is gone.
+- **Asked for:** a truck route round the building (a one-way road up the east side, across the back behind the docks and down the west side, both ends on the road out front, arrows, TRUCK ROUTE / ONE WAY paint and signs, and a road graph along it); four dock doors side by side (aprons, bumpers, levelers, numbers, guide lines, dock lights; semis at docks 1 and 3, two parked trailers); a fuller store after two real layouts (dairy, meat, service meat & seafood, deli and bakery along the back; health & beauty; 42 grocery shelves in two blocks with a cross aisle; frozen chest freezers; 16 produce stands; promo displays); detailed checkout lanes (belt, register, card reader, bagging, lane lights) with impulse racks; hanging section and aisle signs that the player walks under; the cart corral redrawn like a real one, sitting in a parking stall.
+- **Approved extras (1, 2, 3, 5, 6, 7, 9, 10 of the list; not the café or a truck that drives):** a pharmacy with a counter and a drive-up window on the west wall by the truck route; restrooms, customer service and an ATM along the front; a wine & spirits room; four self-checkouts; a seasonal display out front (pumpkins, soil bags, ice freezer, propane cage, flowers); lights at dusk (room lights, ceiling lights, flickering lights in the storage room, wall lights at the docks and doors, lot lights); the mess (a barricaded side door, a knocked-over display, spilled stock, blood by the doors, a dead zombie); parking lot islands with curbs and trees, and corrals in all four stall rows.
+- **New kit pieces:** props `hsign`, `haisle` (overhead: `ov: 1`, drawn by `cmOverhead`), `lane`, `candy`, `selfco`, `atm`, `wineshelf`, `rxshelf`, `icebox`, `propane`, `pumpkins`, `soilbags`, `flowers`; the new `corral` picture and size; terrain `grass_market`; department and hanging signs may hang over doorways; Penny's carts come only from corrals and cart rows outside the store.
+- **Checks:** every room reachable (the narrow restroom doors, the customer-service and pharmacy counter gaps were widened for zombie pathing); zombies take about as long to reach the player as on the old map (median about 44 s against 45 s: the map is big and they walk in from the edges, so the market test allows 80 s before calling one slow); campaign waves 1–19 (every zombie reached the player) and Penny (aisles: she dumps the nearest shelves; lot: carts out of the corrals); Free Play; split screen; low memory; the Workshop copy; frames about 7 ms with the dusk lighting in the software-rendered test browser (the old, unlit map 1.7 ms).
+
 ### Doorways (Oct 25, 2026, owner's request)
 No prop may block a doorway. `cmDoorBlocks` finds props and vehicles within 24 px of an opening (solid ones by their collision, others by their base) and the Problems list and `tools/check-map.js` warn about them. Fixed on the Suburb: the dressers now stand against the bedroom side walls, the hall plants moved away from the bedroom and garage doors, the garage cabinet, tool chest and tires moved out of the house door and the garage opening, the stove and fridge moved off the back doors, one kitchen table moved 4 px, and the trash can by the middle house's back door moved 10 px (the only collision change; the Suburb test allows it). Fixed on the Elm & 3rd sample and on the example in `docs/map-format.md` too. Both converted maps' tests check it.
 
@@ -309,6 +316,8 @@ No prop may block a doorway. `cmDoorBlocks` finds props and vehicles within 24 p
 - **Free Play needs the map unlocked** in a browser check (`S.ac.cp = 8`), or `start()` quietly plays the Suburb.
 - **Survivor bosses dodge:** clear `iv` (short invulnerability) before a test's knock-out hit, or the hit is blocked now and then.
 - **Lots of lights cost a full-screen blend or two, not one per light:** still lights are cached; keep flickering ones few.
+- **Big maps take longer:** when zombies walk in from the edges of a big map, compare how long they take on the old map before calling them stuck.
+- **Campaign progress** for maps outside the old order list (`OLDC`) is the beaten-boss mark (`bBt`), not `A.cp`.
 - **A map with woods along an edge:** cover them with no-spawn zones (`skip` on); a zone touching the edge covers the strip just outside it too.
 
 ## What each map still needs before converting
@@ -330,5 +339,5 @@ Everything else on each map can be built with the kit; the conversion still has 
 | Urban Outskirts | Nothing new. |
 | City Park | Nothing new (road graph for the Ice Cream Man; splash pad, ponds, ducks). |
 | Downtown | Second spawn list as spawn points; lobbies with the Room tool next to tower roofs; street trees `stree`. |
-| Hometown Market | Nothing new (store feature, shelves, corrals, no-spawn). |
+| Hometown Market | **Converted and redesigned (Oct 28, 2026).** |
 | Main Street | Nothing new (City Hall prefab with the roof feature, road graph for the Mayor's cruiser, pools, canopy). |
