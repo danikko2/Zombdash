@@ -3145,7 +3145,7 @@ let KN=null,RH=null,SVB=0,CWIN=null,RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];GCC=[];
 // w: pi pistol · sg shotgun · smg · dp dual pistols. pd = preferred distance. h1 = first health bar (ship / horse)
 const SVS={
 1:{hp:720,sp:70,w:'pi',cd:.45,pd:200,lz:'#7ae8ff'},
-2:{hp:540,sp:74,w:'sg',cd:1.45,pd:160,sv:340,sr:1.4},
+2:{hp:540,sp:74,w:'sg',cd:1.45,pd:160},
 3:{hp:440,sp:177,w:'smg',cd:1.35,pd:230},
 4:{hp:520,sp:78,w:'sg',cd:1.13,pd:170},
 5:{hp:560,sp:54,w:'sg',cd:1.6,pd:160},
@@ -3162,7 +3162,7 @@ if(ci==6){z.fly=1;z.hr=28}if(ci==8||ci==11)z.hr=22;if(ci==12)z.hr=20;if(ci==7)z.
 function hitP(q,dm,a){if(!alive(q)||q.inv>0)return;const P0=P;P=q;P.hp-=arm(dm*(S.df?2:1));P.inv=.8;if(a!=null){P.x=cl(P.x+Math.cos(a)*24,10,WW-10);P.y=cl(P.y+Math.sin(a)*24,10,WH-10);push(P,9)}if(P.hp<=0&&ded())pend=1;P=P0}
 function svShot(z,a,v,l){const c=SVS[z.ci].lz,lift=(z.fly?34:0)+(z.lift||0);ep.push({x:z.x+Math.cos(a)*16,y:z.y-6-lift*.5+Math.sin(a)*16,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l,k:5,c:c||'#ffe27a',lz:!!c})}
 function svFire(z,a){const D=SVS[z.ci],w=z.ph==1&&z.ci==6?'ship':D.w;
-if(w=='sg'){for(let i=0;i<5;i++)svShot(z,a+(i-2)*.2+(Math.random()-.5)*.08,D.sv||300,D.sr||.75);sfx('shotgun',z.x,z.y,.7);z.cd=D.cd}
+if(w=='sg'){for(let i=0;i<5;i++)svShot(z,a+(i-2)*.2+(Math.random()-.5)*.08,D.sv||340,D.sr||1.4);sfx('shotgun',z.x,z.y,.7);z.cd=D.cd}
 else if(w=='smg'){z.bq=z.ci==7?10:5;z.bt=0;z.cd=D.cd}
 else if(w=='pi'){svShot(z,a,330,1.5);sfx(D.lz?'laser':'pistol',z.x,z.y,.7);z.cd=D.cd}
 else if(w=='dp'){svShot(z,a+(Math.random()-.5)*.08,330,1.4);sfx('pistol',z.x,z.y,.6);z.cd=D.cd*(z.ph==1?1.15:1);z.dw=!z.dw}

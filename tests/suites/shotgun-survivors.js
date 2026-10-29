@@ -14,7 +14,7 @@ const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeou
 const out=code+`;S.ac.cp=8;docL.pointerdown[0]();endIntro();
 const ok=(c,m)=>{LOG((c?'PASS ':'FAIL ')+m);if(!c)errs.push(m)};S.ac.name='T';
 const bRange=ci=>{ep=[];const z={x:500,y:500,ci,ph:2,cd:0};svFire(z,0);const s=ep.filter(p=>p.k==5);return s.length?Math.max(...s.map(p=>Math.hypot(p.vx,p.vy)*p.l)):0};
-const b=bRange(2),t=bRange(4);ok(b>=450,'Bill shotgun reaches '+Math.round(b)+'px (was 225)');ok(Math.round(t)==225,'other shotgun survivors unchanged ('+Math.round(t)+'px)');
+const sgs=Object.keys(SVS).filter(k=>SVS[k].w=='sg');ok(sgs.length>=6,'shotgun survivors found: '+sgs.join(','));for(const k of sgs){const r=bRange(+k);ok(r>=450,'shotgun survivor '+k+' reaches '+Math.round(r)+'px (was 225)')}
 setGM('c');mapId=0;sel=0;start();wave=19;zs=[];toSp=0;nextWave();const z=zs.find(q=>ZT[q.t].sv);ok(z&&z.ci==2,'Bill is the Suburb boss');
 P.hp=P.mx=999;{let f=0;for(let y=100;y<WH-100&&!f;y+=40)for(let x=100;x<WW-500&&!f;x+=40){const A={x,y},B={x:x+380,y};if(los(A,B)&&!wlAt(x,y).length&&!wlAt(x+380,y).length&&!fdBad(x,y)){P.x=x;P.y=y;f=1}}LOG('  open spot '+P.x+','+P.y)}z.x=P.x+380;z.y=P.y;z.cd=0;let hit=0;const h0=P.hp;for(let i=0;i<400;i++){NOW_+=16;P.inv=0;z.ab=9;upd(1/60);if(P.hp<h0)hit=1;z.x=P.x+380+Math.sin(i/9)*20;z.y=P.y}
 ok(hit,'Bill can hit you from 380px away');
