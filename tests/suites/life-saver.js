@@ -20,7 +20,7 @@ const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();
 const secs=s=>tick(Math.round(s/.016));
 const LS=WP.findIndex(w=>w.n=='Life Saver');
 // ---------- tables ----------
-ok(LS==16&&WP.length==17,'the Life Saver is gun 17 (the older guns keep their numbers)');
+ok(LS==16&&WP.length>=17,'the Life Saver is gun 17 (the older guns keep their numbers)');
 ok(AMT[LS]=='rk'&&WP[LS].apr==3&&MAG[LS]==1&&RLT[LS]==3,'it uses rockets, 3 for every heart, one heart a magazine and a 3 s reload');
 ok(WP[LS].cost==1200&&WP[LS].hl==2&&WP[LS].d==0,'\\$1200; each heart heals 2 and never hurts zombies');
 ok([RLS,RLT,MAG,AMT,MZ,FS,FSN].every(a=>a.length==WP.length),'every per-gun table has an entry for every gun');
@@ -84,9 +84,9 @@ face();P.hp=2;shoot();for(let i=0;i<150&&LSH.length;i++)tick(1);ok(P.hp==6,'a he
 balSet(idx('Most wall bounces'),0);face();P.hp=2;shoot();for(let i=0;i<150&&LSH.length;i++)tick(1);ok(P.hp==2,'with no bounces the heart stops at the wall');
 devOff();ok(WP[LS].hl==2&&WP[LS].apr==3&&WP[LS].lb==3,'test mode off puts the defaults back');devSet();balOpen('guns');balReset(0);devOff();
 // ---------- older progress keeps working ----------
-{const A={name:'Old'};wpA(A);ok(A.wp.length==17,'gun progress grows to 17 guns');const full=gEnc(S.ac).split('_'),B={};ok(gDec(full.slice(0,16).join('_'),B)&&B.wp.length==17&&B.wp[16].l==1,'an account code from before the Life Saver still loads')}
+{const A={name:'Old'};wpA(A);ok(A.wp.length==WP.length,'gun progress grows to every gun');const full=gEnc(S.ac).split('_'),B={};ok(gDec(full.slice(0,16).join('_'),B)&&B.wp.length==WP.length&&B.wp[16].l==1,'an account code from before the Life Saver still loads')}
 CPR={v:1,w:3,k:0,gm:'f',m:0,ci:0,d:1,p:{cash:10,hp:5,mx:5,ar:0,own:[0,14],cur:14,mg:[18,45,6,30,1,8,30,40,100,8,120,10,3,6,1,10],am:{pa:0,ri:0,sh:0,rk:9,bl:0,ar:0},paid:{}}};setGM('f');mapId=0;sel=0;start();CPR=null;
-ok(P.mg.length==17&&P.mg[LS]==1&&P.am.rk==9,'a checkpoint saved before the Life Saver resumes with its magazine ready');
+ok(P.mg.length==WP.length&&P.mg[LS]==1&&P.am.rk==9,'a checkpoint saved before the Life Saver resumes with its magazine ready');
 armory(LS);ok(ui.innerHTML.includes('Life Saver'),'the armory lists it with levels and camos');
 ok(!ERRS.length,'no game errors: '+ERRS.join(' | '));
 }

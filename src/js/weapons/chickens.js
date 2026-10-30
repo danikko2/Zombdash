@@ -7,8 +7,8 @@
 // seconds pops as well. A player can have CKG.max chickens out at once; each chicken uses WP apr rockets.
 var CK=[],CKS=[];
 var CKG={max:3,n0:5,n1:8,big:8,sp:260,idle:5,eat:.45,rng:650};
-// (also clears the Blastbow's bolts, Death Row's lightning and scorch marks, and the Life Saver's hearts)
-function ckClear(){CK=[];CKS=[];spClear();lsClear()}
+// (also clears the Blastbow's bolts, Death Row's lightning and scorch marks, the Life Saver's hearts and the Bubble Cannon's bubbles)
+function ckClear(){CK=[];CKS=[];spClear();lsClear();bcClear()}
 // chickens a player has out (not yet popped)
 function ckOut(p){let n=0;for(const c of CK)if(c.o===p&&!c.dead)n++;return n}
 // can this player fire now? Only the Chicken Gun is limited

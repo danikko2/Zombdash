@@ -81,6 +81,7 @@ weapons/ammo-and-inventory.js
 weapons/chickens.js
 weapons/bows-and-lightning.js
 weapons/life-saver.js
+weapons/bubble-cannon.js
 campaign/sections.js
 campaign/map-screens.js
 maps/main-street.js
