@@ -1,4 +1,4 @@
-//# world/kit-lighting.js — Time-of-day lighting for custom maps: day, morning, dusk or night with an amount (0–100%), drawn over the world every frame, with light cut out around lamps, light effects, fires, sirens, glows, lit windows and the players; the same drawing previews it in the editor and darkens map thumbnails
+//# world/kit-lighting.js — Time-of-day lighting for custom maps: day, morning, dusk or night with an amount (0–100%), drawn over the world every frame, with light cut out around lamps, light effects, fires, sirens, glows, and lit windows; the same drawing previews it in the editor and darkens map thumbnails
 // ---------- time of day ----------
 // A map's d.lt = {t: 'day' | 'morning' | 'dusk' | 'night', a: 0..1} (file: "lighting": {"time", "amount"}). The world is multiplied
 // by a light map: the time's colour (mixed with white by the amount), plus light pools added around every light source.
@@ -108,8 +108,7 @@ return T.K={key,cv,gv,res:r,dyn:T.L.filter(s=>!cmLtStill(s))}}
 function cmLightData(d){const p=d.lt&&cmLtP(d.lt.t);if(!p||!(+d.lt.a>0))return null;return{t:d.lt.t,a:cl(+d.lt.a,0,1),L:cmLightSrc(d)}}
 function cmLtOn(){return!!(HS&&HS.LT&&HS.CM&&cmLtOK())}
 // the game: called from drawW in world space (after everything in the world, before the aim marker and the HUD).
-// Every living player carries a soft light so night maps stay playable; burning ground and fireballs light up too.
-function cmLight(){const T=HS.LT;if(!T||!HS.CM)return;const sx=Math.round(cam.x),sy=Math.round(cam.y),res=LMX?.25:.5,K=cmLtCache(T,res),S=(K?K.dyn:T.L).slice();S.O=T.L.O;const PP=typeof PL!='undefined'&&PL.length?PL:[P];
-for(const p of PP)if(p&&alive(p))S.push({x:p.x,y:p.y-10,r:150,c:'#fff2dc',i:.95,pl:1});
+// Burning ground and fireballs light up too. (Players carry no light of their own: the glow round them was taken out.)
+function cmLight(){const T=HS.LT;if(!T||!HS.CM)return;const sx=Math.round(cam.x),sy=Math.round(cam.y),res=LMX?.25:.5,K=cmLtCache(T,res),S=(K?K.dyn:T.L).slice();S.O=T.L.O;
 for(const q of fr)S.push({x:q.x,y:q.y,r:80,c:'#ff9a3a',i:1,f:'fire',ph:q.x});for(const e of ep)if(e.k==3)S.push({x:e.x,y:e.y,r:40,c:'#ff7a2a',i:1});
 cmLightPaint(X,T,S,sx,sy,W,H,res,performance.now()/1000,0,K)}

@@ -385,6 +385,7 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 |---|---|
 | `zombies/spawn-system.js` | Zombie classes (ZC), caps and schedule (ZCFG), campaign sections, spawn manager |
 | `zombies/special-behaviors.js` | Exploder, Healer and Rotwood behavior and drawing, split-screen kill cash |
+| `zombies/spread.js` | Zombies fan out in open ground and push apart instead of chasing in single file (ZSPR, zSpreadA, zSep) |
 | `zombies/wave-size.js` | Wave size formula and per-map % |
 
 ### Intro (`src/js/intro/`)

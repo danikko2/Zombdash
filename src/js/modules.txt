@@ -93,6 +93,7 @@ system/phones-checkpoints-crashlog.js
 online/supabase.js
 zombies/spawn-system.js
 zombies/special-behaviors.js
+zombies/spread.js
 dev/spawn-diagnostics.js
 zombies/wave-size.js
 multiplayer/campaign-map-pick.js

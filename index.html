@@ -2279,9 +2279,8 @@ return T.K={key,cv,gv,res:r,dyn:T.L.filter(s=>!cmLtStill(s))}}
 function cmLightData(d){const p=d.lt&&cmLtP(d.lt.t);if(!p||!(+d.lt.a>0))return null;return{t:d.lt.t,a:cl(+d.lt.a,0,1),L:cmLightSrc(d)}}
 function cmLtOn(){return!!(HS&&HS.LT&&HS.CM&&cmLtOK())}
 // the game: called from drawW in world space (after everything in the world, before the aim marker and the HUD).
-// Every living player carries a soft light so night maps stay playable; burning ground and fireballs light up too.
-function cmLight(){const T=HS.LT;if(!T||!HS.CM)return;const sx=Math.round(cam.x),sy=Math.round(cam.y),res=LMX?.25:.5,K=cmLtCache(T,res),S=(K?K.dyn:T.L).slice();S.O=T.L.O;const PP=typeof PL!='undefined'&&PL.length?PL:[P];
-for(const p of PP)if(p&&alive(p))S.push({x:p.x,y:p.y-10,r:150,c:'#fff2dc',i:.95,pl:1});
+// Burning ground and fireballs light up too. (Players carry no light of their own: the glow round them was taken out.)
+function cmLight(){const T=HS.LT;if(!T||!HS.CM)return;const sx=Math.round(cam.x),sy=Math.round(cam.y),res=LMX?.25:.5,K=cmLtCache(T,res),S=(K?K.dyn:T.L).slice();S.O=T.L.O;
 for(const q of fr)S.push({x:q.x,y:q.y,r:80,c:'#ff9a3a',i:1,f:'fire',ph:q.x});for(const e of ep)if(e.k==3)S.push({x:e.x,y:e.y,r:40,c:'#ff7a2a',i:1});
 cmLightPaint(X,T,S,sx,sy,W,H,res,performance.now()/1000,0,K)}
 // ---------- the School's pieces ----------
@@ -2616,7 +2615,7 @@ for(const q of pd)q.l-=dt;pd=pd.filter(q=>q.l>0);for(const q of fr)q.l-=dt;fr=fr
 for(const p of ep){if(p.k==3)pt.push({x:p.x,y:p.y,vx:0,vy:-20,l:.25,c:'#ff9a2e'});for(let k=0;k<2;k++){p.x+=p.vx*dt/2;p.y+=p.vy*dt/2;if(wlAt(p.x,p.y).some(w=>w[4]!=2&&p.x>w[0]&&p.x<w[0]+w[2]&&p.y>w[1]&&p.y<w[1]+w[3]))p.l=0}p.l-=dt;
 if(p.l>0)for(const q of PL){if(!alive(q)||Math.hypot(p.x-q.x,p.y-q.y)>=(p.big?20:10))continue;P=q;p.l=0;if(P.inv<=0&&Math.random()<.05*rk('rng')){FT.push({x:P.x,y:P.y-30,t:'SHRUGGED OFF',c:'#9be860',l:.9});P.inv=.3}else{if(p.k==3){P.bn=3;P.bt=1.5*(1+.1*rk('haz'))}}if(P.inv<=0){P.hp-=arm(S.df?2:1);P.inv=.8;if(P.hp<=0&&ded()){over();return}}break}}
 for(const p of ep){if(p.l<=0&&p.k==2)pd.push({x:p.x,y:p.y,l:5,m:5});else if(p.l<=0&&p.k==3)fr.push({x:p.x,y:p.y,l:5,m:5})}ep=ep.filter(p=>p.l>0);
-for(const z of zs){P=tgt(z);const T=ZT[z.t];if(T.sv){svUpd(z,T,dt);continue}if(z.hg>0){z.hg-=dt;if(Math.random()<dt*5)pt.push({x:z.x+rnd(-8,8),y:z.y-6-rnd(0,14),vx:0,vy:-36,l:.5,c:'#ffe27a'})}let a=T.gh?Math.atan2(P.y-z.y,P.x-z.x):dirTo(z),m=1;z.vt=(z.vt??rnd(.5,4))-dt;if(z.vt<=0){z.vt=z.t==14?rnd(.4,.8):rnd(3,8);zvoice(z)}
+for(const z of zs){P=tgt(z);const T=ZT[z.t];if(T.sv){svUpd(z,T,dt);continue}if(z.hg>0){z.hg-=dt;if(Math.random()<dt*5)pt.push({x:z.x+rnd(-8,8),y:z.y-6-rnd(0,14),vx:0,vy:-36,l:.5,c:'#ffe27a'})}let a=T.gh?Math.atan2(P.y-z.y,P.x-z.x):zSpreadA(z,T,dirTo(z),dt),m=1;z.vt=(z.vt??rnd(.5,4))-dt;if(z.vt<=0){z.vt=z.t==14?rnd(.4,.8):rnd(3,8);zvoice(z)}
 if(z.t==14){z.es=z.es??0;z.ec=(z.ec??0)-dt;z.hv=7+Math.sin(performance.now()/180+(z.ph||0))*2;
 if(z.es==1){m=0;z.kx=z.ky=0;z.x=P.x+Math.cos(P.a+2.4)*9;z.y=P.y-14;z.et-=dt;z.tk-=dt;
 if(z.tk<=0){z.tk+=1;sfx('chomp');P.hp-=arm(S.df?2:1);pt.push({x:P.x,y:P.y-8,vx:(Math.random()-.5)*120,vy:-60,l:.4,c:'#b32f2f'});if(P.hp<=0&&ded())pend=1}
@@ -2653,7 +2652,7 @@ else if(sg&&d<440){if(d<200){a=Math.atan2(z.y-P.y,z.x-P.x);m=.5}else m=0;if(z.cd
 if(!alive(P)){m=Math.min(m,.3)}
 if(z.fz>0){z.fz-=dt;m*=.5}z.x+=Math.cos(a)*T.sp*m*dt*(S.df?1.5:1)*DSP()*(z.spm||1)+z.kx*dt;z.y+=Math.sin(a)*T.sp*m*dt*(S.df?1.5:1)*DSP()*(z.spm||1)+z.ky*dt;z.kx*=.85;z.ky*=.85;z.un=Math.max(0,(z.un||0)-dt);z.sc=(z.sc||0)+dt;if(z.sc>.9){if(z.lx!=null&&Math.hypot(z.x-z.lx,z.y-z.ly)<5&&Math.hypot(P.x-z.x,P.y-z.y)>(T.cr||T.r)+40&&!z.lp&&z.ks!=1&&z.ds!=1&&!(z.os>0))z.un=.7;z.sc=0;z.lx=z.x;z.ly=z.y}if(!(z.alt>4)&&z.t!=14&&!T.gh)push(z,z.un>0?6:Math.min(T.r,22));
 if(alive(P)&&Math.hypot(P.x-z.x,P.y-z.y)<(T.cr||T.r)+8&&P.inv<=0&&!(z.alt>4)&&z.t!=14){if(sPk(P,5)&&!T.boss){const a=Math.atan2(z.y-P.y,z.x-P.x);z.kx=Math.cos(a)*420;z.ky=Math.sin(a)*420;sfx('club',z.x,z.y)}P.hp-=arm((T.boss?2:1)*(S.df?2:1));P.inv=.8;if(P.hp<=0&&ded()){over();return}}}
-for(const b of bs){P=b.o||PL[0];KG=b.g??-1;let hit=0;const ox=b.px??b.x,oy=b.py??b.y;b.px=b.py=undefined;for(let k=0;k<2&&!hit;k++){b.x+=b.vx*dt/2;b.y+=b.vy*dt/2;if(wlAt(b.x,b.y).some(w=>w[4]!=2&&b.x>w[0]&&b.x<w[0]+w[2]&&b.y>w[1]&&b.y<w[1]+w[3]))hit=1}b.l-=dt;
+zSep(dt);for(const b of bs){P=b.o||PL[0];KG=b.g??-1;let hit=0;const ox=b.px??b.x,oy=b.py??b.y;b.px=b.py=undefined;for(let k=0;k<2&&!hit;k++){b.x+=b.vx*dt/2;b.y+=b.vy*dt/2;if(wlAt(b.x,b.y).some(w=>w[4]!=2&&b.x>w[0]&&b.x<w[0]+w[2]&&b.y>w[1]&&b.y<w[1]+w[3]))hit=1}b.l-=dt;
 if(b.rk)pt.push({x:b.x,y:b.y,vx:0,vy:0,l:.3,c:'#999'});
 if(!hit)for(const z of bHitOrd(b,ox,oy))if(z.hp>0&&z!==b.hz&&(z.tk?(tkIn(z,b.x,b.y,3)||tkIn(z,(ox+b.x)/2,(oy+b.y)/2,3)||tkIn(z,ox,oy,3)):svSegD(z.x,z.y,ox,oy,b.x,b.y)<(z.hr||ZT[z.t].hr||ZT[z.t].r)+3)&&!(z.alt>4)){hit=1;b.zh=z;if(!b.rk){hurt(z,b.d,b.vx*.15,b.vy*.15);if(b.cr){FT.push({x:z.x,y:z.y-18,t:'CRIT',c:'#ffcf40',l:.6});for(let q=0;q<5;q++)pt.push({x:z.x,y:z.y,vx:(Math.random()-.5)*160,vy:(Math.random()-.5)*160,l:.3,c:'#ffd84a'})}if(b.pc>0){b.pc--;b.hz=z;hit=0}};break}
 if(hit||(b.l<=0&&(b.rk||b.ab))){if(b.rk)boom(b.x,b.y,b.d);if(b.ab)xbHit(b,hit);b.l=0}}
@@ -5848,6 +5847,38 @@ const _zDr0=zDr;zDr=function(z){_zDr0(z);const T=ZT[z.t];if(!T||T.boss||T.sv||T.
  if(z.t==20&&z.ts==1){const u=1-z.tt/ZR.wind;X.save();X.globalAlpha=.12+.3*u;X.fillStyle='#ff7a2a';X.beginPath();X.moveTo(z.x,z.y);X.arc(z.x,z.y,ZR.reach,z.ta-ZR.arc/2,z.ta+ZR.arc/2);X.closePath();X.fill();X.globalAlpha=.5+.4*u;X.strokeStyle='#ffb070';X.lineWidth=2;X.beginPath();X.arc(z.x,z.y,ZR.reach,z.ta-ZR.arc/2,z.ta+ZR.arc/2);X.stroke();X.restore()}
  if(z.t==18&&z.fu>0){const u=1-z.fu/ZX.fuse,b=Math.floor(t*(10+u*16))%2;X.save();X.globalCompositeOperation='lighter';X.globalAlpha=b?.6:.25;X.fillStyle=b?'#fff0c0':'#ff5a2a';X.beginPath();X.arc(z.x,z.y-4,12+u*7,0,7);X.fill();X.restore();X.save();X.globalAlpha=.25+.35*u;X.strokeStyle='#ff7a2a';X.lineWidth=2;X.setLineDash&&X.setLineDash([6,5]);X.beginPath();X.arc(z.x,z.y,ZX.rad,0,7);X.stroke();X.restore()}}
 
+// ---------- spreading out ----------
+// Every zombie picks a side when it first moves (z.fo, -1 = far left … +1 = far right, 0 = straight on). While it can see the
+// player and the way to its side is clear, it heads for a point beside the player instead of straight at them, so a crowd
+// arrives in an arc rather than single file. That side point closes in as the zombie gets near, so every zombie still reaches
+// the player. Out of sight (round corners, through doors) zombies follow the normal path. Bosses, survivors and ghosts don't spread.
+// ZSPR: far = how far out to the side per pixel of distance, max = the most it swings out (px), near = from this close it just goes for you
+const ZSPR={far:.75,max:220,near:60,chk:.3};
+function zSpreadA(z,T,a,dt){
+if(T.boss||T.gh||T.sv||z.t==14||z.lp||z.alt>4||z.x<0||z.y<0||z.x>WW||z.y>WH||!alive(P))return a;
+if(z.fo===undefined){const r=Math.random();z.fo=r<.15?0:(r<.575?-1:1)*(.3+Math.random()*.7)}
+const dx=P.x-z.x,dy=P.y-z.y,d=Math.hypot(dx,dy);if(d<ZSPR.near||!z.fo)return a;
+const o=z.fo*Math.min((d-ZSPR.near)*ZSPR.far,ZSPR.max),tx=P.x-dy/d*o,ty=P.y+dx/d*o;
+// whether the wide way is clear is checked a few times a second, not every frame (line-of-sight checks cost)
+// a zombie that got stuck goes back to the normal path for a few seconds
+if(z.un>0)z.sno=3;if(z.sno>0){z.sno-=dt;return a}
+z.sct=(z.sct??Math.random()*ZSPR.chk)-dt;if(z.sct<=0){z.sct=ZSPR.chk;z.sok=tx>10&&ty>10&&tx<WW-10&&ty<WH-10&&!fdBad(tx,ty)&&zOpen(z)&&zWide(z,P,ZT[z.t].r+6)&&zWide(z,{x:tx,y:ty},ZT[z.t].r+6)}
+return z.sok?Math.atan2(ty-z.y,tx-z.x):a}
+// clear line from a to b for something r wide: the middle line and both edges are free of walls
+function zWide(a,b,r){const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1,nx=-dy/d*r,ny=dx/d*r;
+return los(a,b)&&los({x:a.x+nx,y:a.y+ny},{x:b.x+nx,y:b.y+ny})&&los({x:a.x-nx,y:a.y-ny},{x:b.x-nx,y:b.y-ny})}
+// zombies standing on each other push apart a little (bigger ones move less), so a crowd fills out instead of stacking into one file
+function zSep(dt){const C=40,G=new Map(),L=[];
+for(const z of zs){const T=ZT[z.t];if(z.hp<=0||T.sv||T.gh||z.lp||z.alt>4||z.t==14)continue;const k=((z.x/C|0)+500)*4096+((z.y/C|0)+500);let b=G.get(k);if(!b)G.set(k,b=[]);z.si=L.length;b.push(z);L.push(z)}
+const f=Math.min(1,dt*10);
+for(const z of L){const r=Math.min(ZT[z.t].r,22),ci=z.x/C|0,cj=z.y/C|0;
+for(let i=ci-1;i<=ci+1;i++)for(let j=cj-1;j<=cj+1;j++){const b=G.get((i+500)*4096+(j+500));if(!b)continue;
+for(const w of b){if(w.si<=z.si||z.un>0||w.un>0)continue;const r2=Math.min(ZT[w.t].r,22),dx=w.x-z.x,dy=w.y-z.y,dd=dx*dx+dy*dy,R=(r+r2)*.8;if(dd>=R*R)continue;
+const d=Math.sqrt(dd)||.01,ov=(R-d)*f*.5,ux=d>.01?dx/d:Math.random()-.5,uy=d>.01?dy/d:Math.random()-.5,mz=ZT[z.t].boss?0:r2/(r+r2),mw=ZT[w.t].boss?0:r/(r+r2);
+z.x-=ux*ov*mz*2;z.y-=uy*ov*mz*2;w.x+=ux*ov*mw*2;w.y+=uy*ov*mw*2}}}
+for(const z of L){push(z,Math.min(ZT[z.t].r,22))}}
+// open ground round a zombie: no wall in the path grid within two cells of it (hugging a wall or in a doorway it follows the path)
+function zOpen(z){if(!bl||!gw)return 1;const ci=z.x/gs|0,cj=z.y/gs|0;for(let i=ci-2;i<=ci+2;i++)for(let j=cj-2;j<=cj+2;j++){if(i<0||j<0||i>=gw||j>=gh)continue;if(bl[j*gw+i])return 0}return 1}
 // ---- developer diagnostics (test mode + PC only, switched on in Options) ----
 const ZPC=(()=>{try{const ua=navigator.userAgent||'',tp=navigator.maxTouchPoints||0;if(/iPhone|iPad|iPod|Android|Mobile/i.test(ua))return false;if(/Macintosh/.test(ua)&&tp>1)return false;return typeof matchMedia!='function'||matchMedia('(pointer:fine)').matches}catch(e){return false}})();
 function ZDON(){return!!(S.dev&&S.zdbg&&ZPC)}
