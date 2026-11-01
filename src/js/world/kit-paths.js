@@ -21,9 +21,11 @@ const cl_=po(o,'cl','dash'),Y='rgba(230,190,60,.88)',Wt='rgba(236,235,228,.85)',
 if(cl_=='dash')cmDash(g,P,4,Y,26,24);else if(cl_=='double'){cmLine(g,cmOffset(P,-3),3,Y,'butt');cmLine(g,cmOffset(P,3),3,Y,'butt')}else if(cl_=='solid')cmLine(g,P,4,Y,'butt');else if(cl_=='white')cmDash(g,P,4,Wt,26,24);
 if(ln>1){const lw=(w/2-6)/ln;for(let k=1;k<ln;k++){cmDash(g,cmOffset(P,k*lw),3,Wt,30,30);cmDash(g,cmOffset(P,-k*lw),3,Wt,30,30)}}if(po(o,'edge',0)){cmLine(g,cmOffset(P,w/2-7),3,Wt,'butt');cmLine(g,cmOffset(P,-(w/2-7)),3,Wt,'butt')}}
 // sh: the shoulder each side (the lanes fill the rest of the width)
-function pthHighway(g,P,o){const n=cl(po(o,'lanes',3)|0,1,6),lw=60,sh=cl(+po(o,'sh',12)||12,6,80),w=o.w||n*lw+sh*2;cmLine(g,P,w,'#46494e','butt');cmLine(g,P,w-sh*2,'#3c3f44','butt');pthSpeck(g,P,o,w-6,5,['rgba(0,0,0,.12)','rgba(255,255,255,.05)'],2,42);
-const half=(w-sh*2)/2;cmLine(g,cmOffset(P,-half),3,'#e0b030','butt');cmLine(g,cmOffset(P,half),3,'#ecebe4','butt');for(let k=1;k<n;k++)cmDash(g,cmOffset(P,-half+k*(w-sh*2)/n),3,'rgba(236,235,228,.9)',44,56);
-if(po(o,'rumble',1)){const S=cmOffset(P,half+Math.max(7,Math.min(sh-6,20)));g.fillStyle='rgba(0,0,0,.25)';cmAlong(S,10,(x,y,a)=>{g.save();g.translate(x,y);g.rotate(a);g.fillRect(-2,-5,4,10);g.restore()})}}
+function pthHighway(g,P,o){const n=cl(po(o,'lanes',3)|0,1,6),lw=60,sh=cl(+po(o,'sh',12)||12,6,80),shr=cl(+po(o,'shr',sh)||sh,6,120),w=o.w||n*lw+sh+shr;cmLine(g,P,w,'#46494e','butt');
+// the lanes sit between the left shoulder (sh) and the right one (shr, the side the traffic keeps to: the outside of a carriageway)
+const L=w-sh-shr,c=(sh-shr)/2,half=L/2,M=c?cmOffset(P,c):P;cmLine(g,M,L,'#3c3f44','butt');pthSpeck(g,P,o,w-6,5,['rgba(0,0,0,.12)','rgba(255,255,255,.05)'],2,42);
+cmLine(g,cmOffset(P,c-half),3,'#e0b030','butt');cmLine(g,cmOffset(P,c+half),3,'#ecebe4','butt');for(let k=1;k<n;k++)cmDash(g,cmOffset(P,c-half+k*L/n),3,'rgba(236,235,228,.9)',44,56);
+if(po(o,'rumble',1)){const S=cmOffset(P,c+half+Math.max(7,Math.min(shr-6,20)));g.fillStyle='rgba(0,0,0,.25)';cmAlong(S,10,(x,y,a)=>{g.save();g.translate(x,y);g.rotate(a);g.fillRect(-2,-5,4,10);g.restore()})}}
 function pthTrail(g,P,o){const w=o.w||30,c=cmCol(o.c,'#9a7a4a'),K=pcK(c);cmLine(g,P,w+6,K.d);cmLine(g,P,w,K.b);cmLine(g,P,w*.66,K.l);pthSpeck(g,P,o,w,6,['rgba(120,94,58,.55)',K.d],3,43);let i=0;cmAlong(P,30,(x,y,a)=>{const s=i%2?1:-1,nx=-Math.sin(a),ny=Math.cos(a);g.fillStyle='#7a8a6a';g.fillRect(x+nx*s*(w/2+4),y+ny*s*(w/2+4),4,3);i++})}
 function pthGravel(g,P,o){const w=o.w||34;cmLine(g,P,w+6,'#8a8270');cmLine(g,P,w,'#b8ae96');cmLine(g,P,w*.7,'#c8bea4');pthSpeck(g,P,o,w,5,['rgba(120,110,90,.35)','#9a907a'],2,44)}
 function pthCobble(g,P,o){const w=o.w||120;cmLine(g,P,w+8,'#3e3a30','butt');cmLine(g,P,w-8,'#55524a','butt');pthSpeck(g,P,o,w-10,2,['#6a6860','#4a4840','#5e5c54'],5,45);cmLine(g,cmOffset(P,-w*.2),4,'rgba(30,26,20,.45)','butt');cmLine(g,cmOffset(P,w*.2),4,'rgba(30,26,20,.45)','butt')}
@@ -71,7 +73,7 @@ function pthPatch(k){return(g,P,o)=>{const C=PPATCH[k],B=P.concat([P[0]]);if(k==
 for(let i=0;i<A/(k=='flowers'?120:260);i++){const x=bb.x0+cmR(o,i,56)*(bb.x1-bb.x0),y=bb.y0+cmR(o,i,57)*(bb.y1-bb.y0);if(!cmPolyIn(P,x,y))continue;g.fillStyle=C[2][i%C[2].length];g.fillRect(x,y,k=='flowers'?3:2,k=='flowers'?3:2);if(k=='flowers'&&i%2){g.fillStyle='#3a7a2a';g.fillRect(x+1,y+3,1,3)}}}}
 const CMPK=[
 {id:'road',n:'Road',cat:'road',w:128,wr:[40,360],def:{o:{cl:'dash',curb:1,lanes:1,ends:'flat',s:'asphalt'}},opts:[['cl','Centre line',PPROAD],['lanes','Lanes each way',[1,4]],['edge','White edge lines','chk'],['curb','Curbs','chk'],['ends','Ends',[['flat','Flat'],['round','Cul-de-sac at the end'],['both','Cul-de-sac at both ends']]],['s','Surface',[['asphalt','Asphalt'],['dark','Dark asphalt'],['worn','Worn and cracked']]]],pri:-110,f:pthRoad},
-{id:'highway',n:'Highway lanes / ramp',cat:'road',w:204,wr:[84,420],def:{o:{lanes:3,rumble:1}},opts:[['lanes','Lanes',[1,6]],['rumble','Rumble strip','chk'],['sh','Shoulder',[6,80]]],pri:-110,f:pthHighway},
+{id:'highway',n:'Highway lanes / ramp',cat:'road',w:204,wr:[84,420],def:{o:{lanes:3,rumble:1}},opts:[['lanes','Lanes',[1,6]],['rumble','Rumble strip','chk'],['sh','Shoulder',[6,80]],['shr','Right shoulder (outside)',[6,120]]],pri:-110,f:pthHighway},
 {id:'cobble',n:'Cobbled road',cat:'road',w:120,wr:[40,240],pri:-110,f:pthCobble},
 {id:'trail',n:'Dirt trail',cat:'path',w:30,wr:[10,120],pal:[['#9a7a4a','Dirt'],['#a8885a','Sandy'],['#6a5a42','Dark earth'],['#8a8270','Grey']],def:{c:'#9a7a4a'},pri:-105,f:pthTrail},
 {id:'gravelpath',n:'Gravel path',cat:'path',w:34,wr:[12,120],pri:-105,f:pthGravel},

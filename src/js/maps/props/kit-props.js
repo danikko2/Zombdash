@@ -347,15 +347,15 @@ hwlightx:Object.assign(obc(120,200,[10,8],PKHWL,(q,v,K)=>kpPole(q,K,2)),{wb:1}),
 hwpoledown:ob(224,44,0,q=>{R_(q,'#16111c',4,26,190,8);R_(q,'#8a9098',5,27,188,6);R_(q,'#b4bac2',5,27,188,2);for(const[x,y,w]of[[2,25,4],[0,29,3],[3,33,3]])R_(q,'#6e737b',x,y,w,2);R_(q,'#16111c',190,4,8,38);R_(q,'#8a9098',191,5,6,36);
  for(const[y,d]of[[2,-1],[34,1]]){R_(q,'#16111c',196,y,26,9);R_(q,'#5a5e66',197,y+1,24,7);R_(q,'#2a2c32',199,y+(d<0?6:1),20,2)}for(let i=0;i<9;i++)R_(q,i%2?'#bfe6ff':'#8a9ab0',150+((i*37)%60),18+((i*23)%22),2,2)}),
 // the sign gantry: a lattice beam right across the carriageway (seen from above, a footing at each end: stand it with its foot on
-// the near rail or median and its top reaches the far side, 330 px), two signs hanging from it over the lanes (split the text with
+// the near rail or median and its top reaches the far side, 370 px), two signs hanging from it over the lanes (split the text with
 // ' / ', a slash with spaces round it, so 1/2 MILE stays one sign; | breaks a line; a sign starting with * is an amber message
 // board). It hangs over people and cars and goes see-through while someone is under it. A low look (var under 0.3) leaves the
 // second sign hanging crooked. Each sign has a lamp under it, so it reads at night.
-gantry:{w:180,h:360,c:0,ov:1,sw:22,swh:334,nr:1,txt:60,dt:'EXIT 13|GRAVEYARD|1/2 MILE / *QUARANTINE AHEAD|USE EXIT 13',lt:[{dx:0,dy:-273,r:96,i:.6},{dx:0,dy:-115,r:96,i:.6}],f:(g,x,y,v,col,t)=>S2(g,x,y,180,360,q=>{
+gantry:{w:180,h:400,c:0,ov:1,sw:22,swh:374,nr:1,txt:60,dt:'EXIT 13|GRAVEYARD|1/2 MILE / *QUARANTINE AHEAD|USE EXIT 13',lt:[{dx:0,dy:-301,r:96,i:.6},{dx:0,dy:-125,r:96,i:.6}],f:(g,x,y,v,col,t)=>S2(g,x,y,180,400,q=>{
  const L=(a,b,c,d)=>{q.beginPath();q.moveTo(a,b);q.lineTo(c,d);q.stroke()};
- for(const fy of[4,338]){R_(q,'#16111c',68,fy,44,18);R_(q,'#9a968c',69,fy+1,42,16);R_(q,'#b4b0a6',69,fy+1,42,3);R_(q,'#16111c',80,fy+3,20,12);R_(q,'#6e737b',81,fy+4,18,10);R_(q,'#8a9098',81,fy+4,18,2)}
- R_(q,'#16111c',78,14,32,332);R_(q,'#3a3d46',80,16,28,328);R_(q,'#8a9098',80,16,4,328);R_(q,'#8a9098',96,16,4,328);R_(q,'#b4bac2',80,16,1,328);
- q.strokeStyle='#6e737b';q.lineWidth=2;for(let yy=18;yy<340;yy+=16){L(84,yy,96,yy+8);L(96,yy+8,84,yy+16)}R_(q,'#6a6e76',101,16,7,328);q.fillStyle='#2a2c32';for(let yy=18;yy<342;yy+=4)q.fillRect(102,yy,5,1);
+ for(const fy of[4,378]){R_(q,'#16111c',68,fy,44,18);R_(q,'#9a968c',69,fy+1,42,16);R_(q,'#b4b0a6',69,fy+1,42,3);R_(q,'#16111c',80,fy+3,20,12);R_(q,'#6e737b',81,fy+4,18,10);R_(q,'#8a9098',81,fy+4,18,2)}
+ R_(q,'#16111c',78,14,32,372);R_(q,'#3a3d46',80,16,28,368);R_(q,'#8a9098',80,16,4,368);R_(q,'#8a9098',96,16,4,368);R_(q,'#b4bac2',80,16,1,368);
+ q.strokeStyle='#6e737b';q.lineWidth=2;for(let yy=18;yy<380;yy+=16){L(84,yy,96,yy+8);L(96,yy+8,84,yy+16)}R_(q,'#6a6e76',101,16,7,368);q.fillStyle='#2a2c32';for(let yy=18;yy<382;yy+=4)q.fillRect(102,yy,5,1);
  const P=String(cmTxt(t,60)||'EXIT 13|GRAVEYARD|1/2 MILE / *QUARANTINE AHEAD|USE EXIT 13').split(/\s+\/\s+/).slice(0,2);if(P.length<2)P.push('');
  const sign=(s,bx,by)=>{const led=s.charAt(0)=='*',ln=s.replace(/^\*/,'').toUpperCase().split('|').slice(0,3).filter(z=>z.trim()!=='');R_(q,'#16111c',bx+60,by-6,4,8);R_(q,'#16111c',bx+88,by-6,4,8);
   R_(q,'#16111c',bx,by,152,78);if(led){R_(q,'#3a3d46',bx+2,by+2,148,74);R_(q,'#0e0c10',bx+6,by+6,140,66);const n=ln.length||1,hh=58/n;ln.forEach((z,i)=>kpText(q,z,bx+76,by+10+hh*(i+.5),132,Math.min(15,hh-2),'#ffc040','ui-monospace,monospace'));
@@ -363,7 +363,7 @@ gantry:{w:180,h:360,c:0,ov:1,sw:22,swh:334,nr:1,txt:60,dt:'EXIT 13|GRAVEYARD|1/2
   else{R_(q,'#1d7a3e',bx+2,by+2,148,74);R_(q,'#f4f1e6',bx+5,by+5,142,2);R_(q,'#f4f1e6',bx+5,by+71,142,2);R_(q,'#f4f1e6',bx+5,by+5,2,68);R_(q,'#f4f1e6',bx+145,by+5,2,68);const n=ln.length||1;
    ln.forEach((z,i)=>{const big=n==1||i==1||(n==2&&i==0&&!/\d/.test(z)),px=n==1?22:big?18:12,yy=n==1?39:n==2?(i?50:24):[18,39,60][i];kpText(q,z,bx+76,by+yy,134,px,'#f4f1e6')})}
   R_(q,'#16111c',bx+60,by+78,32,6);R_(q,'#4a4e56',bx+61,by+79,30,4);R_(q,'#fff2c8',bx+63,by+79,26,1)};
- sign(P[0],14,48);if(v<.3){q.save();q.translate(90,206);q.rotate(.13);q.translate(-90,-206);sign(P[1],14,206);q.restore()}else sign(P[1],14,206)})},
+ sign(P[0],14,60);if(v<.3){q.save();q.translate(90,236);q.rotate(.13);q.translate(-90,-236);sign(P[1],14,236);q.restore()}else sign(P[1],14,236)})},
 // a ROAD CLOSED barricade (your text on its plate), striped boards on two legs, an amber lamp blinking on top
 rcbarr:Object.assign(obt(124,56,[112,8],null,16,'ROAD CLOSED',(q,v,K,t)=>{for(const lx of[12,104]){R_(q,'#16111c',lx,8,8,46);R_(q,'#d8d4c8',lx+1,9,6,44);R_(q,'#16111c',lx-4,50,16,5);R_(q,'#5a5e66',lx-3,51,14,3)}
  for(const yy of[20,34]){R_(q,'#16111c',2,yy,120,10);q.save();q.beginPath();q.rect(3,yy+1,118,8);q.clip();R_(q,'#f4f1e6',3,yy+1,118,8);q.fillStyle='#e8642a';for(let xx=-10;xx<124;xx+=16){q.beginPath();q.moveTo(xx,yy+9);q.lineTo(xx+8,yy+9);q.lineTo(xx+16,yy+1);q.lineTo(xx+8,yy+1);q.fill()}q.restore()}
