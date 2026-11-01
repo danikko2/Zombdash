@@ -32,13 +32,14 @@ const D=(()=>{const r=cmRead(JSON.stringify(BIMF[9]));ok(r.doc&&!r.errors.length
 const K=k=>D.obj.filter(o=>o.k==k),FX=k=>D.obj.filter(o=>o.fx==k),DC=k=>D.obj.filter(o=>o.dc==k),A_=k=>D.areas.filter(a=>a.a==k),PA=k=>D.paths.filter(p=>p.p==k),WS=s=>D.walls.filter(w=>w.s==s);
 const IN=(o,r)=>o.x>r[0]&&o.x<r[2]&&o.y>r[1]&&o.y<r[3];
 const ROOM={foyer:[980,850,1580,1560],dining:[480,850,980,1230],gallery:[480,740,2080,850],ballroom:[2080,680,2640,1400],library:[480,360,840,740],secret:[480,360,680,590],parlor:[1580,850,2080,1230],
- study:[840,360,1120,740],nursery:[1120,360,1440,740],master:[1440,360,1780,740],bath:[1780,360,2080,740],kitchen:[480,1230,780,1560],pantry:[780,1230,980,1560],conservatory:[1580,1230,1830,1560],locked:[1830,1230,2080,1560]};
+ study:[840,360,1120,740],nursery:[1120,360,1440,740],master:[1440,360,2080,740],bath:[1920,360,2080,570],kitchen:[480,1230,780,1560],pantry:[780,1230,980,1560],conservatory:[1580,1230,1830,1560],locked:[1830,1230,2080,1560]};
 // ---------- what the owner asked for: night, light in the main areas but a dark map, a scary-movie mansion ----------
 {const L=cmLightSrc(D),lit=r=>L.filter(s=>IN(s,r)&&s.r>=60&&!s.rect).length;
  const main=['foyer','dining','gallery','ballroom','library'].filter(k=>lit(ROOM[k])>=2),dark=['bath','kitchen','pantry','conservatory','locked','nursery'].filter(k=>lit(ROOM[k])<=1);
  ok(main.length==5,'the main areas are lit: '+main.join(', '));ok(dark.length==6,'the other rooms stay dark: '+dark.join(', '));
  ok(!A_('roomlight').length&&L.length<140,'no room is simply lit up ('+L.length+' small lights: candles, sconces, fireplaces, lanterns, chandeliers)');
  ok(K('sconce').length>=6&&K('cdl').length>=8&&K('fplace').length>=3&&K('hchand').length>=2&&K('lantern').length>=6&&K('lamp').length==4,'candle sconces, candelabras, fireplaces, chandeliers, lanterns and the drive lamps')}
+ok(!K('dirsign2').length&&(ROOM.bath[2]-ROOM.bath[0])*(ROOM.bath[3]-ROOM.bath[1])<40000,'no forest sign; the bathroom is a small room in the bedroom corner');
 ok(K('portrait').length>=25&&D.obj.filter(o=>/^dsheet_/.test(o.k||'')).length>=10&&DC('cobweb').length>=20&&DC('scrawl').length>=8&&WS('manor').length>=30&&A_('fog').length>=5,'scary-movie detail: portraits whose eyes follow you, dust sheets, cobwebs, writing, papered walls, fog');
 ok(WS('window_x').length>=4&&WS('window_b').length>=2&&DC('lightpatch').length>=15&&K('knight').length>=6&&K('chandelier').length==1,'broken and boarded windows, moonlight on the floors, suits of armour, the fallen chandelier');
 // ---------- M1: lightning and thunder ----------
@@ -74,7 +75,7 @@ start();{const C=HS.CX;ok(C&&C.O.filter(q=>/^hchand/.test(q.o.k)).length==3&&C.E
 {const F=new Int16Array(gw*gh);bfs(F,HS.px,HS.py);
 const RCH=(x,y)=>{const i0=Math.floor(x/gs),j0=Math.floor(y/gs);for(let r=0;r<=2;r++)for(let j=j0-r;j<=j0+r;j++)for(let i=i0-r;i<=i0+r;i++){const k=j*gw+i;if(k>=0&&k<gw*gh&&!bl[k])return F[k]>=0}return false};
 const EDGE=()=>{let e=0,er=0;for(let i=0;i<gw;i++)for(const j of[0,gh-1]){const k=j*gw+i;if(!bl[k]){e++;if(F[k]>=0)er++}}for(let j=0;j<gh;j++)for(const i of[0,gw-1]){const k=j*gw+i;if(!bl[k]){e++;if(F[k]>=0)er++}}return[e,er]};
- const pl={foyer:[1280,1400],dining:[700,1150],library:[760,650],'secret room':[580,450],study:[980,600],nursery:[1280,640],master:[1610,600],bath:[1930,560],gallery:[1280,800],parlor:[1800,1150],kitchen:[620,1450],pantry:[880,1400],conservatory:[1705,1350],ballroom:[2360,1100],terrace:[2360,1450],crypt:[1600,150],'open grave':[1250,280],'maze centre':[476,1880],forest:[2900,300],drive:[1280,2100]};
+ const pl={foyer:[1280,1400],dining:[700,1150],library:[760,650],'secret room':[580,450],study:[980,600],nursery:[1280,640],master:[1610,600],bath:[2000,470],gallery:[1280,800],parlor:[1800,1150],kitchen:[620,1450],pantry:[880,1400],conservatory:[1705,1350],ballroom:[2360,1100],terrace:[2360,1450],crypt:[1600,150],'open grave':[1250,280],'maze centre':[476,1880],forest:[2900,300],drive:[1280,2100]};
  const no=Object.keys(pl).filter(k=>!RCH(...pl[k]));ok(!no.length,'every room and place can be reached: '+(no.length?'not '+no.join(', '):'all of the house, the ballroom, the crypt, the maze, the forest'));
  ok(!RCH(1955,1330),'the locked room cannot be entered');
  const[e,er]=EDGE();ok(e>250&&er>=e*.95,'zombies can walk to the player from the open edges ('+er+' of '+e+')')}
