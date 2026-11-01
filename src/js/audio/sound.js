@@ -126,6 +126,7 @@ wave:(t,d)=>{[57,60,64,69].forEach((n,i)=>osc(P25,mf(n),0,t+i*.08,.16,.14,d));os
 newz:(t,d)=>{[76,75,74,73].forEach((n,i)=>osc(P12,mf(n),0,t+.45+i*.07,.1,.09,d));return .8},
 clear:(t,d)=>{[[69,0],[72,.1],[76,.2],[81,.3]].forEach(([n,o])=>osc(P25,mf(n),0,t+o,.25,.14,d));osc('triangle',mf(57),0,t+.3,.6,.22,d);osc('triangle',mf(64),0,t+.3,.6,.15,d);return .9},
 over:(t,d)=>{[[69,0],[68,.22],[67,.44],[66,.66]].forEach(([n,o])=>osc(P25,mf(n),mf(n-1),t+o,.24,.15,d));osc('triangle',mf(42),mf(30),t+.88,1.2,.3,d,.01);return 2.1},
+thunder:(t,d)=>{noise(t,.35,.5,d,'lowpass',3200,380,.7,.01);noise(t+.04,2.8,.6,d,'lowpass',340,60,.8,.22);osc('sine',50,28,t+.05,2.4,.38,d,.2);noise(t+.8,2,.32,d,'lowpass',210,55,.7,.35);return 3.4},
 pause:(t,d)=>{osc(P25,660,660,t,.06,.12,d);osc(P25,440,440,t+.07,.09,.12,d);return .17}};
 const ZV={0:'groan',1:'shriek',2:'roar',3:'hiss',4:'gurgle',5:'squeak',6:'clank',7:'kong',8:'rattleBig',9:'rattle',10:'breath',11:'gob',12:'dragon',13:'ogre',14:'flap',18:'gurgle',19:'groan',20:'roar'};
 function sfx(n,x,y,v=1,cd=0){const c=AU.c;if(!c||c.state!='running'||S.sv<=0)return;if(cd){if(c.currentTime-(AU.tl[n]||0)<cd)return;AU.tl[n]=c.currentTime}

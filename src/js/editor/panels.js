@@ -42,7 +42,7 @@ else if(one)h+=`<p class=edhint>${one.o.veh?'Auto: the vehicle\'s whole body is 
 const V=O.filter(s=>s.o.veh),CO=O.filter(s=>edPalOf(s.o));if(CO.length&&CO.length==S.length){const c=edShared(CO,s=>edColOf(s.o)),P=edPalOf(CO[0].o);
 h+=`<h4>Colour</h4><div class=edcols>${P.map(([x,n])=>`<button data-a="ocol:${x}" class="${c===x?'on':''}" style="--c:${x}" title="${edEsc(n)}"${EDDIS}></button>`).join('')}</div><label class=edf title="Pick any colour"><span>Custom</span><input type=color data-f=ocol value="${c&&/^#[0-9a-f]{6}$/i.test(c)?c:P[0][0]}"${EDDIS}></label>${c===undefined?'<p class=edhint>Mixed colours: a pick colours all of them.</p>':''}`}
 if(V.length&&V.length==S.length&&V.every(s=>EDSTRIPE.includes(s.o.veh))){const c2=edShared(V,s=>s.o.c2||'');h+=`<h4>Stripe</h4><div class=edcols><button data-a="ost:" class="${c2===''?'on':''}" style="--c:#555" title="Auto (picked from its place)"${EDDIS}>A</button><button data-a="ost:none" class="${c2==='none'?'on':''}" style="--c:#e8e8e4" title="No stripe"${EDDIS}>–</button>${PVSTRIPE.map(([x,n])=>`<button data-a="ost:${x}" class="${c2===x?'on':''}" style="--c:${x}" title="${edEsc(n)}"${EDDIS}></button>`).join('')}</div>`}
-if(V.length&&V.length==S.length)h+=edPChk('Damaged','dmg',edShared(V,s=>!!s.o.dmg))+edPChk('Burnt out','burn',edShared(V,s=>!!s.o.burn));
+if(V.length&&V.length==S.length)h+=edPChk('Damaged','dmg',edShared(V,s=>!!s.o.dmg))+edPChk('Burnt out','burn',edShared(V,s=>!!s.o.burn))+edPChk('On its roof','ov',edShared(V,s=>!!s.o.ov));
 if(only('w')){const st=edShared(S,s=>s.o.s);h+=`<label class=edf><span>Style</span><select data-f=s${EDDIS}>${st===undefined?'<option value="" selected>— mixed —</option>':''}${CMWALL.map(w=>`<option value="${w.id}"${st===w.id?' selected':''}>${edEsc(w.n)}</option>`).join('')}${st&&!CMWI[st]?`<option selected>${edEsc(st)} (missing)</option>`:''}</select></label>`}
 if(S.every(s=>s.t=='s'||s.t=='z'))h+=edPChk('On','on',edShared(S,s=>s.o.on!==false),'Turned-off spawns stay on the map, but no zombies come out of them');
 if(one&&one.t=='z')h+=`<p class=edhint>Each zombie picks a random free spot inside the zone.</p>`;if(one&&one.t=='p')h+=`<p class=edhint>Split-screen players start right next to this spot. Delete removes it (the run then starts in the middle of the map).</p>`;
@@ -102,7 +102,7 @@ case 'lk':return edSetFlag(S,'lk',t.checked,t.checked?'Lock':'Unlock');
 case 'hd':return edSetFlag(S,'hd',t.checked,t.checked?'Hide in the editor':'Show in the editor');
 case 'on':{const L=free.filter(s=>s.t=='s'||s.t=='z');if(!need(L))return;return edMut(t.checked?'Turn spawn on':'Turn spawn off',L.map(s=>s.o),()=>{for(const s of L)s.o.on=t.checked})}
 case 's':{const L=free.filter(s=>s.t=='w');if(!t.value||!need(L))return;return edMut('Change wall style',L.map(s=>s.o),()=>{for(const s of L)s.o.s=t.value})}
-case 'dmg':case 'burn':{const L=O.filter(s=>s.o.veh);if(!need(L))return;return edMut('Change vehicle',L.map(s=>s.o),()=>{for(const s of L){if(t.checked)s.o[f]=1;else delete s.o[f]}})}
+case 'dmg':case 'burn':case 'ov':{const L=O.filter(s=>s.o.veh);if(!need(L))return;return edMut('Change vehicle',L.map(s=>s.o),()=>{for(const s of L){if(t.checked)s.o[f]=1;else delete s.o[f]}})}
 case 'ocol':{const v=String(t.value).toLowerCase();if(/^#[0-9a-f]{6}$/.test(v))edSetCol(free,v);else edRight();return}
 case 'lyname':return edLyRename(E.al,t.value)}}
 // vehicles with a stripe colour (color2): trailers and semis

@@ -31,6 +31,7 @@ world/kit-lighting.js
 world/kit-school.js
 world/kit-market.js
 world/kit-mainst.js
+world/kit-highway.js
 world/map-store.js
 world/custom-maps.js
 ui/core-ui.js
@@ -69,7 +70,6 @@ bosses/officer-ray.js
 campaign/wave-replay.js
 tutorial/tutorial.js
 campaign/life-lost.js
-maps/haunted-mansion.js
 maps/enchanted-forest.js
 maps/urban.js
 bosses/girl-horseman-mechanic.js

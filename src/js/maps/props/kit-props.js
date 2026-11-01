@@ -298,5 +298,101 @@ airpump:Object.assign(ob(32,48,[26,10],q=>{R_(q,'#16111c',4,6,24,42);R_(q,'#c039
  q.strokeStyle='#16111c';q.lineWidth=2;q.beginPath();q.arc(26,34,6,0,7);q.stroke();R_(q,'#8a909c',5,42,22,4)}),{wb:1}),
 dtterm:Object.assign(ob(28,52,[22,10],q=>{R_(q,'#16111c',4,4,20,46);R_(q,'#6a7a8a',5,5,18,44);R_(q,'#16111c',7,8,14,9);R_(q,'#7ad0ff',8,9,12,7);for(let k=0;k<3;k++)R_(q,'#3a3d46',8,20+k*3,12,1);R_(q,'#16111c',7,30,14,10);R_(q,'#c8e8f8',8,31,12,8);R_(q,'#f8f8f4',11,32,6,6);R_(q,'#3aff7a',18,43,2,2);R_(q,'#4a5a6a',5,46,18,3)}),{wb:1}),
 dropbox:ob(26,42,[20,12],q=>{R_(q,'#16111c',2,6,22,32);q.fillStyle='#16111c';q.beginPath();q.arc(13,8,11,Math.PI,0);q.fill();R_(q,'#2a4aa0',3,7,20,30);q.fillStyle='#2a4aa0';q.beginPath();q.arc(13,8,10,Math.PI,0);q.fill();R_(q,'#16111c',6,10,14,3);R_(q,'#f8f6ee',7,18,12,6);R_(q,'#c0392b',7,18,12,2);R_(q,'#16111c',4,37,4,5);R_(q,'#16111c',18,37,4,5)})});
+// ---------- Deadway Highway's pieces ----------
+// the two picture billboards (the Old West attraction and the army recruiting poster), a mile marker, a call box, a reflector post
+function kpBill(g,x,py,k){const bw=300,bh=124,bx=x-bw/2,by=py-70-bh,R=(c,a,b,w,h)=>{g.fillStyle=c;g.fillRect(a,b,w,h)},T=(t,a,b,f,c,al)=>{g.font=f;g.textAlign=al||'center';g.textBaseline='middle';g.fillStyle='#16111c';for(const[dx,dy]of[[2,2],[1,2],[2,1]])g.fillText(t,a+dx,b+dy);g.fillStyle=c;g.fillText(t,a,b)};
+g.fillStyle='rgba(0,0,0,.25)';g.beginPath();g.ellipse(x+8,py+2,bw*.42,10,0,0,7);g.fill();
+for(const px of[x-90,x+90]){R('#16111c',px-6,by+bh-2,12,py-by-bh+4);R('#6e737b',px-5,by+bh,10,py-by-bh+1);R('#9aa0aa',px-5,by+bh,3,py-by-bh+1);R('#4a4e56',px-1,by+bh,2,py-by-bh+1);for(let y=by+bh+10;y<py-6;y+=16)R('#4a4e56',px-5,y,10,2)}
+R('#16111c',bx-4,by+bh+2,bw+8,8);R('#5a5e66',bx-3,by+bh+3,bw+6,6);for(let i=bx;i<bx+bw;i+=12)R('#3a3d44',i,by+bh+3,2,6);
+R('#16111c',bx-3,by-3,bw+6,bh+6);R('#e8e4d8',bx-1,by-1,bw+2,bh+2);g.save();g.beginPath();g.rect(bx,by,bw,bh);g.clip();
+if(k=='west'){const sky=['#ffcf6a','#ffb04a','#ff944a','#f07a4a','#d8664a'];sky.forEach((c,i)=>R(c,bx,by+i*14,bw,14));g.fillStyle='#fff2b0';g.beginPath();g.arc(bx+250,by+52,20,0,7);g.fill();
+g.fillStyle='#b8784a';g.beginPath();g.moveTo(bx,by+78);g.lineTo(bx+40,by+56);g.lineTo(bx+70,by+66);g.lineTo(bx+110,by+50);g.lineTo(bx+150,by+78);g.fill();g.fillStyle='#c98a50';g.beginPath();g.moveTo(bx+150,by+78);g.lineTo(bx+200,by+60);g.lineTo(bx+240,by+72);g.lineTo(bx+300,by+58);g.lineTo(bx+300,by+80);g.fill();R('#d8a868',bx,by+78,bw,46);R('#c8945a',bx,by+90,bw,2);R('#c8945a',bx,by+106,bw,2);
+// saloon front with swinging doors, a water tower and a cactus
+R('#16111c',bx+186,by+44,98,62);R('#8a5a34',bx+187,by+45,96,60);R('#a8703a',bx+187,by+45,96,6);R('#6a4024',bx+187,by+72,96,3);R('#f4e0a0',bx+200,by+52,70,12);g.font='bold 10px Arial, Helvetica, sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillStyle='#7a2a1a';g.fillText('SALOON',bx+235,by+58);
+R('#2a1a10',bx+222,by+80,26,25);R('#c8945a',bx+223,by+84,11,14);R('#c8945a',bx+236,by+84,11,14);R('#fff4c0',bx+195,by+80,14,10);R('#fff4c0',bx+261,by+80,14,10);R('#16111c',bx+186,by+105,98,2);
+R('#5a3a22',bx+150,by+60,4,46);R('#5a3a22',bx+172,by+60,4,46);R('#16111c',bx+146,by+40,34,24);R('#7a5232',bx+147,by+41,32,22);R('#6a4024',bx+147,by+48,32,2);R('#6a4024',bx+147,by+55,32,2);
+const cac=(cx,cy,s)=>{R('#16111c',cx-4*s,cy-28*s,8*s,30*s);R('#3f8a42',cx-3*s,cy-27*s,6*s,28*s);R('#16111c',cx-12*s,cy-18*s,6*s,12*s);R('#3f8a42',cx-11*s,cy-17*s,4*s,10*s);R('#3f8a42',cx-11*s,cy-9*s,10*s,3*s);R('#16111c',cx+6*s,cy-22*s,6*s,10*s);R('#3f8a42',cx+7*s,cy-21*s,4*s,8*s);R('#3f8a42',cx+2*s,cy-14*s,8*s,3*s)};cac(bx+128,by+110,1);cac(bx+24,by+116,.7);
+T('VISIT THE',bx+12,by+16,'bold 13px Arial, Helvetica, sans-serif','#fff4c0','left');T('OLD WEST!',bx+10,by+38,'bold 24px Arial, Helvetica, sans-serif','#7a2a1a','left');
+R('rgba(122,42,26,.92)',bx,by+bh-22,bw,22);T('SHOOTOUTS AT HIGH NOON · GOLD PANNING',x,by+bh-15,'bold 10px Arial, Helvetica, sans-serif','#fff4c0');T('EXIT 21 · 30 MILES',x,by+bh-5,'bold 8px Arial, Helvetica, sans-serif','#ffcf6a')}
+else{R('#4f5a3a',bx,by,bw,bh);for(let i=0;i<7;i++)R(i%2?'#f4f1e6':'#b8261e',bx,by+bh-30+i*4,bw,4);R('#1f3f7a',bx,by+bh-30,92,28);
+g.fillStyle='#f4f1e6';for(let r=0;r<3;r++)for(let c=0;c<5;c++)g.fillRect(bx+8+c*17+(r%2)*8,by+bh-26+r*8,3,3);
+// helmeted soldier silhouette pointing at you
+g.fillStyle='#16111c';g.beginPath();g.ellipse(bx+250,by+44,30,18,0,Math.PI,0);g.fill();R('#16111c',bx+218,by+42,64,6);g.fillStyle='#6a7056';g.beginPath();g.ellipse(bx+250,by+44,28,16,0,Math.PI,0);g.fill();R('#5a6048',bx+220,by+43,60,4);R('#16111c',bx+230,by+48,40,34);R('#d8a878',bx+232,by+48,36,24);R('#16111c',bx+238,by+56,6,3);R('#16111c',bx+256,by+56,6,3);R('#a8784a',bx+242,by+66,16,2);
+R('#16111c',bx+214,by+72,72,22);R('#6a7056',bx+215,by+73,70,20);R('#16111c',bx+196,by+60,26,12);R('#d8a878',bx+197,by+61,22,10);R('#d8a878',bx+192,by+62,8,4);
+g.fillStyle='#e8c040';const st=(cx,cy,r)=>{g.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.42:r;g.lineTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr)}g.fill()};st(bx+42,by+52,9);st(bx+158,by+52,9);
+T('ZOMBVILLE NEEDS YOU!',bx+100,by+18,'bold 13px Arial, Helvetica, sans-serif','#e8c040');T('JOIN THE',bx+100,by+42,'bold 15px Arial, Helvetica, sans-serif','#f4f1e6');T('ARMY',bx+100,by+66,'bold 30px Arial, Helvetica, sans-serif','#f4f1e6');
+R('rgba(22,17,28,.75)',bx+96,by+bh-28,bw-96,24);T('SIGN UP AT YOUR LOCAL',bx+198,by+bh-21,'bold 10px Arial, Helvetica, sans-serif','#f4f1e6');T('MILITARY BASE',bx+198,by+bh-9,'bold 11px Arial, Helvetica, sans-serif','#e8c040')}
+g.restore();g.textAlign='left';g.textBaseline='alphabetic';
+// spotlights along the top
+for(let i=0;i<4;i++){const lx=bx+40+i*74;R('#16111c',lx-1,by-14,3,12);R('#16111c',lx-6,by-17,12,6);R('#8a909c',lx-5,by-16,10,4);R('#fff4c0',lx-4,by-13,8,1)}}
+Object.assign(OB,{
+bbwest:Object.assign(ob(320,218,0,q=>kpBill(q,160,214,'west')),{wb:1}),bbarmy:Object.assign(ob(320,218,0,q=>kpBill(q,160,214,'army')),{wb:1}),
+milemkr:Object.assign(obt(18,44,[4,4],null,3,'13',(q,v,K,t)=>{R_(q,'#16111c',8,20,3,24);R_(q,'#8a9096',9,21,1,23);R_(q,'#16111c',1,1,16,22);R_(q,'#1d7a3e',2,2,14,20);R_(q,'#f4f1e6',3,3,12,1);kpText(q,'MILE',9,7,12,5,'#f4f1e6');kpText(q,String(t),9,15,12,8,'#f4f1e6')}),{wb:1}),
+callbox:Object.assign(ob(20,50,[4,4],q=>{R_(q,'#16111c',8,20,4,30);R_(q,'#8a9096',9,21,2,29);R_(q,'#16111c',2,2,16,20);R_(q,'#e8c040',3,3,14,18);R_(q,'#16111c',5,6,10,5);R_(q,'#3a3d46',6,7,8,3);kpText(q,'SOS',10,16,12,6,'#c0392b')}),{wb:1}),
+reflpost:Object.assign(ob(8,26,[3,3],q=>{R_(q,'#16111c',2,2,4,24);R_(q,'#f4f4f0',3,3,2,23);R_(q,'#ffb02a',2,4,4,5);R_(q,'#16111c',3,18,2,1)}),{wb:1})});
+// tall median light poles (two heads on curved arms; sodium yellow unless coloured): hwlight lit, hwlightf a failing one (its right
+// head stutters; half that lens is dim so the editor tells it apart), hwlightx a dead one (dark heads, the right arm bent, a wire
+// hanging). Their light falls round the foot of the pole, over the lanes either side. hwpoledown: a pole knocked flat, seen from above.
+const PKHWL=[['#ffc860','Sodium yellow'],['#fff2c8','Warm white'],['#e8f0ff','Cool white']];
+function kpPole(q,K,st){q.fillStyle='#16111c';q.beginPath();q.moveTo(55,198);q.lineTo(57,30);q.lineTo(63,30);q.lineTo(65,198);q.fill();q.fillStyle='#8a9098';q.beginPath();q.moveTo(56.5,197);q.lineTo(58,31);q.lineTo(62,31);q.lineTo(63.5,197);q.fill();
+R_(q,'#b4bac2',58,32,1,164);R_(q,'#6e737b',61,32,1,164);R_(q,'#16111c',53,150,14,6);R_(q,'#6e737b',54,151,12,4);R_(q,'#c8a030',55,152,10,2);R_(q,'#16111c',48,190,24,10);R_(q,'#5a5e66',49,191,22,8);R_(q,'#7a7f88',49,191,22,2);
+const arm=(a,b,c,d,e,f)=>{q.lineCap='round';q.strokeStyle='#16111c';q.lineWidth=5;q.beginPath();q.moveTo(a,b);q.quadraticCurveTo(c,d,e,f);q.stroke();q.strokeStyle='#8a9098';q.lineWidth=2.5;q.stroke();q.lineCap='butt'};
+const head=(x,y,lit,dim)=>{R_(q,'#16111c',x-1,y-1,30,12);R_(q,'#5a5e66',x,y,28,10);R_(q,'#8a9098',x,y,28,3);R_(q,'#16111c',x+2,y+7,24,5);R_(q,lit?K.b:'#2a2c32',x+3,y+8,22,3);if(lit)R_(q,'#ffffff',x+5,y+8,8,1);if(dim)R_(q,'rgba(40,40,52,.6)',x+14,y+8,11,3)};
+arm(60,36,58,14,33,15);head(6,10,st<2,0);if(st<2){arm(60,36,62,14,87,15);head(86,10,1,st==1)}else{arm(60,36,66,22,82,42);q.save();q.translate(82,42);q.rotate(.9);R_(q,'#16111c',-3,-6,30,12);R_(q,'#4a4e56',-2,-5,28,10);R_(q,'#2a2c32',1,2,22,3);R_(q,'#9aa0a8',8,2,3,2);q.restore();
+ q.strokeStyle='#16111c';q.lineWidth=1;q.beginPath();q.moveTo(84,46);q.quadraticCurveTo(90,70,86,92);q.stroke();R_(q,'#c8a030',85,91,3,3)}}
+Object.assign(OB,{
+hwlight:Object.assign(obc(120,200,[10,8],PKHWL,(q,v,K)=>kpPole(q,K,0)),{wb:1,nr:1,lt:[{dx:-46,dy:-4,r:230,i:1},{dx:46,dy:-4,r:230,i:1}]}),
+hwlightf:Object.assign(obc(120,200,[10,8],PKHWL,(q,v,K)=>kpPole(q,K,1)),{wb:1,nr:1,lt:[{dx:-46,dy:-4,r:230,i:1},{dx:46,dy:-4,r:230,i:1,f:'fault'}]}),
+hwlightx:Object.assign(obc(120,200,[10,8],PKHWL,(q,v,K)=>kpPole(q,K,2)),{wb:1}),
+hwpoledown:ob(224,44,0,q=>{R_(q,'#16111c',4,26,190,8);R_(q,'#8a9098',5,27,188,6);R_(q,'#b4bac2',5,27,188,2);for(const[x,y,w]of[[2,25,4],[0,29,3],[3,33,3]])R_(q,'#6e737b',x,y,w,2);R_(q,'#16111c',190,4,8,38);R_(q,'#8a9098',191,5,6,36);
+ for(const[y,d]of[[2,-1],[34,1]]){R_(q,'#16111c',196,y,26,9);R_(q,'#5a5e66',197,y+1,24,7);R_(q,'#2a2c32',199,y+(d<0?6:1),20,2)}for(let i=0;i<9;i++)R_(q,i%2?'#bfe6ff':'#8a9ab0',150+((i*37)%60),18+((i*23)%22),2,2)}),
+// the sign gantry: a truss over the road on two lattice legs, two signs hanging from it (split the text with ' / ', a slash with
+// spaces round it, so 1/2 MILE stays one sign; | breaks a line;
+// a sign starting with * is an amber message board). It hangs over people and goes see-through while someone is under it. A low
+// look (var under 0.3) leaves the right sign hanging crooked from one bracket. Each sign has a lamp under it, so it reads at night.
+gantry:{w:400,h:210,c:0,ov:1,sw:380,nr:1,txt:60,dt:'EXIT 13|GRAVEYARD|1/2 MILE / *QUARANTINE AHEAD|USE EXIT 13',lt:[{dx:-84,dy:-110,r:96,i:.6},{dx:84,dy:-110,r:96,i:.6}],f:(g,x,y,v,col,t)=>S2(g,x,y,400,210,q=>{
+ const L=(a,b,c,d)=>{q.beginPath();q.moveTo(a,b);q.lineTo(c,d);q.stroke()};
+ for(const lx of[18,370]){R_(q,'#16111c',lx-1,56,14,150);R_(q,'#8a9098',lx,56,3,149);R_(q,'#8a9098',lx+9,56,3,149);q.strokeStyle='#6e737b';q.lineWidth=1.5;for(let yy=60;yy<198;yy+=14){L(lx+2,yy,lx+10,yy+7);L(lx+10,yy+7,lx+2,yy+14)}R_(q,'#16111c',lx-6,200,24,10);R_(q,'#9a968c',lx-5,201,22,8);R_(q,'#b4b0a6',lx-5,201,22,2)}
+ R_(q,'#16111c',8,32,384,28);R_(q,'#8a9098',9,33,382,4);R_(q,'#8a9098',9,54,382,4);R_(q,'#b4bac2',9,33,382,1);q.strokeStyle='#6e737b';q.lineWidth=2;for(let xx=12;xx<386;xx+=16)L(xx,37,xx+8,54),L(xx+8,54,xx+16,37);R_(q,'#2a2c32',9,37,382,1);
+ const P=String(cmTxt(t,60)||'EXIT 13|GRAVEYARD|1/2 MILE / *QUARANTINE AHEAD|USE EXIT 13').split(/\s+\/\s+/).slice(0,2);if(P.length<2)P.push('');
+ const sign=(s,bx)=>{const led=s.charAt(0)=='*',ln=s.replace(/^\*/,'').toUpperCase().split('|').slice(0,3).filter(z=>z.trim()!=='');R_(q,'#16111c',bx+20,58,4,6);R_(q,'#16111c',bx+128,58,4,6);
+  R_(q,'#16111c',bx,62,152,78);if(led){R_(q,'#3a3d46',bx+2,64,148,74);R_(q,'#0e0c10',bx+6,68,140,66);const n=ln.length||1,hh=58/n;ln.forEach((z,i)=>kpText(q,z,bx+76,72+hh*(i+.5),132,Math.min(15,hh-2),'#ffc040','ui-monospace,monospace'));
+   q.fillStyle='rgba(14,12,16,.35)';for(let yy=68;yy<134;yy+=2)q.fillRect(bx+6,yy,140,1);for(let xx=bx+6;xx<bx+146;xx+=3)q.fillRect(xx,68,1,66)}
+  else{R_(q,'#1d7a3e',bx+2,64,148,74);R_(q,'#f4f1e6',bx+5,67,142,2);R_(q,'#f4f1e6',bx+5,133,142,2);R_(q,'#f4f1e6',bx+5,67,2,68);R_(q,'#f4f1e6',bx+145,67,2,68);const n=ln.length||1;
+   ln.forEach((z,i)=>{const big=n==1||i==1||(n==2&&i==0&&!/\d/.test(z)),px=n==1?22:big?18:12,yy=n==1?101:n==2?(i?112:86):[80,101,122][i];kpText(q,z,bx+76,yy,134,px,'#f4f1e6')})}
+  R_(q,'#16111c',bx+60,140,32,6);R_(q,'#4a4e56',bx+61,141,30,4);R_(q,'#fff2c8',bx+63,141,26,1)};
+ sign(P[0],40);if(v<.3){q.save();q.translate(228,60);q.rotate(.13);q.translate(-228,-60);sign(P[1],208);q.restore();R_(q,'#16111c',336,58,4,3)}else sign(P[1],208)})},
+// a ROAD CLOSED barricade (your text on its plate), striped boards on two legs, an amber lamp blinking on top
+rcbarr:Object.assign(obt(124,56,[112,8],null,16,'ROAD CLOSED',(q,v,K,t)=>{for(const lx of[12,104]){R_(q,'#16111c',lx,8,8,46);R_(q,'#d8d4c8',lx+1,9,6,44);R_(q,'#16111c',lx-4,50,16,5);R_(q,'#5a5e66',lx-3,51,14,3)}
+ for(const yy of[20,34]){R_(q,'#16111c',2,yy,120,10);q.save();q.beginPath();q.rect(3,yy+1,118,8);q.clip();R_(q,'#f4f1e6',3,yy+1,118,8);q.fillStyle='#e8642a';for(let xx=-10;xx<124;xx+=16){q.beginPath();q.moveTo(xx,yy+9);q.lineTo(xx+8,yy+9);q.lineTo(xx+16,yy+1);q.lineTo(xx+8,yy+1);q.fill()}q.restore()}
+ R_(q,'#16111c',24,3,76,15);R_(q,'#f4f1e6',25,4,74,13);kpText(q,String(t).toUpperCase(),62,11,70,10,'#16111c');R_(q,'#16111c',13,0,8,7);R_(q,'#ffa62a',14,1,6,5);R_(q,'#fff2b0',15,2,2,2)}),{wb:1,nr:1,lt:[{dx:-45,dy:-52,r:34,i:.9,f:'blink',c:'#ffa62a'}]}),
+// a searchlight whose beam sweeps slowly back and forth (about 30° either way of where it is turned)
+sweeplight:Object.assign({},OB.searchlight,{vw:0,lt:[{dx:0,dy:-26,r:520,w:7,sw:30}]})});
+// ---------- the Haunted Mansion's pieces ----------
+// dust sheets thrown over furniture: dsheet_c an armchair, dsheet_s a sofa, dsheet_t something tall (a mirror, a clock); sconce: two
+// candles on a brass bracket against a wall (candle light); hchand: a crystal chandelier hanging over the room, its candles lit (it is
+// drawn over people and goes see-through while someone is under it); hchandx: the same, dark, crooked and cobwebbed; cryptdoor: a heavy
+// crypt door standing ajar, seen from above (its hinge is the left end: turn it to swing it open)
+function kpSheet(q,o,folds,seat){q.fillStyle='rgba(0,0,0,.28)';q.beginPath();q.ellipse(o.w/2,o.h-3,o.w/2-2,3,0,0,7);q.fill();q.fillStyle='#cfccc2';q.beginPath();o.top(q);
+for(let x=o.r;x>o.l;x-=4)q.lineTo(x-2,o.h-(x%8<4?2:4));q.closePath();q.fill();q.save();q.clip();q.fillStyle='rgba(255,255,255,.35)';q.beginPath();q.ellipse(o.w*.32,o.h*.25,o.w*.2,o.h*.14,-.4,0,7);q.fill();
+q.strokeStyle='#aeaaa0';q.lineWidth=1.5;for(const[a,b,c,d]of folds){q.beginPath();q.moveTo(a,b);q.quadraticCurveTo((a+c)/2+2,(b+d)/2,c,d);q.stroke()}if(seat){q.beginPath();q.moveTo(seat[0],seat[1]);q.quadraticCurveTo(o.w/2,seat[1]+5,seat[2],seat[1]);q.stroke()}
+q.fillStyle='rgba(60,56,50,.25)';q.fillRect(0,o.h-7,o.w,7);q.restore()}
+function kpChand(q,lit){const cx=55;R_(q,'#16111c',cx-2,0,4,40);for(let y=2;y<40;y+=6)R_(q,'#a8862e',cx-1,y,2,4);q.fillStyle='#16111c';q.beginPath();q.ellipse(cx,44,12,6,0,0,7);q.fill();q.fillStyle='#c8a040';q.beginPath();q.ellipse(cx,44,10,4,0,0,7);q.fill();
+q.strokeStyle='#a8862e';q.lineWidth=1.5;for(let i=0;i<8;i++){const a=i*Math.PI/4;q.beginPath();q.moveTo(cx,46);q.quadraticCurveTo(cx+Math.cos(a)*20,62,cx+Math.cos(a)*44,72+Math.sin(a)*16);q.stroke()}
+for(const[ry,rx,y]of[[16,44,72],[9,26,88]]){q.strokeStyle='#16111c';q.lineWidth=6;q.beginPath();q.ellipse(cx,y,rx,ry,0,0,7);q.stroke();q.strokeStyle='#c8a040';q.lineWidth=3;q.stroke()}
+for(let i=0;i<16;i++){const a=i*Math.PI/8,x=cx+Math.cos(a)*44,y=72+Math.sin(a)*16;R_(q,i%2?'#bfe6ff':'#e8f0f8',x-1,y+2,2,6+(i%3)*2)}for(let i=0;i<10;i++){const a=i*Math.PI/5,x=cx+Math.cos(a)*26,y=88+Math.sin(a)*9;R_(q,'#d8ecf8',x-1,y+2,2,8)}
+R_(q,'#e8f0f8',cx-2,96,4,16);R_(q,'#bfe6ff',cx-1,112,2,6);
+for(let i=0;i<8;i++){const a=i*Math.PI/4+Math.PI/8,x=Math.round(cx+Math.cos(a)*44),y=Math.round(72+Math.sin(a)*16);R_(q,'#16111c',x-3,y-12,6,12);R_(q,lit?'#f4ecd8':'#9a968c',x-2,y-11,4,10);if(lit){R_(q,'#ff9a2a',x-2,y-17,4,5);R_(q,'#ffe08a',x-1,y-16,2,3)}else R_(q,'#2a2420',x,y-13,1,3)}
+if(!lit){q.strokeStyle='rgba(225,225,225,.55)';q.lineWidth=1;for(const[a,b,c,d]of[[cx-44,72,cx-30,100],[cx+44,72,cx+36,104],[cx,40,cx-40,70],[cx-26,88,cx-10,118]]){q.beginPath();q.moveTo(a,b);q.quadraticCurveTo((a+c)/2+6,(b+d)/2,c,d);q.stroke()}}}
+Object.assign(OB,{
+dsheet_c:ob(38,36,[30,20],q=>kpSheet(q,{w:38,h:36,l:4,r:34,top:q=>{q.moveTo(4,33);q.quadraticCurveTo(2,20,6,14);q.quadraticCurveTo(6,3,19,3);q.quadraticCurveTo(32,3,32,14);q.quadraticCurveTo(36,20,34,33)}},[[12,9,9,32],[19,12,19,33],[27,9,29,32]],[7,17,31])),
+dsheet_s:ob(74,34,[66,20],q=>kpSheet(q,{w:74,h:34,l:3,r:71,top:q=>{q.moveTo(3,31);q.quadraticCurveTo(1,16,8,11);q.quadraticCurveTo(37,1,66,11);q.quadraticCurveTo(73,16,71,31)}},[[14,10,12,31],[28,7,27,32],[46,7,47,32],[60,10,62,31]],[8,16,66])),
+dsheet_t:ob(38,64,[32,12],q=>kpSheet(q,{w:38,h:64,l:4,r:34,top:q=>{q.moveTo(4,61);q.lineTo(5,11);q.quadraticCurveTo(6,2,19,2);q.quadraticCurveTo(32,2,33,11);q.lineTo(34,61)}},[[11,8,10,60],[19,6,19,61],[27,8,28,60]],null)),
+sconce:{w:18,h:24,c:0,f:(g,x,y)=>S2(g,x,y,18,24,q=>{R_(q,'#16111c',6,6,6,14);R_(q,'#a8862e',7,7,4,12);R_(q,'#c8a040',7,7,2,12);q.strokeStyle='#a8862e';q.lineWidth=2;q.beginPath();q.moveTo(9,16);q.quadraticCurveTo(3,18,4,13);q.moveTo(9,16);q.quadraticCurveTo(15,18,14,13);q.stroke();
+ for(const cx of[4,14]){R_(q,'#16111c',cx-3,12,6,3);R_(q,'#c8a040',cx-2,12,4,2);R_(q,'#16111c',cx-2,5,4,8);R_(q,'#f4ecd8',cx-1,6,2,6);R_(q,'#ff9a2a',cx-1,1,2,4);R_(q,'#ffe08a',cx-1,2,1,2)}})},
+hchand:{w:110,h:120,c:0,ov:1,sw:60,nr:1,lt:[{dx:0,dy:-48,r:250,i:.9,f:'flk'}],f:(g,x,y)=>S2(g,x,y,110,120,q=>kpChand(q,1))},
+hchandx:{w:110,h:120,c:0,ov:1,sw:60,f:(g,x,y)=>S2(g,x,y,110,120,q=>{q.translate(55,0);q.rotate(.12);q.translate(-55,0);kpChand(q,0)})},
+cryptdoor:ob(64,22,0,q=>{q.fillStyle='rgba(0,0,0,.3)';q.fillRect(6,12,56,8);R_(q,'#16111c',4,4,56,13);R_(q,'#7c786e',5,5,54,11);R_(q,'#9a968c',5,5,54,3);R_(q,'#5e5a52',5,13,54,3);for(const x of[14,30,46])for(const yy of[8,12])R_(q,'#3a3832',x,yy,2,2);
+ q.fillStyle='#16111c';q.beginPath();q.arc(5,10,5,0,7);q.fill();q.fillStyle='#4a4a52';q.beginPath();q.arc(5,10,3,0,7);q.fill();R_(q,'#3a3d46',52,8,4,6)})});
 // props that belong at doorways (cmDoorBlocks leaves them out)
-for(const k of['awning','walllight','wallflk','exitsign','curtain','wcsign','banner','deptsign','hsign','haisle','marquee','vault'])if(OB[k])OB[k].dk=1;
+for(const k of['awning','walllight','wallflk','exitsign','curtain','wcsign','banner','deptsign','hsign','haisle','marquee','vault','sconce','portrait','cryptdoor'])if(OB[k])OB[k].dk=1;

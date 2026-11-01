@@ -100,7 +100,7 @@ const c=o&&typeof EDPN!='undefined'&&cmOwn(EDPN,o.k)?EDPN[o.k][1]:'';return{buil
 function cmDefLy(d,kind,o){const id=cmKindLy(kind,o),l=cmLy(d,id);if(l&&l.k=='o')return id;const ol=d.layers.filter(q=>q.k=='o');return ol.length?ol[ol.length-1].id:null}
 
 // ----- collision: everything a custom map adds to WL -----
-function cmVeh(o){const s=cmHW(o.veh);if(!s)return null;return{k:o.veh,x:o.x,y:o.y,a:(o.r||0)*Math.PI/180,L:s[0],W:s[1],c:o.c||undefined,st:o.c2||undefined,dmg:o.dmg?1:0,burn:o.burn?1:0,tx:o.tx||undefined}}
+function cmVeh(o){const s=cmHW(o.veh);if(!s)return null;return{k:o.veh,x:o.x,y:o.y,a:(o.r||0)*Math.PI/180,L:s[0],W:s[1],c:o.c||undefined,st:o.c2||undefined,dmg:o.dmg?1:0,burn:o.burn?1:0,ov:o.ov?1:0,tx:o.tx||undefined}}
 // a solid prop's footprint (OB[k].c) turned with the prop, as a box
 // cf on a prop: its collision flag (2 = see-through, like the forest trees' trunks), else 1
 function cmFoot(o){const B=cmOB(o.k);if(!B||!B.c)return null;const cw=B.c[0],ch=B.c[1],r=B.nr?0:(((o.r||0)%360)+360)%360,cf=B.cf||1;if(!r)return[o.x-cw/2,o.y-ch,cw,ch,cf];
@@ -177,12 +177,12 @@ if(o.lk)p.locked=true;if(o.hd)p.editorHidden=true;return p}
 function cmWrite(d){const used=new Set(['.']),tu=new Set([d.ground]);for(let i=0;i<d.ter.length;i++)tu.add(d.pal[d.ter[i]]);
 const T=cmLeg([...tu],CMTI,used),rows=[];for(let y=0;y<d.h;y++){let s='';for(let x=0;x<d.w;x++)s+=T.by[d.pal[d.ter[y*d.w+x]]];rows.push(s)}
 const out=Object.assign({},d.extra||{},{format:'zombdash-map',version:CMVER,id:d.id,name:d.name,description:d.desc||'',tileSize:d.tile,width:d.w,height:d.h,ground:d.ground,terrain:{legend:T.L,rows}});
-if(d.lt&&typeof d.lt.t=='string'&&d.lt.t){out.lighting={time:d.lt.t,amount:Math.round(cl(+d.lt.a||0,0,1)*100)/100}}else delete out.lighting;
+if(d.lt&&typeof d.lt.t=='string'&&d.lt.t){out.lighting={time:d.lt.t,amount:Math.round(cl(+d.lt.a||0,0,1)*100)/100};if(d.lt.st)out.lighting.storm=true}else delete out.lighting;
 const rd=cmSparse(d,d.rtr,d.rpal,CMTI);if(rd)out.roads=rd;else delete out.roads;
 const ov=cmSparse(d,d.ovl,d.opal,CMOI);if(ov)out.overlay=ov;else delete out.overlay;
 out.layers=d.layers.map(l=>{const q={id:l.id,name:l.n,kind:l.k=='t'?'tiles':'objects'};if(l.hid)q.editorHidden=true;if(l.lock)q.locked=true;return q});
 out.props=d.obj.filter(o=>!o.veh&&!o.dc&&!o.fx).map(o=>{const p={id:o.id,kind:o.k,x:cmR1(o.x),y:cmR1(o.y)};if(o.r)p.rot=cmR1(o.r);if(o.vr!=null)p.var=Math.round(o.vr*100)/100;if(o.c)p.color=o.c;if(o.tx)p.text=o.tx;return cmWObj(o,p,1)});
-out.vehicles=d.obj.filter(o=>o.veh).map(o=>{const p={id:o.id,kind:o.veh,x:cmR1(o.x),y:cmR1(o.y),rot:cmR1(o.r||0)};if(o.c)p.color=o.c;if(o.c2)p.color2=o.c2;if(o.dmg)p.damaged=true;if(o.burn)p.burnt=true;if(o.tx)p.text=o.tx;return cmWObj(o,p,1)});
+out.vehicles=d.obj.filter(o=>o.veh).map(o=>{const p={id:o.id,kind:o.veh,x:cmR1(o.x),y:cmR1(o.y),rot:cmR1(o.r||0)};if(o.c)p.color=o.c;if(o.c2)p.color2=o.c2;if(o.dmg)p.damaged=true;if(o.burn)p.burnt=true;if(o.ov)p.flipped=true;if(o.tx)p.text=o.tx;return cmWObj(o,p,1)});
 // the building kit (version 3): written only when the map has some
 const kit=(nm,L)=>{if(L.length)out[nm]=L;else delete out[nm]},opt=(o,p)=>{if(o.o&&Object.keys(o.o).length)p.options=Object.assign({},o.o);return p};
 kit('decals',d.obj.filter(o=>o.dc).map(o=>{const p={id:o.id,kind:o.dc,x:cmR1(o.x),y:cmR1(o.y)};if(o.r)p.rot=cmR1(o.r);if(o.sc!=null&&o.sc!==1)p.scale=Math.round(o.sc*100)/100;if(o.c)p.color=o.c;if(o.op!=null&&o.op!==1)p.opacity=Math.round(o.op*100)/100;if(o.tx)p.text=o.tx;if(o.vr!=null)p.var=Math.round(o.vr*100)/100;return cmWObj(o,opt(o,p),0)}));
@@ -260,9 +260,9 @@ if(s&&s.type=='rect'&&num(s.x)&&num(s.y)&&num(s.w)&&num(s.h)&&s.w>0&&s.h>0)o.sh=
 else if(s&&s.type=='circle'&&num(s.x)&&num(s.y)&&num(s.r)&&s.r>0)o.sh={t:'c',x:s.x,y:s.y,r:s.r};else{bad(nm,i,'has a "shape" that is not {"type":"rect","x","y","w","h"} or {"type":"circle","x","y","r"}.');return 0}}
 if(p.locked)o.lk=true;if(p.editorHidden)o.hd=true;return 1};
 list(j.props,'props').forEach((p,i)=>{if(!p||typeof p.kind!='string'||!num(p.x)||!num(p.y))return bad('props',i,'needs "kind", "x" and "y".');if(p.rot!=null&&!num(p.rot))return bad('props',i,'has a "rot" that is not a number.');
-const o={id:uid(p.id,'p'),k:p.kind,x:p.x,y:p.y,r:p.rot||0};if(num(p.var))o.vr=cl(p.var,0,1);if(typeof p.color=='string'&&/^#[0-9a-f]{6}$/i.test(p.color))o.c=p.color.toLowerCase();if(typeof p.text=='string'&&p.text)o.tx=cmTxt(p.text,40);if(!obj(p,o,'props',i,'o',1))return;d.obj.push(o);if(!cmOB(p.kind))unk[p.kind]=(unk[p.kind]||0)+1});
+const o={id:uid(p.id,'p'),k:p.kind,x:p.x,y:p.y,r:p.rot||0};if(num(p.var))o.vr=cl(p.var,0,1);if(typeof p.color=='string'&&/^#[0-9a-f]{6}$/i.test(p.color))o.c=p.color.toLowerCase();if(typeof p.text=='string'&&p.text)o.tx=cmTxt(p.text,Math.max(40,(cmOB(p.kind)||{}).txt||0));if(!obj(p,o,'props',i,'o',1))return;d.obj.push(o);if(!cmOB(p.kind))unk[p.kind]=(unk[p.kind]||0)+1});
 list(j.vehicles,'vehicles').forEach((p,i)=>{if(!p||typeof p.kind!='string'||!num(p.x)||!num(p.y))return bad('vehicles',i,'needs "kind", "x" and "y".');if(p.rot!=null&&!num(p.rot))return bad('vehicles',i,'has a "rot" that is not a number.');
-const o={id:uid(p.id,'v'),veh:p.kind,x:p.x,y:p.y,r:p.rot||0};if(typeof p.color=='string'&&/^#[0-9a-f]{3,8}$/i.test(p.color))o.c=p.color;if(typeof p.color2=='string'&&(/^#[0-9a-f]{3,8}$/i.test(p.color2)||p.color2=='none'))o.c2=p.color2;if(p.damaged)o.dmg=1;if(p.burnt)o.burn=1;if(typeof p.text=='string'&&p.text)o.tx=cmTxt(p.text,40);if(!obj(p,o,'vehicles',i,'o',1))return;d.obj.push(o);if(!cmHW(p.kind))unk[p.kind+' (vehicle)']=(unk[p.kind+' (vehicle)']||0)+1});
+const o={id:uid(p.id,'v'),veh:p.kind,x:p.x,y:p.y,r:p.rot||0};if(typeof p.color=='string'&&/^#[0-9a-f]{3,8}$/i.test(p.color))o.c=p.color;if(typeof p.color2=='string'&&(/^#[0-9a-f]{3,8}$/i.test(p.color2)||p.color2=='none'))o.c2=p.color2;if(p.damaged)o.dmg=1;if(p.burnt)o.burn=1;if(p.flipped)o.ov=1;if(typeof p.text=='string'&&p.text)o.tx=cmTxt(p.text,40);if(!obj(p,o,'vehicles',i,'o',1))return;d.obj.push(o);if(!cmHW(p.kind))unk[p.kind+' (vehicle)']=(unk[p.kind+' (vehicle)']||0)+1});
 // ----- the building kit (version 3) -----
 const col=c=>typeof c=='string'&&/^#[0-9a-f]{6}$/i.test(c)?c.toLowerCase():null,pts=a=>Array.isArray(a)&&a.every(q=>Array.isArray(q)&&q.length==2&&num(q[0])&&num(q[1]))?a:null;
 const opts=(p,o,nm,i)=>{if(p.options==null)return 1;const v=p.options;if(!v||typeof v!='object'||Array.isArray(v)){bad(nm,i,'has "options" that are not an object.');return 0}const r={};let n=0;
@@ -286,8 +286,8 @@ for(const k in unk)Wn.push('Unknown '+(k.endsWith(' (vehicle)')?'vehicle "'+k.sl
 if(Array.isArray(j.order)){const pos={};j.order.forEach((id,i)=>{if(typeof id=='string')pos[id]=i});d.obj.forEach((o,i)=>o._o=pos[o.id]!=null?pos[o.id]:1e6+i);d.obj.sort((a,b)=>a._o-b._o);for(const o of d.obj)delete o._o}
 list(j.walls,'walls').forEach((q,i)=>{if(!q||!num(q.x)||!num(q.y)||!num(q.w)||!num(q.h)||q.w<=0||q.h<=0)return bad('walls',i,'needs "x", "y" and a positive "w" and "h".');const s=typeof q.style=='string'?q.style:'wall';if(!CMWI[s])Wn.push('Unknown wall style "'+s+'": drawn as a plain wall.');
 const o={id:uid(q.id,'w'),x:q.x,y:q.y,w:q.w,h:q.h,s};if(typeof q.color=='string'&&/^#[0-9a-f]{6}$/i.test(q.color))o.c=q.color.toLowerCase();if(!obj(q,o,'walls',i,'w',0))return;d.walls.push(o)});
-// time of day (world/kit-lighting.js): {"time": "day" | "morning" | "dusk" | "night", "amount": 0–1}
-const lg=j.lighting;if(lg!=null){if(typeof lg!='object'||Array.isArray(lg))E.push('"lighting" must be an object with "time" and "amount".');else if(lg.amount!=null&&!num(lg.amount))E.push('"lighting.amount" must be a number from 0 to 1.');else{const tm=typeof lg.time=='string'&&lg.time?lg.time.replace(/[<>]/g,'').slice(0,16):'day';if(!cmLtP(tm))Wn.push('Unknown time of day "'+tm+'": the map shows in plain daylight.');d.lt={t:tm,a:num(lg.amount)?cl(lg.amount,0,1):cmLtDef(tm)}}}
+// time of day (world/kit-lighting.js): {"time": "day" | "morning" | "dusk" | "night", "amount": 0–1, "storm": true (optional: lightning and thunder)}
+const lg=j.lighting;if(lg!=null){if(typeof lg!='object'||Array.isArray(lg))E.push('"lighting" must be an object with "time" and "amount".');else if(lg.amount!=null&&!num(lg.amount))E.push('"lighting.amount" must be a number from 0 to 1.');else{const tm=typeof lg.time=='string'&&lg.time?lg.time.replace(/[<>]/g,'').slice(0,16):'day';if(!cmLtP(tm))Wn.push('Unknown time of day "'+tm+'": the map shows in plain daylight.');d.lt={t:tm,a:num(lg.amount)?cl(lg.amount,0,1):cmLtDef(tm)};if(lg.storm===true)d.lt.st=1}}
 const ps=j.playerStart;if(ps==null)Wn.push('No "playerStart": the player starts in the middle of the map.');else if(!num(ps.x)||!num(ps.y))E.push('"playerStart" needs "x" and "y".');else d.start={x:ps.x,y:ps.y};
 const zs_=j.zombieSpawns;if(zs_!=null&&typeof zs_!='object')E.push('"zombieSpawns" must be an object with "points" and "zones".');else if(zs_){
 list(zs_.points,'zombieSpawns.points').forEach((p,i)=>{if(!p||!num(p.x)||!num(p.y))return bad('zombieSpawns.points',i,'needs "x" and "y".');const o={id:uid(p.id,'s'),x:p.x,y:p.y,on:p.enabled!==false};if(!obj(p,o,'zombieSpawns.points',i,'s',0))return;d.spawns.push(o)});
