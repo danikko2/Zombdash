@@ -3,8 +3,8 @@
 var INV=4;
 var AMT=['pa','pa','sh','ri','rk','sh','ri','ri','bl','sh','bl','ar','rk','ar','rk','ar','rk','rk'];
 function RDY(p){return shopIt(p).length}
-var AMI={pa:{n:'Pistol ammo',s:'PISTOL',c:'#e8c040',buy:300,cost:30,max:1200,drop:60},ri:{n:'Rifle rounds',s:'RIFLE',c:'#d88a3a',buy:200,cost:40,max:800,drop:40},sh:{n:'Shotgun shells',s:'SHELLS',c:'#d84a3a',buy:8,cost:40,max:160,drop:6},rk:{n:'Rockets',s:'ROCKETS',c:'#8a9a6a',buy:10,cost:90,max:36,drop:5},bl:{n:'Ammo belts',s:'BELTS',c:'#c8b070',buy:300,cost:70,max:1200,drop:150},ar:{n:'Arrows',s:'ARROWS',c:'#8fc0e0',buy:100,cost:40,max:500,drop:20}};
-var MAG=[18,45,6,30,1,8,30,40,100,8,120,10,3,6,1,10,1,4],RLT=[1.25,1.3,1.7,1.4,2.2,1.9,1.6,1.4,2.4,1.9,2.4,1.6,2.2,1.9,2.5,1.6,3,2.4];
+var AMI={pa:{n:'Pistol ammo',s:'PISTOL',c:'#e8c040',buy:300,cost:30,max:1200,drop:60},ri:{n:'Rifle rounds',s:'RIFLE',c:'#d88a3a',buy:200,cost:40,max:800,drop:40},sh:{n:'Shotgun shells',s:'SHELLS',c:'#d84a3a',buy:20,cost:30,max:160,drop:8},rk:{n:'Rockets',s:'ROCKETS',c:'#8a9a6a',buy:10,cost:90,max:48,drop:5},bl:{n:'Ammo belts',s:'BELTS',c:'#c8b070',buy:300,cost:70,max:1200,drop:150},ar:{n:'Arrows',s:'ARROWS',c:'#8fc0e0',buy:100,cost:40,max:500,drop:20}};
+var MAG=[18,45,6,30,1,8,30,40,200,8,120,10,3,6,1,10,1,4],RLT=[1.25,1.3,1.7,1.4,2.2,1.9,1.6,1.4,2.4,1.9,2.4,1.6,2.2,1.9,2.5,1.6,3,2.4];
 // fire sound of each gun
 var FSN=['pistol','smg','shotgun','rifle','rocket','hshotgun','hrifle','laser','minigun','lshotgun','lminigun','crossbow','chickgun','blastbow','deathrow','firebow','lifesaver','bubblecannon'];
 // ammo used per round: the Chicken Gun takes 2 rockets for every chicken (WP apr); reserves are counted in rounds

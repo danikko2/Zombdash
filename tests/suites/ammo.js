@@ -29,7 +29,7 @@ keep();P.mg[1]=0;P.am.pa=0;P.rl=0;tick(5);LOG("dbg cur="+P.cur+" mg="+P.mg[1]+" 
 keep();P.cur=CH[0].w;P.mg[P.cur]=0;tick(Math.ceil(1.45/.016));ok(P.mg[P.cur]>0,'starter reloads from infinite reserve');
 inp=p=>({mx:0,my:0,fire:false});
 // drops
-DR=[];const z=mk(2,P.x+5,P.y);for(let k=0;k<200&&!DR.some(d=>d.k=='am');k++)drop(z,ZT[2]);const d=DR.find(d=>d.k=='am');ok(d&&d.a=='sh','big zombie drops shells');keep();mode='play';DR=[d];d.x=P.x;d.y=P.y;const s0=P.am.sh;tick(2);ok(P.am.sh>s0,'picked up shells');
+const z=mk(2,P.x+5,P.y),kinds=new Set();let d=null;for(let r=0;r<400;r++){DR=[];drop(z,ZT[2]);const q=DR.find(q=>q.k=='am');if(q){kinds.add(q.a);d=d||q}}ok(d&&kinds.size>=3,'zombies drop a random kind of ammo ('+[...kinds].join(',')+')');keep();mode='play';DR=[d];d.x=P.x;d.y=P.y;const s0=P.am[d.a];tick(2);ok(P.am[d.a]>s0,'picked up the '+d.a+' ammo');
 // keys pick slots
 P.cur=P.own[0];document&&0;
 // split-screen shop items

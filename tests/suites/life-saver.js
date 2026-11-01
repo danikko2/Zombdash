@@ -25,7 +25,7 @@ ok(AMT[LS]=='rk'&&WP[LS].apr==3&&MAG[LS]==1&&RLT[LS]==3,'it uses rockets, 3 for 
 ok(WP[LS].cost==1200&&WP[LS].hl==2&&WP[LS].d==0,'\\$1200; each heart heals 2 and never hurts zombies');
 ok([RLS,RLT,MAG,AMT,MZ,FS,FSN].every(a=>a.length==WP.length),'every per-gun table has an entry for every gun');
 ok(['lifesaver','rlls','lsbounce','lsheal'].every(n=>typeof SF[n]=='function'),'fire, reload, bounce and heal sounds exist');
-ok(MAG.slice(0,16).join()=='18,45,6,30,1,8,30,40,100,8,120,10,3,6,1,10'&&WP[14].cost==2500&&WP[15].d==5&&AMI.rk.max==36,'older guns and ammo keep their values');
+ok(MAG.slice(0,16).join()=='18,45,6,30,1,8,30,40,200,8,120,10,3,6,1,10'&&WP[14].cost==2500&&WP[15].d==8&&AMI.rk.max==48,'older guns and ammo keep their values');
 // ---------- sprites ----------
 ok(Object.keys(PS).every(k=>PS[k].gun.length==WP.length&&PS[k].gun[16][2]==80&&PS[k].gun[16][3]==32&&PS[k].gun[16][1]>=1863),'every survivor holds a Life Saver (80x32 frames below the old sheet)');
 ok(JSON.stringify(PS[0].gun[13])=='[0,1698,80,32,6,14]'&&JSON.stringify(PS[0].gun[0])=='[490,0,80,32,6,14]','older gun frames did not move');

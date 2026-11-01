@@ -57,10 +57,10 @@ SAY('zombie count sliders: '+BALR.filter(e=>e.g=='zc').length);
 setGM('f');mapId=3;sel=0;start();wave=4;zs=[];IW={};nextWave();const n0=toSp;
 i=BALR.findIndex(e=>e.g=='zc'&&e.sub.startsWith('Free play')&&e.o===ZMAPM.f&&e.f==3);balSet(i,200);start();wave=4;zs=[];IW={};nextWave();OK(toSp==Math.round(n0*2),'free play map at 200% doubles wave 5 ('+n0+' → '+toSp+')');
 mapId=0;start();wave=4;zs=[];IW={};nextWave();OK(toSp==n0,'other free play maps unchanged');
-setGM('c');mapId=3;start();wave=4;zs=[];IW={};nextWave();OK(toSp==n0,'same map in the campaign uses its own campaign % ('+toSp+')');
+setGM('c');mapId=3;start();wave=4;zs=[];IW={};nextWave();OK(toSp==Math.round(n0*ZMAPM.c[3]/100),'same map in the campaign uses its own campaign % ('+toSp+')');
 i=BALR.findIndex(e=>e.g=='zc'&&e.sub.startsWith('Campaign')&&e.f==3);balSet(i,50);start();wave=4;zs=[];IW={};nextWave();OK(toSp==Math.round(n0*.5),'campaign map at 50% halves it ('+toSp+')');setGM('f');
-i=BALR.findIndex(e=>e.g=='zc'&&e.lab=='Per wave');balSet(i,6);mapId=0;start();wave=8;zs=[];IW={};nextWave();OK(toSp==4+54+Math.floor(81*.12),'per-wave slider changes the formula ('+toSp+')');
-balReset(0);OK(ZWN.w==3&&ZMAPM.f[3]==100,'zombie count reset');
+i=BALR.findIndex(e=>e.g=='zc'&&e.lab=='Per wave');balSet(i,6);mapId=0;start();wave=8;zs=[];IW={};nextWave();OK(toSp==ZWN.b+54+Math.floor(81*ZWN.g),'per-wave slider changes the formula ('+toSp+')');
+balReset(0);OK(ZWN.w==4&&ZMAPM.f[3]==100,'zombie count reset');
 // ---- aiming ----
 setGM('f');mapId=0;start();mode='play';MSE.on=1;mouse.d=0;cam.x=0;cam.y=0;mouse.x=P.x+100;mouse.y=P.y;let r=inp(P);OK(Math.abs(P.a)<.01&&!r.fire,'PC: moving the mouse aims without firing');
 mouse.x=P.x;mouse.y=P.y-100;r=inp(P);OK(Math.abs(P.a+Math.PI/2)<.01&&!r.fire,'PC: aim follows the mouse');mouse.d=1;r=inp(P);OK(r.fire,'PC: clicking fires');mouse.d=0;

@@ -25,7 +25,7 @@ ok(WP[BC].cost==2250&&AMT[BC]=='rk'&&WP[BC].apr==2&&MAG[BC]==4,'\\$2250, rockets
 ok(WP[BC].d==15&&WP[BC].bn0==4&&WP[BC].bn1==6,'4-6 bubbles a shot, each pop does 15');
 ok([RLS,RLT,MAG,AMT,MZ,FS,FSN].every(a=>a.length==WP.length),'every per-gun table has an entry for every gun');
 ok(['bubblecannon','rlbc','bcpop'].every(n=>typeof SF[n]=='function'),'fire, reload and pop sounds exist');
-ok(MAG.slice(0,17).join()=='18,45,6,30,1,8,30,40,100,8,120,10,3,6,1,10,1'&&WP[16].hl==2&&WP[14].zn==15&&AMI.rk.max==36,'older guns and ammo keep their values');
+ok(MAG.slice(0,17).join()=='18,45,6,30,1,8,30,40,200,8,120,10,3,6,1,10,1'&&WP[16].hl==2&&WP[14].zn==15&&AMI.rk.max==48,'older guns and ammo keep their values');
 // ---------- sprites ----------
 ok(Object.keys(PS).every(k=>PS[k].gun.length==WP.length&&PS[k].gun[17][2]==80&&PS[k].gun[17][1]>=1929),'every survivor holds a Bubble Cannon (80x32 frames below the old sheet)');
 ok(JSON.stringify(PS[0].gun[16])=='[0,1863,80,32,6,14]'&&JSON.stringify(PS[0].gun[0])=='[490,0,80,32,6,14]','older gun frames did not move');

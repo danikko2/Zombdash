@@ -24,12 +24,12 @@ const near=(a,b,e)=>Math.abs(a-b)<(e||1e-6);
 ok(BB==13&&DW==14&&FB==15&&WP.length>=16,'Blastbow, Death Row and Firebow are guns 14, 15 and 16 (the older guns keep their numbers)');
 ok(WP[BB].cost==1800&&WP[DW].cost==2500&&WP[FB].cost==850,'prices: Blastbow $1800, Death Row $2500, Firebow $850');
 ok(AMT[BB]=='ar'&&AMT[FB]=='ar'&&AMT[DW]=='rk','the Blastbow and the Firebow shoot arrows, Death Row uses rockets');
-ok(MAG[DW]==1&&RLT[DW]==2.5&&WP[DW].d==10&&WP[DW].dx==3&&WP[DW].zn==15,'Death Row: one shot a magazine, 2.5 s reload, 10-13 damage, up to 15 zombies');
+ok(MAG[DW]==1&&RLT[DW]==2.5&&WP[DW].d==11&&WP[DW].dx==3&&WP[DW].zn==15,'Death Row: one shot a magazine, 2.5 s reload, 11-14 damage, up to 15 zombies');
 ok(WP[FB].d>WP[XB].d&&WP[FB].bt>0&&WP[FB].bd>0,'the Firebow hits a little harder than the Crossbow ('+WP[FB].d+' vs '+WP[XB].d+') and sets zombies on fire');
-ok(WP[BB].bx>=25&&WP[BB].bs>0&&WP[BB].br>0&&WP[BB].bf>0,'the Blastbow blows up: '+WP[BB].bx+' to the zombie it sticks in, '+WP[BB].bs+' around within '+WP[BB].br);
+ok(WP[BB].bx>=20&&WP[BB].bs>0&&WP[BB].br>0&&WP[BB].bf>0,'the Blastbow blows up: '+WP[BB].bx+' to the zombie it sticks in, '+WP[BB].bs+' around within '+WP[BB].br);
 ok([RLS,RLT,MAG,AMT,MZ,FS,FSN].every(a=>a.length==WP.length),'every per-gun table has an entry for every gun');
 ok(FSN.every(n=>typeof SF[n]=='function')&&RLS.every(n=>typeof SF[n]=='function')&&['bbeep','bbstick','bbpop','fbignite'].every(n=>typeof SF[n]=='function'),'fire, reload, beep, blast and fire sounds exist');
-ok(MAG.slice(0,13).join()=='18,45,6,30,1,8,30,40,100,8,120,10,3'&&WP[XB].d==4&&WP[XB].cost==500&&WP[12].cost==2000&&AMI.ar.max==500&&AMI.rk.max==36,'older guns and ammo keep their values');
+ok(MAG.slice(0,13).join()=='18,45,6,30,1,8,30,40,200,8,120,10,3'&&WP[XB].d==6&&WP[XB].cost==280&&WP[12].cost==2000&&AMI.ar.max==500&&AMI.rk.max==48,'older guns and ammo keep their values');
 // ---------- sprites ----------
 ok(Object.keys(PS).every(k=>PS[k].gun.length==WP.length&&PS[k].gun.slice(13).every(f=>f[2]==80&&f[3]==32&&f[4]==6&&f[5]==14&&f[1]>=1698)),'every survivor holds the three new guns (80x32 frames below the old sheet)');
 ok(JSON.stringify(PS[0].gun[0])=='[490,0,80,32,6,14]'&&JSON.stringify(PS[0].gun[11])=='[0,1599,80,32,6,14]'&&JSON.stringify(PS[16].gun[12])=='[729,1665,80,32,6,14]','older gun frames did not move');
@@ -77,7 +77,7 @@ clr();m=arm(BB);at(0,m.x+120,m.y,1000);shoot();for(let i=0;i<40&&!BBC.length;i++
 clr();m=arm(DW);P.am.rk=10;const C=[];for(let i=0;i<20;i++)C.push(at(0,m.x+100+i*40,m.y+(i%2?12:-12),1000));
 shoot();const hit=C.filter(z=>z.hp<1000);
 ok(hit.length==15&&hit.every((z,i)=>z===C[i]),'one shot chains through the 15 nearest zombies in a group (and no more)');
-ok(hit.every(z=>1000-z.hp>=10-1e-9&&1000-z.hp<13),'each took 10-13 damage: '+hit.map(z=>(1000-z.hp).toFixed(1)).join(' '));
+ok(hit.every(z=>1000-z.hp>=11-1e-9&&1000-z.hp<14),'each took 11-14 damage: '+hit.map(z=>(1000-z.hp).toFixed(1)).join(' '));
 ok(LZ.length==1&&LZ[0].pts.length==16,'the lightning is drawn from the gun through all 15');
 ok(P.mg[DW]==0&&P.rl>0&&near(P.rlT,2.5),'one shot empties the magazine and a 2.5 s reload starts');secs(2.4);ok(P.mg[DW]==0,'still reloading after 2.4 s');secs(.2);ok(P.mg[DW]==1&&P.am.rk==9,'loaded after 2.5 s, using 1 rocket');
 // only zombies close together: a gap bigger than the jump stops the chain
@@ -85,9 +85,9 @@ clr();m=arm(DW);const G=[at(0,m.x+100,m.y,1000),at(0,m.x+180,m.y,1000),at(0,m.x+
 ok(G.slice(0,3).every(z=>z.hp<1000)&&G[3].hp==1000,'a zombie '+(WP[DW].zj+60)+' px from the group is not hit');
 // bosses get zapped too, and kills count for Death Row
 clr();m=arm(DW);k0=wpA(S.ac)[DW].k;const K=at(7,m.x+110,m.y,500),W3=[0,1,2].map(i=>at(0,m.x+180+i*50,m.y,4));shoot();
-ok(K.hp<500&&K.hp>=487-1e-9&&W3.every(z=>z.hp<=0)&&wpA(S.ac)[DW].k-k0==3,'a boss in the chain is zapped for 10-13 and the 3 Walkers killed count for Death Row');
+ok(K.hp<500&&K.hp>=486-1e-9&&W3.every(z=>z.hp<=0)&&wpA(S.ac)[DW].k-k0==3,'a boss in the chain is zapped for 11-14 and the 3 Walkers killed count for Death Row');
 // the 2x damage pickup doubles it
-clr();m=arm(DW);const D2=at(0,m.x+100,m.y,1000);P.dd=5;shoot();P.dd=0;ok(1000-D2.hp>=20-1e-9&&1000-D2.hp<26,'with 2x damage a zap does 20-26: '+(1000-D2.hp).toFixed(1));
+clr();m=arm(DW);const D2=at(0,m.x+100,m.y,1000);P.dd=5;shoot();P.dd=0;ok(1000-D2.hp>=22-1e-9&&1000-D2.hp<28,'with 2x damage a zap does 22-28: '+(1000-D2.hp).toFixed(1));
 // a zombie eating the player is the first one zapped
 clr();m=arm(DW);const E=at(0,P.x-20,P.y,1000);P.eat=E;shoot();P.eat=null;ok(E.hp<1000,'a zombie eating the player gets zapped first');
 // a shot at nothing still fires (and uses the rocket)
@@ -106,8 +106,8 @@ secs(2);ok(near(Z1.hp,1000-WP[FB].d-WP[FB].bd*WP[FB].bt)&&!(Z1.brn>0),'then the 
 clr();m=arm(FB);const Z2=at(0,m.x+100,m.y,1000);shoot();for(let i=0;i<40&&bs.length;i++)tick(1);secs(1);home();Z2.x=m.x+100;Z2.y=m.y;P.cds[FB]=0;shoot();for(let i=0;i<40&&bs.length;i++)tick(1);secs(3.4);
 ok(near(Z2.hp,1000-2*WP[FB].d-2*.5*WP[FB].bd-WP[FB].bd*WP[FB].bt),'a second hit restarts the fire, it does not stack ('+(1000-Z2.hp).toFixed(2)+' in all)');
 // burning to death counts for the Firebow
-clr();m=arm(FB);k0=wpA(S.ac)[FB].k;const Z3=at(0,m.x+100,m.y,6);shoot();for(let i=0;i<40&&bs.length;i++)tick(1);ok(Z3.hp>0,'a 6-health zombie survives the hit');secs(2);ok(Z3.hp<=0&&wpA(S.ac)[FB].k-k0==1,'and burns to death; the kill counts for the Firebow');
-ok(near(WP[FB].d,5)&&WP[FB].d*1>WP[XB].d,'(the Crossbow does '+WP[XB].d+')');
+clr();m=arm(FB);k0=wpA(S.ac)[FB].k;const Z3=at(0,m.x+100,m.y,9.5);shoot();for(let i=0;i<40&&bs.length;i++)tick(1);ok(Z3.hp>0,'a 9.5-health zombie survives the hit');secs(2);ok(Z3.hp<=0&&wpA(S.ac)[FB].k-k0==1,'and burns to death; the kill counts for the Firebow');
+ok(near(WP[FB].d,8)&&WP[FB].d*1>WP[XB].d,'(the Crossbow does '+WP[XB].d+')');
 // drawing everything at once
 clr();m=arm(BB);for(let i=0;i<6;i++)at(0,m.x+120+i*30,m.y+(i%2)*30,1000);shoot();tick(8);P.cur=FB;P.cds[FB]=0;shoot();tick(20);P.cur=DW;P.mg[DW]=1;P.am.rk=5;P.cds[DW]=0;shoot();tick(2);
 drawW();hud();ok(!ERRS.length&&BBC.length&&LZ.length&&zs.some(z=>z.brn>0),'drawing stuck bolts, lightning, burning zombies and flaming bolts works (errors: '+ERRS.join(' | ')+')');
@@ -130,7 +130,7 @@ ok(WP[DW].zn==5&&RLT[DW]==1&&WP[FB].bt==1&&WP[BB].br==200,'sliders change the gu
 setGM('f');mapId=0;start();nextWave();toSp=0;P.mx=P.hp=999;P.inv=1e9;keep();clr();P.own.push(DW,FB);P.am.rk=5;P.am.ar=50;
 m=arm(DW);const C5=[];for(let i=0;i<10;i++)C5.push(at(0,m.x+100+i*40,m.y,1000));shoot();ok(C5.filter(z=>z.hp<1000).length==5,'a chain now stops at 5');secs(1.1);ok(P.mg[DW]==1,'and reloads in 1 s');
 clr();m=arm(FB);const Z5=at(0,m.x+100,m.y,1000);shoot();for(let i=0;i<40&&bs.length;i++)tick(1);secs(2);ok(near(Z5.hp,1000-WP[FB].d-WP[FB].bd),'fire now lasts 1 s');
-devOff();ok(WP[DW].zn==15&&RLT[DW]==2.5&&WP[FB].bt==3&&WP[BB].br==70,'test mode off puts the defaults back');devSet();balOpen('guns');balReset(0);devOff();
+devOff();ok(WP[DW].zn==15&&RLT[DW]==2.5&&WP[FB].bt==3&&WP[BB].br==60,'test mode off puts the defaults back');devSet();balOpen('guns');balReset(0);devOff();
 // ---------- older progress keeps working ----------
 {const A={name:'Old'};wpA(A);ok(A.wp.length==WP.length&&A.cm.length==WP.length,'gun progress grows to every gun');const full=gEnc(S.ac).split('_');const B={},C2={};
  ok(gDec(full.slice(0,11).join('_'),B)&&B.wp.length==WP.length&&gDec(full.slice(0,13).join('_'),C2)&&C2.wp.length==WP.length&&C2.wp[15].l==1,'account codes from before (11 and 13 guns) still load');const D={};ok(gDec(gEnc(S.ac),D)&&D.wp.length==WP.length,'new codes carry every gun')}

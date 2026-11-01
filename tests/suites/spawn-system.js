@@ -75,9 +75,9 @@ OK(!cv,'campaign waves stay under their section special cap');
 setGM(g)}
 // ---------- 8. intro populations ----------
 LOG('8. intro wave sizes');
-for(const mp of[1,2]){freshRun(1);MPn=mp>1?mp:0;for(const t of[1,2,10,3,4,11,18,19,14,9]){IW={};IW[t]=12;wave=11;zs=[];nextWave();const nz=Math.round((4+12*3+Math.floor(144*.12))*(MPn>1?1+.6*(MPn-1):1)),k=ZC[t].sp?.6:ZC[t].rg?.4:.8,want=Math.max(1,Math.round(nz*k));OK(toSp==want,(mp>1?mp+'P ':'')+ZC[t].n+' intro wave '+toSp+' = '+nz+' × '+k*100+'%')}MPn=0}
+for(const mp of[1,2]){freshRun(1);MPn=mp>1?mp:0;for(const t of[1,2,10,3,4,11,18,19,14,9]){IW={};IW[t]=12;wave=11;zs=[];nextWave();const nz=Math.round(zWaveBase(12)*(MPn>1?1+.6*(MPn-1):1)),k=ZC[t].sp?.6:ZC[t].rg?.4:.8,want=Math.max(1,Math.round(nz*k));OK(toSp==want,(mp>1?mp+'P ':'')+ZC[t].n+' intro wave '+toSp+' = '+nz+' × '+k*100+'%')}MPn=0}
 {freshRun(1);IW={9:3};ZCFG.intro.mult.rg=.01;wave=2;nextWave();OK(toSp==1,'minimum of 1 zombie in an intro wave');ZCFG.intro.mult.rg=.4}
-{freshRun(1);IW={1:2};wave=4;zs=[];nextWave();OK(toSp==Math.round(4+15+3),'non-intro wave keeps the normal count ('+toSp+')')}
+{freshRun(1);IW={1:2};wave=4;zs=[];nextWave();OK(toSp==zWaveBase(5),'non-intro wave keeps the normal count ('+toSp+')')}
 // ---------- 11b. secondary spawns ----------
 LOG('11. secondary spawns');
 {freshRun(1);IW={1:40};wave=9;zs=[];nextWave();SAY('boss wave 10 boss: '+ZT[bossQ].n);bossQ=-1;const J=mk(6,P.x+300,P.y);J.mh=J.hp;J.s2=0;zs.push(J);for(let i=0;i<10;i++)zs.push(mk(0,P.x+200,P.y+i*5));let rn=0,wk=0;for(let i=0;i<400;i++){frame(1/30);J.hp=J.mh}for(const z of zs){if(z.t==1)rn++;if(z.t==0)wk++}OK(rn>0,'Juggernaut still summons Runners before Runners are unlocked (runners '+rn+')')}

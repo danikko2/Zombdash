@@ -21,13 +21,13 @@ const secs=s=>tick(Math.round(s/.016));
 const XB=WP.findIndex(w=>w.n=='Crossbow'),CG=WP.findIndex(w=>w.n=='Chicken Gun');
 // ---------- tables ----------
 ok(XB==11&&CG==12&&WP.length>=13,'Crossbow and Chicken Gun are guns 12 and 13 (the 11 older guns keep their numbers)');
-ok(WP[XB].cost==500&&WP[XB].r==.75&&WP[XB].d==4&&WP[XB].p==1,'Crossbow: $500, one shot every 0.75 s, 4 damage');
+ok(WP[XB].cost==280&&WP[XB].r==.75&&WP[XB].d==6&&WP[XB].p==1,'Crossbow: $280, one shot every 0.75 s, 6 damage');
 ok(AMT[XB]=='ar'&&AMI.ar&&AMI.ar.buy==100&&AMI.ar.cost==40&&AMI.ar.max==500&&MAG[XB]==10,'Crossbow uses arrows: 100 for $40, carry up to 500, 10-bolt magazine');
 ok(WP[CG].cost==2000&&WP[CG].ck&&AMT[CG]=='rk'&&WP[CG].apr==2&&MAG[CG]==3,'Chicken Gun: $2000, 3 chickens a magazine, each chicken uses 2 rockets');
-ok(CKG.max==3&&CKG.n0==5&&CKG.n1==8&&CKG.big==8,'chickens: 3 out at once, eat 5-8, health 8 or more counts as two');
+ok(CKG.max==3&&CKG.n0==8&&CKG.n1==10&&CKG.big==8,'chickens: 3 out at once, eat 8-10, health 8 or more counts as two');
 ok([RLS,RLT,MAG,AMT,MZ,FS,FSN].every(a=>a.length==WP.length),'every per-gun table has an entry for every gun');
 ok(FSN.every(n=>typeof SF[n]=='function')&&RLS.every(n=>typeof SF[n]=='function')&&SF.ckinflate&&SF.ckpop,'fire, reload and chicken sounds exist');
-ok(MAG.slice(0,11).join()=='18,45,6,30,1,8,30,40,100,8,120'&&WP[4].d==25&&WP[7].cost==4000&&AMI.rk.max==36&&AMI.pa.buy==300,'older guns and ammo keep their values');
+ok(MAG.slice(0,11).join()=='18,45,6,30,1,8,30,40,200,8,120'&&WP[4].d==30&&WP[7].cost==4000&&AMI.rk.max==48&&AMI.pa.buy==300,'older guns and ammo keep their values');
 // ---------- sprites ----------
 ok(Object.keys(PS).length==CH.length&&Object.keys(PS).every(k=>PS[k].gun.length==WP.length&&PS[k].gun.slice(11).every(f=>f[2]==80&&f[3]==32&&f[4]==6&&f[5]==14&&f[1]>=1599)),'every survivor holds a Crossbow and a Chicken Gun frame (80x32, added below the old sheet)');
 ok(JSON.stringify(PS[0].gun[0])=='[490,0,80,32,6,14]'&&JSON.stringify(PS[16].gun[10])=='[729,1566,80,32,6,14]'&&JSON.stringify(PS[8].gun[10])=='[324,849,80,32,6,14]','older gun frames did not move');
@@ -35,9 +35,9 @@ ok(ZS.chicken&&ZS.chicken.fly.length==4&&ZS.chicken.eat.length==2&&ZS.chicken.pu
 ok(JSON.stringify(ZS[0].walk[0])=='[0,0,58,62]'&&JSON.stringify(ZS[20].walk[0])=='[0,1423,102,108]'&&JSON.stringify(ZS[14].bite[3])=='[837,1190,92,82]','older zombie frames did not move');
 // ---------- store ----------
 setGM('f');mapId=0;sel=0;S.dlf=1;start();P.mx=P.hp=999;P.cash=100000;shop();
-ok(/data-gun=11[^>]*><\\/canvas>Crossbow<small>\\$500</.test(ui.innerHTML)&&/data-gun=12[^>]*><\\/canvas>Chicken Gun<small>\\$2000</.test(ui.innerHTML),'store sells the Crossbow ($500) and the Chicken Gun ($2000), each with its picture');
+ok(/data-gun=11[^>]*><\\/canvas>Crossbow<small>\\$280</.test(ui.innerHTML)&&/data-gun=12[^>]*><\\/canvas>Chicken Gun<small>\\$2000</.test(ui.innerHTML),'store sells the Crossbow ($280) and the Chicken Gun ($2000), each with its picture');
 ok(ui.innerHTML.includes("amBuy('ar')")&&/Arrows<small>0\\/500 · \\+100 \\$40/.test(ui.innerHTML),'store sells arrows: +100 for $40, 500 max');
-let c0=P.cash;buy(XB);ok(P.own.includes(XB)&&c0-P.cash==500&&P.cur==XB&&P.mg[XB]==10&&P.am.ar==20,'bought the Crossbow for $500: 10 bolts loaded + 20 arrows');
+let c0=P.cash;buy(XB);ok(P.own.includes(XB)&&c0-P.cash==280&&P.cur==XB&&P.mg[XB]==10&&P.am.ar==20,'bought the Crossbow for $280: 10 bolts loaded + 20 arrows');
 c0=P.cash;let a0=P.am.ar;amBuy('ar');ok(P.am.ar==a0+100&&c0-P.cash==40,'100 arrows for $40');for(let i=0;i<9;i++)amBuy('ar');c0=P.cash;amBuy('ar');ok(P.am.ar==500&&P.cash==c0,'arrows stop at 500');
 ok(ui.innerHTML.includes('Crossbow')&&ui.innerHTML.includes('10 / 500'),'inventory shows the Crossbow with 10 / 500');
 // ---------- the Crossbow kills a Walker in one shot up to wave 4 ----------
@@ -45,8 +45,8 @@ nextWave();toSp=0;P.mx=P.hp=999;
 let KP;const keep=()=>{KP=mk(0,P.x>WW/2?30:WW-30,P.y>WH/2?30:WH-30);KP.hp=1e9;KP.spm=1e-6;return KP};keep();ok(Math.hypot(KP.x-P.x,KP.y-P.y)>CKG.rng+100,'a far-away zombie keeps each wave going during the test');
 const clr=()=>{zs=[KP];bs=[];DR=[];for(const p of PL)p.dd=0;ckClear()};clr();const fireOn=()=>{inp=()=>({mx:0,my:0,fire:true})},fireOff=()=>{inp=()=>({mx:0,my:0,fire:false})};
 const bolt=(w)=>{wave=w;clr();P.cur=XB;P.mg[XB]=10;P.rl=0;P.cds[XB]=0;P.a=0;P.dd=0;const m=muzzle(),z=mk(0,m.x+70,m.y);z.fz=99;zs.push(z);const h=z.hp;fireOn();tick(1);fireOff();const b=bs.slice();for(let i=0;i<40&&bs.length;i++)tick(1);return{h,b,dead:z.hp<=0,z}};
-for(const w of[1,2,3,4]){const r=bolt(w);ok(r.b.length==1&&r.b[0].ab&&r.b[0].d==4&&r.dead,'wave '+w+' Walker ('+r.h.toFixed(2)+' health) dies to one bolt')}
-{const r=bolt(5);ok(!r.dead&&r.z.hp<r.h&&r.h>4,'wave 5 Walker ('+r.h.toFixed(2)+' health) survives one bolt');P.cds[XB]=0;fireOn();tick(1);fireOff();for(let i=0;i<40&&bs.length;i++)tick(1);ok(r.z.hp<=0,'and dies to the second')}
+for(const w of[1,2,3,4]){const r=bolt(w);ok(r.b.length==1&&r.b[0].ab&&r.b[0].d==6&&r.dead,'wave '+w+' Walker ('+r.h.toFixed(2)+' health) dies to one bolt')}
+{const r=bolt(13);ok(!r.dead&&r.z.hp<r.h&&r.h>6,'wave 13 Walker ('+r.h.toFixed(2)+' health) survives one bolt');P.cds[XB]=0;fireOn();tick(1);fireOff();for(let i=0;i<40&&bs.length;i++)tick(1);ok(r.z.hp<=0,'and dies to the second')}
 // fire rate: 0.75 s between shots
 wave=2;clr();P.cur=XB;P.mg[XB]=10;P.cds[XB]=0;let fired=0;fireOn();for(let i=0;i<Math.round(3/.016);i++){const n0=P.mg[XB];tick(1);if(P.mg[XB]<n0)fired++}fireOff();ok(fired==4,'holding the trigger for 3 s fires 4 bolts (one every 0.75 s): '+fired);
 // reload takes arrows
@@ -59,7 +59,7 @@ const herd=(n,t,hp)=>{const L=[];for(let i=0;i<n;i++){const z=mk(t||0,P.x+90+(i%
 const launch=()=>{P.cur=CG;P.cds[CG]=0;P.rl=0;fireOn();tick(1);fireOff()};
 const run=(s,stop)=>{for(let i=0;i<Math.round(s/.016);i++){tick(1);if(stop&&stop())break}};
 // one chicken with room for 6 Walkers eats exactly 6, then balloons and pops
-let L=herd(12,0,3),k0=wpA(S.ac)[CG].k,mg0=P.mg[CG];launch();ok(CK.length==1&&P.mg[CG]==mg0-1&&CK[0].m>=5&&CK[0].m<=8,'one chicken out, it wants '+CK[0].m+' zombies (5-8)');
+let L=herd(12,0,3),k0=wpA(S.ac)[CG].k,mg0=P.mg[CG];launch();ok(CK.length==1&&P.mg[CG]==mg0-1&&CK[0].m>=8&&CK[0].m<=10,'one chicken out, it wants '+CK[0].m+' zombies (8-10)');
 CK[0].m=6;let seen=new Set(),pf=0;run(25,()=>{for(const c of CK){if(c.s=='puff')pf=1}return !CK.length});
 let dead=L.filter(z=>z.hp<=0).length;ok(dead==6,'a full chicken ate exactly 6 Walkers: '+dead);ok(pf&&!CK.length,'then it ballooned up and popped');ok(CKS.length>=7,'blood splatters left on the ground: '+CKS.length);
 ok(wpA(S.ac)[CG].k-k0==6,'the 6 kills count for the Chicken Gun (weapon level and camos)');
@@ -67,7 +67,7 @@ ok(wpA(S.ac)[CG].k-k0==6,'the 6 kills count for the Chicken Gun (weapon level an
 clr();L=herd(8,2,8);launch();CK[0].m=6;run(25,()=>!CK.length);ok(L.filter(z=>z.hp<=0).length==3,'zombies with 8 health count as two: a 6-zombie chicken ate 3 of them');
 clr();L=herd(8,0,7.9);launch();CK[0].m=6;run(25,()=>!CK.length);ok(L.filter(z=>z.hp<=0).length==6,'zombies with 7.9 health count as one: it ate 6');
 // three chickens at a time, each after a different zombie; the 4th shot waits
-clr();L=herd(28,0,3);P.mg[CG]=3;launch();secs(.2);launch();secs(.2);launch();ok(CK.length==3&&P.mg[CG]==0,'three chickens out');
+clr();L=herd(34,0,3);P.mg[CG]=3;launch();secs(.2);launch();secs(.2);launch();ok(CK.length==3&&P.mg[CG]==0,'three chickens out');
 P.mg[CG]=3;FT=[];launch();ok(CK.length==3&&P.mg[CG]==3&&FT.some(f=>f.t=='3 CHICKENS OUT'),'a 4th chicken is not fired while 3 are out (no ammo used)');
 let share=0,want=CK.reduce((s,c)=>s+c.m,0);run(40,()=>{const T=CK.filter(c=>c.z&&(c.s=='seek'||c.s=='eat')).map(c=>c.z);if(new Set(T).size<T.length)share++;return !CK.length});
 ok(share==0,'the chickens never went after the same zombie');dead=L.filter(z=>z.hp<=0).length;ok(dead==want,'together they ate '+dead+' zombies (their appetites add up to '+want+')');
@@ -107,7 +107,7 @@ const idx=(sub,lab)=>BALR.findIndex(e=>e.g=='guns'&&e.sub.startsWith(sub)&&e.lab
 balSet(idx('Chicken Gun','Fewest zombies a chicken eats'),2);balSet(idx('Chicken Gun','Most zombies a chicken eats'),2);balSet(idx('Chicken Gun','Rockets per chicken'),3);balSet(idx('Crossbow','Seconds between shots'),.5);
 ok(CKG.n0==2&&CKG.n1==2&&WP[CG].apr==3&&WP[XB].r==.5,'sliders change the chickens and the Crossbow');
 setGM('f');start();nextWave();toSp=0;keep();clr();P.own.push(CG);P.mg[CG]=3;launch();ok(CK[0]&&CK[0].m==2,'a chicken now eats 2');P.mg[CG]=0;P.am.rk=7;P.rl=0;amRel(P);secs(RLT[CG]+.3);ok(P.mg[CG]==2&&P.am.rk==1,'and costs 3 rockets');
-devOff();ok(CKG.n0==5&&CKG.n1==8&&WP[CG].apr==2&&WP[XB].r==.75,'test mode off puts the defaults back');devSet();balOpen('guns');balReset(0);devOff();
+devOff();ok(CKG.n0==8&&CKG.n1==10&&WP[CG].apr==2&&WP[XB].r==.75,'test mode off puts the defaults back');devSet();balOpen('guns');balReset(0);devOff();
 // ---------- older progress keeps working ----------
 {const A={name:'Old'};wpA(A);ok(A.wp.length==WP.length&&A.cm.length==WP.length,'gun progress grows to every gun ('+WP.length+')');const c11=gEnc(S.ac).split('_').slice(0,11).join('_'),B={};ok(gDec(c11,B)&&B.wp.length==WP.length&&B.wp[12].l==1,'an account code from before the new guns still loads');const C={};ok(gDec(gEnc(S.ac),C)&&C.wp.length==WP.length,'new codes carry every gun')}
 {const A={};wpA(A);for(let g=0;g<11;g++)Object.assign(A.wp[g],{k:999,n:99,m:99,h:999,b:9});ok(golds(A)==11&&camoOK(A,0,9)&&camoOK(A,CG,9)&&cProg(A,0,9)=='11/11','Outbreak camo still unlocks at 11 Gold guns, so nobody loses it')}
