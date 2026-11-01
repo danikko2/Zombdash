@@ -8,6 +8,8 @@
 //   features d.feats: map systems the game reads (boss road graph, City Hall roof, store shelves, no-spawn zone, building interiors)
 // Each registry entry is plain data plus drawing functions, like the terrain registry. To add one: cmAddDec / cmAddArea / cmAddPath / cmAddFx.
 // functions and registries only: nothing here runs during the first map build at boot
+// CMGP is set while cmBuild paints the game's background: overhead pieces (power lines, bunting) leave out what the game draws over everyone
+let CMGP=0;
 const CMDEC=[],CMDI=Object.create(null),CMAREA=[],CMAI=Object.create(null),CMPA=[],CMPAI=Object.create(null),CMFX=[],CMFXI=Object.create(null);
 function cmAddDec(t){if(!CMDI[t.id])CMDEC.push(t);CMDI[t.id]=t}
 function cmAddArea(t){if(!CMAI[t.id])CMAREA.push(t);CMAI[t.id]=t}

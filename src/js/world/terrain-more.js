@@ -8,7 +8,7 @@ function cmRGB(h){const n=parseInt(h.slice(1),16);return[(n>>16)&255,(n>>8)&255,
 // k<1 darkens, k>1 lightens towards white
 function cmShadeRGB(c,k){return k<1?c.map(v=>v*k):c.map(v=>v+(255-v)*Math.min(1,(k-1)*1.4))}
 function cmCarpet(hex){if(CMCPC[hex])return CMCPC[hex];const N=128,c=document.createElement('canvas');c.width=c.height=N;const q=c.getContext('2d');CMCPC[hex]=c;
-const base=cmRGB(hex),im=q.createImageData(N,N),a=im.data,P=(x,y,col)=>{x=(x+N)%N;y=(y+N)%N;const k=(y*N+x)*4;a[k]=col[0];a[k+1]=col[1];a[k+2]=col[2];a[k+3]=255};
+const base=cmRGB(hex),im=q.createImageData?q.createImageData(N,N):null;if(!im||!im.data){q.fillStyle=hex;q.fillRect(0,0,N,N);return c}const a=im.data,P=(x,y,col)=>{x=(x+N)%N;y=(y+N)%N;const k=(y*N+x)*4;a[k]=col[0];a[k+1]=col[1];a[k+2]=col[2];a[k+3]=255};
 const H=(x,y,s)=>cmH(x%N,y%N,s),TAU=Math.PI*2;
 // one pixel per loop, so the weave reads as a fine texture rather than clumps
 for(let y=0;y<N;y++)for(let x=0;x<N;x++){

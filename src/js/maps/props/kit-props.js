@@ -246,5 +246,57 @@ soilbags:{w:60,h:40,c:[54,16],f:(g,x,y)=>S2(g,x,y,60,40,q=>{R_(q,'#16111c',3,32,
 // a flower stand: buckets of cut flowers on tiers
 flowers:{w:70,h:44,c:[64,14],wb:1,f:(g,x,y)=>S2(g,x,y,70,44,q=>{R_(q,'#16111c',2,26,66,16);R_(q,'#3a6a3a',3,27,64,14);R_(q,'#2a5a2a',3,33,64,1);
  const C=['#ff6a8a','#ffd84a','#f8f8f4','#c86aff','#ff8a3a','#e8304a'];for(let r=0;r<2;r++)for(let i=0;i<7;i++){const X=6+i*9,Y=10+r*12;R_(q,'#2f6b34',X+2,Y+4,2,7);q.fillStyle=C[(i+r*3)%6];q.beginPath();q.arc(X+3,Y+3,4,0,7);q.fill();R_(q,'#9aa0aa',X,Y+9,7,5)}})}});
+// ---------- Main Street's pieces ----------
+// the theater marquee over the doors (text "NAME|LINE|LINE"), theater seats, a popcorn cart, the bank vault door and the drive-thru
+// tube terminal, the church steeple and altar, a street banner that hangs over the road (ov:1, like the market's hanging signs; it
+// hangs from the inner arms of two telephone poles 148 px apart), a festival booth, school and railroad crossing signs, freight cars and
+// a locomotive, a parking meter, an air & vacuum station and a blue mail drop box
+const PKSEAT=[['#a8282a','Red'],['#2a4a8a','Blue'],['#6a2a6a','Plum']],PKSTEEP=[['#4a5060','Slate'],['#7a3a2a','Brick red'],['#3a6a5a','Copper green'],['#3a3d46','Charcoal']];
+const PKLOCO=[['#e0b030','Yellow'],['#2f5fa0','Blue'],['#b8392b','Red'],['#3f7a3a','Green']];
+function kpTri(q,c,a,b,d){q.fillStyle=c;q.beginPath();q.moveTo(a[0],a[1]);q.lineTo(b[0],b[1]);q.lineTo(d[0],d[1]);q.closePath();q.fill()}
+function kpCirc(q,c,x,y,r){q.fillStyle=c;q.beginPath();q.arc(x,y,r,0,7);q.fill()}
+// a railroad crossing signal: crossbuck, two red lights, the gate arm reaching right (d=1) or left (d=-1); the post is the base
+function kpRR(q,d){const X=100;R_(q,'#16111c',X-3,22,7,78);R_(q,'#e8e8e4',X-2,23,5,77);for(let y=30;y<100;y+=12)R_(q,'#16111c',X-2,y,5,5);
+ q.save();q.translate(X,14);for(const a of[.6,-.6]){q.save();q.rotate(a);R_(q,'#16111c',-24,-5,48,10);R_(q,'#f4f4f0',-23,-4,46,8);R_(q,'#16111c',-18,-1,36,2);q.restore()}q.restore();
+ R_(q,'#16111c',X-22,34,44,6);for(const s of[-1,1]){kpCirc(q,'#16111c',X+s*17,37,8);kpCirc(q,'#c82a2a',X+s*17,37,6);kpCirc(q,'rgba(255,140,120,.7)',X+s*17-2,35,2)}
+ const a0=d>0?X+6:4,L=90;R_(q,'#3a3d46',d>0?X-18:X+6,56,12,10);R_(q,'#16111c',a0,58,L,7);for(let i=0;i<L-2;i+=10)R_(q,(i/10)%2?'#f4f4f0':'#d83a3a',a0+1+i,59,Math.min(10,L-2-i),5);for(const k of[.35,.7,.98])kpCirc(q,'#ff4a3a',d>0?a0+L*k:a0+L*(1-k),57,2)}
+// a freight car seen from above, lying left to right: boxcar (var < .34), tank car (< .67) or an open hopper with coal
+function kpCar(q,v,K){const t=v<.34?0:v<.67?1:2;R_(q,'#26262a',10,46,30,10);R_(q,'#26262a',164,46,30,10);R_(q,'#16111c',0,30,6,6);R_(q,'#16111c',198,30,6,6);
+ if(t==1){R_(q,'#16111c',8,12,188,40);q.fillStyle='#16111c';q.beginPath();q.arc(26,32,21,0,7);q.arc(178,32,21,0,7);q.fill();R_(q,'#2a2c32',9,13,186,38);R_(q,'#3a3d46',9,15,186,10);R_(q,'#4a4e58',9,17,186,3);R_(q,K?K.b:'#d8d8d0',60,30,84,10);kpCirc(q,'#5a5e68',102,24,6);R_(q,'#16111c',4,22,6,20);R_(q,'#16111c',194,22,6,20);return}
+ R_(q,'#16111c',4,10,196,44);R_(q,K.d,5,11,194,42);R_(q,K.b,5,11,194,32);if(t==0){R_(q,K.l,5,11,194,4);for(let x=12;x<198;x+=12)R_(q,K.dd,x,11,1,32);R_(q,'#5a5e68',5,26,194,3);R_(q,K.dd,5,43,194,10);R_(q,'#16111c',90,43,24,10);R_(q,K.x,92,44,20,8)}
+ else{R_(q,K.dd,9,15,186,26);R_(q,'#26262a',12,17,180,22);for(let i=0;i<46;i++)R_(q,['#3a3a40','#1a1a1e','#4a4a52'][i%3],14+((i*37)%172),18+((i*13)%18),5,3);for(const x of[60,102,144])R_(q,K.d,x,15,4,26)}}
+Object.assign(OB,{
+marquee:{w:230,h:84,c:0,ov:1,sw:200,pc:PKAWN,txt:48,dt:'ROXY|NOW SHOWING|NIGHT OF THE DEAD',f:(g,x,y,v,col,t)=>S2(g,x,y,230,84,q=>{const K=pcK(pcCol(col,PKAWN)),L=String(cmTxt(t,48)||'ROXY|NOW SHOWING|NIGHT OF THE DEAD').toUpperCase().split('|');
+ R_(q,'#16111c',44,0,142,24);R_(q,K.b,45,1,140,22);R_(q,K.dd,45,19,140,4);kpText(q,L[0]||'',115,11,128,15,'#ffd84a',0,'rgba(0,0,0,.45)');
+ R_(q,'#16111c',6,22,218,52);R_(q,K.d,7,23,216,50);R_(q,'#f8f6ee',17,31,196,34);R_(q,'#d8d6ce',17,62,196,3);for(let i=0;i<27;i++){kpCirc(q,'#ffe27a',11+i*8,27,2);kpCirc(q,'#ffe27a',11+i*8,69,2)}for(const xx of[11,219])for(let j=35;j<66;j+=8)kpCirc(q,'#ffe27a',xx,j,2);
+ kpText(q,L[1]||'',115,40,186,12,'#16111c');kpText(q,L.slice(2).join(' ')||'',115,55,186,12,'#16111c');R_(q,'#16111c',14,74,202,8);for(let i=0;i<25;i++)R_(q,'#ffe9a0',18+i*8,77,3,2)})},
+tseats:obt(132,30,[128,14],PKSEAT,0,'',(q,v,K)=>{for(let i=0;i<6;i++){const X=4+i*21;R_(q,'#16111c',X,3,20,25);R_(q,K.b,X+1,4,18,14);R_(q,K.l,X+2,5,16,3);R_(q,K.d,X+1,18,18,8);R_(q,'#2a2a30',X+19,10,3,17)}R_(q,'#2a2a30',2,10,3,17)}),
+popcorn:ob(28,44,[22,10],q=>{R_(q,'#16111c',3,4,22,38);R_(q,'#c0392b',4,5,20,5);R_(q,'#e8f0f4',4,10,20,18);for(let i=0;i<22;i++)R_(q,i%3?'#ffe27a':'#fff4c0',5+((i*7)%17),18+((i*5)%9),3,3);R_(q,'#c0392b',4,28,20,12);R_(q,'#ffd84a',6,31,16,3);R_(q,'#16111c',5,40,4,4);R_(q,'#16111c',19,40,4,4)}),
+vault:ob(64,66,[60,10],q=>{R_(q,'#16111c',2,4,60,60);R_(q,'#8a909c',3,5,58,58);R_(q,'#6a707a',3,58,58,5);kpCirc(q,'#16111c',32,32,26);kpCirc(q,'#b8bcc4',32,32,24);kpCirc(q,'#9aa0aa',32,32,18);
+ for(let k=0;k<12;k++){const a=k*Math.PI/6;kpCirc(q,'#5a5e68',32+Math.cos(a)*21,32+Math.sin(a)*21,2)}q.strokeStyle='#3a3d46';q.lineWidth=3;for(let k=0;k<3;k++){const a=k*Math.PI/3;q.beginPath();q.moveTo(32-Math.cos(a)*12,32-Math.sin(a)*12);q.lineTo(32+Math.cos(a)*12,32+Math.sin(a)*12);q.stroke()}kpCirc(q,'#5a5e68',32,32,4);R_(q,'#c8a040',54,28,4,9)}),
+steeple:obt(72,120,[66,62],PKSTEEP,0,'',(q,v,K)=>{R_(q,'#16111c',4,60,64,60);R_(q,'#ece8dc',5,61,62,58);R_(q,'#d8d4c8',5,112,62,7);R_(q,'#16111c',24,70,24,34);kpCirc(q,'#16111c',36,72,12);R_(q,'#3a3d46',26,72,20,32);kpCirc(q,'#3a3d46',36,73,10);for(let y=74;y<102;y+=5)R_(q,'#5a5e68',26,y,20,2);
+ kpTri(q,'#16111c',[2,13],[70,13],[36,41]);kpTri(q,'#16111c',[2,13],[2,63],[36,41]);kpTri(q,'#16111c',[70,13],[70,63],[36,41]);kpTri(q,'#16111c',[2,63],[70,63],[36,41]);
+ kpTri(q,K.l,[4,15],[68,15],[36,39]);kpTri(q,K.b,[4,15],[4,61],[36,39]);kpTri(q,K.d,[68,15],[68,61],[36,39]);kpTri(q,K.dd,[4,61],[68,61],[36,39]);R_(q,'#16111c',34,6,5,36);R_(q,'#e0b040',35,7,3,34);R_(q,'#16111c',27,14,19,5);R_(q,'#e0b040',28,15,17,3)}),
+altar:ob(84,44,[78,16],q=>{R_(q,'#16111c',3,20,78,22);R_(q,'#f4f2ea',4,21,76,20);R_(q,'#c8a040',4,21,76,3);R_(q,'#c8a040',36,21,12,20);R_(q,'#7a1a2a',38,24,8,14);R_(q,'#16111c',40,2,4,20);R_(q,'#e0b040',41,3,2,18);R_(q,'#16111c',35,7,14,4);R_(q,'#e0b040',36,8,12,2);
+ for(const xx of[14,66]){R_(q,'#16111c',xx-2,9,5,13);R_(q,'#f8f4e0',xx-1,10,3,11);kpCirc(q,'#ffb040',xx+.5,7,2)}}),
+stbanner:{w:170,h:112,c:0,ov:1,sw:150,pc:PKHS,txt:30,dt:'HOMETOWN|FALL FESTIVAL',f:(g,x,y,v,col,t)=>S2(g,x,y,170,112,q=>{const K=pcK(pcCol(col,PKHS)),L=String(cmTxt(t,30)||'HOMETOWN|FALL FESTIVAL').toUpperCase().split('|');
+ q.strokeStyle='#3a3d46';q.lineWidth=1.5;for(const[a,b]of[[26,30],[144,140]]){q.beginPath();q.moveTo(a,8);q.lineTo(b,48);q.stroke()}q.beginPath();q.moveTo(26,8);q.quadraticCurveTo(85,26,144,8);q.stroke();for(let i=1;i<10;i++){const u=i/10,xx=26+118*u,yy=8+36*u*(1-u);kpTri(q,['#e8403a','#ffd84a','#3a9ae8','#7ad04a','#e8781c'][i%5],[xx-4,yy],[xx+4,yy],[xx,yy+8])}
+ R_(q,K.dd,16,46,138,40);R_(q,K.b,17,47,136,36);R_(q,K.ll,17,47,136,3);R_(q,K.d,17,80,136,3);R_(q,'#f8f6ee',21,51,128,1);R_(q,'#f8f6ee',21,77,128,1);
+ if(L.length>1){kpText(q,L[0],85,58,124,10,'#f8f6ee');kpText(q,L.slice(1).join(' '),85,70,128,13,'#ffe27a',0,'rgba(0,0,0,.35)')}else kpText(q,L[0],85,64,128,15,'#ffe27a',0,'rgba(0,0,0,.35)')})},
+fbooth:obt(80,70,[72,16],PKAWN,14,'CIDER',(q,v,K,t)=>{for(const xx of[6,72])R_(q,'#16111c',xx-1,20,4,48),R_(q,'#8a6a4a',xx,21,2,47);R_(q,'#16111c',2,4,76,22);for(let i=0;i<74;i+=9)R_(q,(i/9)%2?'#f4f0e0':K.b,3+i,5,Math.min(9,74-i),20);
+ for(let i=0;i<8;i++){q.fillStyle=i%2?'#f4f0e0':K.b;q.beginPath();q.arc(7+i*9.4,26,5,0,Math.PI);q.fill()}R_(q,'#16111c',14,22,52,11);R_(q,'#f8f6ee',15,23,50,9);kpText(q,String(t).toUpperCase(),40,28,46,8,'#26262c');
+ R_(q,'#16111c',6,48,68,18);R_(q,'#a8784a',7,49,66,8);R_(q,'#8a5a32',7,57,66,8);for(let i=0;i<7;i++)kpCirc(q,['#e8781c','#c0392b','#f4d040','#7ab84a'][(i+Math.floor(v*4))%4],13+i*9,46,4)}),
+schoolx:Object.assign(ob(28,60,[4,4],q=>{R_(q,'#16111c',12,26,4,34);R_(q,'#9aa0aa',13,27,2,33);q.fillStyle='#16111c';q.beginPath();q.moveTo(14,0);q.lineTo(28,11);q.lineTo(28,29);q.lineTo(0,29);q.lineTo(0,11);q.closePath();q.fill();
+ q.fillStyle='#c8e830';q.beginPath();q.moveTo(14,2);q.lineTo(26,12);q.lineTo(26,27);q.lineTo(2,27);q.lineTo(2,12);q.closePath();q.fill();for(const[xx,s]of[[10,1],[18,.85]]){kpCirc(q,'#16111c',xx,12,2*s);R_(q,'#16111c',xx-2*s,14,4*s,7*s);R_(q,'#16111c',xx-2*s,21*s+(1-s)*21,1.6,4);R_(q,'#16111c',xx+1,21*s+(1-s)*21,1.6,4)}R_(q,'#16111c',4,24,20,1)}),{wb:1}),
+rrxing:Object.assign(ob(200,100,[8,6],q=>kpRR(q,1)),{wb:1}),rrxing2:Object.assign(ob(200,100,[8,6],q=>kpRR(q,-1)),{wb:1}),
+boxcar:{w:204,h:58,c:[200,40],pc:PKCONT,f:(g,x,y,v,col)=>S2(g,x,y,204,58,q=>kpCar(q,v,pcK(pcCol(col,PKCONT))))},
+loco:obt(214,62,[210,42],PKLOCO,0,'',(q,v,K)=>{R_(q,'#26262a',12,50,40,10);R_(q,'#26262a',160,50,40,10);R_(q,'#16111c',2,12,210,44);R_(q,K.b,3,13,208,42);R_(q,K.d,3,44,208,10);R_(q,'#26262a',3,40,208,4);
+ R_(q,K.l,3,13,208,3);for(let x=20;x<150;x+=14)R_(q,K.dd,x,18,8,16);R_(q,'#3a3d46',40,20,24,10);kpCirc(q,'#2a2c32',100,24,6);R_(q,'#16111c',158,8,46,40);R_(q,K.b,159,9,44,38);R_(q,K.ll,159,9,44,4);R_(q,'#1a2a3a',163,16,36,10);R_(q,'rgba(170,220,255,.5)',165,17,10,3);
+ R_(q,'#f4f4f0',3,46,208,2);kpCirc(q,'#ffe9a0',208,30,3);kpCirc(q,'#ffe9a0',6,30,3)}),
+pmeter:Object.assign(ob(12,36,[4,4],q=>{R_(q,'#16111c',4,14,4,22);R_(q,'#5a5e68',5,15,2,21);R_(q,'#16111c',1,1,10,15);R_(q,'#8a909c',2,2,8,13);R_(q,'#c8e0f0',3,4,6,5);R_(q,'#d83a3a',4,5,3,2);R_(q,'#5a5e68',3,11,6,2)}),{wb:1}),
+airpump:Object.assign(ob(32,48,[26,10],q=>{R_(q,'#16111c',4,6,24,42);R_(q,'#c0392b',5,7,22,40);R_(q,'#2f6fd0',5,7,22,12);kpText(q,'AIR',16,13,18,8,'#f8f6ee');R_(q,'#f8f6ee',8,22,16,8);R_(q,'#16111c',10,24,12,4);R_(q,'#7ad04a',11,25,5,2);
+ q.strokeStyle='#16111c';q.lineWidth=2;q.beginPath();q.arc(26,34,6,0,7);q.stroke();R_(q,'#8a909c',5,42,22,4)}),{wb:1}),
+dtterm:Object.assign(ob(28,52,[22,10],q=>{R_(q,'#16111c',4,4,20,46);R_(q,'#6a7a8a',5,5,18,44);R_(q,'#16111c',7,8,14,9);R_(q,'#7ad0ff',8,9,12,7);for(let k=0;k<3;k++)R_(q,'#3a3d46',8,20+k*3,12,1);R_(q,'#16111c',7,30,14,10);R_(q,'#c8e8f8',8,31,12,8);R_(q,'#f8f8f4',11,32,6,6);R_(q,'#3aff7a',18,43,2,2);R_(q,'#4a5a6a',5,46,18,3)}),{wb:1}),
+dropbox:ob(26,42,[20,12],q=>{R_(q,'#16111c',2,6,22,32);q.fillStyle='#16111c';q.beginPath();q.arc(13,8,11,Math.PI,0);q.fill();R_(q,'#2a4aa0',3,7,20,30);q.fillStyle='#2a4aa0';q.beginPath();q.arc(13,8,10,Math.PI,0);q.fill();R_(q,'#16111c',6,10,14,3);R_(q,'#f8f6ee',7,18,12,6);R_(q,'#c0392b',7,18,12,2);R_(q,'#16111c',4,37,4,5);R_(q,'#16111c',18,37,4,5)})});
 // props that belong at doorways (cmDoorBlocks leaves them out)
-for(const k of['awning','walllight','wallflk','exitsign','curtain','wcsign','banner','deptsign','hsign','haisle'])if(OB[k])OB[k].dk=1;
+for(const k of['awning','walllight','wallflk','exitsign','curtain','wcsign','banner','deptsign','hsign','haisle','marquee','vault'])if(OB[k])OB[k].dk=1;

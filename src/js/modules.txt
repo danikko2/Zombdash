@@ -30,6 +30,7 @@ world/kit-gore.js
 world/kit-lighting.js
 world/kit-school.js
 world/kit-market.js
+world/kit-mainst.js
 world/map-store.js
 world/custom-maps.js
 ui/core-ui.js
@@ -84,7 +85,6 @@ weapons/life-saver.js
 weapons/bubble-cannon.js
 campaign/sections.js
 campaign/map-screens.js
-maps/main-street.js
 maps/props/home-props.js
 maps/props/forest-props.js
 maps/props/kit-props.js

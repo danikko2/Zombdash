@@ -41,7 +41,7 @@ function cmFxEd(g,o){const T=cmFx(o.fx);if(!T)return;g.save();try{fxTurn(g,o);if
 // the moving parts of a custom map, collected by cmBuild: HS.CX = {A: under people, T: over people, E: portrait eyes}
 function cmFxData(d){const A=[],T=[],E=[],O=[];for(const o of d.obj){if(o.fx){const F=cmFx(o.fx);if(!F)continue;const it={o,f:F,r:fxR(o,F.r||30)+60};if(F.anim)A.push(it);if(F.top)T.push(it)}
 else if(o.k=='portrait'){const B=cmOB(o.k);if(B&&B.eyes)for(const e of B.eyes(o))E.push(e)}else if(!o.dc&&!o.veh){const B=cmOB(o.k);if(B&&B.ov)O.push({o,B,al:1})}}
-for(const o of d.areas){const F=cmArea(o.a);if(!F)continue;const it={o,f:F,a:1,r:Math.hypot(o.w,o.h)/2+120};if(F.anim)A.push(it);if(F.top)T.push(it)}return A.length||T.length||E.length||O.length?{A,T,E,O}:null}
+for(const o of d.areas){const F=cmArea(o.a);if(!F)continue;const it={o,f:F,a:1,r:Math.hypot(o.w,o.h)/2+120};if(F.anim)A.push(it);if(F.top)T.push(it)}if(typeof kmTopItems=='function')T.push(...kmTopItems(d));return A.length||T.length||E.length||O.length?{A,T,E,O}:null}
 function fxVis(it){const o=it.o;if(it.a)return o.x<cam.x+W+60&&o.x+o.w>cam.x-60&&o.y<cam.y+H+60&&o.y+o.h>cam.y-60;return fxOn(o.x,o.y,it.r)}
 // under people (called next to the built-in maps' animations)
 function cmFxAnim(){const C=HS.CX;if(!C||!HS.CM)return;const t=performance.now()/1000;for(const it of C.A)if(fxVis(it)){if(!it.o.r||it.a){it.f.anim(it.o,t);continue}X.save();try{fxTurn(X,it.o);it.f.anim(it.o,t)}finally{X.restore()}}
