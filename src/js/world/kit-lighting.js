@@ -14,7 +14,7 @@ function cmLtDef(id){const p=cmLtP(id);return p?p.def:.75}
 // light sources a map's things give off: props (street and lot lamps, candles, lanterns, fireplaces), light effects, lit-window decals
 // {x, y, r radius, c colour, i strength, f how it moves ('flk' flicker, 'fire', 'flare', 'glow', 'blink', 'siren', 'fault', 'sweep': a
 // beam turning back and forth by sa either side of ca0), ph phase}
-const CMLP={lamp:[0,-6,90,'#ffe2a8',1],plight:[0,-6,130,'#f4f0ff',1],candle:[0,-8,34,'#ffb040',.9,'flk'],lantern:[0,-10,52,'#ffd27a',.95,'flk'],bfplace:[0,-6,70,'#ff9a3a',1,'fire'],tlight:[0,-30,22,'#9aff9a',.5],flamp:[0,-8,60,'#ffe6a0',.9],exitsign:[0,-4,40,'#3fd25a',.7],firebarrel:[0,-6,90,'#ff9a3a',1,'fire'],cdl:[0,-36,58,'#ffb040',.9,'flk'],fplace:[0,-14,90,'#ff9a3a',1,'fire'],sconce:[0,-20,66,'#ffb040',.85,'flk'],mtable:[-9,-40,110,'#ffb040',.9,'flk']};
+const CMLP={lamp:[0,-6,90,'#ffe2a8',1],plight:[0,-6,130,'#f4f0ff',1],candle:[0,-8,44,'#ffb040',1,'flk'],lantern:[0,-10,62,'#ffd27a',1,'flk'],bfplace:[0,-6,70,'#ff9a3a',1,'fire'],tlight:[0,-30,22,'#9aff9a',.5],flamp:[0,-8,60,'#ffe6a0',.9],exitsign:[0,-4,40,'#3fd25a',.7],firebarrel:[0,-6,90,'#ff9a3a',1,'fire'],cdl:[0,-36,76,'#ffb040',1,'flk'],fplace:[0,-14,104,'#ff9a3a',1,'fire'],sconce:[0,-20,88,'#ffb040',1,'flk'],mtable:[-9,-40,132,'#ffb040',1,'flk']};
 function cmLtTurn(o,dx,dy){if(!o.r)return[o.x+dx,o.y+dy];const a=o.r*Math.PI/180,c=Math.cos(a),s=Math.sin(a);return[o.x+dx*c-dy*s,o.y+dx*s+dy*c]}
 function cmLightSrc(d){const L=[];for(const o of d.obj){const ph=cmH(o.x,o.y,9)*6.283;
 if(o.fx){const s=cl(+o.sc||1,.25,4),c=cmCol(o.c,'');switch(o.fx){

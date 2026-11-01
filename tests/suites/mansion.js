@@ -34,7 +34,7 @@ const IN=(o,r)=>o.x>r[0]&&o.x<r[2]&&o.y>r[1]&&o.y<r[3];
 const ROOM={foyer:[980,850,1580,1560],dining:[480,850,980,1230],gallery:[480,740,2080,850],ballroom:[2080,680,2640,1400],library:[480,360,840,740],secret:[480,360,680,590],parlor:[1580,850,2080,1230],
  study:[840,360,1120,740],nursery:[1120,360,1440,740],master:[1440,360,1780,740],bath:[1780,360,2080,740],kitchen:[480,1230,780,1560],pantry:[780,1230,980,1560],conservatory:[1580,1230,1830,1560],locked:[1830,1230,2080,1560]};
 // ---------- what the owner asked for: night, light in the main areas but a dark map, a scary-movie mansion ----------
-{const L=cmLightSrc(D),lit=r=>L.filter(s=>IN(s,r)&&s.r>=40&&!s.rect).length;
+{const L=cmLightSrc(D),lit=r=>L.filter(s=>IN(s,r)&&s.r>=60&&!s.rect).length;
  const main=['foyer','dining','gallery','ballroom','library'].filter(k=>lit(ROOM[k])>=2),dark=['bath','kitchen','pantry','conservatory','locked','nursery'].filter(k=>lit(ROOM[k])<=1);
  ok(main.length==5,'the main areas are lit: '+main.join(', '));ok(dark.length==6,'the other rooms stay dark: '+dark.join(', '));
  ok(!A_('roomlight').length&&L.length<140,'no room is simply lit up ('+L.length+' small lights: candles, sconces, fireplaces, lanterns, chandeliers)');
@@ -50,10 +50,14 @@ ok(WS('window_x').length>=4&&WS('window_b').length>=2&&DC('lightpatch').length>=
 {const MZ=[60,1640,890,2120];const H=PA('hedge').filter(p=>IN(p,MZ));ok(H.length>=40&&K('bigang').some(o=>IN(o,MZ))&&K('bench').filter(o=>IN(o,MZ)).length==2&&K('lantern').some(o=>IN(o,MZ))&&A_('fog').some(a=>a.x<200&&a.y>1600),'M2 a hedge maze in the south-west, a weeping angel in the middle with benches, candles and a lantern, fog')}
 // ---------- M3: the secret room behind a library bookshelf ----------
 {const S_=ROOM.secret;ok(DC('ritual').some(o=>IN(o,S_))&&K('candle').filter(o=>IN(o,S_)).length>=6&&K('altar').some(o=>IN(o,S_))&&K('bookshelf').some(o=>o.r&&Math.abs(o.x-700)<30&&Math.abs(o.y-480)<60),'M3 a ritual circle ringed with candles and an altar, behind the bookshelf swung aside');
- ok(!D.walls.some(w=>/^window/.test(w.s)&&w.x<690&&w.y<600&&(w.x<486||w.y<366)),'the secret room has no windows')}
+ ok(!D.walls.some(w=>/^window/.test(w.s)&&w.x<690&&w.y<600&&(w.x<486||w.y<366)),'the secret room has no windows')
+ ok(K('wallbreak').some(o=>Math.abs(o.x-480)<6&&o.y>440&&o.y<560)&&cmDoors(D).some(q=>!q.hz&&Math.abs(q.c-480)<6&&q.a<470&&q.b>470),'and a way in from outside: its stone wall smashed through')}
 // ---------- M4: the family crypt with its door ajar, the open grave ----------
 {const C=[1470,30,1730,210];ok(WS('stone').filter(w=>IN({x:w.x+w.w/2,y:w.y+w.h/2},C)).length>=5&&K('cryptdoor').length==1&&K('coffin').filter(o=>IN(o,C)).length==3&&A_('steps').some(a=>IN(a,C))&&DC('text').some(o=>o.tx=='BLACKWOOD'),'M4 the Blackwood crypt: stone walls, the door standing ajar, coffins, steps down');
  ok(K('opengrave').length==1&&K('shovel').length==1&&K('dirtpile').length==1&&DC('footprints').length>=8&&D.obj.filter(o=>/^g_/.test(o.k||'')).length>=15&&WS('ironfence').length>=4,'the open grave with its shovel and dirt, footprints to the back door, the family plot inside an iron fence')}
+// ---------- no room with only one way out (owner's request) ----------
+{const DR=cmDoors(D),ways=r=>DR.filter(q=>q.hz?(Math.abs(q.c-r[1])<7||Math.abs(q.c-r[3])<7)&&q.b>r[0]&&q.a<r[2]:(Math.abs(q.c-r[0])<7||Math.abs(q.c-r[2])<7)&&q.b>r[1]&&q.a<r[3]).length;
+ const R2=Object.assign({crypt:[1480,40,1720,200]},ROOM);delete R2.locked;delete R2.library;R2['library (lower)']=[480,590,840,740];const one=Object.keys(R2).filter(k=>ways(R2[k])<2);ok(!one.length,'every room has at least two ways out '+(one.length?'(not: '+one.map(k=>k+' '+ways(R2[k])).join(', ')+')':'(the top rooms open into each other, the secret room and the crypt have holes smashed in them)'))}
 // ---------- M8: the blood trail to the locked room ----------
 {const B=PA('bloodline').find(p=>p.pts&&p.pts.length>5),q=B&&B.pts[B.pts.length-1],end=q&&[B.x+q[0],B.y+q[1]];ok(B&&end&&Math.abs(end[0]-1960)<20&&Math.abs(end[1]-1218)<20&&WS('barricade').length==2,'M8 a blood trail across the foyer and the parlor to the boarded-up door');
  ok(DC('scrawl').filter(o=>o.tx=='GET OUT').length>=4&&DC('handprint').filter(o=>Math.abs(o.x-1960)<40).length>=2,'GET OUT in blood by the door and all over the locked room, handprints on the boards')}
@@ -91,7 +95,7 @@ A.un=[0,MUN[0],MUN[3],MUN[1],MUN[14],MUN[15],MUN[8]];A.cp=6;A.tut=1;delete A.bm;
 setGM('f');mapId=9;S.mp=9;start();{const R=play(1,1,4000);ok(!R.err&&wave>=1,'a Free Play run plays '+R.err);if(mode!='play')nextWave();const row=olRow();ok(row&&row.map===9&&row.mode=='f','the leaderboard board is still map 9');over(1)}
 {const h=wsBuiltins();ok(h.includes('wsBuiltin(9,1)')&&h.includes('Haunted Mansion'),'the Workshop lists the Haunted Mansion under Built-in maps')}
 await wsBuiltin(9,0);{const e=CML.find(q=>q.doc&&q.doc.name=='Haunted Mansion (my copy)'),D2=bimDoc(9);ok(e&&e.doc.obj.length==D2.obj.length&&e.doc.walls.length==D2.walls.length&&e.doc.lt.st===1,'EDIT A COPY makes your own copy with every piece and the storm')}
-{const NK=['dsheet_c','dsheet_s','dsheet_t','sconce','hchand','hchandx','cryptdoor'];ok(NK.every(k=>OB[k]&&EDPN[k])&&cmDec('ritual')&&CMWI.manor&&OB.hchand.ov&&OB.cryptdoor.dk&&OB.sconce.dk,'the mansion pieces are all in the editor: dust sheets, sconces, chandeliers, the crypt door, the ritual circle, the papered wall');
+{const NK=['dsheet_c','dsheet_s','dsheet_t','sconce','hchand','hchandx','cryptdoor','wallbreak'];ok(NK.every(k=>OB[k]&&EDPN[k])&&cmDec('ritual')&&CMWI.manor&&OB.hchand.ov&&OB.cryptdoor.dk&&OB.sconce.dk,'the mansion pieces are all in the editor: dust sheets, sconces, chandeliers, the crypt door, the ritual circle, the papered wall');
  ok(typeof mapMansion=='undefined'&&typeof mnAnim=='undefined'&&typeof mnFog=='undefined','the old mansion map code is gone')}
 mapId=9;build();ok(HS.CM==='builtin-mansion','map 9 is still the built-in Haunted Mansion');
 console.log('TOTAL fails '+fails+' of '+n);

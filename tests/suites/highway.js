@@ -34,12 +34,17 @@ ok(D.obj.filter(o=>o.veh).length>=90&&PA('highway').length==3&&V('trailer').leng
 ok(FX('headlights').length>=20&&FX('siren').length>=6&&FX('hazard').length>=20&&FX('flare').length>=6&&FX('fire').length>=1&&FX('smoke').length>=2,'lighting and effects: headlights left on, sirens, hazard blinkers, road flares, the burning car and smoke');
 ok(['taxi','hatch','ftruck','limo','bus','semi','van','pickup','suv'].every(k=>V(k).length)&&V('pickup').some(o=>o.ov),'vehicle variety: taxis, hatchbacks, food trucks and the rest, a pickup on its roof');
 ok(K('foak').length+K('fpine').length>=80&&K('reflpost').length>=20&&K('milemkr').length==2&&K('callbox').length==2&&K('bbwest').length==1&&K('bbarmy').length==1&&PA('guardrail').length>=10,'surroundings: tree lines, reflector posts, mile markers, call boxes, the two billboards, guard rails');
+// ---------- clearings in the jam to run through (owner's request) ----------
+{const box=o=>{const S_=HWV(o.veh),a=(o.r||0)*Math.PI/180,c=Math.abs(Math.cos(a)),n=Math.abs(Math.sin(a));const hw=(S_[0]*c+S_[1]*n)/2,hh=(S_[0]*n+S_[1]*c)/2;return[o.x-hw,o.y-hh,o.x+hw,o.y+hh]};
+ const strips=(y0,y1)=>{const B=D.obj.filter(o=>o.veh).map(box).filter(b=>b[3]>y0&&b[1]<y1),F=[];let st=null;for(let x=0;x<=2816;x+=4){const occ=B.some(b=>b[0]<x+2&&b[2]>x-2);if(!occ&&st==null)st=x;if((occ||x==2816)&&st!=null){if(x-st>=120)F.push([st,x]);st=null}}return F};
+ const W_=strips(390,630),E_=strips(730,970);ok(W_.length>=4&&E_.length>=4,'clear lanes right across both carriageways, at least 120 px wide: westbound '+W_.length+', eastbound '+E_.length)}
 // ---------- H1: tall median light poles, some broken or flickering ----------
 {const P_=D.obj.filter(o=>/^hwlight/.test(o.k||''));ok(P_.length==6&&P_.every(o=>Math.abs(o.y-688)<4)&&K('hwlight').length&&K('hwlightf').length&&K('hwlightx').length&&K('hwpoledown').length==1,'H1 six poles on the median (lit, failing, dead) and one knocked flat');
  const L=cmLightSrc(D),near=(x,y,r)=>L.filter(s=>Math.hypot(s.x-x,s.y-y)<r);ok(K('hwlight').every(o=>near(o.x,o.y,60).length>=2)&&K('hwlightx').every(o=>!near(o.x,o.y,60).some(s=>s.r>=200))&&K('hwlightf').every(o=>near(o.x,o.y,60).some(s=>s.f=='fault')),'the lit poles light the lanes, the dead one gives none, the failing one stutters')}
 // ---------- H4: sign gantries over the lanes ----------
 {const G=K('gantry');ok(G.length==2&&OB.gantry.ov&&G.some(o=>/GRAVEYARD/.test(o.tx)&&/\\*QUARANTINE/.test(o.tx))&&G.some(o=>/ZOMBVILLE/.test(o.tx)&&o.vr<.3),'H4 two gantries: the Graveyard exit with a message board, a westbound one with a crooked sign');
- ok(G.every(o=>o.tx.split(/\\s+\\/\\s+/).length==2)&&G[0].tx.includes('1/2 MILE'),'each carries two signs (a slash with spaces splits them; 1/2 stays one sign)')}
+ ok(G.every(o=>o.tx.split(/\\s+\\/\\s+/).length==2)&&G[0].tx.includes('1/2 MILE'),'each carries two signs (a slash with spaces splits them; 1/2 stays one sign)')
+ ok(OB.gantry.h>=350&&G.some(o=>Math.abs(o.y-1024)<8)&&G.some(o=>Math.abs(o.y-690)<8),'they stand right across the road: each beam runs from one edge of its carriageway to the other, the signs over the lanes')}
 // ---------- H2: the army roadblock on the right side ----------
 {const R=o=>o.x>2650;ok(PA('sandbags').filter(p=>p.x>2700).length>=6&&PA('wire').filter(p=>p.x>2700).length>=4&&K('sweeplight').filter(R).length==1&&K('floodlight').filter(R).length==1&&K('rcbarr').length==2&&V('hmv').some(R)&&K('mflag').filter(R).length&&DC('deadz').filter(R).length>=4,'H2 the roadblock across the far right: sandbags, wire, a sweeping searchlight, a flood light, a humvee, the flag, ROAD CLOSED barricades, the dead piled in front');
  ok(D.obj.filter(o=>o.veh&&o.x+60>2640&&o.y<672&&o.y>346).length==0,'the westbound jam stops short of it')}

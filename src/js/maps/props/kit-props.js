@@ -346,22 +346,24 @@ hwlightf:Object.assign(obc(120,200,[10,8],PKHWL,(q,v,K)=>kpPole(q,K,1)),{wb:1,nr
 hwlightx:Object.assign(obc(120,200,[10,8],PKHWL,(q,v,K)=>kpPole(q,K,2)),{wb:1}),
 hwpoledown:ob(224,44,0,q=>{R_(q,'#16111c',4,26,190,8);R_(q,'#8a9098',5,27,188,6);R_(q,'#b4bac2',5,27,188,2);for(const[x,y,w]of[[2,25,4],[0,29,3],[3,33,3]])R_(q,'#6e737b',x,y,w,2);R_(q,'#16111c',190,4,8,38);R_(q,'#8a9098',191,5,6,36);
  for(const[y,d]of[[2,-1],[34,1]]){R_(q,'#16111c',196,y,26,9);R_(q,'#5a5e66',197,y+1,24,7);R_(q,'#2a2c32',199,y+(d<0?6:1),20,2)}for(let i=0;i<9;i++)R_(q,i%2?'#bfe6ff':'#8a9ab0',150+((i*37)%60),18+((i*23)%22),2,2)}),
-// the sign gantry: a truss over the road on two lattice legs, two signs hanging from it (split the text with ' / ', a slash with
-// spaces round it, so 1/2 MILE stays one sign; | breaks a line;
-// a sign starting with * is an amber message board). It hangs over people and goes see-through while someone is under it. A low
-// look (var under 0.3) leaves the right sign hanging crooked from one bracket. Each sign has a lamp under it, so it reads at night.
-gantry:{w:400,h:210,c:0,ov:1,sw:380,nr:1,txt:60,dt:'EXIT 13|GRAVEYARD|1/2 MILE / *QUARANTINE AHEAD|USE EXIT 13',lt:[{dx:-84,dy:-110,r:96,i:.6},{dx:84,dy:-110,r:96,i:.6}],f:(g,x,y,v,col,t)=>S2(g,x,y,400,210,q=>{
+// the sign gantry: a lattice beam right across the carriageway (seen from above, a footing at each end: stand it with its foot on
+// the near rail or median and its top reaches the far side, 330 px), two signs hanging from it over the lanes (split the text with
+// ' / ', a slash with spaces round it, so 1/2 MILE stays one sign; | breaks a line; a sign starting with * is an amber message
+// board). It hangs over people and cars and goes see-through while someone is under it. A low look (var under 0.3) leaves the
+// second sign hanging crooked. Each sign has a lamp under it, so it reads at night.
+gantry:{w:180,h:360,c:0,ov:1,sw:22,swh:334,nr:1,txt:60,dt:'EXIT 13|GRAVEYARD|1/2 MILE / *QUARANTINE AHEAD|USE EXIT 13',lt:[{dx:0,dy:-273,r:96,i:.6},{dx:0,dy:-115,r:96,i:.6}],f:(g,x,y,v,col,t)=>S2(g,x,y,180,360,q=>{
  const L=(a,b,c,d)=>{q.beginPath();q.moveTo(a,b);q.lineTo(c,d);q.stroke()};
- for(const lx of[18,370]){R_(q,'#16111c',lx-1,56,14,150);R_(q,'#8a9098',lx,56,3,149);R_(q,'#8a9098',lx+9,56,3,149);q.strokeStyle='#6e737b';q.lineWidth=1.5;for(let yy=60;yy<198;yy+=14){L(lx+2,yy,lx+10,yy+7);L(lx+10,yy+7,lx+2,yy+14)}R_(q,'#16111c',lx-6,200,24,10);R_(q,'#9a968c',lx-5,201,22,8);R_(q,'#b4b0a6',lx-5,201,22,2)}
- R_(q,'#16111c',8,32,384,28);R_(q,'#8a9098',9,33,382,4);R_(q,'#8a9098',9,54,382,4);R_(q,'#b4bac2',9,33,382,1);q.strokeStyle='#6e737b';q.lineWidth=2;for(let xx=12;xx<386;xx+=16)L(xx,37,xx+8,54),L(xx+8,54,xx+16,37);R_(q,'#2a2c32',9,37,382,1);
+ for(const fy of[4,338]){R_(q,'#16111c',68,fy,44,18);R_(q,'#9a968c',69,fy+1,42,16);R_(q,'#b4b0a6',69,fy+1,42,3);R_(q,'#16111c',80,fy+3,20,12);R_(q,'#6e737b',81,fy+4,18,10);R_(q,'#8a9098',81,fy+4,18,2)}
+ R_(q,'#16111c',78,14,32,332);R_(q,'#3a3d46',80,16,28,328);R_(q,'#8a9098',80,16,4,328);R_(q,'#8a9098',96,16,4,328);R_(q,'#b4bac2',80,16,1,328);
+ q.strokeStyle='#6e737b';q.lineWidth=2;for(let yy=18;yy<340;yy+=16){L(84,yy,96,yy+8);L(96,yy+8,84,yy+16)}R_(q,'#6a6e76',101,16,7,328);q.fillStyle='#2a2c32';for(let yy=18;yy<342;yy+=4)q.fillRect(102,yy,5,1);
  const P=String(cmTxt(t,60)||'EXIT 13|GRAVEYARD|1/2 MILE / *QUARANTINE AHEAD|USE EXIT 13').split(/\s+\/\s+/).slice(0,2);if(P.length<2)P.push('');
- const sign=(s,bx)=>{const led=s.charAt(0)=='*',ln=s.replace(/^\*/,'').toUpperCase().split('|').slice(0,3).filter(z=>z.trim()!=='');R_(q,'#16111c',bx+20,58,4,6);R_(q,'#16111c',bx+128,58,4,6);
-  R_(q,'#16111c',bx,62,152,78);if(led){R_(q,'#3a3d46',bx+2,64,148,74);R_(q,'#0e0c10',bx+6,68,140,66);const n=ln.length||1,hh=58/n;ln.forEach((z,i)=>kpText(q,z,bx+76,72+hh*(i+.5),132,Math.min(15,hh-2),'#ffc040','ui-monospace,monospace'));
-   q.fillStyle='rgba(14,12,16,.35)';for(let yy=68;yy<134;yy+=2)q.fillRect(bx+6,yy,140,1);for(let xx=bx+6;xx<bx+146;xx+=3)q.fillRect(xx,68,1,66)}
-  else{R_(q,'#1d7a3e',bx+2,64,148,74);R_(q,'#f4f1e6',bx+5,67,142,2);R_(q,'#f4f1e6',bx+5,133,142,2);R_(q,'#f4f1e6',bx+5,67,2,68);R_(q,'#f4f1e6',bx+145,67,2,68);const n=ln.length||1;
-   ln.forEach((z,i)=>{const big=n==1||i==1||(n==2&&i==0&&!/\d/.test(z)),px=n==1?22:big?18:12,yy=n==1?101:n==2?(i?112:86):[80,101,122][i];kpText(q,z,bx+76,yy,134,px,'#f4f1e6')})}
-  R_(q,'#16111c',bx+60,140,32,6);R_(q,'#4a4e56',bx+61,141,30,4);R_(q,'#fff2c8',bx+63,141,26,1)};
- sign(P[0],40);if(v<.3){q.save();q.translate(228,60);q.rotate(.13);q.translate(-228,-60);sign(P[1],208);q.restore();R_(q,'#16111c',336,58,4,3)}else sign(P[1],208)})},
+ const sign=(s,bx,by)=>{const led=s.charAt(0)=='*',ln=s.replace(/^\*/,'').toUpperCase().split('|').slice(0,3).filter(z=>z.trim()!=='');R_(q,'#16111c',bx+60,by-6,4,8);R_(q,'#16111c',bx+88,by-6,4,8);
+  R_(q,'#16111c',bx,by,152,78);if(led){R_(q,'#3a3d46',bx+2,by+2,148,74);R_(q,'#0e0c10',bx+6,by+6,140,66);const n=ln.length||1,hh=58/n;ln.forEach((z,i)=>kpText(q,z,bx+76,by+10+hh*(i+.5),132,Math.min(15,hh-2),'#ffc040','ui-monospace,monospace'));
+   q.fillStyle='rgba(14,12,16,.35)';for(let yy=by+6;yy<by+72;yy+=2)q.fillRect(bx+6,yy,140,1);for(let xx=bx+6;xx<bx+146;xx+=3)q.fillRect(xx,by+6,1,66)}
+  else{R_(q,'#1d7a3e',bx+2,by+2,148,74);R_(q,'#f4f1e6',bx+5,by+5,142,2);R_(q,'#f4f1e6',bx+5,by+71,142,2);R_(q,'#f4f1e6',bx+5,by+5,2,68);R_(q,'#f4f1e6',bx+145,by+5,2,68);const n=ln.length||1;
+   ln.forEach((z,i)=>{const big=n==1||i==1||(n==2&&i==0&&!/\d/.test(z)),px=n==1?22:big?18:12,yy=n==1?39:n==2?(i?50:24):[18,39,60][i];kpText(q,z,bx+76,by+yy,134,px,'#f4f1e6')})}
+  R_(q,'#16111c',bx+60,by+78,32,6);R_(q,'#4a4e56',bx+61,by+79,30,4);R_(q,'#fff2c8',bx+63,by+79,26,1)};
+ sign(P[0],14,48);if(v<.3){q.save();q.translate(90,206);q.rotate(.13);q.translate(-90,-206);sign(P[1],14,206);q.restore()}else sign(P[1],14,206)})},
 // a ROAD CLOSED barricade (your text on its plate), striped boards on two legs, an amber lamp blinking on top
 rcbarr:Object.assign(obt(124,56,[112,8],null,16,'ROAD CLOSED',(q,v,K,t)=>{for(const lx of[12,104]){R_(q,'#16111c',lx,8,8,46);R_(q,'#d8d4c8',lx+1,9,6,44);R_(q,'#16111c',lx-4,50,16,5);R_(q,'#5a5e66',lx-3,51,14,3)}
  for(const yy of[20,34]){R_(q,'#16111c',2,yy,120,10);q.save();q.beginPath();q.rect(3,yy+1,118,8);q.clip();R_(q,'#f4f1e6',3,yy+1,118,8);q.fillStyle='#e8642a';for(let xx=-10;xx<124;xx+=16){q.beginPath();q.moveTo(xx,yy+9);q.lineTo(xx+8,yy+9);q.lineTo(xx+16,yy+1);q.lineTo(xx+8,yy+1);q.fill()}q.restore()}
@@ -390,9 +392,18 @@ dsheet_s:ob(74,34,[66,20],q=>kpSheet(q,{w:74,h:34,l:3,r:71,top:q=>{q.moveTo(3,31
 dsheet_t:ob(38,64,[32,12],q=>kpSheet(q,{w:38,h:64,l:4,r:34,top:q=>{q.moveTo(4,61);q.lineTo(5,11);q.quadraticCurveTo(6,2,19,2);q.quadraticCurveTo(32,2,33,11);q.lineTo(34,61)}},[[11,8,10,60],[19,6,19,61],[27,8,28,60]],null)),
 sconce:{w:18,h:24,c:0,f:(g,x,y)=>S2(g,x,y,18,24,q=>{R_(q,'#16111c',6,6,6,14);R_(q,'#a8862e',7,7,4,12);R_(q,'#c8a040',7,7,2,12);q.strokeStyle='#a8862e';q.lineWidth=2;q.beginPath();q.moveTo(9,16);q.quadraticCurveTo(3,18,4,13);q.moveTo(9,16);q.quadraticCurveTo(15,18,14,13);q.stroke();
  for(const cx of[4,14]){R_(q,'#16111c',cx-3,12,6,3);R_(q,'#c8a040',cx-2,12,4,2);R_(q,'#16111c',cx-2,5,4,8);R_(q,'#f4ecd8',cx-1,6,2,6);R_(q,'#ff9a2a',cx-1,1,2,4);R_(q,'#ffe08a',cx-1,2,1,2)}})},
-hchand:{w:110,h:120,c:0,ov:1,sw:60,nr:1,lt:[{dx:0,dy:-48,r:250,i:.9,f:'flk'}],f:(g,x,y)=>S2(g,x,y,110,120,q=>kpChand(q,1))},
+hchand:{w:110,h:120,c:0,ov:1,sw:60,nr:1,lt:[{dx:0,dy:-48,r:270,i:1,f:'flk'}],f:(g,x,y)=>S2(g,x,y,110,120,q=>kpChand(q,1))},
 hchandx:{w:110,h:120,c:0,ov:1,sw:60,f:(g,x,y)=>S2(g,x,y,110,120,q=>{q.translate(55,0);q.rotate(.12);q.translate(-55,0);kpChand(q,0)})},
+// wallbreak: a hole smashed through a stone wall, seen from above: jagged stubs of the wall at both sides of the gap and broken stone
+// scattered (most of it on the side the wall fell into, the right). Put it over a gap in a wall running up and down (turn it 90° for
+// one running left and right); the gap should be about 60 px.
+wallbreak:ob(96,96,0,q=>{const st=(pts,c)=>{q.fillStyle='#16111c';q.beginPath();pts.forEach(([x,y],i)=>i?q.lineTo(x,y):q.moveTo(x,y));q.closePath();q.fill();q.fillStyle=c;q.beginPath();pts.forEach(([x,y],i)=>{const cx=48,cy=48,k=.86;const X=cx+(x-cx)*k,Y=cy+(y-cy)*k;i?q.lineTo(X,Y):q.moveTo(X,Y)});q.closePath();q.fill()};
+  st([[42,8],[54,8],[56,16],[51,20],[54,24],[47,22],[44,26],[41,18]],'#8a867c');st([[41,88],[55,88],[56,78],[50,75],[53,70],[46,72],[43,68],[40,78]],'#8a867c');
+ R_(q,'#a8a294',44,10,6,2);R_(q,'#a8a294',45,82,7,2);R_(q,'#6e6a62',47,16,4,3);R_(q,'#6e6a62',46,76,4,3);
+ const B=[[60,30,10,7],[66,44,12,8],[58,56,9,6],[72,60,8,7],[64,70,10,6],[76,38,7,6],[54,40,8,6],[70,52,6,5],[30,36,8,6],[24,58,7,5],[80,50,6,5],[62,22,6,5]];
+ B.forEach(([x,y,w,h],i)=>{R_(q,'#16111c',x-1,y-1,w+2,h+2);R_(q,['#8a867c','#a8a294','#7a766c','#9a968c'][i%4],x,y,w,h);R_(q,'#6e6a62',x,y+h-2,w,2)});
+ q.fillStyle='#b8b2a4';for(let i=0;i<26;i++)q.fillRect(30+((i*37)%56),24+((i*23)%50),2,2)}),
 cryptdoor:ob(64,22,0,q=>{q.fillStyle='rgba(0,0,0,.3)';q.fillRect(6,12,56,8);R_(q,'#16111c',4,4,56,13);R_(q,'#7c786e',5,5,54,11);R_(q,'#9a968c',5,5,54,3);R_(q,'#5e5a52',5,13,54,3);for(const x of[14,30,46])for(const yy of[8,12])R_(q,'#3a3832',x,yy,2,2);
  q.fillStyle='#16111c';q.beginPath();q.arc(5,10,5,0,7);q.fill();q.fillStyle='#4a4a52';q.beginPath();q.arc(5,10,3,0,7);q.fill();R_(q,'#3a3d46',52,8,4,6)})});
 // props that belong at doorways (cmDoorBlocks leaves them out)
-for(const k of['awning','walllight','wallflk','exitsign','curtain','wcsign','banner','deptsign','hsign','haisle','marquee','vault','sconce','portrait','cryptdoor'])if(OB[k])OB[k].dk=1;
+for(const k of['awning','walllight','wallflk','exitsign','curtain','wcsign','banner','deptsign','hsign','haisle','marquee','vault','sconce','portrait','cryptdoor','wallbreak'])if(OB[k])OB[k].dk=1;
