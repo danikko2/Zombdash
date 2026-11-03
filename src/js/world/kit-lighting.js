@@ -13,7 +13,8 @@ function cmLtP(id){return typeof id=='string'&&cmOwn(CMLTI,id)?CMLTI[id]:null}
 function cmLtDef(id){const p=cmLtP(id);return p?p.def:.75}
 // light sources a map's things give off: props (street and lot lamps, candles, lanterns, fireplaces), light effects, lit-window decals
 // {x, y, r radius, c colour, i strength, f how it moves ('flk' flicker, 'fire', 'flare', 'glow', 'blink', 'siren', 'fault', 'sweep': a
-// beam turning back and forth by sa either side of ca0), ph phase}
+// beam turning back and forth by sa either side of ca0, 'weld': a welding arc's bursts), ph phase, gs how strong its glow (bloom)
+// is (1 when left out), ng 1 = no glow at all (wide work lights whose pools would only wash each other out)}
 const CMLP={lamp:[0,-6,90,'#ffe2a8',1],plight:[0,-6,130,'#f4f0ff',1],candle:[0,-8,44,'#ffb040',1,'flk'],lantern:[0,-10,62,'#ffd27a',1,'flk'],bfplace:[0,-6,70,'#ff9a3a',1,'fire'],tlight:[0,-30,22,'#9aff9a',.5],flamp:[0,-8,60,'#ffe6a0',.9],exitsign:[0,-4,40,'#3fd25a',.7],firebarrel:[0,-6,90,'#ff9a3a',1,'fire'],cdl:[0,-36,76,'#ffb040',1,'flk'],fplace:[0,-14,104,'#ff9a3a',1,'fire'],sconce:[0,-20,88,'#ffb040',1,'flk'],mtable:[-9,-40,132,'#ffb040',1,'flk']};
 function cmLtTurn(o,dx,dy){if(!o.r)return[o.x+dx,o.y+dy];const a=o.r*Math.PI/180,c=Math.cos(a),s=Math.sin(a);return[o.x+dx*c-dy*s,o.y+dx*s+dy*c]}
 function cmLightSrc(d){const L=[];for(const o of d.obj){const ph=cmH(o.x,o.y,9)*6.283;
@@ -26,11 +27,12 @@ case'glow':L.push({x:o.x,y:o.y,r:34*s,c:c||'#8ae8ff',i:.8,f:'glow',ph});break;
 case'wisp':L.push({x:o.x,y:o.y,r:70*s,c:c||'#9affe8',i:.35,f:'glow',ph});break;
 case'headlights':for(const k of[-1,1]){const p=cmLtTurn(o,38*s,k*11*s);L.push({x:p[0],y:p[1],r:150*s,c:'#fff2cc',i:.85,cw:22*Math.PI/180,ca:(o.r||0)*Math.PI/180});const q=cmLtTurn(o,-38*s,k*12*s);L.push({x:q[0],y:q[1],r:24*s,c:'#ff2a1a',i:.7})}break;
 case'hazard':for(const dx of[-10,10]){const p=cmLtTurn(o,dx*s,0);L.push({x:p[0],y:p[1],r:34*s,c:'#ffa62a',i:.9,f:'blink',ph:cmR(o,0,64)})}break;
-case'siren':{const m=po(o,'m','police'),P=m=='police'?[['#ff2a2a',0],['#3a7aff',1]]:m=='amb'?[['#ff2a2a',2],['#ff2a2a',3]]:[['#ff2a2a',0],['#ffffff',4]];for(let k=0;k<2;k++){const p=cmLtTurn(o,(k?8:-8)*s,0);L.push({x:p[0],y:p[1],r:58*s,c:P[k][0],i:1,f:'siren',sd:P[k][1],ph:cmR(o,0,63)})}break}}continue}
+case'siren':{const m=po(o,'m','police'),P=m=='police'?[['#ff2a2a',0],['#3a7aff',1]]:m=='amb'?[['#ff2a2a',2],['#ff2a2a',3]]:[['#ff2a2a',0],['#ffffff',4]];for(let k=0;k<2;k++){const p=cmLtTurn(o,(k?8:-8)*s,0);L.push({x:p[0],y:p[1],r:58*s,c:P[k][0],i:1,f:'siren',sd:P[k][1],ph:cmR(o,0,63)})}break}
+default:{const F=CMFXI[o.fx];if(F&&F.lts)F.lts(o,s,ph,L)}}continue}
 if(o.dc){if(o.dc=='lightpatch'){const s=cl(+o.sc||1,.25,4);L.push({x:o.x,y:o.y,r:34*s,c:cmCol(o.c,'#ffd27a'),i:.75})}continue}
 if(o.veh)continue;const P=CMLP[o.k];if(P){const p=cmLtTurn(o,P[0],P[1]);L.push({x:p[0],y:p[1],r:P[2],c:P[3],i:P[4],f:P[5],ph});continue}
 // light props (spot lights, flood lights…): each lamp head is a beam (w = half its width in degrees; 0 = all round) aimed the way the prop is turned
-const B=cmOB(o.k);if(B&&B.lt){const c=cmCol(o.c,B.pc?B.pc[0][0]:'#fff2c8');for(const h of B.lt){const p=B.nr?[o.x+h.dx,o.y+h.dy]:cmLtTurn(o,h.dx,h.dy),s={x:p[0],y:p[1],r:h.r,c:h.c||c,i:h.i||1,ph};if(h.f)s.f=h.f;if(h.w){s.cw=h.w*Math.PI/180;s.ca=((o.r||0)+90+(h.a||0))*Math.PI/180;if(h.sw){s.f='sweep';s.ca0=s.ca;s.sa=h.sw*Math.PI/180}}L.push(s)}}}
+const B=cmOB(o.k);if(B&&B.lt){const c=cmCol(o.c,B.pc?B.pc[0][0]:'#fff2c8');for(const h of B.lt){const p=B.nr?[o.x+h.dx,o.y+h.dy]:cmLtTurn(o,h.dx,h.dy),s={x:p[0],y:p[1],r:h.r,c:h.c||c,i:h.i||1,ph};if(h.f)s.f=h.f;if(h.gs)s.gs=h.gs;if(h.ng)s.ng=1;if(h.w){s.cw=h.w*Math.PI/180;s.ca=((o.r||0)+90+(h.a||0))*Math.PI/180;if(h.sw){s.f='sweep';s.ca0=s.ca;s.sa=h.sw*Math.PI/180}}L.push(s)}}}
 // room lights: an area that lights its whole box (a room with the lights on), with a soft spill past its edges
 for(const a of d.areas||[]){if(a.a!='roomlight')continue;const s_=cl(+((a.o||{}).s??1)||1,.3,1.5);L.push({rect:[a.x,a.y,a.w,a.h],x:a.x+a.w/2,y:a.y+a.h/2,r:Math.hypot(a.w,a.h)/2+24,c:cmCol(a.c,'#fff2c8'),i:s_,ph:0})}
 // walls block light: each source keeps the outline of what it can see (vis), worked out once here; L.O keeps the walls for lights that move
@@ -69,7 +71,7 @@ function cmLtNow(s,t,st){if(st)return s.f=='glow'?.85:1;switch(s.f){// fault: a 
 case'fault':{const P=3.5+(s.ph/6.283)*5.5,u=(t+s.ph*7)%P;if(u>.85)return 1;return cmH(Math.floor(u*16),s.ph*100,77)<.5?.08:1}
 case'sweep':s.ca=s.ca0+Math.sin(t*.5+s.ph)*s.sa;return 1;
 case'flk':return .8+.2*Math.sin(t*11+s.ph)*Math.sin(t*7.3+s.ph*1.7);case'fire':return .86+.1*Math.sin(t*13+s.ph)+.04*Math.sin(t*31+s.ph);
-case'flare':return .78+.22*Math.random();case'glow':return .6+.4*Math.sin(t*1.7+s.ph);case'blink':return((t*1.3+s.ph)%1)<.5?1:0;
+case'flare':return .78+.22*Math.random();case'weld':return fdWeld(s.ph,t);case'glow':return .6+.4*Math.sin(t*1.7+s.ph);case'blink':return((t*1.3+s.ph)%1)<.5?1:0;
 case'siren':{const k=Math.floor(t*6+s.ph*6)%4;return(s.sd==0?k<2:s.sd==1?k>=2:s.sd==2?k%2==0:s.sd==3?k%2==1:Math.floor(t*9+s.ph*9)%3==0)?1:0}default:return 1}}
 function cmLtMix(c,a){const n=parseInt(c.slice(1),16),m=x=>Math.round(255-(255-x)*a);return'rgb('+m(n>>16)+','+m(n>>8&255)+','+m(n&255)+')'}
 function cmLtRGB(c){const n=parseInt((cmCol(c,'#ffffff')).slice(1),16);return[n>>16,n>>8&255,n&255]}
@@ -88,7 +90,7 @@ if(s.rect){const[rx,ry,rw,rh]=s.rect;q.fillStyle='rgba('+m(C[0])+','+m(C[1])+','
 if(s.cw){for(const[k2,a2]of[[1.45,.4],[1,1]]){q.globalAlpha=a2;q.beginPath();q.moveTo(s.x,s.y);q.arc(s.x,s.y,r,s.ca-s.cw*k2,s.ca+s.cw*k2);q.closePath();q.fill()}q.globalAlpha=1}else q.fillRect(s.x-r,s.y-r,r*2,r*2);if(V)q.restore();return s.pl?null:[s,C,n,s.cw?Math.min(r,60):r,V]}
 // a soft coloured glow round a light (drawn over the world with 'lighter'), stronger the darker it is; only once it is fairly dark
 // (light strength k over 0.5: at dusk it would be too faint to see, and it costs a full-screen blend)
-function cmLtGlow(G,e,k){const[s,C,n,r,V]=e,R=r*.6,gr=G.createRadialGradient(s.x,s.y,0,s.x,s.y,R);gr.addColorStop(0,'rgba('+C[0]+','+C[1]+','+C[2]+','+(.2*k*s.i*n).toFixed(3)+')');gr.addColorStop(1,'rgba('+C[0]+','+C[1]+','+C[2]+',0)');G.fillStyle=gr;if(V){G.save();cmLtClip(G,V)}G.fillRect(s.x-R,s.y-R,R*2,R*2);if(V)G.restore()}
+function cmLtGlow(G,e,k){const[s,C,n,r,V]=e,R=r*.6,gr=G.createRadialGradient(s.x,s.y,0,s.x,s.y,R);gr.addColorStop(0,'rgba('+C[0]+','+C[1]+','+C[2]+','+Math.min(1,.2*k*s.i*n*(s.gs||1)).toFixed(3)+')');gr.addColorStop(1,'rgba('+C[0]+','+C[1]+','+C[2]+',0)');G.fillStyle=gr;if(V){G.save();cmLtClip(G,V)}G.fillRect(s.x-R,s.y-R,R*2,R*2);if(V)G.restore()}
 // K (optional, the game's): the lights that never change, already drawn into pictures of the whole map (cmLtCache); L is then only the rest
 function cmLightPaint(G,lt,L,wx,wy,ww,wh,res,t,st,K){const P_=lt&&cmLtP(lt.t),a=lt?cl(+lt.a||0,0,1):0;if(!P_||a<=0||!G||!cmLtOK())return 0;
 const w=Math.max(1,Math.ceil(ww*res)),h=Math.max(1,Math.ceil(wh*res));if(!CMLC)CMLC=document.createElement('canvas');if(CMLC.width!==w)CMLC.width=w;if(CMLC.height!==h)CMLC.height=h;const q=CMLC.getContext('2d');if(!q)return 0;
@@ -97,7 +99,7 @@ if(k>.02){q.globalCompositeOperation='lighter';q.setTransform(res,0,0,res,-wx*re
  for(const s of L){const n=cmLtNow(s,t,st);if(n<=0||s.x<wx-s.r||s.x>wx+ww+s.r||s.y<wy-s.r||s.y>wy+wh+s.r)continue;const e=cmLtOne(q,s,k,n,L);if(e)on.push(e)}}
 G.save();try{G.globalCompositeOperation='multiply';G.globalAlpha=1;G.imageSmoothingEnabled=true;G.drawImage(CMLC,0,0,w,h,wx,wy,ww,wh);
 if(P_.scr){G.globalCompositeOperation='screen';G.fillStyle='rgba('+P_.scr+','+(P_.sa*a*(1-fl)).toFixed(3)+')';G.fillRect(wx,wy,ww,wh)}if(fl>0){G.globalCompositeOperation='screen';G.fillStyle='rgba(200,215,255,'+(.3*fl).toFixed(3)+')';G.fillRect(wx,wy,ww,wh)}
-if(k>.5){G.globalCompositeOperation='lighter';if(K&&K.gv){if(K.gr){for(const q_ of K.gr){const x0=Math.max(wx,q_[0]),y0=Math.max(wy,q_[1]),x1=Math.min(wx+ww,q_[2]),y1=Math.min(wy+wh,q_[3]);if(x1>x0&&y1>y0)G.drawImage(K.gv,x0*K.res,y0*K.res,(x1-x0)*K.res,(y1-y0)*K.res,x0,y0,x1-x0,y1-y0)}}else G.drawImage(K.gv,wx*K.res,wy*K.res,ww*K.res,wh*K.res,wx,wy,ww,wh)}for(const e of on)cmLtGlow(G,e,k)}}
+if(k>.5){G.globalCompositeOperation='lighter';if(K&&K.gv){if(K.gr){for(const q_ of K.gr){const x0=Math.max(wx,q_[0]),y0=Math.max(wy,q_[1]),x1=Math.min(wx+ww,q_[2]),y1=Math.min(wy+wh,q_[3]);if(x1>x0&&y1>y0)G.drawImage(K.gv,x0*K.res,y0*K.res,(x1-x0)*K.res,(y1-y0)*K.res,x0,y0,x1-x0,y1-y0)}}else G.drawImage(K.gv,wx*K.res,wy*K.res,ww*K.res,wh*K.res,wx,wy,ww,wh)}for(const e of on)if(!e[0].ng)cmLtGlow(G,e,k)}}
 finally{G.restore()}return 1}
 // lights that never change (no flicker, blink or siren; not a player's) are drawn once, light and glow, into two pictures of the
 // whole map (at most 2048 px across); each frame copies its part of them and adds only the others
@@ -105,7 +107,7 @@ function cmLtStill(s){return!s.f&&!s.pl}
 function cmLtCache(T,res){const P_=cmLtP(T.t),k=P_?P_.lit*cl(+T.a||0,0,1):0;if(k<=.02||typeof document=='undefined')return null;const r=Math.min(res,2048/Math.max(WW,WH)),key=r+':'+WW+'x'+WH;if(T.K&&T.K.key===key)return T.K;
 const w=Math.max(1,Math.ceil(WW*r)),h=Math.max(1,Math.ceil(WH*r)),mk=()=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c},cv=mk(),gv=k>.5?mk():null,q=cv.getContext('2d'),g=gv&&gv.getContext('2d');if(!q||(gv&&!g))return null;
 q.setTransform(r,0,0,r,0,0);q.globalCompositeOperation='lighter';if(g){g.setTransform(r,0,0,r,0,0);g.globalCompositeOperation='lighter'}
-let gr=[];for(const s of T.L){if(!cmLtStill(s))continue;const e=cmLtOne(q,s,k,1,T.L);if(e&&g){cmLtGlow(g,e,k);const R=e[3]*.6+2;gr.push([s.x-R,s.y-R,s.x+R,s.y+R])}}
+let gr=[];for(const s of T.L){if(!cmLtStill(s))continue;const e=cmLtOne(q,s,k,1,T.L);if(e&&g&&!s.ng){cmLtGlow(g,e,k);const R=e[3]*.6+2;gr.push([s.x-R,s.y-R,s.x+R,s.y+R])}}
 // where the still glows are, as boxes that don't overlap (each frame copies just those, not the whole screen, when there are few)
 for(let m=1;m;){m=0;for(let i=0;i<gr.length&&!m;i++)for(let j=i+1;j<gr.length;j++){const a=gr[i],b=gr[j];if(a[0]<b[2]&&b[0]<a[2]&&a[1]<b[3]&&b[1]<a[3]){gr[i]=[Math.min(a[0],b[0]),Math.min(a[1],b[1]),Math.max(a[2],b[2]),Math.max(a[3],b[3])];gr.splice(j,1);m=1;break}}}
 if(gr.length>48)gr=null;return T.K={key,cv,gv,gr,res:r,dyn:T.L.filter(s=>!cmLtStill(s))}}

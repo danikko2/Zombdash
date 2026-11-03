@@ -32,6 +32,7 @@ world/kit-school.js
 world/kit-market.js
 world/kit-mainst.js
 world/kit-highway.js
+world/kit-foundry.js
 world/map-store.js
 world/custom-maps.js
 ui/core-ui.js
@@ -89,6 +90,7 @@ campaign/map-screens.js
 maps/props/home-props.js
 maps/props/forest-props.js
 maps/props/kit-props.js
+maps/props/kit-foundry.js
 bosses/penny-and-mayor.js
 system/phones-checkpoints-crashlog.js
 online/supabase.js

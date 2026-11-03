@@ -53,6 +53,7 @@ if(cmIs(m)){const e=ccOfKey(m);if(!e)return '';if(!o)return !secOpen(A,d,s)?`�
 return (bBt(A,d,m)?`✓ Beaten on ${DNm(d,1)} · play it again any time`:`Survive 20 waves, then defeat <b>${CH[e.b].n}</b>`)+` · ✎ custom map, optional`}
 const ci=MUN[m],rp=ccRep(m),rt=rp?` · ✎ plays your map “${edEsc(mpName(rp.key))}”`:'';
 if(!o){if(!secOpen(A,d,s))return `🔒 Beat every map in ${SEC[s-1].n} on ${DNm(d,1)} first`;return `🔒 Beat ${MP[SEC[s].m[0]].n} on ${DNm(d,1)} to open this map`}
+if(ci==null||!CH[ci])return (bBt(A,d,m)?`✓ Beaten on ${DNm(d,1)} · play it again any time`:`Survive 20 waves to clear it`)+' · survivor coming soon'+rt;
 return (bBt(A,d,m)&&(A.un||[]).includes(ci)?`✓ Beaten · ${CH[ci].n} joined you · play it again any time`:`Survive 20 waves, then defeat <b>${CH[ci].n}</b> to recruit them`)+rt}
 // the info box for an empty slot, and the custom-map links under a map's info (single player only: the lobby just picks)
 function cSlotInfo(s,k){const bad=ccSlotBad(s,k),n=cmFree().length;
@@ -83,6 +84,11 @@ function cRoof(g,x,y,w,h,c,c2){g.fillStyle=c;g.beginPath();g.moveTo(x-4,y);g.lin
 function cWin(g,x,y,w,h,c){g.fillStyle=CO;g.fillRect(x-1,y-1,w+2,h+2);g.fillStyle=c||'#ffd97a';g.fillRect(x,y,w,h)}
 function cShadow(g,x,y,w){g.fillStyle='rgba(20,16,10,.3)';g.beginPath();g.ellipse(x+6,y+2,w,w*.28,0,0,7);g.fill()}
 var CLM={
+16:(g,x,y)=>{cShadow(g,x,y,56);for(const[sx,h]of[[x+14,64],[x+26,54]]){cBox(g,sx,y-h,8,h-24,'#5a5a60');g.fillStyle='rgba(206,206,210,.8)';g.beginPath();g.arc(sx+4,y-h-6,6,0,7);g.arc(sx+10,y-h-14,8,0,7);g.fill()}
+cBox(g,x-48,y-28,82,28,'#7a7f88','#646970');g.fillStyle='#5a5e66';g.beginPath();for(let i=0;i<4;i++){g.moveTo(x-48+i*20.5,y-28);g.lineTo(x-48+i*20.5,y-40);g.lineTo(x-27.5+i*20.5,y-28)}g.fill();g.strokeStyle=CO;g.lineWidth=2.5;g.stroke();
+g.fillStyle=CO;g.fillRect(x-40,y-17,16,17);g.fillStyle='#ff8a2a';g.fillRect(x-38,y-15,12,15);g.fillStyle='#ffd84a';g.fillRect(x-35,y-10,6,10);
+g.fillStyle=CO;g.fillRect(x-10,y-20,24,20);g.fillStyle='#9aa0a8';g.fillRect(x-8,y-18,20,18);g.fillStyle='rgba(0,0,0,.25)';for(let k=0;k<4;k++)g.fillRect(x-8,y-16+k*4,20,1);
+g.lineCap='round';g.beginPath();g.moveTo(x+40,y);g.lineTo(x+44,y-38);g.moveTo(x+60,y);g.lineTo(x+56,y-38);g.moveTo(x+36,y-40);g.lineTo(x+64,y-40);g.strokeStyle=CO;g.lineWidth=6;g.stroke();g.strokeStyle='#e8b02a';g.lineWidth=3;g.stroke();g.lineCap='butt';g.strokeStyle=CO;g.lineWidth=1.5;g.beginPath();g.moveTo(x+50,y-40);g.lineTo(x+50,y-26);g.stroke();g.fillStyle='#8a9098';g.fillRect(x+44,y-26,12,4)},
 0:(g,x,y)=>{cShadow(g,x,y,40);cBox(g,x-30,y-28,38,28,'#6a8ac8','#5a76b0');cRoof(g,x-30,y-28,38,20,'#7a3a2a','#5e2c20');cBox(g,x+8,y-20,22,20,'#d8d0c0','#c0b8a8');g.fillStyle='#9a9488';g.fillRect(x+11,y-14,16,14);g.strokeRect(x+11,y-14,16,14);cRoof(g,x+8,y-20,22,10,'#5e2c20');cWin(g,x-25,y-21,8,8);cWin(g,x-10,y-21,8,8);g.fillStyle='#5a3a22';g.fillRect(x-16,y-12,6,12);g.fillStyle='#3f8a3e';g.fillRect(x-34,y-3,8,3);g.fillRect(x+2,y-3,5,3)},
 3:(g,x,y)=>{cShadow(g,x,y,46);cBox(g,x-40,y-30,80,30,'#b8583e','#9a4a34');for(let i=0;i<5;i++)cWin(g,x-34+i*15,y-24,8,9,'#cfe8f8');g.fillStyle='#5a3a22';g.fillRect(x-5,y-14,10,14);g.strokeRect(x-5,y-14,10,14);cBox(g,x-10,y-48,20,18,'#c86a4e');cRoof(g,x-10,y-48,20,12,'#4a4e58');g.fillStyle='#e8c040';g.beginPath();g.arc(x,y-40,4,0,7);g.fill();g.strokeStyle=CO;g.stroke();g.fillStyle='#9a9aa2';g.fillRect(x+30,y-58,2,28);g.fillStyle='#c0392b';g.fillRect(x+32,y-58,12,7);g.fillStyle='#e3b22a';g.fillRect(x-58,y-12,20,12);g.strokeRect(x-58,y-12,20,12);g.fillStyle='#16111c';g.fillRect(x-56,y-10,6,4);g.fillRect(x-48,y-10,6,4)},
 1:(g,x,y)=>{cShadow(g,x,y,48);cBox(g,x-42,y-28,72,28,'#8a8f96','#74787f');g.fillStyle='#6a6e78';g.beginPath();for(let i=0;i<4;i++){g.moveTo(x-42+i*18,y-28);g.lineTo(x-42+i*18,y-40);g.lineTo(x-24+i*18,y-28)}g.fill();g.strokeStyle=CO;g.lineWidth=2.5;g.stroke();

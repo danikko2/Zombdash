@@ -5,12 +5,14 @@
 // id = the custom map's own id (a string, so it can never collide with a built-in map number), b = the boss, n = the
 // map's name when it was assigned (for warnings once a map is gone).
 // What an account has beaten on custom maps is in A.cmc = {<map id>: bits} (bit d = beaten on difficulty d). It never
-// touches the 16-bit beaten-map masks (A.bm), and removing a map from its slot keeps it.
-var CCS={slots:{},rep:{}},CCW=[],CREP=null,CCLD=0;
+// touches the beaten-map masks (A.bm), and removing a map from its slot keeps it.
+var CCS={slots:{},rep:{}},CCW=[],CCMV=[],CREP=null,CCLD=0;
 // wave-20 bosses that work on any map, in campaign order. The other four need their own map:
 const CCBOSS=[2,3,1,9,4,10,11,12,5,8,6,7];
 const CCNOT={13:'drives the ice cream truck along the City Park road network',14:'drives the fire engine along the Downtown roads and blasts water into its buildings',15:'knocks stock off the Hometown Market shelves and sends carts out of its corrals',16:'watches from the City Hall roof while his police cruiser drives the Main Street roads'};
 function ccSK(s,k){return s+':'+k}
+// slots that were free once and now hold a built-in map (the Black Iron Foundry took slot 5 of Wrong Turn): a custom map stored there moves
+const CCWAS=['1:4'];
 function ccPK(sk){const a=String(sk).split(':');return[+a[0],+a[1]]}
 // the free slots: every -1 in SEC, as [section, slot]
 function ccFree(){const L=[];SEC.forEach((s,si)=>s.m.forEach((m,k)=>{if(m===-1)L.push([si,k])}));return L}
@@ -19,14 +21,18 @@ function ccIsFree(s,k){return !!SEC[s]&&SEC[s].m[k]===-1}
 function ccRepOK(m){return typeof m=='number'&&!!MP[m]&&SORD.includes(m)&&CCBOSS.includes(MUN[m])}
 // ----- loading, checking and saving -----
 function ccClean(r){const O={slots:{},rep:{}},seen=new Set();if(!r||typeof r!='object')return O;const nm=v=>String(v==null?'':v).replace(/[<>]/g,'').slice(0,40);
-for(const sk of Object.keys(r.slots||{})){const a=r.slots[sk],[s,k]=ccPK(sk);if(!ccIsFree(s,k)||!a||typeof a.id!='string'||!a.id||seen.has(a.id))continue;seen.add(a.id);O.slots[ccSK(s,k)]={id:a.id,b:CCBOSS.includes(a.b)?a.b:CCBOSS[0],n:nm(a.n)}}
-for(const mk of Object.keys(r.rep||{})){const a=r.rep[mk],m=+mk;if(!ccRepOK(m)||!a||typeof a.id!='string'||!a.id||seen.has(a.id))continue;seen.add(a.id);O.rep[m]={id:a.id,n:nm(a.n)}}return O}
+const mv=[];for(const sk of Object.keys(r.slots||{})){const a=r.slots[sk],[s,k]=ccPK(sk);if(!a||typeof a.id!='string'||!a.id||seen.has(a.id))continue;if(!ccIsFree(s,k)){if(CCWAS.includes(ccSK(s,k))&&SEC[s].m[k]>=0)mv.push([s,k,a]);continue}seen.add(a.id);O.slots[ccSK(s,k)]={id:a.id,b:CCBOSS.includes(a.b)?a.b:CCBOSS[0],n:nm(a.n)}}
+for(const mk of Object.keys(r.rep||{})){const a=r.rep[mk],m=+mk;if(!ccRepOK(m)||!a||typeof a.id!='string'||!a.id||seen.has(a.id))continue;seen.add(a.id);O.rep[m]={id:a.id,n:nm(a.n)}}
+// a map whose slot a built-in map has since filled (the Black Iron Foundry took slot 5 of Wrong Turn) moves to the first free slot
+// left, in a later section if there is one; with none left it comes out of the campaign. Either way a note says so (O.mv).
+for(const[s,k,a]of mv){if(seen.has(a.id))continue;seen.add(a.id);const F=ccFree().filter(([fs,fk])=>!O.slots[ccSK(fs,fk)]),to=F.find(([fs])=>fs>s)||F[0],n=nm(a.n)||'A custom map',why=MP[SEC[s].m[k]].n+' now fills slot '+(k+1)+' of '+SEC[s].n;
+ (O.mv=O.mv||[]).push(to?'“'+n+'” moved to slot '+(to[1]+1)+' of '+SEC[to[0]].n+': '+why+'.':'“'+n+'” was taken out of the campaign: '+why+' and no slot is free.');if(to)O.slots[ccSK(to[0],to[1])]={id:a.id,b:CCBOSS.includes(a.b)?a.b:CCBOSS[0],n:nm(a.n)}}return O}
 // read the record once per session (after that the copy in memory is the truth and every change is written straight away)
-async function ccLoad(){if(!CCLD){CCLD=1;let r=null;try{r=await msGet('kv','campaign')}catch(e){}CCS=ccClean(r)}ccCheck()}
+async function ccLoad(){if(!CCLD){CCLD=1;let r=null;try{r=await msGet('kv','campaign')}catch(e){}CCS=ccClean(r);if(CCS.mv){CCMV=CCS.mv;delete CCS.mv;ccSave()}}ccCheck()}
 function ccSave(){const rec={k:'campaign',slots:CCS.slots,rep:CCS.rep};try{return msWrite([['put','kv',rec]]).catch(()=>{})}catch(e){return Promise.resolve()}}
 // against the maps on this device: a map that is gone is taken out of the campaign (its slot is free again); one that is
 // still here but can't be opened keeps its place, and the slot shows Coming Soon until it is fixed. Both leave a warning.
-function ccCheck(){if(!CMLOK)return;const W=[];let ch=0;const look=(a,where,drop)=>{const e=CML.find(x=>x.id===a.id);
+function ccCheck(){if(!CMLOK)return;const W=CCMV.slice();let ch=0;const look=(a,where,drop)=>{const e=CML.find(x=>x.id===a.id);
 if(!e){W.push('“'+(a.n||'A custom map')+'” is no longer on this device, so it was taken out of the campaign ('+where+').');drop();ch=1;return}
 if(!e.doc){W.push('“'+(a.n||e.meta.name||'A custom map')+'” can\'t be opened right now, so '+where+' shows '+(where.startsWith('slot')?'Coming Soon':'the original map')+' until it is fixed.');return}
 const n=String(e.doc.name||'').slice(0,40);if(a.n!==n){a.n=n;ch=1}};

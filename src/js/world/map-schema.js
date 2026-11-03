@@ -95,7 +95,7 @@ function cmKindLy(kind,o){if(kind=='w')return'walls';if(kind=='s'||kind=='z')ret
 if(kind=='a'){const T=o&&cmArea(o.a);return !T?'ground':T.cat=='struct'?'buildings':T.cat=='effect'&&T.id!='shade'?'effects':'ground'}
 if(kind=='l'){const T=o&&cmPath(o.p);return T&&T.cat=='barrier'?'walls':'ground'}
 if(o&&o.dc)return'ground';if(o&&o.fx)return'effects';if(o&&o.veh)return'vehicles';
-const c=o&&typeof EDPN!='undefined'&&cmOwn(EDPN,o.k)?EDPN[o.k][1]:'';return{buildings:'buildings',vehicles:'vehicles',furniture:'interior',store:'interior',kitchen:'interior',living:'interior',bedroom:'interior',bath:'interior',garage:'interior'}[c]||'env'}
+const c=o&&typeof EDPN!='undefined'&&cmOwn(EDPN,o.k)?EDPN[o.k][1]:'';return{buildings:'buildings',vehicles:'vehicles',furniture:'interior',store:'interior',kitchen:'interior',living:'interior',bedroom:'interior',bath:'interior',garage:'interior',industry:'interior'}[c]||'env'}
 // that layer if this map has it, else the top object layer (null when the map has none)
 function cmDefLy(d,kind,o){const id=cmKindLy(kind,o),l=cmLy(d,id);if(l&&l.k=='o')return id;const ol=d.layers.filter(q=>q.k=='o');return ol.length?ol[ol.length-1].id:null}
 

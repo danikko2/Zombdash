@@ -2,7 +2,7 @@
 // ---------- effects ----------
 // An effect is a point (x,y) with a size (sc, 0.25–4), a turn (r, degrees; fxTurn turns everything it draws) and sometimes a colour. bake(g,o) paints its still part into the map picture
 // (light pools), anim(o,t) draws it under people each frame, top(o,t) over people, sm:1 makes it a smoke point (the game's SM
-// list). ed(g,o) is how the editor shows it (a still frame). Everything runs only while the effect is on screen.
+// list), lts(o,s,ph,L) adds its light sources to L (for effects added outside the switch in cmLightSrc). ed(g,o) is how the editor shows it (a still frame). Everything runs only while the effect is on screen.
 const CMXCAT=[['water','Water'],['fire','Fire & smoke'],['light','Lights'],['spooky','Spooky'],['life','Wildlife']];
 const PXLIGHT=[['#ffb040','Candle'],['#ffd27a','Warm lamp'],['#c8e0ff','Cool lamp'],['#b6ffd8','Ghost green'],['#ff5a5a','Red'],['#8ae8ff','Cyan']];
 function fxR(o,b){return b*cl(+o.sc||1,.25,4)}

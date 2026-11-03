@@ -1,6 +1,6 @@
 //# bosses/survivors.js — Survivor bosses: stats (SVS), shared AI, the first survivors, drawing
 // ---------- campaign wave 20: the map's survivor fights you, then joins you ----------
-let KN=null,RH=null,SVB=0,CWIN=null,RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];GCC=[];
+let KN=null,RH=null,SVB=0,CWIN=null,CLR=null,RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];GCC=[];
 // w: pi pistol · sg shotgun · smg · dp dual pistols. pd = preferred distance. h1 = first health bar (ship / horse)
 const SVS={
 1:{hp:720,sp:70,w:'pi',cd:.45,pd:200,lz:'#7ae8ff'},
@@ -92,13 +92,21 @@ if(z.ci==7){z.lift=0;z.rk=0;z.gs=0;if(!svOK(z.x,z.y)){const p=svPt(z.x,z.y,0,220
 if(z.ci==8||z.ci==11){z.hr=0;RH={x:z.x,y:z.y,a:z.ga||0,t:0,ci:z.ci};sfx('kong',z.x,z.y,.6);FT.push({x:z.x,y:z.y-56,t:z.ci==11?'THE HORSE VANISHES! THE HORSEMAN FIGHTS ON FOOT':'THE HORSE BOLTS! HANK FIGHTS ON FOOT',c:'#ffcf40',l:2.2})}
 return 1}
 // beaten: no pop, they kneel, ask to join, and are unlocked
-function svDown(z){if(z.tk)tkPark(z);for(const q of zs)if((q.cl||ZT[q.t].gh)&&q.hp>0&&q!==z){q.hp=0;svPop(q)}GHH=[];GRN=[];const ci=z.ci,cm=cCampId(),cu=cmIs(cm),i=cu?-1:OLDC.indexOf(cm);RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];GCC=[];KN={ci,x:z.x,y:z.y,t:0,fl:Math.cos(z.fa)<0?-1:1,cu};ep=[];SVB=0;sfx('power');
+function svDown(z){if(z.tk)tkPark(z);for(const q of zs)if((q.cl||ZT[q.t].gh)&&q.hp>0&&q!==z){q.hp=0;svPop(q)}GHH=[];GRN=[];const ci=z.ci,cm=cCampId(),cu=cmIs(cm);RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];GCC=[];KN={ci,x:z.x,y:z.y,t:0,fl:Math.cos(z.fa)<0?-1:1,cu};ep=[];SVB=0;sfx('power');
+campRec(ci);
+FT.push({x:z.x,y:z.y-70,t:CH[ci].n.toUpperCase()+' GIVES UP!',c:'#9be860',l:2.5});sv()}
+// a campaign map is won: everyone playing gets it marked beaten (and its survivor, ci, recruited; null for a map with no survivor
+// yet), with a note for each map or section that opened
+function campRec(ci){const cm=cCampId(),cu=cmIs(cm),i=cu?-1:OLDC.indexOf(cm);
 for(const p of PL){const A=p.ac;if(!A||A.g)continue;const dd=DIF();
 // a custom slot: its own record and Free Play; the survivor is recruited on their own map, not here
 if(cu){const id=cmIdOf(cm),first=!ccBt(A,0,id);ccMark(A,dd,id);if(first)(p.nt=p.nt||[]).push(mpName(cm)+' is now open in Free Play');continue}
-A.un=A.un||[0];const nw=!A.un.includes(ci);if(nw)A.un.push(ci);const o0=SORD.filter(m=>mOpen(A,dd,m)),s0=secOf(cm),sd0=s0>=0&&secDone(A,dd,s0);if(i>=0)cpUp(A,dd,i+1);bmSet(A,dd,cm);
-if(nw)(p.nt=p.nt||[]).push(CH[ci].n+' joined your survivors');if(s0>=0&&!sd0&&secDone(A,dd,s0)&&s0<4)(p.nt=p.nt||[]).push(SEC[s0+1].n+' is open!');for(const m of SORD)if(!o0.includes(m)&&mOpen(A,dd,m))(p.nt=p.nt||[]).push(MP[m].n+' unlocked')}
-FT.push({x:z.x,y:z.y-70,t:CH[ci].n.toUpperCase()+' GIVES UP!',c:'#9be860',l:2.5});sv()}
+A.un=A.un||[0];const nw=ci!=null&&!A.un.includes(ci);if(nw)A.un.push(ci);const o0=SORD.filter(m=>mOpen(A,dd,m)),s0=secOf(cm),sd0=s0>=0&&secDone(A,dd,s0);if(i>=0)cpUp(A,dd,i+1);bmSet(A,dd,cm);
+if(nw)(p.nt=p.nt||[]).push(CH[ci].n+' joined your survivors');if(s0>=0&&!sd0&&secDone(A,dd,s0)&&s0<4)(p.nt=p.nt||[]).push(SEC[s0+1].n+' is open!');for(const m of SORD)if(!o0.includes(m)&&mOpen(A,dd,m))(p.nt=p.nt||[]).push(MP[m].n+' unlocked')}}
+// a campaign map with no survivor holding out on it yet (the Black Iron Foundry until its survivor is chosen): wave 20 plays like
+// any wave, and clearing it wins the map
+function campNoBoss(){return GMD=='c'&&cBossNow()==null}
+function campClear(){CLR={t:0};campRec(null);for(const p of PL)if(p.dn){p.dn=0;p.rv=0;p.hp=Math.max(1,Math.ceil(p.mx*.34));p.inv=2}const Q=PL.find(alive)||P;FT.push({x:Q.x,y:Q.y-70,t:'WAVE 20 SURVIVED!',c:'#9be860',l:2.8});sfx('clear');sv()}
 function campWin(){CWIN={ci:KN?KN.ci:cBossNow(),m:cCampId(),nx:campNx()};over(1)}
 function svThrow(z,Q){const tx=Q.x+rnd(-18,18),ty=Q.y+rnd(-18,18),d=Math.hypot(tx-z.x,ty-z.y);RKS.push({sx:z.x,sy:z.y,tx,ty,l0:z.lift+20,t:0,T:cl(d/330,.6,1.35),h:60+d*.18,s:7+Math.random()*3,sp:(Math.random()-.5)*12});sfx('swoosh',z.x,z.y)}
 function svTick(dt){svTick3(dt);svTick4(dt);svTick5(dt);for(const r of RKS){r.t+=dt;if(r.t>=r.T){r.done=1;sfx('slam',r.tx,r.ty);shk=Math.max(shk,.3);rg.push({x:r.tx,y:r.ty,l:.45,m:.45,r:48,c:'#c09060'});for(let i=0;i<18;i++){const a=Math.random()*6.283,v=50+Math.random()*170;pt.push({x:r.tx,y:r.ty,vx:Math.cos(a)*v,vy:Math.sin(a)*v*.6,l:.5,c:i%2?'#7a6a58':'#a08a70'})}for(const q of PL)if(alive(q)&&Math.hypot(q.x-r.tx,q.y-r.ty)<48)hitP(q,2,Math.atan2(q.y-r.ty,q.x-r.tx))}}RKS=RKS.filter(r=>!r.done);if(RH){RH.t+=dt;let a=RH.a;const q=PL.find(alive);if(q)a=Math.atan2(RH.y-q.y,RH.x-q.x);RH.a=a;RH.x+=Math.cos(a)*230*dt;RH.y+=Math.sin(a)*230*dt;if(RH.t>2.6)RH=null}}
