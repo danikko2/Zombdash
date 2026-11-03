@@ -35,7 +35,7 @@ const IN=(o,r)=>o.x>r[0]&&o.x<r[2]&&o.y>r[1]&&o.y<r[3];
 const SHOP=[960,560,3080,1720],OFF=[620,860,960,1420],FAB=[960,560,1700,1720],FRG=[1700,560,2500,1720],TRK=[2500,560,3080,1720],LOT=[40,250,960,1850],YARD=[1150,40,2710,540],TX=2790;
 // ---------- what the owner asked for ----------
 ok(A_('fog').some(a=>a.x<=0&&a.y<=0&&a.w>=D.w*32&&a.h>=D.h*32)&&A_('fog').filter(a=>IN({x:a.x+a.w/2,y:a.y+a.h/2},SHOP)).length>=2,'foggy: fog over the whole map, thicker in the shop and the forge');
-ok(K('weldtable').filter(o=>IN(o,FAB)).length>=6&&K('welder').length>=6&&K('gascyl').length>=6&&FX('weldarc').filter(o=>IN(o,FAB)).length>=4,'welding tables with welders and gas, sparks and arcs flashing at some of them');
+ok(K('weldtable').filter(o=>IN(o,FAB)).length>=6&&K('welder').length>=6&&K('gascyl').length>=6&&!FX('weldarc').some(o=>IN(o,FAB))&&!cmLightSrc(D).some(s=>IN(s,FAB)&&s.f=='weld'),'welding tables with welders and gas; the welders are off (no arc, no light from the tables)');
 {const M=['lathe','pressbrake','drillpress','bandsaw','plasmatbl','grinder','phammer','quench','steelrack'];const have=M.filter(k=>K(k).some(o=>IN(o,SHOP)));ok(have.length==M.length&&K('steelrack').length>=4,'lots of fabrication machinery: '+have.join(', '))}
 {const L_=K('ladle')[0],M_=FX('molten')[0];ok(K('ladle').length==1&&IN(L_,FRG)&&M_&&Math.abs(M_.x-L_.x)<4&&Math.abs(M_.y-(L_.y-89))<4,'a big cauldron (the ladle) of molten metal in the forge, its surface bubbling');
  ok(OB.ladle.w>=160&&A_('hazardband').filter(a=>Math.hypot(a.x+a.w/2-L_.x,a.y+a.h/2-L_.y)<200).length==4&&K('saferail').length>=2,'it is big, with a hazard band round it and rails in front');
@@ -62,14 +62,14 @@ ok(A_('paving').some(a=>a.o.s=='gravel'&&IN({x:a.x+a.w/2,y:a.y+a.h/2},YARD))&&K(
 {const L=cmLightSrc(D),near=(x,y,r)=>L.filter(s=>Math.hypot(s.x-x,s.y-y)<r),L_=K('ladle')[0];
  ok(near(L_.x,L_.y-90,10).some(s=>s.f=='fire'&&s.r>=250&&s.gs>1),'the molten metal lights the forge (a big flickering fire light with a strong glow)');
  const hb=L.filter(s=>IN(s,SHOP)&&s.r>=200&&s.ng);ok(K('highbay').length+K('highbayf').length>=24&&hb.length>=24&&K('highbayf').length>=2,'high-bay lights over the shop ('+hb.length+'), some failing, a few dead');
- const W=L.filter(s=>s.f=='weld');let on=0,off=0;for(let t=0;t<30;t+=.05){const n=cmLtNow(W[0],t,0);if(n>0)on++;else off++}ok(W.length>=5&&on>100&&off>100,'welding arcs flash on and off ('+on+' on, '+off+' off in 30 s)');
+ const W=L.filter(s=>s.f=='weld');let on=0,off=0;for(let t=0;t<30;t+=.05){const n=cmLtNow(W[0],t,0);if(n>0)on++;else off++}ok(W.length==1&&IN(W[0],FRG)&&on>100&&off>100,'only the arc furnace arcs, on and off ('+on+' on, '+off+' off in 30 s)');
  ok(K('floodtower').length>=4&&K('walllight').length>=10,'flood towers in the yards, lights over the doors')}
 // ---------- the game builds it ----------
 mapId=16;S.mp=16;setGM('f');build();
 ok(HS.CM==='builtin-foundry'&&WW==3520&&WH==2400&&BG.width==WW,'map 16 builds from foundry.json through the custom-map loader');
 ok(MP.length==17&&MP[16].n=='Black Iron Foundry'&&MPD[16]&&/^data:image\\/jpeg/.test(MPI[16])&&MT[16]&&typeof CLM[16]=='function','map 16 has its name, description, picture, colours and a landmark on the campaign map');
 ok(HS.LT&&HS.LT.t=='night'&&HS.NS&&HS.NS.length>=2,'night lighting; no zombie appears inside the building or the office');
-start();{const C=HS.CX;ok(C&&C.O.filter(q=>q.o.k=='bcrane'||q.o.k=='ycrane').length==2&&C.T.some(q=>q.o.fx=='molten')&&C.T.filter(q=>q.o.fx=='weldarc').length>=5,'the cranes hang over people; the molten metal and the welding arcs run')}
+start();{const C=HS.CX;ok(C&&C.O.filter(q=>q.o.k=='bcrane'||q.o.k=='ycrane').length==2&&C.T.some(q=>q.o.fx=='molten')&&C.T.filter(q=>q.o.fx=='weldarc').length==1,'the cranes hang over people; the molten metal and the arc furnace\\'s arcing run')}
 // ---------- reach ----------
 {const F=new Int16Array(gw*gh);bfs(F,HS.px,HS.py);
 const RCH=(x,y)=>{const i0=Math.floor(x/gs),j0=Math.floor(y/gs);for(let r=0;r<=2;r++)for(let j=j0-r;j<=j0+r;j++)for(let i=i0-r;i<=i0+r;i++){const k=j*gw+i;if(k>=0&&k<gw*gh&&!bl[k])return F[k]>=0}return false};
