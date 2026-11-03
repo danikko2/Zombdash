@@ -72,7 +72,7 @@ clr();home();P.mg[BC]=4;shoot();secs(.3);P.cds[BC]=0;shoot();tick(2);drawW();hud
  const Q=PL[1];for(const p of PL){p.inv=1e9;p.mx=p.hp=999;p.own.push(BC);p.am.rk=20}const k=PL.map(p=>p.k||0);
  Q.x=best.x;Q.y=best.y;Q.cur=BC;Q.mg[BC]=4;Q.cds[BC]=0;Q.a=0;PL[0].x=best.x;PL[0].y=best.y+200;
  inp=p=>({mx:0,my:0,fire:p===Q});tick(1);inp=()=>({mx:0,my:0,fire:false});const own=BCB.every(b=>b.o===Q);
- for(const b of BCB)for(let i=0;i<2;i++)at(0,b.x+60+i*10,b.y,3);secs(WP[BC].bt*1.3);
+ secs(WP[BC].bt*.7);for(const b of BCB)for(let i=0;i<2;i++)at(0,b.x+8+i*10,b.y,3);secs(WP[BC].bt*.8);
  ok(own&&(Q.k||0)>k[1]&&(PL[0].k||0)==k[0],'player 2\\'s bubbles count their kills for player 2 ('+((Q.k||0)-k[1])+')');
  inp=inp0;mode='shop';shop();ok(ui.innerHTML.split('Bubble Cannon').length>=3,'the split-screen shop sells it to each player');ok(!ERRS.length,'no errors in split screen: '+ERRS.join(' | '))}
 // ---------- GAME BALANCE ----------

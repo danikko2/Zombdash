@@ -117,8 +117,8 @@ function cmStorm(t){const P=16,n=Math.floor(t/P),s=n*P+cmH(n,7,101)*(P-3);if(cmH
 return[u<.07?1:u<.16?.15:u<.26?.8:Math.max(0,.8*(1-(u-.26)/.9)),n,s]}
 function cmLtOn(){return!!(HS&&HS.LT&&HS.CM&&cmLtOK())}
 // the game: called from drawW in world space (after everything in the world, before the aim marker and the HUD).
-// Burning ground and fireballs light up too. (Players carry no light of their own: the glow round them was taken out.)
+// Burning ground and fireballs light up too, and so do the Fire Hose's flame and burning zombies (fhLights). (Players carry no light of their own: the glow round them was taken out.)
 function cmLight(){const T=HS.LT;if(!T||!HS.CM)return;const sx=Math.round(cam.x),sy=Math.round(cam.y),res=LMX?.25:.5,K=cmLtCache(T,res),S=(K?K.dyn:T.L).slice();S.O=T.L.O;
-for(const q of fr)S.push({x:q.x,y:q.y,r:80,c:'#ff9a3a',i:1,f:'fire',ph:q.x});for(const e of ep)if(e.k==3)S.push({x:e.x,y:e.y,r:40,c:'#ff7a2a',i:1});
+for(const q of fr)S.push({x:q.x,y:q.y,r:80,c:'#ff9a3a',i:1,f:'fire',ph:q.x});for(const e of ep)if(e.k==3)S.push({x:e.x,y:e.y,r:40,c:'#ff7a2a',i:1});if(typeof fhLights=='function')fhLights(S);
 const now=performance.now()/1000;if(T.st){const[,n,s]=cmStorm(now);if(n!==T.sn&&now>=s){T.sn=n;if(cmH(n,8,102)>=.25)T.th=s+.5+cmH(n,9,103)*2}if(T.th&&now>=T.th){T.th=0;if(typeof sfx=='function')sfx('thunder',null,null,.9)}}
 cmLightPaint(X,T,S,sx,sy,W,H,res,now,0,K)}

@@ -83,6 +83,7 @@ weapons/chickens.js
 weapons/bows-and-lightning.js
 weapons/life-saver.js
 weapons/bubble-cannon.js
+weapons/fire-hose.js
 campaign/sections.js
 campaign/map-screens.js
 maps/props/home-props.js

@@ -18,7 +18,7 @@ const CPK='zd_cp';
 function cpGet(){try{const c=JSON.parse(localStorage[CPK]||'null');return c&&c.v==1?c:null}catch(e){return null}}
 function cpClear(){try{delete localStorage[CPK]}catch(e){}}
 function cpSave(){if(MPn||TUT||!P||cmPT(mapId)||GMD=='c'&&wave>=20)return;try{const p=P,rp=CREP&&CREP.key===mapId,cu=cmIs(mapId)&&!rp;if(cu&&!cmIdOf(mapId))return;localStorage[CPK]=JSON.stringify({v:1,t:Date.now(),an:S.ac.name,gm:GMD,m:rp?CREP.o:cu?-1:mapId,cm:cu?cmIdOf(mapId):undefined,cr:rp?CREP.id:undefined,ci:p.ci||0,d:DIF(),w:wave,k:kills,L:LIVES,IW,BB,LB,
-p:{cash:p.cash,hp:p.hp,mx:p.mx,ar:p.ar||0,own:p.own,cur:p.cur,mg:p.mg,am:p.am,paid:p.paid,v:p.v||0}})}catch(e){}}
+p:{cash:p.cash,hp:p.hp,mx:p.mx,ar:p.ar||0,own:p.own,cur:p.cur,mg:p.mg,am:p.am,amx:p.amx,paid:p.paid,v:p.v||0}})}catch(e){}}
 // a run on a custom map keeps the map's id (cm): it resumes once that map is loaded on this device
 function cpMap(c){return c.cm?cmKeyById(c.cm):MP[c.m]?c.m:null}
 // a campaign run on a custom map is only offered while that map is still in its slot (or still replaces the same map)

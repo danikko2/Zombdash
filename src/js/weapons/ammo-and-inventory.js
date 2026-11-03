@@ -1,14 +1,20 @@
 //# weapons/ammo-and-inventory.js — Inventory, ammo types (AMI), magazines (MAG), reloads, ammo HUD, reload sounds
 // ---------- inventory (4 weapon slots) + ammo: magazines, reserves by ammo type, reloads, drops, shop ----------
 var INV=4;
-var AMT=['pa','pa','sh','ri','rk','sh','ri','ri','bl','sh','bl','ar','rk','ar','rk','ar','rk','rk'];
+var AMT=['pa','pa','sh','ri','rk','sh','ri','ri','bl','sh','bl','ar','rk','ar','rk','ar','rk','rk','rk'];
 function RDY(p){return shopIt(p).length}
 var AMI={pa:{n:'Pistol ammo',s:'PISTOL',c:'#e8c040',buy:300,cost:30,max:1200,drop:60},ri:{n:'Rifle rounds',s:'RIFLE',c:'#d88a3a',buy:200,cost:40,max:800,drop:40},sh:{n:'Shotgun shells',s:'SHELLS',c:'#d84a3a',buy:20,cost:30,max:160,drop:8},rk:{n:'Rockets',s:'ROCKETS',c:'#8a9a6a',buy:10,cost:90,max:48,drop:5},bl:{n:'Ammo belts',s:'BELTS',c:'#c8b070',buy:300,cost:70,max:1200,drop:150},ar:{n:'Arrows',s:'ARROWS',c:'#8fc0e0',buy:100,cost:40,max:500,drop:20}};
-var MAG=[18,45,6,30,1,8,30,40,200,8,120,10,3,6,1,10,1,4],RLT=[1.25,1.3,1.7,1.4,2.2,1.9,1.6,1.4,2.4,1.9,2.4,1.6,2.2,1.9,2.5,1.6,3,2.4];
+var MAG=[18,45,6,30,1,8,30,40,200,8,120,10,3,6,1,10,1,4,100],RLT=[1.25,1.3,1.7,1.4,2.2,1.9,1.6,1.4,2.4,1.9,2.4,1.6,2.2,1.9,2.5,1.6,3,2.4,2.6];
 // fire sound of each gun
-var FSN=['pistol','smg','shotgun','rifle','rocket','hshotgun','hrifle','laser','minigun','lshotgun','lminigun','crossbow','chickgun','blastbow','deathrow','firebow','lifesaver','bubblecannon'];
+var FSN=['pistol','smg','shotgun','rifle','rocket','hshotgun','hrifle','laser','minigun','lshotgun','lminigun','crossbow','chickgun','blastbow','deathrow','firebow','lifesaver','bubblecannon','firehose'];
 // ammo used per round: the Chicken Gun takes 2 rockets for every chicken (WP apr); reserves are counted in rounds
 function AMP(i){return WP[i]&&WP[i].apr>1?WP[i].apr:1}
+// rounds per unit of ammo the other way round: the Fire Hose gets WP rpu rounds of flame out of every rocket.
+// Its spare rounds (part of a rocket already used) are kept per gun in p.amx, so nothing is lost.
+function RPU(i){return WP[i]&&WP[i].rpu>1?Math.round(WP[i].rpu):1}
+// take k rounds' worth of ammo from the reserve / give k rounds back to it
+function amTake(p,i,k){const t=AMT[i],r=RPU(i);if(r<=1){p.am[t]-=k*AMP(i);return}p.amx=p.amx||{};const s=p.amx[i]||0,a=Math.min(s,k),n=Math.ceil((k-a)/r);p.am[t]-=n;p.amx[i]=s-a+n*r-(k-a)}
+function amGive(p,i,k){const t=AMT[i],r=RPU(i);if(r<=1){p.am[t]=Math.min(AMI[t].max,p.am[t]+k*AMP(i));return}p.amx=p.amx||{};const s=(p.amx[i]||0)+k;p.am[t]=Math.min(AMI[t].max,p.am[t]+Math.floor(s/r));p.amx[i]=s%r}
 // what each enemy type tends to drop
 var ZAM=['pa','pa','sh','ri','bl','pa','rk','bl','rk','sh','ri','ri','rk','sh','pa','rk','pa','ri','sh','ri','sh'];
 function AMG(i,ci){return CH[ci]&&CH[ci].dw&&i==0?MAG[0]*2:MAG[i]}
@@ -16,19 +22,19 @@ function amSt(p,i){return i===CH[p.ci||0].w}
 function amInit(p){try{if(AU.c)rlDecode(AU.c)}catch(e){}p.mg=WP.map((_,i)=>AMG(i,p.ci||0));p.am={};for(const t in AMI)p.am[t]=0;p.rl=0;p.paid={}}
 // a player from an older checkpoint has no slot for newer guns or ammo types yet
 function amFix(p){if(!p.mg)return amInit(p);for(let i=0;i<WP.length;i++)if(p.mg[i]==null)p.mg[i]=AMG(i,p.ci||0);if(!p.am)p.am={};for(const t in AMI)if(!(p.am[t]>=0))p.am[t]=0}
-function amRes(p,i){return amSt(p,i)?Infinity:(p.am?Math.floor((p.am[AMT[i]]||0)/AMP(i)):0)}
+function amRes(p,i){if(amSt(p,i))return Infinity;if(!p.am)return 0;const u=p.am[AMT[i]]||0,r=RPU(i);return r>1?u*r+((p.amx&&p.amx[i])||0):Math.floor(u/AMP(i))}
 // start a reload of the equipped gun
 function amRel(p,quiet){if(!p.mg)amInit(p);const i=p.cur,full=AMG(i,p.ci||0);if(p.rl>0||p.mg[i]>=full||amRes(p,i)<=0)return 0;p.rl=RLT[i]*(sPk(p,2)&&i==CH[2].w?.75:1)*(sPk(p,15)?.7:1);p.rlT=p.rl;p.rlw=i;const P0=P;P=p;sfx(RLS[i],p.x,p.y,MPn?.8:1);if(WP[i].lz)sfx('rllz',p.x,p.y,.35);P=P0;return 1}
-function amTick(p,dt){if(!p.mg)amInit(p);if(p.dry>0)p.dry-=dt;if(p.rl>0){if(p.rlw!==p.cur){p.rl=0;return}p.rl-=dt;if(p.rl<=0){const i=p.rlw,full=AMG(i,p.ci||0),need=full-p.mg[i];if(amSt(p,i))p.mg[i]=full;else{const t=AMT[i],k=Math.max(0,Math.min(need,amRes(p,i)));p.am[t]-=k*AMP(i);p.mg[i]+=k}p.rl=0}}}
+function amTick(p,dt){if(!p.mg)amInit(p);if(p.dry>0)p.dry-=dt;if(p.rl>0){if(p.rlw!==p.cur){p.rl=0;return}p.rl-=dt;if(p.rl<=0){const i=p.rlw,full=AMG(i,p.ci||0),need=full-p.mg[i];if(amSt(p,i))p.mg[i]=full;else{const k=Math.max(0,Math.min(need,amRes(p,i)));amTake(p,i,k);p.mg[i]+=k}p.rl=0}}}
 // called when the trigger is pulled and the gun is ready: true = a round goes out
 function amUse(p){if(!p.mg)amInit(p);const i=p.cur;if(p.rl>0)return 0;if(p.mg[i]>0){p.mg[i]--;if(p.mg[i]<=0&&amRes(p,i)>0)amRel(p);return 1}
 if(amRes(p,i)>0){amRel(p);return 0}
 // completely out: switch back to the starting gun
 if((p.dry||0)<=0){p.dry=.5;const P0=P;P=p;sfx('deny');FT.push({x:p.x,y:p.y-36,t:'OUT OF '+AMI[AMT[i]].s,c:'#ff8a6a',l:1.2});P=P0;const w=CH[p.ci||0].w;if(p.own.includes(w))p.cur=w}return 0}
-function amFill(p){if(!p.mg)amInit(p);p.rl=0;for(const i of p.own){const full=AMG(i,p.ci||0);if(amSt(p,i)){p.mg[i]=full;continue}const t=AMT[i],k=Math.min(full-p.mg[i],amRes(p,i));if(k>0){p.am[t]-=k*AMP(i);p.mg[i]+=k}}}
+function amFill(p){if(!p.mg)amInit(p);p.rl=0;for(const i of p.own){const full=AMG(i,p.ci||0);if(amSt(p,i)){p.mg[i]=full;continue}const k=Math.min(full-p.mg[i],amRes(p,i));if(k>0){amTake(p,i,k);p.mg[i]+=k}}}
 // --- shop actions ---
 function amBuy(t){amFix(P);const I=AMI[t],c=pc(I.cost);if(P.am[t]>=I.max||P.cash<c){sfx('deny');return shop()}P.cash-=c;P.am[t]=Math.min(I.max,P.am[t]+I.buy);sfx('rlsh',null,null,.8);shop()}
-function wSell(i){if(!P.own.includes(i)||amSt(P,i)){sfx('deny');return shop()}const v=wSV(P,i);P.cash+=v;P.own=P.own.filter(k=>k!==i);if(P.mg){P.am[AMT[i]]=Math.min(AMI[AMT[i]].max,P.am[AMT[i]]+P.mg[i]*AMP(i));P.mg[i]=0}if(P.cur==i)P.cur=CH[P.ci||0].w;sfx('coin');shop()}
+function wSell(i){if(!P.own.includes(i)||amSt(P,i)){sfx('deny');return shop()}const v=wSV(P,i);P.cash+=v;P.own=P.own.filter(k=>k!==i);if(P.mg){amGive(P,i,P.mg[i]);P.mg[i]=0}if(P.cur==i)P.cur=CH[P.ci||0].w;sfx('coin');shop()}
 function wSV(p,i){return Math.round((p.paid&&p.paid[i]!=null?p.paid[i]:pc(WP[i].cost,p))*.6)}
 function amTxt(p,i){if(!p.mg)amInit(p);return p.mg[i]+' / '+(amSt(p,i)?'∞':amRes(p,i))}
 // shop sections for one player (single-player shop)
@@ -81,7 +87,7 @@ let pk=0;for(let i=0;i<n;i++)pk=Math.max(pk,Math.abs(o[i]));const sc=pk>0?({lz:.
 var RLREC={pi:'data:audio/mpeg;base64,{{asset:sounds/reload-pistol.mp3}}',ar:'data:audio/mpeg;base64,{{asset:sounds/reload-rifle.mp3}}',gr:'data:audio/mpeg;base64,{{asset:sounds/reload-heavy.mp3}}',sg:'data:audio/mpeg;base64,{{asset:sounds/reload-shotgun.mp3}}'},RLRU={pi:['pi',1.08,.36],sm:['pi',1.035,.36],ri:['ar',1.06,.4],sh:['sg',.95,.55],rk:['ar',.65,.47],bl:['gr',.55,.48]};
 function rlDecode(c){if(!c||!c.decodeAudioData||(AU.rdc===c))return;AU.rdc=c;AU.rd={};for(const k in RLREC){try{const s=atob(RLREC[k].split(',')[1]),u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);const ok=b=>{AU.rd[k]=b},p=c.decodeAudioData(u.buffer,ok,()=>{});if(p&&p.then)p.then(ok).catch(()=>{})}catch(e){}}}
 function rlPlay(k,t,d){const c=AU.c;rlDecode(c);{const r=RLRU[k],b=r&&AU.rd&&AU.rdc===c&&AU.rd[r[0]];if(b){const s=c.createBufferSource(),g=c.createGain();s.buffer=b;s.playbackRate.value=r[1];g.gain.value=r[2];s.connect(g);g.connect(d);s.start(t);return b.duration/r[1]}}AU.rb=AU.rb||{};if(!AU.rb[k]||AU.rb[k].c!==c){const sr=c.sampleRate||44100,data=rlBuild(k,sr),b=c.createBuffer(1,data.length,sr);const ch=b.getChannelData(0);if(ch&&ch.set)ch.set(data);AU.rb[k]={c,b}}const s=c.createBufferSource();s.buffer=AU.rb[k].b;s.connect(d);s.start(t);return RLD[k]}
-var RLS=['rlpi','rlsm','rlsh','rlri','rlrk','rlsh','rlri','rlri','rlbl','rlsh','rlbl','rlxb','rlck','rlxb','rldr','rlxb','rlls','rlbc'];
+var RLS=['rlpi','rlsm','rlsh','rlri','rlrk','rlsh','rlri','rlri','rlbl','rlsh','rlbl','rlxb','rlck','rlxb','rldr','rlxb','rlls','rlbc','rlfh'];
 Object.assign(SF,{rlpi:(t,d)=>rlPlay('pi',t,d),rlsm:(t,d)=>rlPlay('sm',t,d),rlsh:(t,d)=>rlPlay('sh',t,d),rlri:(t,d)=>rlPlay('ri',t,d),rlrk:(t,d)=>rlPlay('rk',t,d),rlbl:(t,d)=>rlPlay('bl',t,d),rllz:(t,d)=>rlPlay('lz',t,d),rlxb:(t,d)=>rlPlay('xb',t,d),
 // Chicken Gun: the rocket reload with a rubber squeak as each chicken is stuffed in
 rlck:(t,d)=>{const l=rlPlay('rk',t,d);vox('square',820,560,t+.3,.16,.07,d,2600,22,40,.01);vox('square',760,1050,t+1.05,.18,.06,d,2600,22,40,.01);return l}});
