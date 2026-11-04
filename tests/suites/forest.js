@@ -1,8 +1,10 @@
 // The Enchanted Forest (map 10) converted to a map file (src/maps/forest.json) at the owner's request: at night, a misshapen oval
 // trail as wide as the cobbled road looping round the map (the road crosses it), short detours to the landmarks, the witch's cabin
 // rebuilt as a log cabin full of candles, the woods made solid (no getting stuck between trees), iron street lamps on the road,
-// lanterns along the trail (some smashed or knocked over), a car crash on the road with just the cars. Reach, campaign and the
-// Horseman, Free Play, the Workshop copy, the editor pieces; the City Park, which shared the old forest code.
+// lanterns along the trail (some smashed or knocked over), a car crash on the road with just the cars. Then the owner's picks
+// F1–F5 (a tree down across the road, a stream under a wooden bridge, a well at the ruins, fireflies, owls and howling), the cabin
+// a little bigger, the road paved asphalt with faded lines. Reach, campaign and the Horseman, Free Play, the Workshop copy, the
+// editor pieces; the City Park, which shared the old forest code.
 const ST={};global.LOG=[];const LOG=global.LOG;
 const fs=require('fs');const html=fs.readFileSync(process.argv[2],'utf8');
 const code=html.slice(html.lastIndexOf('<script>')+8,html.lastIndexOf('</script>'));
@@ -24,7 +26,7 @@ const tick=n=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();fo
 let fails=0,n=0;const ok=(c,m)=>{n++;if(c)console.log('PASS '+m);else{fails++;console.log('FAIL '+m)}};
 const rY=x=>1000+60*Math.sin(x/420)+20*Math.sin(x/160+1);
 const IN=(o,r)=>o.x>r[0]&&o.x<r[2]&&o.y>r[1]&&o.y<r[3];
-const CAB=[2290,90,2550,290],CRASH=[1900,840,2320,1060],ROADB=o=>Math.abs(o.y-rY(o.x))<90;
+const CAB=[2240,84,2570,330],CRASH=[1900,840,2320,1060],ROADB=o=>Math.abs(o.y-rY(o.x))<90;
 
 // ---------- the map file loads ----------
 const D=(()=>{const r=cmRead(JSON.stringify(BIMF[10]));ok(r.doc&&!r.errors.length&&!r.warnings.length,'forest.json loads with no errors or warnings '+(r.errors||[]).concat(r.warnings||[]).slice(0,3).join('; '));return r.doc})();
@@ -34,8 +36,9 @@ const D=(()=>{const r=cmRead(JSON.stringify(BIMF[10]));ok(r.doc&&!r.errors.lengt
  ok(!cmDoorBlocks(D).length,'no prop stands in a doorway')}
 const K=k=>D.obj.filter(o=>o.k==k),FX=k=>D.obj.filter(o=>o.fx==k),DC=k=>D.obj.filter(o=>o.dc==k),V=k=>D.obj.filter(o=>o.veh==k),PA=k=>D.paths.filter(p=>p.p==k),WS=s=>D.walls.filter(w=>w.s==s);
 // ---------- the loop: a misshapen oval as wide as the road, crossing it twice ----------
-const ROAD=PA('cobble'),TR=PA('trail'),LOOP=TR.filter(p=>p.w>=120),SPUR=TR.filter(p=>p.w<120);
-{const R=ROAD[0];ok(ROAD.length==1&&R.w==120,'the old cobbled road runs across the forest, 120 px wide');
+const ROAD=PA('road'),TR=PA('trail'),LOOP=TR.filter(p=>p.w>=120),SPUR=TR.filter(p=>p.w<120);
+{const R=ROAD[0];ok(ROAD.length==1&&R.w==120&&!PA('cobble').length,'the old road runs across the forest, 120 px wide');
+ ok(R.o&&R.o.fade&&R.o.s=='worn'&&R.o.edge&&R.o.cl=='dash'&&!R.o.curb&&CMPAI.road.opts.some(q=>q[0]=='fade'),'it is paved: worn asphalt, a dashed yellow centre line and white edge lines, all faded');
  ok(LOOP.length==2&&LOOP.every(p=>p.w==R.w),'the trail is two halves of one loop, each as wide as the road ('+LOOP.map(p=>p.w).join(', ')+')');
  const E=LOOP.map(p=>{const P=cmPathRaw(p);return[P[0],P[P.length-1]]}),same=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1])<2,onRoad=q=>Math.abs(q[1]-rY(q[0]))<4;
  ok(same(E[0][1],E[1][0])&&same(E[1][1],E[0][0])&&E.every(e=>e.every(onRoad)),'the halves meet on the road at both ends: a closed loop');
@@ -48,7 +51,7 @@ const ROAD=PA('cobble'),TR=PA('trail'),LOOP=TR.filter(p=>p.w>=120),SPUR=TR.filte
  const LP=LOOP.map(cmPathSm),near=(q,P,d)=>P.some(r=>Math.hypot(r[0]-q[0],r[1]-q[1])<d),pl=SPUR.map(p=>cmPathRaw(p));
  ok(pl.every(P=>near(P[0],LP[0].concat(LP[1]),60)||Math.abs(P[0][1]-rY(P[0][0]))<6),'each one leaves the trail or the road');
  ok(pl.every(P=>{let s=0;for(let i=1;i<P.length;i++)s+=Math.hypot(P[i][0]-P[i-1][0],P[i][1]-P[i-1][1]);return s<320}),'and is short');
- const LM={cabin:K('logcorner')[0],circle:K('cauld').find(o=>!IN(o,CAB)),ruins:K('bench')[0],pumpkin:K('scare').find(o=>!IN(o,[2200,0,2624,400])),grave:K('g_cross')[0],camp:K('campring')[0]};
+ const LM={cabin:K('logcorner').sort((a,b)=>b.y-a.y)[0],circle:K('cauld').find(o=>!IN(o,CAB)),ruins:K('bench')[0],pumpkin:K('scare').find(o=>!IN(o,[2200,0,2624,400])),grave:K('g_cross')[0],camp:K('campring')[0]};
  const miss=Object.keys(LM).filter(k=>!LM[k]||!pl.some(P=>{const q=P[P.length-1];return Math.hypot(q[0]-LM[k].x,q[1]-LM[k].y)<300}));ok(!miss.length,'each one ends at a landmark: the cabin, the stone circle, the ruins, the pumpkin patch, the graveyard, the campsite '+miss.join(','));
  ok(PA('mosspatch').length>=6,'each landmark has its clearing')}
 // ---------- the woods are solid ----------
@@ -60,15 +63,16 @@ const WD=PA('woods');
  const out=T.filter(o=>!WP.some(P=>cmPolyIn(P,o.x,o.y)));ok(out.length<=3,'every tree stands in the woods ('+out.length+' outside)');
  ok(OB.eoak.c&&OB.eoak.cf==2&&OB.epine.c,'a tree on its own (in the editor) still blocks at its trunk')}
 // ---------- the witch's log cabin ----------
-{const L=WS('logs').filter(w=>IN({x:w.x+w.w/2,y:w.y+w.h/2},CAB)),DR=cmDoors(D).filter(q=>q.hz?Math.abs(q.c-96)<8||Math.abs(q.c-272)<8:Math.abs(q.c-2300)<8||Math.abs(q.c-2540)<8);
+{const L=WS('logs').filter(w=>IN({x:w.x+w.w/2,y:w.y+w.h/2},CAB)),DR=cmDoors(D).filter(q=>q.hz?Math.abs(q.c-92)<8||Math.abs(q.c-316)<8:Math.abs(q.c-2250)<8||Math.abs(q.c-2560)<8);
+ const FLR=D.areas.find(a=>a.a=='floor'&&IN({x:a.x+a.w/2,y:a.y+a.h/2},CAB));ok(FLR&&FLR.w>=300&&FLR.h>=220,'the cabin is a little bigger: '+(FLR&&FLR.w)+'×'+(FLR&&FLR.h)+' px (it was 240×176)');
  ok(L.length>=8&&L.every(w=>Math.min(w.w,w.h)==12)&&K('logcorner').filter(o=>IN(o,CAB)).length==4,'log walls with notched log ends at the corners');
  ok(DR.length==2,'two ways in: the front door off the porch and a back door ('+DR.length+')');
  ok(WS('window').filter(w=>IN({x:w.x+w.w/2,y:w.y+w.h/2},CAB)).length>=3&&DC('lightpatch').filter(o=>IN(o,[2260,40,2600,320])).length>=3,'lit windows, their light spilling outside');
  const C=K('candle').filter(o=>IN(o,CAB)),CD=K('cdl').filter(o=>IN(o,CAB)),LT=cmLightSrc(D).filter(s=>IN(s,CAB)&&s.f=='flk');
  ok(C.length>=7&&CD.length==2&&LT.length>=9,'candles everywhere inside: '+C.length+' candles, two candlesticks, '+LT.length+' flickering lights');
- ok(K('chimney').some(o=>o.x>2540&&IN(o,[2540,90,2600,280]))&&FX('smoke').some(o=>o.x>2550&&o.y<200)&&K('fplace').some(o=>IN(o,CAB)),'a stone chimney on the east wall, smoke from it, the hearth inside');
+ ok(K('chimney').some(o=>o.x>2560&&IN(o,[2560,90,2620,300]))&&FX('smoke').some(o=>o.x>2570&&o.y<200)&&K('fplace').some(o=>IN(o,CAB)),'a stone chimney on the east wall, smoke from it, the hearth inside');
  ok(K('cauld').some(o=>IN(o,CAB))&&DC('ritual').some(o=>IN(o,CAB))&&K('potshelf').some(o=>IN(o,CAB))&&K('bookshelf').some(o=>IN(o,CAB))&&K('bed').some(o=>IN(o,CAB)),'the cauldron on its circle, potions, books, a bed');
- ok(D.areas.some(a=>a.a=='porch'&&a.y>=270)&&D.areas.some(a=>a.a=='floor'&&a.x==2300&&a.o&&a.o.in),'a porch out front; the floor counts as indoors (for the bosses)')}
+ ok(D.areas.some(a=>a.a=='porch'&&a.y>=270)&&D.areas.some(a=>a.a=='floor'&&a.x==2250&&a.o&&a.o.in),'a porch out front; the floor counts as indoors (for the bosses)')}
 // ---------- lights: street lamps on the road, lanterns along the trail ----------
 {const G=K('gaslamp').concat(K('gaslampf'));ok(G.length>=8&&G.every(o=>Math.abs(o.y-rY(o.x))<80&&Math.abs(o.y-rY(o.x))>60),'iron street lamps along both sides of the road ('+G.length+')');
  const LS=cmLightSrc(D);ok(LS.some(s=>s.f=='fault'&&Math.abs(s.y+82-rY(s.x))<90),'one of them is failing');
@@ -84,17 +88,33 @@ const WD=PA('woods');
  const S=C.find(o=>o.veh=='sedan');ok(S.y<rY(S.x)-30&&D.obj.some(o=>o.k=='eoak'&&Math.hypot(o.x-S.x,o.y-S.y)<60),'the sedan went off the road into a tree');
  ok(PA('skid').filter(p=>{const q=cmPathRaw(p)[0];return IN({x:q[0],y:q[1]},[1700,900,2200,1080])}).length>=2&&DC('glass').filter(o=>IN(o,CRASH)).length>=3&&DC('debris').filter(o=>IN(o,CRASH)).length>=2&&DC('oil').some(o=>IN(o,CRASH)),'skid marks, broken glass, debris, an oil slick');
  ok(FX('hazard').filter(o=>IN(o,CRASH)).length==2&&FX('headlights').filter(o=>IN(o,CRASH)).length==2&&FX('smoke').some(o=>IN(o,CRASH)),'hazards still blinking, headlights on, smoke from the hood')}
+// ---------- F1: a tree down across the road ----------
+{const T=K('efall')[0];ok(T&&T.y>rY(T.x)-30&&T.y<rY(T.x)&&T.x>400&&T.x<900&&OB.efall.c&&cmFoot(T)[1]<rY(T.x)-120,'F1 an oak lies across the road: its roots in the north woods, the trunk over the north lane, the crown in the middle');
+ ok(WS('hidden').some(w=>Math.abs(w.x+w.w/2-T.x)<10&&w.y+w.h<=T.y+2&&w.y+w.h>=T.y-10),'its crown blocks too (a hidden wall over its spread)')}
+// ---------- F2: a stream under a wooden bridge ----------
+const STR=PA('stream')[0],BRG=D.areas.find(a=>a.a=='bridge');
+{const LP=LOOP.map(cmPathSm),P=cmPathSm(STR),hits=LP.reduce((n,L)=>n+L.filter(q=>P.some(r=>Math.hypot(r[0]-q[0],r[1]-q[1])<20)).length,0);
+ ok(STR&&STR.w>=40&&hits>0&&BRG&&LP.some(L=>L.some(q=>IN({x:q[0],y:q[1]},[BRG.x,BRG.y,BRG.x+BRG.w,BRG.y+BRG.h]))),'F2 a stream crosses the loop, a wooden bridge over it where the trail goes');
+ ok(BRG.h<120&&BRG.h>=64,'the bridge is narrower than the trail ('+BRG.h+' px): a squeeze');
+ ok(K('lampost').filter(o=>Math.hypot(o.x-(BRG.x+BRG.w/2),o.y-(BRG.y+BRG.h/2))<110).length==2&&FX('fireflies').filter(o=>Math.hypot(o.x-(BRG.x+BRG.w/2),o.y-(BRG.y+BRG.h/2))<130).length>=1,'a lantern at each end, fireflies over the water')}
+// ---------- F4, F5: fireflies, owls, wolves ----------
+{const FF=FX('fireflies'),LS=cmLightSrc(D);ok(FF.length>=7&&FF.every(o=>LS.some(s=>s.f=='glow'&&s.ng&&Math.hypot(s.x-o.x,s.y-o.y)<20)),'F4 '+FF.length+' swarms of fireflies over the clearings, each lighting them faintly');
+ const OW=FX('owl'),WP=PA('woods').map(cmPathSm);ok(OW.length>=5&&OW.every(o=>WP.some(P=>cmPolyIn(P,o.x,o.y))),'F5 '+OW.length+' owls up in the trees');ok(FX('howl').length==1,'and wolves howling far off');
+ const sv_=sfx,m0=mode;let h={};sfx=function(k){h[k]=(h[k]||0)+1};try{mode='play';const o=OW[0],w=FX('howl')[0];for(let t=1;t<200;t+=.1){CMFXI.owl.top(o,t);CMFXI.howl.top(w,t)}}finally{sfx=sv_;mode=m0}
+ ok(h.owl>=10&&h.owl<=20&&h.howl>=2&&h.howl<=6,'an owl hoots every 10–18 s ('+h.owl+' in 200 s), the wolves howl every 35–70 s ('+h.howl+')');
+ ok(typeof SF.owl=='function'&&typeof SF.howl=='function','the hoot and the howl are real sounds')}
 // ---------- the rest of the landmarks ----------
 {const SC=K('stonec');ok(SC.filter(o=>IN(o,[1640,520,1940,800])).length==7&&FX('glow').some(o=>IN(o,[1700,560,1880,740])),'the witch stone circle: seven stones round a bubbling cauldron');
  ok(K('jack').filter(o=>IN(o,[1040,1240,1440,1520])).length>=12&&K('scare').some(o=>IN(o,[1040,1240,1440,1520])),'the pumpkin patch and its scarecrow');
  ok(D.obj.filter(o=>/^g_/.test(o.k||'')&&IN(o,[0,1600,420,2016])).length==9&&FX('hands').length==1,'a little graveyard, a hand clawing out of a grave');
  ok(K('tent').length==2&&FX('fire').some(o=>IN(o,[2250,1650,2624,2016]))&&K('campring').length==1,'an abandoned campsite, its fire still burning');
  ok(SC.filter(o=>IN(o,[0,100,420,440])).length==4&&K('bench').length==1,'the old ruins with their bench');
+ ok(K('well').some(o=>IN(o,[40,100,380,220]))&&FX('glow').some(o=>IN(o,[40,100,380,220])),'F3 the old stone well at the ruins, something glowing down it')
  ok(K('wagon').length==1&&K('xsign').some(o=>o.tx=='MANSION|CITY'&&ROADB(o)),'the old wagon by the road, the crossroads sign: MANSION one way, CITY the other')}
 // ---------- the game builds it ----------
 mapId=10;S.mp=10;setGM('f');build();
 ok(HS.CM==='builtin-forest'&&WW==2624&&WH==2016&&BG.width==WW,'map 10 builds from forest.json through the custom-map loader');
-ok(MP[10].n=='Enchanted Forest'&&MUN[10]===11&&HS.LT&&HS.LT.t=='night'&&HS.HO&&HS.HO.some(h=>h.x==2300),'map number 10 keeps its name and the Horseman; night; the cabin counts as indoors');
+ok(MP[10].n=='Enchanted Forest'&&MUN[10]===11&&HS.LT&&HS.LT.t=='night'&&HS.HO&&HS.HO.some(h=>h.x==2250),'map number 10 keeps its name and the Horseman; night; the cabin counts as indoors');
 // ---------- reach: no pockets, the loop all the way round, round the crash ----------
 {const F=new Int16Array(gw*gh);bfs(F,HS.px,HS.py);const cell=(x,y)=>Math.floor(y/gs)*gw+Math.floor(x/gs);
  let pk=0;for(let k=0;k<gw*gh;k++)if(!bl[k]&&F[k]<0)pk++;ok(!pk,'no pockets: every open spot can be reached ('+pk+' cells cannot)');
@@ -104,6 +124,11 @@ ok(MP[10].n=='Enchanted Forest'&&MUN[10]===11&&HS.LT&&HS.LT.t=='night'&&HS.HO&&H
  const S0=new Uint8Array(gw*gh),q=[];for(let j=0;j<gh;j++){const k=j*gw+Math.floor(1800/gs);const y=j*gs+gs/2;if(Math.abs(y-rY(1800))<56&&!bl[k]){S0[k]=1;q.push(k)}}
  while(q.length){const k=q.pop(),i=k%gw,j=(k/gw)|0;for(const[a,b]of[[1,0],[-1,0],[0,1],[0,-1]]){const ii=i+a,jj=j+b;if(ii<0||jj<0||ii>=gw||jj>=gh)continue;const kk=jj*gw+ii,x=ii*gs+gs/2,y=jj*gs+gs/2;if(S0[kk]||bl[kk]||x<1800||x>2420||Math.abs(y-rY(x))>60)continue;S0[kk]=1;q.push(kk)}}
  let thru=0;for(let j=0;j<gh;j++)if(S0[j*gw+Math.floor(2400/gs)])thru++;ok(thru>=2,'you can get past the crash on the road ('+thru+' lanes open on the far side)');
+ const road=(xa,xb)=>{const S1=new Uint8Array(gw*gh),q=[];for(let j=0;j<gh;j++){const k=j*gw+Math.floor(xa/gs),y=j*gs+gs/2;if(Math.abs(y-rY(xa))<56&&!bl[k]){S1[k]=1;q.push(k)}}
+  while(q.length){const k=q.pop(),i=k%gw,j=(k/gw)|0;for(const[a,b]of[[1,0],[-1,0],[0,1],[0,-1]]){const ii=i+a,jj=j+b;if(ii<0||jj<0||ii>=gw||jj>=gh)continue;const kk=jj*gw+ii,x=ii*gs+gs/2,y=jj*gs+gs/2;if(S1[kk]||bl[kk]||x<xa||x>xb+gs||Math.abs(y-rY(x))>60)continue;S1[kk]=1;q.push(kk)}}
+  let n=0,m=0;for(let j=0;j<gh;j++){const y=j*gs+gs/2,x=Math.floor(xb/gs)*gs+gs/2;if(Math.abs(y-rY(x))<56){m++;if(S1[j*gw+Math.floor(xb/gs)])n++}}return[n,m]};
+ {const T=K('efall')[0],[n,m]=road(T.x-120,T.x+120);let blk=0;for(let y=rY(T.x)-56;y<rY(T.x)-8;y+=8)if(bl[cell(T.x,y)])blk++;ok(n>=2&&blk>=5,'the fallen tree blocks the north lane and you can get by in the south lane ('+n+' of '+m+' lanes through)')}
+ {const B=BRG,y0=B.y+B.h/2,P=cmPathSm(STR);let wet=0,dry=0;for(const q of P){if(q[1]<B.y-60||q[1]>B.y+B.h+60)continue;const k=cell(q[0],q[1]);if(IN({x:q[0],y:q[1]},[B.x,B.y,B.x+B.w,B.y+B.h])){if(!bl[k]&&F[k]>=0)dry++}else if(bl[k])wet++}ok(dry>=3&&wet>=4,'the stream stops people except on the bridge ('+dry+' bridge spots open, '+wet+' stream spots blocked)')}
  const SP=HS.CZ&&HS.CZ.p||[];ok(SP.length>=30&&SP.every(p=>!bl[cell(p[0],p[1])]&&F[cell(p[0],p[1])]>=0),'zombies come out along the trail, the detours and the road ('+SP.length+' places, all open)')}
 // ---------- campaign: waves and the Horseman ----------
 const A=S.ac;const RNG=new Set([11,19]);
@@ -122,10 +147,12 @@ A.un=[0,MUN[0],MUN[3],MUN[1],MUN[14],MUN[15],MUN[8],MUN[2],MUN[9]];A.tut=1;A.bm=
 setGM('f');mapId=10;S.mp=10;start();{const R=play(1,1,4000);ok(!R.err&&wave>=1,'a Free Play run plays '+R.err);if(mode!='play')nextWave();const row=olRow();ok(row&&row.map===10&&row.mode=='f','the leaderboard board is still map 10');over(1)}
 {const h=wsBuiltins();ok(h.includes('wsBuiltin(10,1)')&&h.includes('Enchanted Forest'),'the Workshop lists the Enchanted Forest under Built-in maps')}
 await wsBuiltin(10,0);{const e=CML.find(q=>q.doc&&q.doc.name=='Enchanted Forest (my copy)'),D2=bimDoc(10);ok(e&&e.doc.obj.length==D2.obj.length&&e.doc.paths.length==D2.paths.length,'EDIT A COPY makes your own copy with every piece')}
-{const NK=['eoak','eoakv','epine','gshroom','gshroomv','gaslamp','gaslampf','lampost','lampostd','lampostx','xsign','chimney','potshelf','logcorner'];ok(NK.every(k=>OB[k]&&EDPN[k])&&CMPAI.woods&&CMWI.logs,'the forest pieces are all in the editor: the trees, glowing mushrooms, iron lamps, lantern posts, the signpost, the cabin pieces, dense woods, log walls');
+{const NK=['eoak','eoakv','epine','gshroom','gshroomv','gaslamp','gaslampf','lampost','lampostd','lampostx','xsign','chimney','potshelf','logcorner','efall'];ok(NK.every(k=>OB[k]&&EDPN[k])&&CMPAI.woods&&CMWI.logs&&CMFXI.fireflies&&CMFXI.owl&&CMFXI.howl,'the forest pieces are all in the editor: the trees, glowing mushrooms, iron lamps, lantern posts, the signpost, the cabin pieces, dense woods, log walls');
  const g=document.createElement('canvas').getContext('2d');let err='';for(const k of NK)try{for(const v of[0,.13,.29])OB[k].f(g,100,100,v,'','A|B')}catch(e){err+=k+': '+e.message+' '}
  try{CMWI.logs.f(g,0,0,100,12,'');CMWI.logs.f(g,0,0,12,100,'#5a3a22');CMPAI.woods.f(g,[[0,0],[200,0],[200,150],[0,150]],{x:0,y:0,w:0})}catch(e){err+='woods/logs: '+e.message}
- for(const k of[0,1,2,3,4])try{efSpr(k,20,.5)}catch(e){err+='tree '+k+': '+e.message}ok(!err,'every piece draws '+err);
+ for(const k of[0,1,2,3,4])try{efSpr(k,20,.5)}catch(e){err+='tree '+k+': '+e.message}
+ for(const k of['fireflies','owl'])try{CMFXI[k].top({x:100,y:100},1);CMFXI[k].ed(g,{x:100,y:100})}catch(e){err+=k+': '+e.message}
+ try{CMPAI.road.f(g,[[0,50],[300,60]],{x:0,y:0,w:120,o:{fade:1,edge:1,s:'worn'}})}catch(e){err+='road: '+e.message}ok(!err,'every piece draws '+err);
  ok(typeof mapForest=='undefined'&&typeof fsCan=='undefined'&&typeof fsAnim=='undefined'&&typeof fsSpr=='undefined'&&typeof fsZones=='undefined','the old forest map code is gone')}
 // ---------- the City Park (which shared the old forest code for its trees) still works ----------
 mapId=12;S.mp=12;build();{let err='';try{pkAnim();pkCan()}catch(e){err=e.message}ok(!err&&HS.FS&&HS.FS.cells.some(c=>c&&c.length),'the City Park builds and draws its trees over people '+err)}

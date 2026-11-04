@@ -1,4 +1,4 @@
-//# maps/props/kit-forest.js — Kit props for the Enchanted Forest: its teal and violet oaks and black pines (shared canopy pictures), lanterns on posts along the paths (lit, broken, knocked over), the crossroads signpost, a stone chimney, a shelf of glowing potions, log-cabin corners
+//# maps/props/kit-forest.js — Kit props for the Enchanted Forest: its teal and violet oaks and black pines (shared canopy pictures), lanterns on posts along the paths (lit, broken, knocked over), the crossroads signpost, a stone chimney, a shelf of glowing potions, log-cabin corners, an oak fallen across a road
 // ---------- the Enchanted Forest's pieces ----------
 // the forest's tree tops: twisted teal oaks (k 0), violet oaks (k 1) and black pines (k 2); the City Park's green oaks (k 3, 4);
 // one picture per kind, size and shade
@@ -40,5 +40,13 @@ potshelf:Object.assign(ob(64,48,[60,12],q=>{R_(q,EF.o,2,2,60,46);R_(q,'#4a3424',
 // gshroom: a cluster of glowing mushrooms giving off a faint steady light (cyan; gshroomv violet). Walk over them.
 gshroom:Object.assign(ob(22,14,0,q=>efShroom(q,['#6ae8c8','#b8fff0','#2a8a8a'])),{nr:1,lt:[{dx:0,dy:-6,r:42,i:.75,c:'#8ae8ff',ng:1}]}),
 gshroomv:Object.assign(ob(22,14,0,q=>efShroom(q,['#b48aff','#e8d8ff','#5a3a9a'])),{nr:1,lt:[{dx:0,dy:-6,r:42,i:.75,c:'#c89aff',ng:1}]}),
+// efall: an enchanted oak that came down across a road: the torn-up root plate at the top (stand it at the woods' edge), the trunk
+// across the road, the crown at its foot. The trunk blocks; put a hidden wall over the crown's spread (80×40, just above its foot).
+efall:{w:120,h:210,c:[30,150],f:(g,x,y,v)=>S2(g,x,y,120,210,q=>{q.fillStyle=EF.o;q.beginPath();q.ellipse(60,26,46,22,0,0,7);q.fill();q.fillStyle='#2a2016';q.beginPath();q.ellipse(60,26,44,20,0,0,7);q.fill();q.fillStyle='#3a2c1e';q.beginPath();q.ellipse(56,22,30,12,0,0,7);q.fill();
+ q.lineCap='round';for(const[w,c]of[[5,EF.o],[3,'#5a4030']])for(const[a,b,e,d]of[[18,16,40,26],[28,40,50,30],[100,18,76,26],[94,38,70,30],[60,4,60,18],[10,30,30,30]]){q.strokeStyle=c;q.lineWidth=w;q.beginPath();q.moveTo(a,b);q.lineTo(e,d);q.stroke()}
+ for(const[a,b]of[[34,22],[78,32],[50,40],[70,12]]){R_(q,'#4a3a2a',a,b,5,4)}
+ R_(q,EF.o,46,34,28,128);R_(q,'#3a2a22',47,34,26,128);R_(q,'#5a4434',49,34,5,128);R_(q,'#2a1e18',66,34,5,128);for(let y=48;y<152;y+=17)R_(q,'#2a1e18',52+(y%3)*4,y,7,2);R_(q,'#7a5a3a',56,90,8,10);R_(q,'#a8865a',58,92,4,6);
+ for(const[w,c]of[[8,EF.o],[5,'#3a2a22']])for(const[a,b,e,d]of[[56,120,22,150],[66,126,100,146],[58,150,32,188],[64,152,92,190],[60,150,60,196]]){q.strokeStyle=c;q.lineWidth=w;q.beginPath();q.moveTo(a,b);q.lineTo(e,d);q.stroke()}q.lineCap='butt';
+ for(const[a,b,r,k]of[[30,160,22,0],[90,160,22,1],[60,176,26,0],[26,190,16,1],[94,192,16,0],[60,198,12,1],[46,148,12,1],[76,148,12,0]]){q.fillStyle=EF.o;q.beginPath();q.arc(a,b,r+1,0,7);q.fill();q.fillStyle=k?'#2a4e48':'#1e3a36';q.beginPath();q.arc(a,b,r,0,7);q.fill();q.fillStyle='#3e6a62';q.beginPath();q.arc(a-r*.3,b-r*.3,r*.4,0,7);q.fill();q.fillStyle='rgba(8,6,10,.4)';q.fillRect(a-r*.4,b+r*.2,2,r*.5);q.fillRect(a+r*.2,b+r*.1,2,r*.5)}})},
 // logcorner: the notched log ends at a log cabin's corner (put one on each corner of `logs` walls)
 logcorner:{w:20,h:20,c:0,dk:1,f:(g,x,y,v)=>S2(g,x,y,20,20,q=>{for(const[a,b]of[[2,4],[2,12]]){R_(q,EF.o,a-2,b-1,22,7);R_(q,'#6a4a2c',a-1,b,20,5);R_(q,'#8a5f36',a-1,b,20,1)}for(const[a,b]of[[3,6],[11,6]]){q.fillStyle=EF.o;q.beginPath();q.arc(a+3,b+7,4,0,7);q.fill();q.fillStyle='#b88a58';q.beginPath();q.arc(a+3,b+7,3,0,7);q.fill();q.fillStyle='#8a5f36';q.fillRect(a+2,b+6,2,2)}})}});
