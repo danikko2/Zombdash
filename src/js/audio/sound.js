@@ -127,6 +127,7 @@ newz:(t,d)=>{[76,75,74,73].forEach((n,i)=>osc(P12,mf(n),0,t+.45+i*.07,.1,.09,d))
 clear:(t,d)=>{[[69,0],[72,.1],[76,.2],[81,.3]].forEach(([n,o])=>osc(P25,mf(n),0,t+o,.25,.14,d));osc('triangle',mf(57),0,t+.3,.6,.22,d);osc('triangle',mf(64),0,t+.3,.6,.15,d);return .9},
 over:(t,d)=>{[[69,0],[68,.22],[67,.44],[66,.66]].forEach(([n,o])=>osc(P25,mf(n),mf(n-1),t+o,.24,.15,d));osc('triangle',mf(42),mf(30),t+.88,1.2,.3,d,.01);return 2.1},
 thunder:(t,d)=>{noise(t,.35,.5,d,'lowpass',3200,380,.7,.01);noise(t+.04,2.8,.6,d,'lowpass',340,60,.8,.22);osc('sine',50,28,t+.05,2.4,.38,d,.2);noise(t+.8,2,.32,d,'lowpass',210,55,.7,.35);return 3.4},
+caw:(t,d)=>{for(let k=0;k<3;k++){const u=t+k*.16+Math.random()*.04;osc('sawtooth',560+Math.random()*80,380,u,.11,.09,d,.004);noise(u,.1,.12,d,'bandpass',1500,900,3)}return .55},
 blub:(t,d)=>{osc('sine',120,300,t,.1,.3,d);osc('sine',90,60,t+.08,.12,.22,d);noise(t+.07,.08,.14,d,'lowpass',700,180);return .22},
 weld:(t,d)=>{for(let i=0;i<12;i++)noise(t+i*.045+Math.random()*.02,.025,.05+Math.random()*.07,d,'highpass',2600+Math.random()*2400);osc('sawtooth',118,120,t,.55,.025,d,.02);return .6},
 pause:(t,d)=>{osc(P25,660,660,t,.06,.12,d);osc(P25,440,440,t+.07,.09,.12,d);return .17}};

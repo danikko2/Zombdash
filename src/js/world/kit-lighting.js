@@ -29,7 +29,9 @@ case'headlights':for(const k of[-1,1]){const p=cmLtTurn(o,38*s,k*11*s);L.push({x
 case'hazard':for(const dx of[-10,10]){const p=cmLtTurn(o,dx*s,0);L.push({x:p[0],y:p[1],r:34*s,c:'#ffa62a',i:.9,f:'blink',ph:cmR(o,0,64)})}break;
 case'siren':{const m=po(o,'m','police'),P=m=='police'?[['#ff2a2a',0],['#3a7aff',1]]:m=='amb'?[['#ff2a2a',2],['#ff2a2a',3]]:[['#ff2a2a',0],['#ffffff',4]];for(let k=0;k<2;k++){const p=cmLtTurn(o,(k?8:-8)*s,0);L.push({x:p[0],y:p[1],r:58*s,c:P[k][0],i:1,f:'siren',sd:P[k][1],ph:cmR(o,0,63)})}break}
 default:{const F=CMFXI[o.fx];if(F&&F.lts)F.lts(o,s,ph,L)}}continue}
-if(o.dc){if(o.dc=='lightpatch'){const s=cl(+o.sc||1,.25,4);L.push({x:o.x,y:o.y,r:34*s,c:cmCol(o.c,'#ffd27a'),i:.75})}continue}
+if(o.dc){if(o.dc=='lightpatch'){const s=cl(+o.sc||1,.25,4);L.push({x:o.x,y:o.y,r:34*s,c:cmCol(o.c,'#ffd27a'),i:.75})}
+// stained-glass light: soft coloured light, two panes' worth
+else if(o.dc=='stainedglass'){const s=cl(+o.sc||1,.25,4),C=['#ff5a5a','#5a8aff','#ffd84a','#5aff8a','#c85aff'],k=Math.floor((o.v||0)*5);for(const j of[0,1]){const p=cmLtTurn(o,(j?12:-12)*s,0);L.push({x:p[0],y:p[1],r:34*s,c:C[(k+j*2)%5],i:.55})}}continue}
 if(o.veh)continue;const P=CMLP[o.k];if(P){const p=cmLtTurn(o,P[0],P[1]);L.push({x:p[0],y:p[1],r:P[2],c:P[3],i:P[4],f:P[5],ph});continue}
 // light props (spot lights, flood lights…): each lamp head is a beam (w = half its width in degrees; 0 = all round) aimed the way the prop is turned
 const B=cmOB(o.k);if(B&&B.lt){const c=cmCol(o.c,B.pc?B.pc[0][0]:'#fff2c8');for(const h of B.lt){const p=B.nr?[o.x+h.dx,o.y+h.dy]:cmLtTurn(o,h.dx,h.dy),s={x:p[0],y:p[1],r:h.r,c:h.c||c,i:h.i||1,ph};if(h.f)s.f=h.f;if(h.gs)s.gs=h.gs;if(h.ng)s.ng=1;if(h.w){s.cw=h.w*Math.PI/180;s.ca=((o.r||0)+90+(h.a||0))*Math.PI/180;if(h.sw){s.f='sweep';s.ca0=s.ca;s.sa=h.sw*Math.PI/180}}L.push(s)}}}
