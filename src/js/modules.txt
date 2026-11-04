@@ -34,6 +34,7 @@ world/kit-highway.js
 world/kit-foundry.js
 world/kit-graveyard.js
 world/kit-forest.js
+world/kit-downtown.js
 world/map-store.js
 world/custom-maps.js
 ui/core-ui.js
@@ -75,7 +76,6 @@ campaign/life-lost.js
 maps/urban.js
 bosses/girl-horseman-mechanic.js
 maps/city-park.js
-maps/downtown.js
 bosses/ice-cream-and-fire-chief.js
 core/difficulty.js
 weapons/ammo-and-inventory.js
@@ -92,6 +92,7 @@ maps/props/kit-props.js
 maps/props/kit-foundry.js
 maps/props/kit-graveyard.js
 maps/props/kit-forest.js
+maps/props/kit-downtown.js
 bosses/penny-and-mayor.js
 bosses/ken.js
 system/phones-checkpoints-crashlog.js

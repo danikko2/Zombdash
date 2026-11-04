@@ -38,9 +38,10 @@ function fxTurn(G,o){if(o.r){G.translate(o.x,o.y);G.rotate(o.r*Math.PI/180);G.tr
 function cmFxBake(g,o){const T=cmFx(o.fx);if(!T||!T.bake)return;g.save();try{fxTurn(g,o);T.bake(g,o)}finally{g.restore()}}
 // the editor's still picture of an effect (its baked part, then a frame of the animation)
 function cmFxEd(g,o){const T=cmFx(o.fx);if(!T)return;g.save();try{fxTurn(g,o);if(T.bake)T.bake(g,o);if(T.ed)T.ed(g,o)}finally{g.restore()}}
-// the moving parts of a custom map, collected by cmBuild: HS.CX = {A: under people, T: over people, E: portrait eyes}
+// the moving parts of a custom map, collected by cmBuild: HS.CX = {A: under people (effects, and props with an animation an(o, t),
+// like the LED message sign), T: over people, E: portrait eyes}
 function cmFxData(d){const A=[],T=[],E=[],O=[];for(const o of d.obj){if(o.fx){const F=cmFx(o.fx);if(!F)continue;const it={o,f:F,r:fxR(o,F.r||30)+60};if(F.anim)A.push(it);if(F.top)T.push(it)}
-else if(o.k=='portrait'){const B=cmOB(o.k);if(B&&B.eyes)for(const e of B.eyes(o))E.push(e)}else if(!o.dc&&!o.veh){const B=cmOB(o.k);if(B&&B.ov)O.push({o,B,al:1})}}
+else if(o.k=='portrait'){const B=cmOB(o.k);if(B&&B.eyes)for(const e of B.eyes(o))E.push(e)}else if(!o.dc&&!o.veh){const B=cmOB(o.k);if(B&&B.ov)O.push({o,B,al:1});if(B&&B.an)A.push({o,f:{anim:B.an},r:Math.max(B.w,B.h)+60})}}
 for(const o of d.areas){const F=cmArea(o.a);if(!F)continue;const it={o,f:F,a:1,r:Math.hypot(o.w,o.h)/2+120};if(F.anim)A.push(it);if(F.top)T.push(it)}if(typeof kmTopItems=='function')T.push(...kmTopItems(d));return A.length||T.length||E.length||O.length?{A,T,E,O}:null}
 function fxVis(it){const o=it.o;if(it.a)return o.x<cam.x+W+60&&o.x+o.w>cam.x-60&&o.y<cam.y+H+60&&o.y+o.h>cam.y-60;return fxOn(o.x,o.y,it.r)}
 // under people (called next to the built-in maps' animations)

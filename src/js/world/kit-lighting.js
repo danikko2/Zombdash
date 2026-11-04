@@ -5,6 +5,7 @@
 // lit is how strongly the light sources show through at that time (none by day, fully at night).
 const CMLT=[
 {id:'day',n:'Day',d:'Bright midday sun; more adds warm sunlight.',mul:'#fff1d6',scr:'255,244,214',sa:.14,lit:0,def:.5},
+{id:'sunrise',n:'Sunrise',d:'The sun just up: low golden light, long cool shadows, the last lamps still on.',mul:'#e8b080',scr:'255,186,96',sa:.2,lit:.4,def:.6},
 {id:'morning',n:'Morning',d:'Soft, warm early light with a haze.',mul:'#e6c2ae',scr:'255,226,196',sa:.12,lit:.3,def:.6},
 {id:'dusk',n:'Dusk',d:'Orange-pink evening light.',mul:'#b0645a',lit:.8,def:.7},
 {id:'night',n:'Night',d:'Dark blue night.',mul:'#10173c',lit:1,def:.75}];
@@ -30,6 +31,7 @@ case'hazard':for(const dx of[-10,10]){const p=cmLtTurn(o,dx*s,0);L.push({x:p[0],
 case'siren':{const m=po(o,'m','police'),P=m=='police'?[['#ff2a2a',0],['#3a7aff',1]]:m=='amb'?[['#ff2a2a',2],['#ff2a2a',3]]:[['#ff2a2a',0],['#ffffff',4]];for(let k=0;k<2;k++){const p=cmLtTurn(o,(k?8:-8)*s,0);L.push({x:p[0],y:p[1],r:58*s,c:P[k][0],i:1,f:'siren',sd:P[k][1],ph:cmR(o,0,63)})}break}
 default:{const F=CMFXI[o.fx];if(F&&F.lts)F.lts(o,s,ph,L)}}continue}
 if(o.dc){if(o.dc=='lightpatch'){const s=cl(+o.sc||1,.25,4);L.push({x:o.x,y:o.y,r:34*s,c:cmCol(o.c,'#ffd27a'),i:.75})}
+if(o.dc=='sunbeam'){const s=cl(+o.sc||1,.25,4);L.push({x:o.x,y:o.y,r:52*s,c:cmCol(o.c,'#ffcf8a'),i:.7,ng:1})}
 // stained-glass light: soft coloured light, two panes' worth
 else if(o.dc=='stainedglass'){const s=cl(+o.sc||1,.25,4),C=['#ff5a5a','#5a8aff','#ffd84a','#5aff8a','#c85aff'],k=Math.floor((o.v||0)*5);for(const j of[0,1]){const p=cmLtTurn(o,(j?12:-12)*s,0);L.push({x:p[0],y:p[1],r:34*s,c:C[(k+j*2)%5],i:.55})}}continue}
 if(o.veh)continue;const P=CMLP[o.k];if(P){const p=cmLtTurn(o,P[0],P[1]);L.push({x:p[0],y:p[1],r:P[2],c:P[3],i:P[4],f:P[5],ph});continue}

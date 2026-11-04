@@ -80,7 +80,7 @@ ok(edPropsHTML().includes('data-f="r"'),'Editor: the properties panel shows Turn
 edPropChange('r',{value:'200'});ok(h.r==200,'Editor: type an effect\\'s turn in the properties panel');edClose(1)}
 
 // ---------- time of day ----------
-ok(same(CMLT.map(p=>p.id),['day','morning','dusk','night'])&&CMLT.every(p=>p.n&&p.d&&/^#[0-9a-f]{6}$/.test(p.mul)&&p.def>0&&p.def<=1),'Time of day: day, morning, dusk and night, each with a default amount');
+ok(same(CMLT.map(p=>p.id),['day','sunrise','morning','dusk','night'])&&CMLT.every(p=>p.n&&p.d&&/^#[0-9a-f]{6}$/.test(p.mul)&&p.def>0&&p.def<=1),'Time of day: day, sunrise, morning, dusk and night, each with a default amount');
 {const d=cmNew({name:'Night',w:30,h:20});d.lt={t:'night',a:.6};const j=cmWrite(d),r=RW(j);
 ok(same(j.lighting,{time:'night',amount:.6})&&r.doc&&same(r.doc.lt,{t:'night',a:.6})&&!r.warnings.length&&same(cmWrite(r.doc),j),'Time of day: saved in the file as "lighting" and loaded back');
 const off=cmWrite(cmNew({name:'Off',w:30,h:20}));ok(!('lighting' in off),'Time of day: maps without it have no "lighting"');
@@ -187,7 +187,7 @@ const r=run(w('a.json',j)),o=r.stdout;ok(r.status===0&&/options\\.z" is "99"/.te
   ok(cmLtStill({x:0,y:0,r:10})&&!cmLtStill({x:0,y:0,r:10,pl:1})&&!cmLtStill({x:0,y:0,r:10,f:'siren'}),'player lights, sirens, flickers and fires are never cached')}
  const src=FS.readFileSync(process.argv[2],'utf8');ok(src.includes('S=(K?K.dyn:T.L).slice();S.O=T.L.O')&&src.includes('L2.O=L.O'),'the game and the editor preview pass the walls on with the light list')}
 {const h=FS.readFileSync(process.argv[2],'utf8'),c={};for(const m of h.matchAll(/function ([A-Za-z_$][\\w$]*)\\s*\\(/g))c[m[1]]=(c[m[1]]||0)+1;const dup=Object.keys(c).filter(k=>c[k]>1).sort();
-ok(same(dup,['dtBox','tv']),'No function in the game is defined twice by accident (only the two old ones: '+dup.join(', ')+')')}
+ok(same(dup,['tv']),'No function in the game is defined twice by accident (only the old one: '+dup.join(', ')+')')}
 console.log('TOTAL fails '+fails+' of '+n);
 }
 `;

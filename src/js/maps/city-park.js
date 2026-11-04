@@ -114,7 +114,7 @@ for(const t of T){if(typeof document=='undefined'||!document.createElement)break
 HS.FS={C,cw,ch,cells};HS.PK={PD,D:[0,1,2,3,4,5].map(i=>({p:i%2,o:pkH(i,30)*6.283,s:.05+pkH(i,31)*.05}))}}
 function pkJets(){const o=[];for(let i=0;i<10;i++){const a=i/10*6.283;o.push([2130+Math.cos(a)*86,900+Math.sin(a)*86*.9])}for(let i=0;i<4;i++){const a=i/4*6.283+.4;o.push([2130+Math.cos(a)*44,900+Math.sin(a)*40])}return o}
 // splash pad jets, ducks on the ponds, plus vehicle-boss leftovers (under people)
-function pkAnim(){if(mapId===13)dtAnim();if(mapId===12||mapId===13||mapId===15)tkGround();if(mapId!==12||!HS.PK)return;const t=performance.now()/1000;
+function pkAnim(){if(mapId===12||mapId===13||mapId===15)tkGround();if(mapId!==12||!HS.PK)return;const t=performance.now()/1000;
 if(cam.x+W>1980&&cam.x<2280&&cam.y+H>740&&cam.y<1060){const J=pkJets();for(let i=0;i<J.length;i++){const[x,y]=J[i],h=18+14*Math.abs(Math.sin(t*1.6+i*.9));X.globalAlpha=.55;X.strokeStyle='#bfe8ff';X.lineWidth=3;X.beginPath();X.moveTo(x,y);X.quadraticCurveTo(x+(i%2?6:-6),y-h*1.6,x+(i%2?12:-12),y-2);X.stroke();X.globalAlpha=.8;X.fillStyle='#e8f8ff';for(let k=0;k<3;k++)X.fillRect(x+(i%2?1:-1)*(4+k*4)+Math.sin(t*9+k+i)*2,y-h+k*6+((t*40+i*7+k*5)%10),2,2)}X.globalAlpha=1;
 const dump=(t%7)<1.1;if(dump){X.globalAlpha=.6;X.fillStyle='#bfe8ff';X.fillRect(2106,790,16,90);X.globalAlpha=.35;X.beginPath();X.ellipse(2114,884,30,10,0,0,7);X.fill();X.globalAlpha=1}}
 for(const d of HS.PK.D){const p=HS.PK.PD[d.p],a=d.o+t*d.s,x=p.x+Math.cos(a)*p.rx*.55,y=p.y+Math.sin(a)*p.ry*.55;if(x<cam.x-30||x>cam.x+W+30||y<cam.y-30||y>cam.y+H+30)continue;const fl=Math.sin(a)<0?1:-1;
