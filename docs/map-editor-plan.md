@@ -117,7 +117,7 @@ The full wish list is the "Map Workshop" prompt the owner attaches. This file re
    - **Shipping:** converted maps are stored as `src/maps/*.json` and embedded by `tools/build.js`. The step 1 note says the loader is ready and the build needs to embed the files.
    - **Progress safety:** a converted map keeps its map number, campaign slot, boss, progress and leaderboard board, so players' progress is untouched.
    - **Small differences are allowed:** a converted map may look slightly different in painted details. The layout, walls, spawns and gameplay must match.
-   - **Converted:** the **Suburb** (map 0), Oct 24, 2026, the **Warehouse** (map 1), Oct 25, 2026, the **School** (map 3), Oct 26, 2026, **Hometown Market** (map 14), Oct 28, 2026, **Main Street** (map 15), **Deadway Highway** (map 8) and the **Haunted Mansion** (map 9), Nov 1, 2026, the **Graveyard** (map 2), Nov 4, 2026: see "Step 4 conversions" below.
+   - **Converted:** the **Suburb** (map 0), Oct 24, 2026, the **Warehouse** (map 1), Oct 25, 2026, the **School** (map 3), Oct 26, 2026, **Hometown Market** (map 14), Oct 28, 2026, **Main Street** (map 15), **Deadway Highway** (map 8) and the **Haunted Mansion** (map 9), Nov 1, 2026, the **Graveyard** (map 2) and the **Enchanted Forest** (map 10), Nov 4, 2026: see "Step 4 conversions" below.
 5. **Step 5:** gameplay pieces the owner picks (loot crates, doors, traps…).
 
 ## Building kit (done Oct 23, 2026)
@@ -367,6 +367,15 @@ No prop may block a doorway. `cmDoorBlocks` finds props and vehicles within 24 p
 - **Barriers across gaps:** on a road map a jersey barrier lying across a median gap, or a crashed car in a guard-rail gap, can seal off a whole carriageway or verge; run the reach check (`bfs` from the start) and leave a lane-wide gap clear in front of and behind every opening.
 - **A map with woods along an edge:** cover them with no-spawn zones (`skip` on); a zone touching the edge covers the strip just outside it too.
 
+### Enchanted Forest (map 10): converted and redesigned Nov 4, 2026 (owner's request)
+- **The file:** `src/maps/forest.json` (82×63 tiles of `forest` floor; night 0.85; about 1,900 trees, 190 other props, 3 wrecked cars, 140 decals, 30 effects, 4 `woods` shapes). Made by a generator script (scratchpad): the open ground (road, loop, detours, clearings) is laid out first, everything else becomes woods (traced into outlines), and trees are planted on a jittered 40 px grid inside the woods, 15 px or more from the edge.
+- **Asked for:** the trail as a misshapen oval round the map so players can run a loop, as wide as the cobbled road (120 px; the road still crosses it east to west), with little detours (90 px) to the side landmarks; the witch's cabin as a log cabin with candles in it; the woods solid so nobody passes through or gets stuck in them; street lights on the road; lanterns along the trail, some knocked over and broken; a car crash on the road with no emergency vehicles; at night.
+- **The landmarks:** the witch's log cabin (NE: log walls with notched corners, a front door off the porch and a back door, lit windows, a stone chimney over the hearth, the cauldron on a ritual circle ringed with candles, candlesticks, potions, books, a bed), her stone circle, the old ruins, the pumpkin patch (its detour leaves the road), a little graveyard with a hand clawing out of a grave, an abandoned campsite with its fire still burning, the old wagon in a pull-off by the road, the MANSION | CITY signpost.
+- **The crash:** a sedan off the road into a tree (smoke from the hood, headlights into the woods), a pickup spun round in the south lane with its headlights on, a hatchback that ran into it (hazards blinking); skid marks, glass, debris, oil. The north lane stays open past it.
+- **Lights:** nine iron street lamps along the road (the one by the crash failing), 29 lantern posts along the trail (19 lit and flickering, 6 smashed, 4 knocked flat), 60 clusters of glowing mushrooms (a steady light each, drawn once with the map's still lights, so they cost nothing per frame), candles, wisps, faint green fog.
+- **New kit pieces:** the props in `maps/props/kit-forest.js`, the `woods` shape and the `logs` wall style (`world/kit-forest.js`). `maps/enchanted-forest.js` is gone; the City Park, which used its tree pictures and canopy pass, now uses `efSpr` and its own `pkCR` / `pkCan`.
+- **Checks:** `tests/suites/forest.js` (68 checks): the loop closed and as wide as the road, the detours, the woods solid with every tree in them, no pockets, the loop runnable all the way round, the road passable past the crash, the cabin, the lights, the crash with no emergency vehicles, campaign waves 1–3, 19 and the Horseman, Free Play, the Workshop copy, every piece draws, the City Park.
+
 ## What each map still needs before converting
 Everything else on each map can be built with the kit; the conversion still has to be laid out, compared side by side and playtested (walls, zombie paths, spawns, its survivor boss).
 
@@ -382,7 +391,7 @@ Everything else on each map can be built with the kit; the conversion still has 
 | Campground | Nothing new. |
 | Deadway Highway | **Converted (Nov 1, 2026), at dusk.** |
 | Haunted Mansion | **Converted and redesigned (Nov 1, 2026), at night.** |
-| Enchanted Forest | The canopy layer that hides players (`HS.FS`): the Suburb showed walk-behind trees work (shared canopy pictures, `kpWB`); its trees need their own kit tree props in the forest's colours. |
+| Enchanted Forest | **Converted and redesigned (Nov 4, 2026), at night.** |
 | Urban Outskirts | Nothing new. |
 | City Park | Nothing new (road graph for the Ice Cream Man; splash pad, ponds, ducks). |
 | Downtown | Second spawn list as spawn points; lobbies with the Room tool next to tower roofs; street trees `stree`. |

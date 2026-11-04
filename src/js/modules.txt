@@ -33,6 +33,7 @@ world/kit-mainst.js
 world/kit-highway.js
 world/kit-foundry.js
 world/kit-graveyard.js
+world/kit-forest.js
 world/map-store.js
 world/custom-maps.js
 ui/core-ui.js
@@ -71,7 +72,6 @@ bosses/officer-ray.js
 campaign/wave-replay.js
 tutorial/tutorial.js
 campaign/life-lost.js
-maps/enchanted-forest.js
 maps/urban.js
 bosses/girl-horseman-mechanic.js
 maps/city-park.js
@@ -91,6 +91,7 @@ maps/props/forest-props.js
 maps/props/kit-props.js
 maps/props/kit-foundry.js
 maps/props/kit-graveyard.js
+maps/props/kit-forest.js
 bosses/penny-and-mayor.js
 bosses/ken.js
 system/phones-checkpoints-crashlog.js

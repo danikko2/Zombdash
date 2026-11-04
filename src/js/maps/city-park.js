@@ -26,7 +26,7 @@ const TRc=[ell(PD[0],350,250,16),ell(PD[1],440,290,18),
 [[1350,1098],[1330,1250],[1250,1420],[1210,1560]],[[1050,1570],[1110,1600],[1150,1640]],[[1270,1640],[1320,1600],[1370,1580]],[[1210,1700],[1240,1820],[1300,1928]],
 [[700,960],[730,1100],[720,1230],[700,1320]],[[1900,1080],[1880,1200],[1830,1290]],[[330,1000],[520,940],[700,980],[950,950],[1100,990],[1200,960]],[[990,822],[980,900],[950,950]],[[2250,1580],[2300,1580]],[[350,1570],[312,1560]],
 [[1510,700],[1540,700]],[[320,240],[700,260],[1100,230],[1500,250],[1900,235],[2280,250]],[[2440,400],[2460,800],[2430,1300],[2460,1800]],[[140,400],[120,900],[150,1400],[120,1900]]];
-const TR=TRc.map(p=>fsCR(p,10)),trD=(x,y)=>{let d=1e9;for(const p of TR)for(const q of p){const h=Math.hypot(q[0]-x,q[1]-y);if(h<d)d=h}return d};
+const TR=TRc.map(p=>pkCR(p,10)),trD=(x,y)=>{let d=1e9;for(const p of TR)for(const q of p){const h=Math.hypot(q[0]-x,q[1]-y);if(h<d)d=h}return d};
 // ponds: water blocks walking (bullets fly over), docks cut out
 for(const p of PD){const x0=p.x-p.rx*1.15,x1=p.x+p.rx*1.15;for(let y=p.y-p.ry*1.15;y<p.y+p.ry*1.15;y+=12){let s=null;for(let x=x0;x<=x1+6;x+=6){const w=x<=x1&&pkWet([p],x+3,y+6);if(w&&s==null)s=x;if(!w&&s!=null){WL.push([s,y,x-s,12,2]);s=null}}}}
 NOGO=PD.map(p=>[p.x-p.rx*.9,p.y-p.ry*.9,p.x+p.rx*.9,p.y+p.ry*.9]);
@@ -110,8 +110,8 @@ for(const t of T){g.fillStyle='rgba(0,0,0,.3)';g.beginPath();g.ellipse(t.x+4,t.y
 for(const v of V){const r=Math.hypot(v.L,v.W)/2+6;vDraw(g,v.x-r,v.y-r,r*2,r*2,q=>hwDraw(q,v))}for(const f of FT_)vDraw(g,f.x-80,f.y-40,160,80,q=>ftDraw(q,f));
 paintDec(g,DEC);
 const C=48,cw=Math.ceil(WW/C),ch=Math.ceil(WH/C),cells=new Array(cw*ch);T.sort((a,b)=>a.y-b.y);
-for(const t of T){if(typeof document=='undefined'||!document.createElement)break;const sp=fsSpr(t.k,t.r,t.v),sx=Math.round(t.x-sp.width/2),sy=Math.round(t.y-t.r*.8-sp.height/2);t.sp=sp;t.sx=sx;t.sy=sy;g.drawImage(sp,sx,sy);const i=Math.floor(t.x/C),j=Math.floor(t.y/C);(cells[j*cw+i]||(cells[j*cw+i]=[])).push(t)}
-HS.FS={C,cw,ch,cells,SH:[],W:[]};HS.PK={PD,D:[0,1,2,3,4,5].map(i=>({p:i%2,o:pkH(i,30)*6.283,s:.05+pkH(i,31)*.05}))}}
+for(const t of T){if(typeof document=='undefined'||!document.createElement)break;const sp=efSpr(t.k,t.r,t.v),sx=Math.round(t.x-sp.width/2),sy=Math.round(t.y-t.r*.8-sp.height/2);t.sp=sp;t.sx=sx;t.sy=sy;g.drawImage(sp,sx,sy);const i=Math.floor(t.x/C),j=Math.floor(t.y/C);(cells[j*cw+i]||(cells[j*cw+i]=[])).push(t)}
+HS.FS={C,cw,ch,cells};HS.PK={PD,D:[0,1,2,3,4,5].map(i=>({p:i%2,o:pkH(i,30)*6.283,s:.05+pkH(i,31)*.05}))}}
 function pkJets(){const o=[];for(let i=0;i<10;i++){const a=i/10*6.283;o.push([2130+Math.cos(a)*86,900+Math.sin(a)*86*.9])}for(let i=0;i<4;i++){const a=i/4*6.283+.4;o.push([2130+Math.cos(a)*44,900+Math.sin(a)*40])}return o}
 // splash pad jets, ducks on the ponds, plus vehicle-boss leftovers (under people)
 function pkAnim(){if(mapId===13)dtAnim();if(mapId===12||mapId===13||mapId===15)tkGround();if(mapId!==12||!HS.PK)return;const t=performance.now()/1000;
@@ -119,4 +119,9 @@ if(cam.x+W>1980&&cam.x<2280&&cam.y+H>740&&cam.y<1060){const J=pkJets();for(let i
 const dump=(t%7)<1.1;if(dump){X.globalAlpha=.6;X.fillStyle='#bfe8ff';X.fillRect(2106,790,16,90);X.globalAlpha=.35;X.beginPath();X.ellipse(2114,884,30,10,0,0,7);X.fill();X.globalAlpha=1}}
 for(const d of HS.PK.D){const p=HS.PK.PD[d.p],a=d.o+t*d.s,x=p.x+Math.cos(a)*p.rx*.55,y=p.y+Math.sin(a)*p.ry*.55;if(x<cam.x-30||x>cam.x+W+30||y<cam.y-30||y>cam.y+H+30)continue;const fl=Math.sin(a)<0?1:-1;
 X.strokeStyle='rgba(220,240,255,.45)';X.lineWidth=1;X.beginPath();X.ellipse(x,y+4,12+Math.sin(t*3+d.o)*2,4,0,0,7);X.stroke();X.fillStyle='#16111c';X.fillRect(x-8,y-5,16,9);X.fillRect(x+fl*5-3,y-11,7,7);X.fillStyle='#e8e4d8';X.fillRect(x-7,y-4,14,7);X.fillStyle=d.p?'#2f8a4a':'#e8e4d8';X.fillRect(x+fl*5-2,y-10,5,5);X.fillStyle='#e8a030';X.fillRect(x+fl*9-(fl<0?2:0),y-8,3,2);X.fillStyle='#16111c';X.fillRect(x+fl*6,y-9,1,1)}}
-
+// a smooth line through points (Catmull-Rom, n steps between each pair): the park's trails
+function pkCR(P_,n){const o=[];for(let i=0;i<P_.length-1;i++){const p0=P_[Math.max(0,i-1)],p1=P_[i],p2=P_[i+1],p3=P_[Math.min(P_.length-1,i+2)];for(let k=0;k<n;k++){const t=k/n,t2=t*t,t3=t2*t;o.push([.5*(2*p1[0]+(-p0[0]+p2[0])*t+(2*p0[0]-5*p1[0]+4*p2[0]-p3[0])*t2+(-p0[0]+3*p1[0]-3*p2[0]+p3[0])*t3),.5*(2*p1[1]+(-p0[1]+p2[1])*t+(2*p0[1]-5*p1[1]+4*p2[1]-p3[1])*t2+(-p0[1]+3*p1[1]-3*p2[1]+p3[1])*t3)])}}o.push(P_[P_.length-1]);return o}
+// the park's tree tops redrawn over anyone standing behind them
+function pkCan(){const F=HS.FS;if(!F||typeof document=='undefined'||!document.createElement)return;const E=fgEnts(cam.x,cam.y,cam.x+W,cam.y+H);
+for(const e of E){const a=Math.max(0,Math.floor((e.x0-40)/F.C)),b=Math.min(F.cw-1,Math.floor((e.x1+40)/F.C)),c=Math.max(0,Math.floor((e.y0-20)/F.C)),d=Math.min(F.ch-1,Math.floor((e.y1+70)/F.C));
+for(let j=c;j<=d;j++)for(let i=a;i<=b;i++){const L=F.cells[j*F.cw+i];if(!L)continue;for(const t of L){if(!t.sp)continue;if(t.sx>e.x1||t.sx+t.sp.width<e.x0||t.sy>e.y1||t.sy+t.sp.height<e.y0)continue;X.save();X.beginPath();X.rect(e.x0,e.y0,e.x1-e.x0,e.y1-e.y0);X.clip();X.drawImage(t.sp,t.sx,t.sy);X.restore()}}}}
