@@ -32,7 +32,8 @@ A.wp[1].l=20;ok(Math.abs(wlD(P,1)-1.1)<1e-9&&Math.abs(wlR(P,1)-.9)<1e-9,'level 2
 // equip + render
 eqCam(1,8);ok(A.cm[1]==8&&cmOf(A,1)==8,'equip diamond');ok(camoC(0,0,1,8,3)!=null,'camo canvas builds');tick(5);
 // challenge completion reward
-const c=A.ch;c.D[0]={k:'kill',n:5,a:0,p:0,f:0};c.D[1]={k:'drop',n:1,a:0,p:0,f:0};c.D[2]={k:'wave',n:3,a:0,p:0,f:0};const p0=A.pts,s0=A.sp,lv0=A.lv,xp0=A.xp;
+const c=A.ch;c.D[0]={k:'kill',n:5,a:0,p:0,f:0};c.D[1]={k:'drop',n:1,a:0,p:0,f:0};c.D[2]={k:'wave',n:3,a:0,p:0,f:0};c.db=0;// a fresh set (today's own dailies may already be done by the steps above)
+const p0=A.pts,s0=A.sp,lv0=A.lv,xp0=A.xp;
 for(let i=0;i<5;i++){const z=mk(0,P.x+10,P.y);zs.push(z);hurt(z,1e9,0,0)}ok(c.D[0].f==1,'kill challenge done');chEv(P,'drop',1);wave=2;nextWave();ok(c.D[1].f&&c.D[2].f&&c.db==1,'all dailies + bonus');ok(A.pts-p0==300+150,'pts reward '+(A.pts-p0));
 c.W=[{k:'boss',n:1,a:0,p:0,f:0},{k:'spend',n:100,a:0,p:0,f:0},{k:'clear',n:1,a:0,p:0,f:0}];c.wb=0;const z=mk(7,P.x,P.y);zs.push(z);hurt(z,1e9,0,0);ok(c.W[0].f,'boss weekly');P.cash=500;shop();console.log('sc0',P.sc0,mode,P.own);buy(3);console.log('after buy',P.cash,JSON.stringify(c.W));ok(c.W[2].f,'clear weekly');const sp1=A.sp,lv1=A.lv;nextWave();ok(c.W[1].f&&c.wb&&A.sp-sp1==1+(A.lv-lv1),'spend weekly + skill point bonus');
 // rollover
