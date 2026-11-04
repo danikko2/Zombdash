@@ -65,8 +65,8 @@ eldeck:Object.assign({w:200,h:84,c:0,f:(g,x,y,v)=>S2(g,x,y,200,84,q=>{v=+v||0;R_
  if(v>=.5){const fr=v>=.8,L=fr?192:200,x0=fr?0:0;R_(q,DTC.o,x0,10,L,64);R_(q,'#b8bcc4',x0+1,11,L-2,62);R_(q,'#d0d4dc',x0+1,11,L-2,8);R_(q,'#9aa0aa',x0+1,65,L-2,8);R_(q,'#2f6fd0',x0+1,19,L-2,4);R_(q,'#2f6fd0',x0+1,61,L-2,4);
   for(let x=x0+14;x<x0+L-20;x+=26){R_(q,'#26303c',x,24,16,6);R_(q,'#26303c',x,54,16,6)}for(const ax of[x0+46,x0+120]){R_(q,DTC.o,ax,32,28,20);R_(q,'#8a8e96',ax+1,33,26,18);for(let i=0;i<5;i++)R_(q,'#6e727a',ax+3+i*5,35,2,14)}
   if(fr){R_(q,DTC.o,x0+L-14,14,14,56);R_(q,'#26303c',x0+L-13,16,12,52);R_(q,'#fff4c0',x0+L-3,18,3,8);R_(q,'#fff4c0',x0+L-3,58,3,8);R_(q,'#16111c',x0+L-30,36,12,12);kpText(q,'7',x0+L-24,42.5,10,9,'#ffd84a')}else{R_(q,DTC.o,x0,36,4,12);R_(q,DTC.o,x0+L-4,36,4,12)}}})},{ov:1,sw:1}),
-// helix: a crashed army helicopter on its side: the cockpit smashed, the tail boom snapped, the rotor blades bent (put fire and
-// smoke on it)
+// helix: a crashed army helicopter on its side: the cockpit smashed, the tail boom snapped, the rotor blades bent (put blaze
+// effects on it)
 helix:{w:250,h:140,c:[150,46],f:(g,x,y,v)=>S2(g,x,y,250,140,q=>{q.lineCap='round';for(const[w,c]of[[12,DTC.o],[8,'#3a3a34']])for(const[a,b,e,d]of[[120,60,10,20],[120,60,236,30],[120,60,100,132],[120,60,190,120]]){q.strokeStyle=c;q.lineWidth=w;q.beginPath();q.moveTo(a,b);q.quadraticCurveTo((a+e)/2+(d-b)*.15,(b+d)/2-(e-a)*.12,e,d);q.stroke()}
  q.save();q.translate(48,96);q.rotate(-.5);R_(q,DTC.o,-46,-9,80,18);R_(q,DTC.ol,-45,-8,78,16);R_(q,DTC.old,-45,4,78,4);R_(q,DTC.o,-50,-22,16,30);R_(q,DTC.ol,-49,-21,14,28);q.restore();
  q.fillStyle=DTC.o;q.beginPath();q.ellipse(140,92,74,34,-.08,0,7);q.fill();q.fillStyle=DTC.ol;q.beginPath();q.ellipse(140,92,72,32,-.08,0,7);q.fill();q.fillStyle=DTC.oll;q.beginPath();q.ellipse(136,82,62,16,-.08,0,7);q.fill();q.fillStyle=DTC.old;q.beginPath();q.ellipse(146,108,60,12,-.08,0,7);q.fill();
