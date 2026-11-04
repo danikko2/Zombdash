@@ -8,7 +8,7 @@
 // touches the beaten-map masks (A.bm), and removing a map from its slot keeps it.
 var CCS={slots:{},rep:{}},CCW=[],CCMV=[],CREP=null,CCLD=0;
 // wave-20 bosses that work on any map, in campaign order. The other four need their own map:
-const CCBOSS=[2,3,1,9,4,10,11,12,5,8,6,7];
+const CCBOSS=[2,3,1,9,4,10,11,17,12,5,8,6,7];
 const CCNOT={13:'drives the ice cream truck along the City Park road network',14:'drives the fire engine along the Downtown roads and blasts water into its buildings',15:'knocks stock off the Hometown Market shelves and sends carts out of its corrals',16:'watches from the City Hall roof while his police cruiser drives the Main Street roads'};
 function ccSK(s,k){return s+':'+k}
 // slots that were free once and now hold a built-in map (the Black Iron Foundry took slot 5 of Wrong Turn): a custom map stored there moves

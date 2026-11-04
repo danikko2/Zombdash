@@ -36,6 +36,7 @@ function balInit(){if(BALR.length)return;
  for(const k in ZC){const t=+k;add('sZ'+t,'spd','Zombies: walking speed (Hard ×1.5, grows a little every 5 waves)',ZC[t].n,ZT[t],'sp',5,up(ZT[t].sp*3,150,10),1)}
  for(const t of BOS)add('sB'+t,'spd','Wave bosses: walking speed',ZT[t].n,ZT[t],'sp',5,up(ZT[t].sp*3,150,10),1);
  for(const ci in SVS){const D=SVS[ci];add('sS'+ci,'spd','Survivor bosses: walking speed (dashes, leaps and vehicles keep their own speeds)',CH[ci]?CH[ci].n:'#'+ci,D,'sp',10,up(D.sp*3,200,10),1)}
+ {const D=SVS[17],n=CH[17].n,sub='Survivor bosses: '+n+'\'s lightning (bosses/ken.js; a survivor shotgun blast reaches 476 px)';add('knR','spd',sub,'Reach of a bolt (px)',D,'br',60,600,2);add('knV','spd',sub,'Bolt speed (px a second)',D,'bv',100,1500,10);add('knC','spd',sub,'Seconds between zaps',D,'cd',.2,5,.05);add('knT','spd',sub,'Overcharged (half health, 3 bolts): gap × this',D,'c3',.5,3,.05);add('knW','spd',sub,'Warning crackle before each zap (s)',D,'ch',0,1.5,.02)}
  CH.forEach((c,i)=>add('sP'+i,'spd','Player survivors: speed (1 = normal, applies from the next run)',c.n,c,'sp',.3,2.5,.05));
  // drops
  add('dG','drop','Pickups','Most items on the ground at once',DROPG,'max',1,40,1);add('dCb','drop','Pickups','Cash pickup: base $',DROPG,'cb',0,200,1);add('dCw','drop','Pickups','Cash pickup: + $ per wave',DROPG,'cw',0,40,1);add('dDs','drop','Pickups','2× damage lasts (seconds)',DROPG,'dds',1,30,.5);add('dHp','drop','Pickups','Health pickup heals',DROPG,'hp',1,10,1);

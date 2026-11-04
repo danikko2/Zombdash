@@ -5,8 +5,8 @@ for(const p of PL){P=p;if(updP(dt)){over();return}}P=PL[0];if(MPn&&!PL.some(aliv
 spT-=dt;if(toSp>0&&spT<=0&&zs.length<ZCAP()){const P0=P;P=rndAlive();const ok=spawnZ();P=P0;if(ok){spT=Math.max(.25,1.1-wave*.06)/(MPn?1+.4*(MPn-1):1);toSp--}else{spT=.3;ZD.wt+=.3}}
 for(const q of pd)q.l-=dt;pd=pd.filter(q=>q.l>0);for(const q of fr)q.l-=dt;fr=fr.filter(q=>q.l>0);
 for(const p of ep){if(p.k==3)pt.push({x:p.x,y:p.y,vx:0,vy:-20,l:.25,c:'#ff9a2e'});for(let k=0;k<2;k++){p.x+=p.vx*dt/2;p.y+=p.vy*dt/2;if(wlAt(p.x,p.y).some(w=>w[4]!=2&&p.x>w[0]&&p.x<w[0]+w[2]&&p.y>w[1]&&p.y<w[1]+w[3]))p.l=0}p.l-=dt;
-if(p.l>0)for(const q of PL){if(!alive(q)||Math.hypot(p.x-q.x,p.y-q.y)>=(p.big?20:10))continue;P=q;p.l=0;if(P.inv<=0&&Math.random()<.05*rk('rng')){FT.push({x:P.x,y:P.y-30,t:'SHRUGGED OFF',c:'#9be860',l:.9});P.inv=.3}else{if(p.k==3){P.bn=3;P.bt=1.5*(1+.1*rk('haz'))}}if(P.inv<=0){P.hp-=arm(S.df?2:1);P.inv=.8;if(P.hp<=0&&ded()){over();return}}break}}
-for(const p of ep){if(p.l<=0&&p.k==2)pd.push({x:p.x,y:p.y,l:5,m:5});else if(p.l<=0&&p.k==3)fr.push({x:p.x,y:p.y,l:5,m:5})}ep=ep.filter(p=>p.l>0);
+if(p.l>0)for(const q of PL){if(!alive(q)||Math.hypot(p.x-q.x,p.y-q.y)>=(p.big?20:10))continue;P=q;p.l=0;if(P.inv<=0&&Math.random()<.05*rk('rng')){FT.push({x:P.x,y:P.y-30,t:'SHRUGGED OFF',c:'#9be860',l:.9});P.inv=.3}else{if(p.k==3&&!sPk(P,17)){P.bn=3;P.bt=1.5*(1+.1*rk('haz'))}}if(P.inv<=0){P.hp-=arm(S.df?2:1);P.inv=.8;if(P.hp<=0&&ded()){over();return}}break}}
+for(const p of ep){if(p.l<=0&&p.k==2)pd.push({x:p.x,y:p.y,l:5,m:5});else if(p.l<=0&&p.k==3)fr.push({x:p.x,y:p.y,l:5,m:5});else if(p.l<=0&&p.lb)knHit(p)}ep=ep.filter(p=>p.l>0);
 for(const z of zs){P=tgt(z);const T=ZT[z.t];if(T.sv){svUpd(z,T,dt);continue}if(z.hg>0){z.hg-=dt;if(Math.random()<dt*5)pt.push({x:z.x+rnd(-8,8),y:z.y-6-rnd(0,14),vx:0,vy:-36,l:.5,c:'#ffe27a'})}let a=T.gh?Math.atan2(P.y-z.y,P.x-z.x):zSpreadA(z,T,dirTo(z),dt),m=1;z.vt=(z.vt??rnd(.5,4))-dt;if(z.vt<=0){z.vt=z.t==14?rnd(.4,.8):rnd(3,8);zvoice(z)}
 if(z.t==14){z.es=z.es??0;z.ec=(z.ec??0)-dt;z.hv=7+Math.sin(performance.now()/180+(z.ph||0))*2;
 if(z.es==1){m=0;z.kx=z.ky=0;z.x=P.x+Math.cos(P.a+2.4)*9;z.y=P.y-14;z.et-=dt;z.tk-=dt;

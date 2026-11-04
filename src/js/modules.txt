@@ -92,6 +92,7 @@ maps/props/forest-props.js
 maps/props/kit-props.js
 maps/props/kit-foundry.js
 bosses/penny-and-mayor.js
+bosses/ken.js
 system/phones-checkpoints-crashlog.js
 online/supabase.js
 zombies/spawn-system.js

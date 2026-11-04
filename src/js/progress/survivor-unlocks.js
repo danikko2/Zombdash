@@ -1,6 +1,6 @@
 //# progress/survivor-unlocks.js — Survivor unlocks per map
 // ---------- survivors unlock by reaching wave 20 on their map (runs started at wave 1) ----------
-const UNM={2:0,1:1,4:2,3:3,8:4,7:5,6:6,5:7,9:8,10:9,11:10,12:11,13:12,14:13,15:14,16:15},MUN={};for(const c in UNM)MUN[UNM[c]]=+c;
+const UNM={2:0,1:1,4:2,3:3,8:4,7:5,6:6,5:7,9:8,10:9,11:10,12:11,13:12,14:13,15:14,16:15,17:16},MUN={};for(const c in UNM)MUN[UNM[c]]=+c;
 // best waves: built-in maps in A.mw by map number, custom maps in A.cmw by the map's id
 function mBest(A,m){if(cmIs(m)){const id=cmIdOf(m);return(A&&A.cmw&&id&&A.cmw[id])||0}return(A&&A.mw&&A.mw[m])||0}
 function mapUnl(p,w){const A=p&&p.ac;if(!A||A.g||cmPT(mapId))return;if(cmIs(mapId)){const id=cmIdOf(mapId);if(!id)return;A.cmw=A.cmw||{};if(w>(A.cmw[id]||0)){A.cmw[id]=w;SVD=1}return}A.mw=A.mw||[];if(w>(A.mw[mapId]||0)){A.mw[mapId]=w;SVD=1}}

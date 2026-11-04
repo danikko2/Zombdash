@@ -78,9 +78,11 @@ const EDGE=()=>{let e=0,er=0;for(let i=0;i<gw;i++)for(const j of[0,gh-1]){const 
  const no=Object.keys(pl).filter(k=>!RCH(...pl[k]));ok(!no.length,'every room and place can be reached: '+(no.length?'not '+no.join(', '):'the office, every bay, the lot and the yards'));
  let lane=1;for(let y=20;y<2230;y+=8){const k=Math.floor(y/gs)*gw+Math.floor((TX-78)/gs);if(bl[k]){lane=0;break}}ok(lane,'a truck could drive straight through: the lane is open from the north gate to the county road');
  const[e,er]=EDGE();ok(e>300&&er>=e*.95,'zombies can walk to the player from the open edges ('+er+' of '+e+')')}
-// ---------- the campaign: slot 5 of Wrong Turn, no survivor yet ----------
+// ---------- the campaign: slot 5 of Wrong Turn; its survivor is Ken (his fight: tests/suites/ken-boss.js) ----------
 ok(SEC[1].m[4]===16&&CORD.indexOf(16)==CORD.indexOf(10)+1&&!ccFree().some(([s,k])=>s==1),'the foundry is slot 5 of Wrong Turn, after Enchanted Forest');
-ok(MUN[16]===undefined&&ccBossOf(16)==null&&!CH.some((_,i)=>UNM[i]===16),'its survivor slot is left open for the owner');
+ok(MUN[16]===17&&ccBossOf(16)===17&&UNM[17]===16&&CH[17].n=='Ken','Ken the welder holds out here');
+// how a campaign map with no survivor yet plays (the foundry had none until Ken came): checked with Ken's spot emptied for now
+const KEN=MUN[16];delete MUN[16];
 const A=S.ac,bits=ms=>ms.reduce((v,m)=>v|1<<m,0),HT=[0,3,1,14,15];
 A.un=[0,MUN[0],MUN[3],MUN[1],MUN[14],MUN[15],MUN[8]];A.tut=1;A.bm=[0,1,2].map(()=>bits(HT.concat([8])));delete A.sl;S.lm='off';setGM('c');
 ok(mOpen(A,DIF(),16)&&/Survive 20 waves to clear it · survivor coming soon/.test(cMunT(16)),'it opens with the rest of Wrong Turn; its info says to survive 20 waves, survivor coming soon');
@@ -101,6 +103,7 @@ const play=(w0,w1,lim)=>{const R={spawned:0,reached:0,stuck:0,waves:0,err:'',sk:
  let h='';try{h=cwH()}catch(e){h='ERR '+e.message}ok(/BLACK IRON FOUNDRY COMPLETE/.test(h)&&/You survived all 20 waves/.test(h)&&/No survivor is holding out here yet/.test(h)&&!/data-ch/.test(h),'it says you survived all 20 waves and that no survivor holds out here yet');
  ok(/✓ Beaten on .* · survivor coming soon/.test(cMunT(16)),'the campaign map shows it beaten, survivor coming soon')}
 {const L0=LBY,m0=mode;let h='';try{LBY={s:[{inp:'km',ac:'G',ci:0,rdy:0}]};GMD='c';mapId=16;S.mp=16;rL();h=String(ui.innerHTML||'')}catch(e){h='ERR '+e.message}LBY=L0;mode=m0;ok(/survive 20 waves \\(no survivor here yet\\)/.test(h),'the split-screen lobby says to survive 20 waves, no survivor here yet '+(/ERR/.test(h)?h:''))}
+MUN[16]=KEN;ok(ccBossOf(16)===17&&/defeat <b>Ken<\\/b>/.test(cMunT(16)),'with Ken back, a save that cleared the foundry before he came is told to defeat Ken there: '+cMunT(16).replace(/<[^>]+>/g,''));
 // ---------- old saves: nothing that was open closes ----------
 {const old={bm:[0,1,2].map(()=>bits(HT.concat([8,2,9,10])))};ok(secDone(old,0,1)&&secOpen(old,0,2)&&!bBt(old,0,16)&&mOpen(old,0,16),'a save that had already finished Wrong Turn keeps it finished (Zombville stays open) and gets the foundry to play');
  const nw={bm:[0,1,2].map(()=>bits(HT))};ok(!secDone(nw,0,1),'a newer player has Wrong Turn to do');for(const m of[8,2,9,10])for(let d=0;d<3;d++)bmSet(nw,d,m);ok(!secDone(nw,0,1)&&!secOpen(nw,0,2),'and beating the other four after the foundry came still leaves it to beat before Zombville');
