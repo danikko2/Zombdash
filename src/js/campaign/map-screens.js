@@ -86,7 +86,9 @@ function cShadow(g,x,y,w){g.fillStyle='rgba(20,16,10,.3)';g.beginPath();g.ellips
 var CLM={
 17:(g,x,y)=>{cShadow(g,x,y,54);g.fillStyle='#5a5e66';g.beginPath();g.ellipse(x,y-14,52,20,0,0,7);g.fill();g.strokeStyle=CO;g.lineWidth=2.5;g.stroke();g.fillStyle='#b83a32';g.beginPath();g.ellipse(x,y-16,45,16,0,0,7);g.fill();
 g.fillStyle='#337834';g.beginPath();g.ellipse(x,y-16,30,9,0,0,7);g.fill();g.stroke();g.fillStyle='rgba(255,255,255,.7)';g.fillRect(x-1,y-25,2,18);for(const[a,b]of[[-15,-19],[0,-16],[14,-19]]){g.fillStyle=CO;g.fillRect(x+a-6,y+b-4,12,8);g.fillStyle='#f4f4f0';g.fillRect(x+a-5,y+b-3,10,6);g.fillStyle='#c8281e';g.fillRect(x+a-1,y+b-2,2,4);g.fillRect(x+a-3,y+b-1,6,2)}
-for(const s of[-1,1]){g.fillStyle=CO;g.fillRect(x+s*48-2,y-48,4,34);g.fillRect(x+s*48-8,y-54,16,9);g.fillStyle='#ffe8a0';g.fillRect(x+s*48-7,y-53,14,7)}},
+for(const s of[-1,1]){g.fillStyle=CO;g.fillRect(x+s*48-2,y-48,4,34);g.fillRect(x+s*48-8,y-54,16,9);g.fillStyle='#ffe8a0';g.fillRect(x+s*48-7,y-53,14,7)}
+// Buck's football, up in the air over the field
+g.save();g.translate(x+20,y-46);g.rotate(-.5);g.fillStyle=CO;g.beginPath();g.ellipse(0,0,9,5.5,0,0,7);g.fill();g.fillStyle='#9a5426';g.beginPath();g.ellipse(0,0,7.5,4,0,0,7);g.fill();g.fillStyle='#f4f4f0';g.fillRect(-3,-.8,6,1.6);for(const k of[-2,0,2])g.fillRect(k-.5,-2,1,4);g.restore()},
 16:(g,x,y)=>{cShadow(g,x,y,56);for(const[sx,h]of[[x+14,64],[x+26,54]]){cBox(g,sx,y-h,8,h-24,'#5a5a60');g.fillStyle='rgba(206,206,210,.8)';g.beginPath();g.arc(sx+4,y-h-6,6,0,7);g.arc(sx+10,y-h-14,8,0,7);g.fill()}
 cBox(g,x-48,y-28,82,28,'#7a7f88','#646970');g.fillStyle='#5a5e66';g.beginPath();for(let i=0;i<4;i++){g.moveTo(x-48+i*20.5,y-28);g.lineTo(x-48+i*20.5,y-40);g.lineTo(x-27.5+i*20.5,y-28)}g.fill();g.strokeStyle=CO;g.lineWidth=2.5;g.stroke();
 g.fillStyle=CO;g.fillRect(x-40,y-17,16,17);g.fillStyle='#ff8a2a';g.fillRect(x-38,y-15,12,15);g.fillStyle='#ffd84a';g.fillRect(x-35,y-10,6,10);

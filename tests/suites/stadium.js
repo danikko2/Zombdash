@@ -71,7 +71,7 @@ const BW=AR('bowl')[0],LB=stBowl(BW);
 // ---------- the game builds it ----------
 mapId=17;S.mp=17;setGM('f');build();
 ok(HS.CM==='builtin-stadium'&&WW==PW&&WH==PH&&BG.width==WW,'map 17 builds from stadium.json through the custom-map loader');
-ok(MP.length==18&&MP[17].n=='Zombville Stadium'&&MUN[17]==null&&MPD[17]&&MPI[17]&&MT[17]&&CLM[17],'map 17: its name, description, picture, tile and campaign landmark; no survivor yet');
+ok(MP.length==18&&MP[17].n=='Zombville Stadium'&&MUN[17]===18&&MPD[17]&&MPI[17]&&MT[17]&&CLM[17],'map 17: its name, description, picture, tile and campaign landmark; Buck the quarterback holds out here (his fight: qb-boss.js)');
 ok(HS.LT&&HS.LT.t=='dark','lights only in the game');
 // the stands: nobody can stand in them
 {const cell=(x,y)=>Math.floor(y/gs)*gw+Math.floor(x/gs);let open=0,tot=0;for(let y=8;y<PH;y+=24)for(let x=8;x<PW;x+=24){if(!(x<LB.x0-4||x>LB.x1+4||y<LB.y0-4||y>LB.y1+4))continue;if(Object.values(LB.TB).some(t=>x>=t[0]-4&&x<=t[0]+t[2]+4&&y>=t[1]-4&&y<=t[1]+t[3]+4))continue;tot++;if(!bl[cell(x,y)])open++}
@@ -103,8 +103,9 @@ A.un=[0];A.cp=CORD.length;A.tut=1;delete A.slt;A.bm=[0,1,2].map(()=>CORD.reduce(
 {let R=play(1,3,5000);const R1=R;wave=18;zs=[];toSp=0;mode='shop';const R2=play(19,19,5000);R={spawned:R1.spawned+R2.spawned,reached:R1.reached+R2.reached,stuck:R1.stuck+R2.stuck,waves:R1.waves+R2.waves,err:R1.err||R2.err,sk:Object.assign(R1.sk,R2.sk)};
  ok(!R.err&&R.waves==4&&wave==19,'campaign waves 1–3 and 19 play through the stadium '+R.err);
  ok(R.spawned>60&&R.stuck<=Math.max(2,R.spawned*.02),'zombies reach the player ('+R.reached+' of '+R.spawned+' reached; '+R.stuck+' slow ones '+JSON.stringify(R.sk)+')')}
-{const R=play(20,20,6000);ok(!R.err&&!zs.some(z=>ZT[z.t].sv),'wave 20: no survivor holds out here yet, so it plays like any wave '+R.err);tick(Math.ceil(4.5/.016));
- ok(bBt(A,DIF(),17)&&mode=='over'&&ui.innerHTML.includes('ZOMBVILLE STADIUM COMPLETE'),'clearing it wins the map')}
+{if(mode!='play')nextWave();const b=zs.find(z=>ZT[z.t].sv);ok(wave==20&&b&&b.ci==18&&zs.length==1,'wave 20: Buck the quarterback comes out, alone');let err='';try{for(let f=0;f<600;f++){for(const p of PL){p.mx=Math.max(p.mx,20);p.hp=p.mx}tick(1)}}catch(e){err=e.message}
+ ok(!err&&zs.includes(b),'his fight runs on the field '+err);b.iv=0;hurt(b,b.hp+1,0,0);tick(Math.ceil(5.8/.016));
+ ok(bBt(A,DIF(),17)&&A.un.includes(18)&&mode=='over'&&ui.innerHTML.includes('ZOMBVILLE STADIUM COMPLETE')&&ui.innerHTML.includes('Buck joined your survivors'),'beating him wins the map, and he joins')}
 // ---------- free play, the Workshop, the editor ----------
 setGM('f');mapId=17;S.mp=17;start();{const R=play(1,1,4000);ok(!R.err&&wave>=1,'a Free Play run plays '+R.err);if(mode!='play')nextWave();const row=olRow();ok(row&&row.map===17&&row.mode=='f','its own leaderboard board (map 17)');over(1)}
 {const h=wsBuiltins();ok(h.includes('wsBuiltin(17,1)')&&h.includes('Zombville Stadium'),'the Workshop lists Zombville Stadium under Built-in maps')}

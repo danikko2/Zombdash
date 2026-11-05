@@ -33,7 +33,7 @@ const FREE=ccFree();ok(FREE.length==7,'there are 7 free Coming Soon slots in SEC
 ok(same(FREE,[[2,4],[3,3],[3,4],[4,1],[4,2],[4,3],[4,4]]),'they are: Zombville 5, Countryside 4-5, Island 2-5');
 ok(SEC.every((s,i)=>s.m.length==5)&&same(SORD.length,18),'SEC itself is unchanged (18 built-in maps)');
 // ---------- the boss list ----------
-ok(same(CCBOSS.slice().sort((a,b)=>a-b),[1,2,3,4,5,6,7,8,9,10,11,12,17]),'bosses on offer: the 13 whose fights work on any map (Ken too)');
+ok(same(CCBOSS.slice().sort((a,b)=>a-b),[1,2,3,4,5,6,7,8,9,10,11,12,17,18]),'bosses on offer: the 14 whose fights work on any map (Ken and Buck too)');
 ok([13,14,15,16].every(ci=>!CCBOSS.includes(ci)&&CCNOT[ci]),'not on offer, each with a reason: Ice Cream Man, Fire Chief, Penny, the Mayor');
 ok(same([...CCBOSS,13,14,15,16].sort((a,b)=>a-b),Object.values(MUN).sort((a,b)=>a-b)),'every survivor boss is either offered or listed as needing their own map');
 ok(ccBossFor(1)==9&&ccBossFor(4)==7&&ccBossFor(2)==12,'a slot starts with a boss from its own section (Wrong Turn: Officer Ray)');
@@ -122,7 +122,7 @@ ccSetRep(dB.id,3);ccAssign(dB.id,4,1,7);ok(!ccRep(3)&&ccSlot(4,1).key===kB,'putt
 ccSetRep(dB.id,3);ok(!ccSlot(4,1)&&ccRep(3).key===kB,'and the other way round');ccRestore(3);
 // ---------- the Workshop dialog ----------
 await workshop();ok(ui.innerHTML.includes('Campaign: Zombville, slot 5')&&ui.innerHTML.includes('>campaign<'),'Workshop: each map says where it is in the campaign, with a campaign link');
-wcOpen(dC.id,'ws');ok(/CAMPAIGN · Spare/.test(ui.innerHTML)&&(ui.innerHTML.match(/data-ch=/g)||[]).length==13&&ui.innerHTML.includes('Not offered'),'the dialog: free slots, 13 bosses to pick from, and who is not offered');
+wcOpen(dC.id,'ws');ok(/CAMPAIGN · Spare/.test(ui.innerHTML)&&(ui.innerHTML.match(/data-ch=/g)||[]).length==14&&ui.innerHTML.includes('Not offered'),'the dialog: free slots, 14 bosses to pick from, and who is not offered');
 ok(ui.innerHTML.includes('Junkyard')&&ui.innerHTML.includes(' disabled'),'a slot taken by another map is shown and can\\'t be picked');
 wcSlot(3,4);wcBoss(12);await wcSave();ok(ccSlot(3,4)&&ccSlot(3,4).key===kC&&ccSlot(3,4).b===12&&!ccSlot(3,3),'pick a slot and a boss, PUT IN SLOT (it moves)');
 wcOpen(dC.id,'ws');document.getElementById('wcrep').value='3';wcRepAsk();ok(ui.innerHTML.includes('PLAY THIS INSTEAD?')&&!ccRep(3),'replacing asks for confirmation first (nothing changes yet)');

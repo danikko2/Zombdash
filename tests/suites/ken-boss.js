@@ -21,7 +21,7 @@ const SND=[];{const f=sfx;sfx=function(k){SND.push(k);return f.apply(this,argume
 const A=S.ac;A.name='T';A.tut=1;S.df=0;
 // ---------- data ----------
 const K=CH[17];
-ok(CH.length==18&&K.n=='Ken'&&K.hp==8&&K.sp==.9&&K.w==2&&K.cost==0,'Ken is survivor 18: 8 health, 90% speed, a shotgun to start with');
+ok(CH.length>=18&&K.n=='Ken'&&K.hp==8&&K.sp==.9&&K.w==2&&K.cost==0,'Ken is survivor 18: 8 health, 90% speed, a shotgun to start with');
 ok(K.lv&&K.lv.includes(2)&&K.lc&&K.lc.g&&K.lc.c&&K.lc.f.length==3&&K.lzn=='electric bolts','his shotgun fires electric bolts (blue-white, like the Robot\\'s and Steve\\'s laser bolts)');
 ok(CHD[17]&&/welder/.test(CHD[17])&&SPK[17]&&SPK[17].n=='Welding Leathers'&&TT[17].length==5&&SCH[17].length==5&&RCS[17],'he has a description, a mastery perk, titles, challenges and colour variants');
 ok(UNM[17]===16&&MUN[16]===17&&ccBossOf(16)===17,'he holds out on the Black Iron Foundry (map 16)');

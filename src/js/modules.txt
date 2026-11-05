@@ -97,6 +97,7 @@ maps/props/kit-downtown.js
 maps/props/kit-stadium.js
 bosses/penny-and-mayor.js
 bosses/ken.js
+bosses/quarterback.js
 system/phones-checkpoints-crashlog.js
 online/supabase.js
 zombies/spawn-system.js
