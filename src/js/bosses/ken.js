@@ -3,7 +3,8 @@
 // A bolt flies out of the torch and stays joined to it until it hits something (a player, a wall, or the end of its reach,
 // half as far as a survivor boss's shotgun blast), so it looks like one long crackling bolt; where it hits it leaves a black
 // burn mark on the ground. From half health he is overcharged and fires three bolts at once.
-// The bolts are survivor-boss bullets (ep, k:5, lb:1): update() moves them, stops them at walls and hits players with them.
+// The bolts are survivor-boss bullets (ep, k:5, lb:1): update() moves them and stops them at walls. The whole bolt is
+// dangerous, not just its head: anyone it crosses anywhere between the torch and the head is hit (knOn), and the bolt ends there.
 // SVS[17]: br = reach of a bolt (px), bv = bolt speed (px/s), cd = seconds between zaps, c3 = how much longer that gap is once
 // overcharged, ch = seconds the torch crackles before each zap (the warning). All of them are in the GAME BALANCE menu.
 var KSC=[],KFL=[];
@@ -25,7 +26,7 @@ z.cd=(D.cd||1.3)*(z.oc?(D.c3||1.15):1);z.mf=.12;sfx('kzap',z.x,z.y,.85);shk=Math
 // a bolt is spent (update() calls this): a flash, sparks and a black mark on the ground under where it hit
 function knInW(x,y){return wlAt(x,y).some(w=>w[4]!=2&&x>w[0]&&x<w[0]+w[2]&&y>w[1]&&y<w[1]+w[3])}
 function knHit(p){const v=Math.hypot(p.vx,p.vy)||1,ux=p.vx/v,uy=p.vy/v;let x=p.x,y=p.y,mx,my;
-const q=PL.find(o=>alive(o)&&Math.hypot(o.x-p.x,o.y-p.y)<14);
+const q=p.hq&&alive(p.hq)?p.hq:PL.find(o=>alive(o)&&Math.hypot(o.x-p.x,o.y-p.y)<14);
 if(q){mx=q.x;my=q.y+14;FT.push({x:q.x,y:q.y-40,t:'ZAP!',c:'#c8d0ff',l:.7})}
 else{for(let k=0;k<8&&knInW(x,y);k++){x-=ux*3;y-=uy*3}mx=x;my=y+10;for(let k=0;k<12&&knInW(mx,my);k++){mx-=ux*3;my-=uy*3}}
 knMark(mx,my);KFL.push({x,y,l:.18,m:.18});sfx('khit',x,y,.6,.04);
@@ -38,7 +39,13 @@ KSC.push({x,y,l:14,m:14,B,r:6+r()*3});if(KSC.length>(LMX?16:40))KSC.shift()}
 function knLights(S){for(const e of ep)if(e.lb){S.push({x:e.x,y:e.y,r:70,c:'#9fb0ff',i:1});if(e.sx!=null)S.push({x:(e.x+e.sx)/2,y:(e.y+e.sy)/2,r:60,c:'#8a9aff',i:1})}
  for(const z of zs)if(z.ci==17&&z.hp>0&&(z.kc>0||z.mf>0)){const T=knTip(z,z.fa);S.push({x:T.x,y:T.y,r:z.mf>0?90:50,c:'#c8d0ff',i:1})}
  for(const f of KFL)S.push({x:f.x,y:f.y,r:20+80*f.l/f.m,c:'#c8d0ff',i:1})}
-function svTick6(dt){for(const s of KSC)s.l-=dt;if(KSC.length)KSC=KSC.filter(s=>s.l>0);for(const f of KFL)f.l-=dt;if(KFL.length)KFL=KFL.filter(f=>f.l>0)}
+// is player q anywhere on the bolt, from the torch tip to the head? Tested against q's body (KNB: half-width, top and
+// bottom from q.x,q.y, as the survivor sprite is drawn); where it crosses, the head moves there, so the bolt ends at q
+const KNB={w:10,t:-22,b:16};
+function knOn(p,q){const ax=p.sx!=null?p.sx:p.x,ay=p.sy!=null?p.sy:p.y,dx=p.x-ax,dy=p.y-ay,L=Math.hypot(dx,dy),n=Math.max(1,Math.ceil(L/3));
+for(let i=0;i<=n;i++){const x=ax+dx*i/n,y=ay+dy*i/n;if(Math.abs(x-q.x)<KNB.w&&y-q.y>KNB.t&&y-q.y<KNB.b){p.x=x;p.y=y;p.hq=q;return true}}return false}
+function svTick6(dt){for(const e of ep)if(e.lb&&e.o&&e.o.hp>0&&zs.includes(e.o)){const T=knTip(e.o,e.o.fa);e.sx=T.x;e.sy=T.y}
+for(const s of KSC)s.l-=dt;if(KSC.length)KSC=KSC.filter(s=>s.l>0);for(const f of KFL)f.l-=dt;if(KFL.length)KFL=KFL.filter(f=>f.l>0)}
 // ----- drawing -----
 // burn marks, under everything that walks
 function knDrawS(){if(!KSC.length)return;X.lineCap='round';for(const s of KSC){const a=Math.min(1,s.l/3),hot=Math.max(0,1-(s.m-s.l)/.8);

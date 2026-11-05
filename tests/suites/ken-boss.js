@@ -43,7 +43,8 @@ ok(z&&z.ci==17&&toSp==0&&zs.length==1,'wave 20: Ken comes, alone');
 ok(z&&z.bn=='KEN'&&Math.round(z.mh/k)==640,'his health bar says KEN (640 health)');
 ok(/KEN WILL NOT GO DOWN EASY/.test(nzn)&&SVB==1,'"KEN WILL NOT GO DOWN EASY" on the final-wave banner');
 // a clear straight line of a given length from a point
-const clr=(x,y,a,L)=>{for(let s=0;s<=L;s+=4){const px=x+Math.cos(a)*s,py=y+Math.sin(a)*s;if(px<30||py<30||px>WW-30||py>WH-30||knInW(px,py))return 0}return 1};
+// clear along the path a bolt really takes (it leaves the gun 8.6 px above Ken's x,y), with a few px either side
+const clr=(x,y,a,L)=>{for(let s=0;s<=L;s+=4)for(const o of[0,-4,-8.6,-13]){const px=x+Math.cos(a)*s,py=y+o+Math.sin(a)*s;if(px<30||py<30||px>WW-30||py>WH-30||knInW(px,py))return 0}return 1};
 const spot=(need)=>{for(let i=0;i<20000;i++){const x=60+Math.random()*(WW-120),y=60+Math.random()*(WH-120),a=Math.random()*6.283;if(svOK(x,y)&&need(x,y,a))return{x,y,a}}return null};
 // he walks up and zaps
 {const p=spot((x,y,a)=>clr(x,y,a,420));z.x=p.x;z.y=p.y;P.x=p.x+Math.cos(p.a)*400;P.y=p.y+Math.sin(p.a)*400;z.cd=0;
@@ -66,6 +67,18 @@ const spot=(need)=>{for(let i=0;i<20000;i++){const x=60+Math.random()*(WW-120),y
 {ep=[];KSC=[];const p=spot((x,y,a)=>clr(x,y,a,200));z.x=p.x;z.y=p.y;z.fa=p.a;z.cd=99;P.x=p.x+Math.cos(p.a)*120;P.y=p.y-8.6+Math.sin(p.a)*120;P.hp=50;P.mx=50;P.inv=0;
  knFire(z,p.a);let f=0;for(;f<40&&ep.some(q=>q.lb);f++){z.cd=99;z.kc=0;z.x=p.x;z.y=p.y;tick(1)}const m=KSC[0];
  ok(P.hp==49,'a bolt that reaches the player hurts (1 health: 50 -> '+P.hp+')');ok(m&&Math.abs(m.x-P.x)<20&&m.y>P.y,'and burns a mark at their feet');ok(FT.some(t=>t.t=='ZAP!'),'"ZAP!"');P.hp=1e6}
+// the whole bolt hurts, not just its head (aimed straight right, so "above" and "below" the bolt are easy to place)
+{const fresh=()=>{ep=[];KSC=[];FT=[];P.hp=50;P.mx=50;P.inv=0};const p=spot((x,y,a)=>[-50,0,50].every(o=>clr(x,y+o,0,260)));const hold=a=>{z.cd=99;z.kc=0;z.x=p.x;z.y=p.y;z.fa=a};const T=knTip(z,0);
+ // a player just below the bolt's path: the head flies past them; then Ken swings the torch down across them
+ fresh();hold(0);P.x=p.x+90;P.y=knTip(z,0).y+30;knFire(z,0);const B=ep.find(q=>q.lb);for(let f=0;f<14;f++){hold(0);tick(1)}
+ ok(P.hp==50&&ep.includes(B)&&B.x>P.x+20,'the head of a bolt flies past a player just off its path without hitting them');
+ let f=0,a=0;for(;f<14&&ep.includes(B);f++){a=Math.min(.7,a+.06);hold(a);tick(1)}ok(P.hp==49&&!ep.includes(B),'when Ken swings the bolt down across them they are hit ('+f+' frames into the swing)');
+ const m=KSC[KSC.length-1];ok(m&&Math.abs(m.x-P.x)<14&&m.y>P.y,'and the bolt ends at them, with its burn mark at their feet');
+ // the bolt crossing the player's head, well above the old hit point at their middle
+ fresh();hold(0);P.x=p.x+140;P.y=knTip(z,0).y+18;knFire(z,0);for(let f=0;f<30&&ep.some(q=>q.lb);f++){hold(0);tick(1)}ok(P.hp==49,'a bolt that crosses the player\\'s head hits (the old check only looked at a point by their middle)');
+ // a near miss still misses
+ fresh();hold(0);P.x=p.x+140;P.y=knTip(z,0).y+30;knFire(z,0);for(let f=0;f<40&&ep.some(q=>q.lb);f++){hold(0);tick(1)}ok(P.hp==50,'a bolt that passes clear of the player misses');
+ P.hp=1e6}
 // half health: overcharged, three bolts at once
 {ep=[];hurt(z,z.hp-z.mh*.48,0,0);z.iv=0;tick(1);ok(z.oc==1&&z.bn=='KEN · OVERCHARGED'&&FT.some(t=>/CRANKS UP THE AMPS/.test(t.t))&&SND.includes('kover'),'at half health he is overcharged: "KEN CRANKS UP THE AMPS!", his bar says OVERCHARGED');
  ep=[];z.cd=99;knFire(z,0);const b=ep.filter(q=>q.lb),an=b.map(q=>Math.atan2(q.vy,q.vx)).sort((a,c)=>a-c);ok(b.length==3&&an[2]-an[0]>.5&&an[2]-an[0]<.7,'then every zap is three bolts at once, fanned out ('+(an[2]-an[0]).toFixed(2)+' rad)');

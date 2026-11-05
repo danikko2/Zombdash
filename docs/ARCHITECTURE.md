@@ -363,7 +363,7 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 | `bosses/girl-horseman-mechanic.js` | Abigail, the Headless Horseman, the Mechanic |
 | `bosses/ice-cream-and-fire-chief.js` | Ice Cream Man and Fire Chief (vehicle bosses) |
 | `bosses/penny-and-mayor.js` | Penny and the Mayor |
-| `bosses/ken.js` | Ken the welder (the Black Iron Foundry's survivor, 17): his MIG gun's lightning (survivor-boss bullets `ep` with `lb`, drawn as one bolt from the torch tip to the head until they hit), the black burn marks where they hit (`KSC`), three bolts at a time from half health, their light on dark maps (`knLights`), sounds |
+| `bosses/ken.js` | Ken the welder (the Black Iron Foundry's survivor, 17): his MIG gun's lightning (survivor-boss bullets `ep` with `lb`, drawn as one bolt from the torch tip to the head until they hit; the whole bolt hits anyone it crosses, `knOn`), the black burn marks where they hit (`KSC`), three bolts at a time from half health, their light on dark maps (`knLights`), sounds |
 
 ### Tutorial (`src/js/tutorial/`)
 
