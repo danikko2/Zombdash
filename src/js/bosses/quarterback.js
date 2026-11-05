@@ -1,5 +1,6 @@
 //# bosses/quarterback.js — Buck, Zombville Stadium's quarterback (18): the charge with a ghost football team, and the minigun
-// ---------- Buck (18): navy helmet, the home team's red #7 jersey, white pants; a football in his hand ----------
+// ---------- Buck (18): navy helmet, the home team's red #7 jersey, white pants; a football in his hand, and his own heavy
+// minigun (PS[18].mini: six barrels in clamp rings, a carry handle, an ammo can) held low in both hands ----------
 // Two attacks, taken in turn (whichever the distance allows):
 // * The charge: "HUT! HUT! HIKE!": a ghost football team appears in a line beside him and he and they crouch for a moment
 //   (their lanes show on the ground), then the whole team charges straight at where you were. Each runner that reaches you
@@ -14,8 +15,8 @@ var QBG=[];
 function qbClear(){QBG=[]}
 // where each ghost teammate lines up, in the order they join: [to the side, ahead (negative: behind)] in px from Buck
 const QBF=[[70,0],[-70,0],[140,8],[-140,8],[70,-56],[-70,-56],[210,16],[-210,16],[140,-48],[-140,-48]],QBR=20;
-// the end of the minigun's barrels (PS[18].gun[8]: 70,1 px from the shoulder)
-function qbMz(z,a){const s=SVK/1.6,fl=Math.cos(z.fa)<0?-1:1,L=70*s,q=1*s,hy=z.y-10.2*s;return{x:z.x+Math.cos(a)*L-fl*q*Math.sin(a),y:hy+Math.sin(a)*L+fl*q*Math.cos(a)}}
+// the end of the minigun's barrels: he carries it low with both hands (PS[18].mini: the muzzle is 72 px out and 8.5 px below the shoulder)
+function qbMz(z,a){const s=SVK/1.6,fl=Math.cos(z.fa)<0?-1:1,L=72*s,q=8.5*s,hy=z.y-10.2*s;return{x:z.x+Math.cos(a)*L-fl*q*Math.sin(a),y:hy+Math.sin(a)*L+fl*q*Math.cos(a)}}
 function svQB(z,Q,d,sg,aim,dt,can){const D=SVS[18];z.mf=Math.max(0,(z.mf||0)-dt);
 const gap=()=>(D.ca??2)*(z.oc?.7:1)*(.8+Math.random()*.4);
 // half health: the two-minute warning

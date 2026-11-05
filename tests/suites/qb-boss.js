@@ -27,8 +27,9 @@ ok(UNM[18]===17&&MUN[17]===18&&ccBossOf(17)===18,'he holds out on Zombville Stad
 ok(CCBOSS.includes(18)&&!CCNOT[18]&&CCBOSS.indexOf(18)==CCBOSS.indexOf(12)+1&&ccRepOK(17),'his fight works on any map: custom campaign maps can have him (after Rusty, in campaign order), and the stadium can be replaced by a custom map');
 {const D=SVS[18];ok(D&&D.hp==820&&D.sp==100&&D.gn==6&&D.cv==430&&D.cl==430&&D.mt==2,'boss stats: 820 health, speed 100, 6 ghost teammates, charges 430 px at 430 px/s, 2 s minigun bursts')}
 // ---------- sprites ----------
-{const Q=PS[18];ok(Q&&Q.walk.length==6&&Q.idle.length==4&&Q.gun.length==WP.length&&Q.ball,'his frames: 6 walking, 4 standing, every gun (the minigun among them), and a football in his hand');
- const all=[];for(const k in PS)for(const a of['walk','idle','gun','mig','ball'])for(const f of(a=='mig'||a=='ball'?(PS[k][a]?[PS[k][a]]:[]):PS[k][a]))all.push([k,a,f]);
+{const Q=PS[18];ok(Q&&Q.walk.length==6&&Q.idle.length==4&&Q.gun.length==WP.length&&Q.ball&&Q.mini,'his frames: 6 walking, 4 standing, every gun, a football in his hand, and his own minigun carried low in both hands');
+ ok(JSON.stringify(Q.gun[8])=='[652,2192,80,32,6,14]'&&JSON.stringify(Q.ball)=='[567,2224,80,32,6,14]','his playable minigun and football frames did not move');
+ const all=[];for(const k in PS)for(const a of['walk','idle','gun','mig','ball','mini'])for(const f of(a=='mig'||a=='ball'||a=='mini'?(PS[k][a]?[PS[k][a]]:[]):PS[k][a]))all.push([k,a,f]);
  const qb=all.filter(e=>e[0]=='18');ok(qb.every(e=>e[2][1]>=2159&&e[2][0]+e[2][2]<=1024&&e[2][1]+e[2][3]<=2256),'they sit below the old sheet (from y 2159)');
  let ov=0;for(const a of qb)for(const b of all){if(a===b)continue;const f=a[2],g=b[2];if(f[0]<g[0]+g[2]&&g[0]<f[0]+f[2]&&f[1]<g[1]+g[3]&&g[1]<f[1]+f[3])ov++}ok(!ov,'no frame overlaps another');
  ok(JSON.stringify(PS[0].gun[0])=='[490,0,80,32,6,14]'&&JSON.stringify(PS[17].walk[0])=='[0,2061,48,64,24,24]'&&JSON.stringify(PS[17].mig)=='[567,2126,80,32,6,14]','older frames did not move (Ken\\'s included)');
@@ -43,10 +44,11 @@ ok(/BUCK WILL NOT GO DOWN EASY/.test(nzn)&&SVB==1,'"BUCK WILL NOT GO DOWN EASY" 
 // an open spot: Buck's whole formation fits and the run is clear (aimed straight right)
 const FW=(x,y,n)=>QBF.slice(0,n).every(([o,f])=>svOK(x+f,y+o));
 const clr=(x,y,L,o0,o1)=>{for(let o=o0;o<=o1;o+=10)for(let s=0;s<=L;s+=6)if(knInW(x+s,y+o))return 0;return 1};
-const spot=(n,L)=>{for(let i=0;i<60000;i++){const x=200+Math.random()*(WW-800),y=300+Math.random()*(WH-600);if(svOK(x,y)&&FW(x,y,n)&&clr(x,y,L,-240,240))return{x,y}}return null};
+// scanned in a grid (not at random) so it always finds one when there is one
+const spot=(n,L)=>{for(let y=300;y<WH-300;y+=16)for(let x=200;x<WW-600;x+=16)if(svOK(x,y)&&FW(x,y,n)&&clr(x,y,L,-240,240))return{x,y};return null};
 const p=spot(8,560);ok(!!p,'(found an open stretch of field for the plays)');
 const fresh=()=>{ep=[];QBG=[];FT=[];P.hp=50;P.mx=50;P.inv=0;z.qs=0;z.mg=0;z.lk=0;z.iv=0};
-const at=(dx,dy)=>{z.x=p.x;z.y=p.y;P.x=p.x+dx;P.y=p.y+dy};
+const at=(dx,dy)=>{z.x=p.x;z.y=p.y;P.x=p.x+dx;P.y=p.y+dy;flow()};
 // the charge: the snap count, the team lines up, then runs
 {fresh();at(300,0);z.ab=0;z.nx='c';tick(1);ok(z.qs==1&&QBG.length==6&&QBG.every(g=>g.st==0),'the charge: a ghost team of 6 appears beside him ('+QBG.length+')');
  ok(FT.some(t=>t.t=='HUT! HUT! HIKE!')&&SND.includes('qbhike'),'"HUT! HUT! HIKE!"');
@@ -77,7 +79,7 @@ const charge=(dy)=>{fresh();at(300,0);z.ab=0;z.nx='c';z.cd=99;tick(1);const run=
 // it hurts: standing in front of it
 {fresh();at(200,0);z.ab=0;z.nx='m';for(let f=0;f<200&&(z.mg||f<2);f++){P.x=p.x+200;P.y=p.y;tick(1)}ok(P.hp<50&&P.hp>=47,'standing in front of the minigun costs a heart or more ('+(50-P.hp)+')')}
 // they take turns
-{fresh();at(300,0);z.ab=0;z.nx=null;const seen=[];for(let f=0;f<2400&&seen.length<4;f++){P.hp=50;P.inv=0;P.x=z.x+300;P.y=z.y;if(z.x<200||z.x>WW-500){z.x=p.x;z.y=p.y}const q0=z.qs,m0=z.mg;tick(1);if(z.qs==1&&q0!=1)seen.push('c');if(z.mg==1&&m0!=1)seen.push('m')}
+{fresh();at(300,0);z.ab=0;z.nx=null;const seen=[];for(let f=0;f<2400&&seen.length<4;f++){P.hp=50;P.inv=0;P.x=p.x+300;P.y=p.y;if(!z.qs&&!z.mg&&Math.hypot(z.x-p.x,z.y-p.y)>120){z.x=p.x;z.y=p.y}const q0=z.qs,m0=z.mg;tick(1);if(z.qs==1&&q0!=1)seen.push('c');if(z.mg==1&&m0!=1)seen.push('m')}
  ok(seen.length>=4&&seen.every((s,i)=>!i||s!=seen[i-1]),'he takes the two plays in turn: '+seen.join(' '))}
 // half health: the two-minute warning
 {fresh();at(300,0);hurt(z,z.hp-z.mh*.48,0,0);z.iv=0;tick(1);ok(z.oc==1&&z.bn=='BUCK · TWO-MINUTE WARNING'&&FT.some(t=>t.t=='TWO-MINUTE WARNING!')&&SND.includes('qbwhistle'),'at half health: the referee\\'s whistle, "TWO-MINUTE WARNING!" on his bar');
