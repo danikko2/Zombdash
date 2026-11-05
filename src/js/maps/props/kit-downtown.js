@@ -1,4 +1,4 @@
-//# maps/props/kit-downtown.js — Kit props for Downtown Zombville after the outbreak: police sawhorses, infection screening tents, field-hospital tents and cots, a military watchtower, the stadium's gates and lettering, the hospital's ER canopy, monument signs, quarantine and cardboard signs, the missing-persons wall, the subway entrance, the elevated train (pillars, track, train cars), a crashed army helicopter, HELP painted on a roof, a flashing LED message trailer, dropped riot gear, suitcases
+//# maps/props/kit-downtown.js — Kit props for Downtown Zombville after the outbreak: police sawhorses, infection screening tents, field-hospital tents and cots, a military watchtower, the stadium's gates and lettering, the hospital's ER canopy, monument signs, quarantine and cardboard signs, the missing-persons wall, the subway entrance, the elevated train (pillars, track, train cars), a crashed army helicopter (and the same wreck on fire: dtHeli draws both, dtHeliFire its flames each frame), HELP painted on a roof, a flashing LED message trailer, dropped riot gear, suitcases
 // ---------- Downtown Zombville's pieces ----------
 const DTC={o:'#16111c',st:'#8a8e96',sl:'#a8acb4',sd:'#5e626a',wh:'#f4f4f0',rd:'#c0392b',bl:'#2a4a9a',ol:'#4a5a32',oll:'#5e7040',old:'#323e22',gl:'#8fc3e8'};
 function dtLines(t,n){return String(t||'').split('|').slice(0,n)}
@@ -6,6 +6,50 @@ function dtLines(t,n){return String(t||'').split('|').slice(0,n)}
 function dtCanopy(q,w,h,col,band){R_(q,DTC.o,4,h-46,3,46);R_(q,DTC.o,w-7,h-46,3,46);R_(q,'#c8ccd4',5,h-45,1,44);R_(q,'#c8ccd4',w-6,h-45,1,44);
  q.fillStyle=DTC.o;q.beginPath();q.moveTo(0,h-44);q.lineTo(14,6);q.lineTo(w-14,6);q.lineTo(w,h-44);q.closePath();q.fill();q.fillStyle=col;q.beginPath();q.moveTo(2,h-45);q.lineTo(15,8);q.lineTo(w-15,8);q.lineTo(w-2,h-45);q.closePath();q.fill();
  q.fillStyle='rgba(0,0,0,.12)';q.beginPath();q.moveTo(w/2,8);q.lineTo(w-15,8);q.lineTo(w-2,h-45);q.lineTo(w/2,h-45);q.closePath();q.fill();R_(q,DTC.o,0,h-48,w,14);R_(q,band,1,h-47,w-2,12)}
+// helix: a crashed army helicopter on its side: the cockpit smashed, the tail boom snapped, the rotor blades bent. helixf: the same
+// wreck on fire: its hull scorched black round the engine, the cockpit and the snapped tail, the engine deck burned through, the
+// cockpit glass gone, cracks in the skin; every frame (an) the holes and cracks glow, flames pour out of the engine, the cockpit and
+// the tail and lick along the top of the hull, and the firelight flickers on the body. Put a blaze effect with flames off over the
+// engine for its black smoke. Both are drawn by dtHeli in the same 250×140 picture (DTHB: where the burning parts are in it).
+const DTHB={hole:[[108,73],[112,67],[118,70],[123,63],[129,68],[136,64],[143,70],[142,77],[136,80],[128,78],[120,81],[112,79]],
+ lip:[[108,73],[112,79],[120,81],[128,78],[136,80],[142,77],[143,70],[145,75],[143,81],[136,83.5],[128,81.5],[120,84.5],[111,82.5],[106,76]],
+ tail:[[66,82],[73,76],[81,81],[79,90],[70,93]],win:[200,88,20,18],
+ cracks:[[[150,103],[158,98],[166,104],[175,99],[182,104]],[[94,100],[102,105],[110,100],[116,104]],[[158,75],[166,80],[175,76]]]};
+function dtPoly(q,P,sc=1){let cx=0,cy=0;for(const p of P){cx+=p[0];cy+=p[1]}cx/=P.length;cy/=P.length;q.beginPath();P.forEach((p,k)=>{const x=cx+(p[0]-cx)*sc,y=cy+(p[1]-cy)*sc;k?q.lineTo(x,y):q.moveTo(x,y)});q.closePath()}
+// the helicopter's body as a path (hull and tail boom), to clip soot and firelight to it
+function dtHeliBody(q){q.beginPath();q.ellipse(140,92,74,34,-.08,0,7);q.save();q.translate(48,96);q.rotate(-.5);q.rect(-50,-22,84,40);q.restore()}
+// the near edges of the burned holes (e = the engine's too): drawn into the picture, and the cockpit frame again over its flames,
+// so they pour out from inside
+function dtHeliLips(q,e=1){if(e){dtPoly(q,DTHB.lip);q.fillStyle='#1c1712';q.fill()}
+const[wx,wy,wr,wh]=DTHB.win;q.strokeStyle=DTC.o;q.lineWidth=3;q.beginPath();q.ellipse(wx,wy,wr+1,wh+1,0,.18*Math.PI,.82*Math.PI);q.stroke();q.strokeStyle='#4a4234';q.lineWidth=1;q.beginPath();q.ellipse(wx,wy,wr-.5,wh-.5,0,.2*Math.PI,.8*Math.PI);q.stroke()}
+function dtHeli(q,b){const ol=b?'#3c4628':DTC.ol,oll=b?'#4c5634':DTC.oll,old=b?'#262c1a':DTC.old;q.lineCap='round';
+for(const[w,c]of[[12,DTC.o],[8,b?'#2a2a24':'#3a3a34']])for(const[a,c_,e,d]of[[120,60,10,20],[120,60,236,30],[120,60,100,132],[120,60,190,120]]){q.strokeStyle=c;q.lineWidth=w;q.beginPath();q.moveTo(a,c_);q.quadraticCurveTo((a+e)/2+(d-c_)*.15,(c_+d)/2-(e-a)*.12,e,d);q.stroke()}
+ q.save();q.translate(48,96);q.rotate(-.5);R_(q,DTC.o,-46,-9,80,18);R_(q,ol,-45,-8,78,16);R_(q,old,-45,4,78,4);R_(q,DTC.o,-50,-22,16,30);R_(q,ol,-49,-21,14,28);q.restore();
+ q.fillStyle=DTC.o;q.beginPath();q.ellipse(140,92,74,34,-.08,0,7);q.fill();q.fillStyle=ol;q.beginPath();q.ellipse(140,92,72,32,-.08,0,7);q.fill();q.fillStyle=oll;q.beginPath();q.ellipse(136,82,62,16,-.08,0,7);q.fill();q.fillStyle=old;q.beginPath();q.ellipse(146,108,60,12,-.08,0,7);q.fill();
+ const[wx,wy,wr,wh]=DTHB.win;q.fillStyle=DTC.o;q.beginPath();q.ellipse(wx,wy,wr+2,wh+2,0,0,7);q.fill();q.fillStyle=b?'#0c0806':'#1a2a36';q.beginPath();q.ellipse(wx,wy,wr,wh,0,0,7);q.fill();
+ if(!b){q.strokeStyle='#bfe6ff';q.lineWidth=1.5;q.beginPath();q.moveTo(192,78);q.lineTo(204,92);q.lineTo(196,100);q.moveTo(204,92);q.lineTo(214,86);q.stroke();R_(q,DTC.o,112,66,26,12);R_(q,'#2a2c26',113,67,24,10)}
+ else{q.fillStyle='#bfe6ff';for(const[a,c_]of[[183,82],[186,96],[214,80],[212,98]])q.fillRect(a,c_,3,2)}
+ R_(q,'#f4f4f0',128,96,26,10);kpText(q,'ARMY',141,101.5,24,8,'#16111c');for(const[a,c_]of[[96,104],[118,110],[164,70],[180,104]]){R_(q,'#1a1814',a,c_,8,5)}
+ if(b){q.save();dtHeliBody(q);q.clip();for(const[cx,cy,r,a]of[[126,72,44,.95],[200,86,34,.9],[72,88,30,.92],[162,82,26,.65],[104,100,20,.55],[150,104,16,.45]]){q.fillStyle='#120e0a';for(let k=0;k<6;k++){q.globalAlpha=a*.22;q.beginPath();q.ellipse(cx,cy,r*(1-k*.15),r*(1-k*.15)*.8,0,0,7);q.fill()}q.globalAlpha=1}
+  q.fillStyle='#7a7064';for(let k=0;k<26;k++){const a=k*2.39996,d=8+(k*37%30),cx=k%3==0?200:k%3==1?126:74,cy=k%3==0?86:k%3==1?74:88;q.fillRect(Math.round(cx+Math.cos(a)*d),Math.round(cy+Math.sin(a)*d*.7),2,1)}q.restore();
+  dtPoly(q,DTHB.hole);q.fillStyle='#0c0806';q.fill();dtPoly(q,DTHB.tail);q.fill();q.strokeStyle='#0c0806';q.lineWidth=2.4;for(const C of DTHB.cracks){q.beginPath();C.forEach((p,k)=>k?q.lineTo(p[0],p[1]):q.moveTo(p[0],p[1]));q.stroke()}dtHeliLips(q)}
+ q.lineCap='butt'}
+// the burning wreck's fire, each frame, in its picture's own coordinates
+function dtHeliFire(o,t){const G=X,ox=Math.round(o.x-125),oy=Math.round(o.y-140),fk=k=>.72+.18*Math.sin(t*9.1+k*2.3)+.1*Math.sin(t*17+k);G.save();G.translate(ox,oy);
+// firelight on the body
+G.save();dtHeliBody(G);G.clip();G.globalCompositeOperation='lighter';for(const[cx,cy,r,a,k]of[[126,70,110,.4,0],[200,90,60,.32,1],[74,86,50,.3,2]]){const g=G.createRadialGradient(cx,cy,0,cx,cy,r),f=a*fk(k);g.addColorStop(0,'rgba(255,130,40,'+f+')');g.addColorStop(.5,'rgba(255,96,24,'+f*.4+')');g.addColorStop(1,'rgba(255,90,20,0)');G.fillStyle=g;G.fillRect(cx-r,cy-r,r*2,r*2)}G.restore();
+// the holes and cracks glow
+for(const[P,k]of[[DTHB.hole,3],[DTHB.tail,4]]){dtPoly(G,P,.92);G.fillStyle='#7a1e0c';G.fill();G.globalAlpha=.55+.45*fk(k);dtPoly(G,P,.68);G.fillStyle='#ff6a14';G.fill();dtPoly(G,P,.38);G.fillStyle='#ffc84a';G.fill();G.globalAlpha=1}
+{const[wx,wy,wr,wh]=DTHB.win;G.save();G.beginPath();G.ellipse(wx,wy,wr-1,wh-1,0,0,7);G.clip();G.fillStyle='#5a160a';G.fillRect(wx-wr,wy-wh,wr*2,wh*2);G.globalAlpha=.6+.4*fk(5);G.fillStyle='#c83a12';G.beginPath();G.ellipse(wx+1,wy+10,wr*.9,wh*.6,0,0,7);G.fill();G.fillStyle='#ff8a1a';G.beginPath();G.ellipse(wx+1,wy+13,wr*.5,wh*.35,0,0,7);G.fill();G.restore();G.globalAlpha=1}
+G.lineCap='round';DTHB.cracks.forEach((C,j)=>{G.globalAlpha=.4+.6*fk(6+j);for(const[c,w]of[['#ff5a14',1.8],['#ffd27a',.7]]){G.strokeStyle=c;G.lineWidth=w;G.beginPath();C.forEach((p,k)=>k?G.lineTo(p[0],p[1]):G.moveTo(p[0],p[1]));G.stroke()}});G.globalAlpha=1;G.lineCap='butt';
+// flames: the whole top of the hull burns, tallest out of the engine hole; then flames out of the cracks in the
+// side, the snapped tail and the cockpit (behind its frame), all leaning downwind
+const top=a=>{const c=Math.cos(-.08),s_=Math.sin(-.08),ex=72*Math.cos(a),ey=32*Math.sin(a);return[140+ex*c-ey*s_,92+ex*s_+ey*c]};
+let T=[];for(let k=0;k<13;k++){const a=Math.PI*(1.06+k*.066),[x,y]=top(a),d=Math.abs(x-126),pk=Math.max(0,1-d/78);if(x>186)continue;T.push(fxTk(o,k,t,x,x>108&&x<144?76:y+7,15+pk*5,26+pk*pk*72))}fxBurn(G,T);
+T=[];DTHB.cracks.forEach((C,j)=>{for(const p of C.filter((_,k)=>k%2))T.push(fxTk(o,40+j*3+T.length,t,p[0],p[1]+2,11,j==2?32:26))});
+[[70,88,13,52],[76,84,14,44],[66,93,10,32]].forEach(([x,y,w,h],k)=>T.push(fxTk(o,20+k,t,x,y,w,h)));fxBurn(G,T);
+T=[];[[190,100,13,52],[197,102,16,70],[204,101,15,64],[210,98,11,46]].forEach(([x,y,w,h],k)=>T.push(fxTk(o,30+k,t,x,y,w,h,.2)));fxBurn(G,T);dtHeliLips(G,0);
+fxLicks(G,o,t,126,70,60,96,1,6);fxLicks(G,{x:o.x+80,y:o.y},t,200,96,24,66,.8,3);G.restore()}
 Object.assign(OB,{
 // pbarr: a police sawhorse barricade (POLICE on the blue board); pbarrx: one knocked flat
 pbarr:ob(64,30,[60,8],q=>{for(const x of[6,52]){R_(q,DTC.o,x,8,6,22);R_(q,'#e8e8e4',x+1,9,4,20)}R_(q,DTC.o,0,4,64,13);R_(q,DTC.bl,1,5,62,11);kpText(q,'POLICE',32,10.5,56,9,'#f4f4f0');R_(q,DTC.o,2,19,60,6);for(let x=3;x<61;x+=8){R_(q,'#f4f4f0',x,20,4,4);R_(q,'#e07a1a',x+4,20,4,4)}}),
@@ -65,13 +109,9 @@ eldeck:Object.assign({w:200,h:84,c:0,f:(g,x,y,v)=>S2(g,x,y,200,84,q=>{v=+v||0;R_
  if(v>=.5){const fr=v>=.8,L=fr?192:200,x0=fr?0:0;R_(q,DTC.o,x0,10,L,64);R_(q,'#b8bcc4',x0+1,11,L-2,62);R_(q,'#d0d4dc',x0+1,11,L-2,8);R_(q,'#9aa0aa',x0+1,65,L-2,8);R_(q,'#2f6fd0',x0+1,19,L-2,4);R_(q,'#2f6fd0',x0+1,61,L-2,4);
   for(let x=x0+14;x<x0+L-20;x+=26){R_(q,'#26303c',x,24,16,6);R_(q,'#26303c',x,54,16,6)}for(const ax of[x0+46,x0+120]){R_(q,DTC.o,ax,32,28,20);R_(q,'#8a8e96',ax+1,33,26,18);for(let i=0;i<5;i++)R_(q,'#6e727a',ax+3+i*5,35,2,14)}
   if(fr){R_(q,DTC.o,x0+L-14,14,14,56);R_(q,'#26303c',x0+L-13,16,12,52);R_(q,'#fff4c0',x0+L-3,18,3,8);R_(q,'#fff4c0',x0+L-3,58,3,8);R_(q,'#16111c',x0+L-30,36,12,12);kpText(q,'7',x0+L-24,42.5,10,9,'#ffd84a')}else{R_(q,DTC.o,x0,36,4,12);R_(q,DTC.o,x0+L-4,36,4,12)}}})},{ov:1,sw:1}),
-// helix: a crashed army helicopter on its side: the cockpit smashed, the tail boom snapped, the rotor blades bent (put blaze
-// effects on it)
-helix:{w:250,h:140,c:[150,46],f:(g,x,y,v)=>S2(g,x,y,250,140,q=>{q.lineCap='round';for(const[w,c]of[[12,DTC.o],[8,'#3a3a34']])for(const[a,b,e,d]of[[120,60,10,20],[120,60,236,30],[120,60,100,132],[120,60,190,120]]){q.strokeStyle=c;q.lineWidth=w;q.beginPath();q.moveTo(a,b);q.quadraticCurveTo((a+e)/2+(d-b)*.15,(b+d)/2-(e-a)*.12,e,d);q.stroke()}
- q.save();q.translate(48,96);q.rotate(-.5);R_(q,DTC.o,-46,-9,80,18);R_(q,DTC.ol,-45,-8,78,16);R_(q,DTC.old,-45,4,78,4);R_(q,DTC.o,-50,-22,16,30);R_(q,DTC.ol,-49,-21,14,28);q.restore();
- q.fillStyle=DTC.o;q.beginPath();q.ellipse(140,92,74,34,-.08,0,7);q.fill();q.fillStyle=DTC.ol;q.beginPath();q.ellipse(140,92,72,32,-.08,0,7);q.fill();q.fillStyle=DTC.oll;q.beginPath();q.ellipse(136,82,62,16,-.08,0,7);q.fill();q.fillStyle=DTC.old;q.beginPath();q.ellipse(146,108,60,12,-.08,0,7);q.fill();
- q.fillStyle=DTC.o;q.beginPath();q.ellipse(200,88,22,20,0,0,7);q.fill();q.fillStyle='#1a2a36';q.beginPath();q.ellipse(200,88,20,18,0,0,7);q.fill();q.strokeStyle='#bfe6ff';q.lineWidth=1.5;q.beginPath();q.moveTo(192,78);q.lineTo(204,92);q.lineTo(196,100);q.moveTo(204,92);q.lineTo(214,86);q.stroke();
- R_(q,DTC.o,112,66,26,12);R_(q,'#2a2c26',113,67,24,10);R_(q,'#f4f4f0',128,96,26,10);kpText(q,'ARMY',141,101.5,24,8,'#16111c');for(const[a,b]of[[96,104],[118,110],[164,70],[180,104]]){R_(q,'#1a1814',a,b,8,5)}q.lineCap='butt'})},
+// helix: a crashed army helicopter; helixf: the same wreck on fire (both drawn by dtHeli, the fire by dtHeliFire, above)
+helix:{w:250,h:140,c:[150,46],f:(g,x,y,v)=>S2(g,x,y,250,140,q=>dtHeli(q,0))},
+helixf:{w:250,h:140,c:[150,46],f:(g,x,y,v)=>S2(g,x,y,250,140,q=>dtHeli(q,1)),an:dtHeliFire,lt:[{dx:1,dy:-72,r:200,i:1,f:'fire',c:'#ff8a2a',gs:1.4},{dx:76,dy:-48,r:100,i:.9,f:'fire',c:'#ff8a2a'},{dx:-52,dy:-54,r:80,i:.8,f:'fire',c:'#ff8a2a'}]},
 // roofsos: HELP painted big on a flat roof, in white, dripping (your text)
 roofsos:{w:240,h:90,c:0,txt:8,dt:'HELP',f:(g,x,y,v,col,t)=>S2(g,x,y,240,90,q=>{const s=(cmTxt(t,8)||'HELP').toUpperCase();q.font='bold 78px Impact, Arial Black, Arial, sans-serif';q.textAlign='center';q.textBaseline='middle';q.fillStyle='rgba(20,16,20,.35)';q.fillText(s,123,48);q.fillStyle='#f4f4ee';q.fillText(s,120,45);
  for(let i=0;i<9;i++)R_(q,'#f4f4ee',30+i*22+(i%3)*4,72,3,8+(i%4)*4);q.textAlign='left';q.textBaseline='alphabetic'})},
