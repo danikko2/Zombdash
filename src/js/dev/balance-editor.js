@@ -3,7 +3,7 @@
 // Every value here is the game's real variable. Changes are saved on this device in S.bal (by short id)
 // and only apply while test mode is on; turning test mode off puts every default back.
 var BALR=[],BALM={},BALD={},BALO={},BALT='guns',BALTO=0;
-const BALG=[['guns','Guns'],['ammo','Ammo'],['caps','Caps'],['zhp','Zombie HP'],['bhp','Boss HP'],['php','Player HP'],['spd','Speed'],['drop','Drops'],['zc','Zombie count']];
+const BALG=[['guns','Guns'],['ammo','Ammo'],['ex','Extras'],['caps','Caps'],['zhp','Zombie HP'],['bhp','Boss HP'],['php','Player HP'],['spd','Speed'],['drop','Drops'],['zc','Zombie count']];
 const BAMO=[['pa','Pistol'],['ri','Rifle'],['sh','Shotgun'],['rk','Rockets'],['bl','Belts'],['ar','Arrows'],['rand','Random']];
 function balInit(){if(BALR.length)return;
  // id = short stable name used in S.bal and in settings codes; the label key is kept so older saves still load
@@ -23,6 +23,10 @@ function balInit(){if(BALR.length)return;
   if(w.lh){add('gH'+i,'guns',n,'Health each heart heals',w,'hl',1,10,1);add('gL'+i,'guns',n,'Reload seconds',RLT,i,.2,10,.1);add('gK'+i,'guns',n,'Rockets per heart',w,'apr',1,10,1);add('gW'+i,'guns',n,'Heart speed',w,'lv',100,900,10);add('gO'+i,'guns',n,'Most wall bounces',w,'lb',0,10,1);add('gE'+i,'guns',n,'Seconds a heart flies',w,'ll',.5,8,.1)}
   if(w.fb){add('gT'+i,'guns',n,'Seconds a zombie burns',w,'bt',.5,15,.5);add('gU'+i,'guns',n,'Fire damage per second',w,'bd',0,10,.1)}});
  for(const k in AMI){const a=AMI[k];add('aX'+k,'ammo',a.n,'Max carried',a,'max',0,up(a.max*3,50,50),a.max>=200?10:1);add('aB'+k,'ammo',a.n,'Amount per purchase',a,'buy',1,up(a.buy*3,20,10),a.buy>=100?5:1);add('aC'+k,'ammo',a.n,'Store price',a,'cost',0,up(a.cost*4,200,50),5);add('aD'+k,'ammo',a.n,'Pickup size',a,'drop',0,up(a.drop*3,20,10),a.drop>=100?5:1)}
+ // extras (extras/extras.js; the Headlamp's light: extras/headlamp.js)
+ add('xS','ex','Extras slots (every player; apart from the 4 weapon slots)','Extras slots',EXG,'slots',0,6,1);
+ for(const id of EXL){const I=EXI[id];add('xP'+id,'ex',I.n,'Store price',I,'cost',0,up(I.cost*5,500,100),10);
+  if(id=='hl'){add('xR'+id,'ex',I.n,'Light reach: how far it goes (px)',I,'r',20,1200,10);add('xI'+id,'ex',I.n,'Brightness (1 = full light at the lamp on a night map)',I,'i',0,3,.05);add('xW'+id,'ex',I.n,'Beam width (degrees, edge to edge)',I,'w',2,180,1);add('xF'+id,'ex',I.n,'Fade going out (0 = none, 1 = steady, 3 = fast)',I,'fd',0,4,.05)}}
  ['Easy','Normal','Hard'].forEach((d,i)=>add('cR'+i,'caps','Ranged cap (free play + campaign)',d+' %',ZCFG.cap.rg,i,0,100,1));
  ['Easy','Normal','Hard'].forEach((d,i)=>add('cS'+i,'caps','Special cap (free play)',d+' %',ZCFG.cap.sp,i,0,100,1));
  ZCFG.camp.forEach((c,i)=>add('cC'+i,'caps','Special cap (campaign, Easy / Medium)',(i+1)+'. '+(SEC[i]?SEC[i].n:'Section '+(i+1))+' %',c,'sp',0,100,1));
@@ -73,6 +77,7 @@ function balCss(){dtCss();try{if(document.getElementById('balcss')||!document.he
 @media (max-width:560px){.bal .brow{grid-template-columns:1fr 70px 32px}.bal .brow input[type=range]{grid-column:1/-1;grid-row:2}.bal .brow.bsel{grid-template-columns:1fr 1fr 32px}}`;document.head.appendChild(st)}catch(e){}}
 function balOpen(t){if(!S.dev)return options();balInit();if(t)BALT=t;UIS='bal';mode='menu';balCss();let h='',sub=null;
  for(const e of BALR){if(e.g!=BALT)continue;if(e.sub!==sub){sub=e.sub;h+=`<h4 class=bsub>${sub}</h4>`;if(BALT=='zc'&&e.lab=='Base')h+=`<p class=note id=balzc style="text-align:left;margin:2px 4px 6px">${balZcTxt()}</p>`}h+=balRow(e)}
+ if(BALT=='ex')h=`<p class=note style="text-align:left;margin:4px">The Headlamp's light shows fully on maps with night or dusk lighting; on daylight maps it is a faint beam. Light changes show at once in a run.</p>`+h;
  if(BALT=='drop')h=`<p class=note style="text-align:left;margin:4px">Each kill rolls every chance on its own. The Luck skill raises the chances on regular zombies. Survivor bosses don't drop items.</p>`+h;
  const n=Object.keys(S.bal||{}).length;
  show(`<div class="p wide bal"><h2>GAME BALANCE<small>test mode</small></h2><div class=row style="margin:0 0 4px"><button data-q=1 onclick="options()">◀ BACK TO OPTIONS</button></div><div class="seg btab">${BALG.map(([k,nm])=>`<button data-q=1 class="${BALT==k?'on':''}" onclick="balOpen('${k}')">${nm}${BALR.some(e=>e.g==k&&S.bal&&e.k in S.bal)?' •':''}</button>`).join('')}</div>
@@ -99,7 +104,7 @@ function balLoad(){const el=document.getElementById('balin'),m=document.getEleme
  balInit();const nb={};let ok=0,skip=0;for(const k in o){const id=BALM[k]?k:BALO[k];const e=id&&BALM[id];const v=e?balOK(e,o[k]):null;if(v==null){skip++;continue}if(v!==BALD[id]&&!(!e.opt&&+v==+BALD[id])){nb[id]=v;ok++}}
  S.bal=nb;balApply();try{sv()}catch(x){}sfx('buy');balOpen();const m2=document.getElementById('balcmsg');if(m2)m2.textContent='Loaded '+ok+' setting(s)'+(skip?' · '+skip+' unknown value(s) skipped':'')+'.'}
 // entry in Options (test mode only), and keep the values in step with test mode
-const _devBox1=devBox;devBox=function(){return _devBox1()+(S.dev?`<div class=dvb><h3>Game balance</h3><button data-q=1 class=go onclick="balOpen()">GAME BALANCE<small>guns · ammo · caps · health · speed · drops · zombie count</small></button><p class=note>${Object.keys(S.bal||{}).length?Object.keys(S.bal).length+' value(s) changed from the defaults.':'Everything is at the defaults.'}</p></div>`:'')};
+const _devBox1=devBox;devBox=function(){return _devBox1()+(S.dev?`<div class=dvb><h3>Game balance</h3><button data-q=1 class=go onclick="balOpen()">GAME BALANCE<small>guns · ammo · extras · caps · health · speed · drops · zombie count</small></button><p class=note>${Object.keys(S.bal||{}).length?Object.keys(S.bal).length+' value(s) changed from the defaults.':'Everything is at the defaults.'}</p></div>`:'')};
 const _devSet1=devSet;devSet=function(){_devSet1();balApply()};
 const _devOff1=devOff;devOff=function(){S.dev=0;balApply();_devOff1()};
 balApply();

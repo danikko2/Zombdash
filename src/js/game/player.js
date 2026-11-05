@@ -6,7 +6,7 @@ else if(mouse.d||MSE.on){const v=MPn&&p.vp||{x:0,y:0,z:tutZ()},c=MPn&&p.cam||cam
 for(const q of GP){if(p.inp!='any'&&q.i!==p.inp)continue;const g=q.g,ax=g.axes[0]||0,ay=g.axes[1]||0,am=Math.hypot(ax,ay);
 if(am>.22){const k=Math.min(1,(am-.22)/.68)*50/am;mx+=ax*k;my+=ay*k}if(q.b[12])my-=50;if(q.b[13])my+=50;if(q.b[14])mx-=50;if(q.b[15])mx+=50;
 const rx=g.axes[2]||0,ry=g.axes[3]||0,rm=Math.hypot(rx,ry);if(rm>.3){p.a=Math.atan2(ry,rx);const tD=70+120*Math.min(1,(rm-.3)/.6);p.rtD=p.rtD?p.rtD+(tD-p.rtD)*.25:tD;p.rtW=performance.now();MSE.on=0}if(q.b[7]){fire=true;p.rtW=performance.now();MSE.on=0}
-if(q.jp(2))amRel(p);if(q.jp(4)||q.jp(5)||q.jp(3)){const o=p.own.slice(),j=o.indexOf(p.cur);p.cur=o[(j+(q.jp(4)?-1:1)+o.length)%o.length];sfx('click')}}
+if(q.jp(2))amRel(p);if(q.jp(1))hlTog(p);if(q.jp(4)||q.jp(5)||q.jp(3)){const o=p.own.slice(),j=o.indexOf(p.cur);p.cur=o[(j+(q.jp(4)?-1:1)+o.length)%o.length];sfx('click')}}
 if(p.root>0){mx=0;my=0}return{mx,my,fire}}
 function updP(dt){if(P.dead)return 0;
 if(P.dn){P.rt-=dt;let hel=null;for(const q of PL)if(q!==P&&alive(q)&&Math.hypot(q.x-P.x,q.y-P.y)<40){hel=q;break}P.rh=hel;

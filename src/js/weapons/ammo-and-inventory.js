@@ -1,5 +1,5 @@
 //# weapons/ammo-and-inventory.js — Inventory, ammo types (AMI), magazines (MAG), reloads, ammo HUD, reload sounds
-// ---------- inventory (4 weapon slots) + ammo: magazines, reserves by ammo type, reloads, drops, shop ----------
+// ---------- inventory (4 weapon slots; extras such as the Headlamp have their own slots: extras/extras.js) + ammo: magazines, reserves by ammo type, reloads, drops, shop ----------
 var INV=4;
 var AMT=['pa','pa','sh','ri','rk','sh','ri','ri','bl','sh','bl','ar','rk','ar','rk','ar','rk','rk','rk'];
 function RDY(p){return shopIt(p).length}
@@ -41,7 +41,7 @@ function amTxt(p,i){if(!p.mg)amInit(p);return p.mg[i]+' / '+(amSt(p,i)?'∞':amR
 function invHTML(){const p=P,sl=[];for(let k=0;k<INV;k++){const i=p.own[k];if(i==null){sl.push(`<div class="isl em"><small>slot ${k+1}</small><span>empty</span></div>`);continue}
 const st=amSt(p,i);sl.push(`<div class="isl ${p.cur==i?'on':''}"><small>slot ${k+1}</small><canvas data-gun=${i} data-cm=${cmOf(p.ac,i)}></canvas><b>${wN(p.ci||0,i)}</b><span class=ia style="color:${AMI[AMT[i]].c}">${amTxt(p,i)}</span>${st?'<span class=ist>starter · ∞ ammo</span>':`<button data-q=1 class=sel onclick="wSell(${i})">SELL $${wSV(p,i)}</button>`}</div>`)}
 const am=Object.keys(AMI).map(t=>{const I=AMI[t],c=pc(I.cost),full=p.am[t]>=I.max;return `<button data-q=1 class="${full||p.cash<c?'no':''}" onclick="amBuy('${t}')"><span class=aic style="background:${I.c}"></span>${I.n}<small>${p.am[t]}/${I.max} · ${full?'full':'+'+I.buy+' $'+c}</small></button>`}).join('');
-return `<h3 class=shh>INVENTORY ${p.own.length}/${INV}</h3><div class=sinv>${sl.join('')}</div><h3 class=shh>AMMO</h3><div class=sam>${am}</div>`}
+return `<h3 class=shh>INVENTORY ${p.own.length}/${INV}</h3><div class=sinv>${sl.join('')}</div>${exInv(p)}<h3 class=shh>AMMO</h3><div class=sam>${am}</div>`}
 // --- drops ---
 function amDrop(z,T,add){const t=ZAM[z.t]||'pa';if(T.boss){add('am',t);add('am',['pa','ri','sh','bl'][Math.random()*4|0]);return}if(Math.random()<.085*(1+.08*rk('luck')))add('am',t)}
 function amPick(d){if(!P.am)amInit(P);const t=d.a||'pa',I=AMI[t],k=Math.round(I.drop*(S.df?.8:1)*(1+.1*Math.random()));const had=P.am[t];P.am[t]=Math.min(I.max,P.am[t]+k);FT.push({x:d.x,y:d.y-14,t:P.am[t]>had?'+'+(P.am[t]-had)+' '+I.s:I.s+' FULL',c:I.c,l:1.3});sfx('rlpi',null,null,.6)}
