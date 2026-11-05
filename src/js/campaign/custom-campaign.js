@@ -12,7 +12,7 @@ const CCBOSS=[2,3,1,9,4,10,11,17,12,5,8,6,7];
 const CCNOT={13:'drives the ice cream truck along the City Park road network',14:'drives the fire engine along the Downtown roads and blasts water into its buildings',15:'knocks stock off the Hometown Market shelves and sends carts out of its corrals',16:'watches from the City Hall roof while his police cruiser drives the Main Street roads'};
 function ccSK(s,k){return s+':'+k}
 // slots that were free once and now hold a built-in map (the Black Iron Foundry took slot 5 of Wrong Turn): a custom map stored there moves
-const CCWAS=['1:4'];
+const CCWAS=['1:4','2:3'];
 function ccPK(sk){const a=String(sk).split(':');return[+a[0],+a[1]]}
 // the free slots: every -1 in SEC, as [section, slot]
 function ccFree(){const L=[];SEC.forEach((s,si)=>s.m.forEach((m,k)=>{if(m===-1)L.push([si,k])}));return L}

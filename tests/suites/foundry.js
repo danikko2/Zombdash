@@ -67,7 +67,7 @@ ok(A_('paving').some(a=>a.o.s=='gravel'&&IN({x:a.x+a.w/2,y:a.y+a.h/2},YARD))&&K(
 // ---------- the game builds it ----------
 mapId=16;S.mp=16;setGM('f');build();
 ok(HS.CM==='builtin-foundry'&&WW==3520&&WH==2400&&BG.width==WW,'map 16 builds from foundry.json through the custom-map loader');
-ok(MP.length==17&&MP[16].n=='Black Iron Foundry'&&MPD[16]&&/^data:image\\/jpeg/.test(MPI[16])&&MT[16]&&typeof CLM[16]=='function','map 16 has its name, description, picture, colours and a landmark on the campaign map');
+ok(MP.length>=17&&MP[16].n=='Black Iron Foundry'&&MPD[16]&&/^data:image\\/jpeg/.test(MPI[16])&&MT[16]&&typeof CLM[16]=='function','map 16 has its name, description, picture, colours and a landmark on the campaign map');
 ok(HS.LT&&HS.LT.t=='night'&&HS.NS&&HS.NS.length>=2,'night lighting; no zombie appears inside the building or the office');
 start();{const C=HS.CX;ok(C&&C.O.filter(q=>q.o.k=='bcrane'||q.o.k=='ycrane').length==2&&C.T.some(q=>q.o.fx=='molten')&&C.T.filter(q=>q.o.fx=='weldarc').length==1,'the cranes hang over people; the molten metal and the arc furnace\\'s arcing run')}
 // ---------- reach ----------
@@ -84,7 +84,7 @@ ok(MUN[16]===17&&ccBossOf(16)===17&&UNM[17]===16&&CH[17].n=='Ken','Ken the welde
 // how a campaign map with no survivor yet plays (the foundry had none until Ken came): checked with Ken's spot emptied for now
 const KEN=MUN[16];delete MUN[16];
 const A=S.ac,bits=ms=>ms.reduce((v,m)=>v|1<<m,0),HT=[0,3,1,14,15];
-A.un=[0,MUN[0],MUN[3],MUN[1],MUN[14],MUN[15],MUN[8]];A.tut=1;A.bm=[0,1,2].map(()=>bits(HT.concat([8])));delete A.sl;S.lm='off';setGM('c');
+A.un=[0,MUN[0],MUN[3],MUN[1],MUN[14],MUN[15],MUN[8]];A.tut=1;A.bm=[0,1,2].map(()=>bits(HT.concat([8])));delete A.slt;S.lm='off';setGM('c');
 ok(mOpen(A,DIF(),16)&&/Survive 20 waves to clear it · survivor coming soon/.test(cMunT(16)),'it opens with the rest of Wrong Turn; its info says to survive 20 waves, survivor coming soon');
 mapId=16;S.mp=16;sel=0;start();ok(mapId===16&&HS.CM==='builtin-foundry','a campaign run starts in the foundry');
 const RNG=new Set([11,19]);
@@ -111,7 +111,7 @@ MUN[16]=KEN;ok(ccBossOf(16)===17&&/defeat <b>Ken<\\/b>/.test(cMunT(16)),'with Ke
  const T=cMerge([{bm:[0,1,2].map(()=>bits(HT.concat([8,2,9,10])))},{bm:[0,1,2].map(()=>bits(HT))}]);ok(secDone(T,0,1),'a team with an old save in it keeps Wrong Turn finished too');
  const c=dec(enc(Object.assign({},A,{bm:[bits([16]),0,0]})));ok(c&&c.bm&&(c.bm[0]>>16&1),'save codes keep the foundry\\'s beaten bit')}
 // ---------- a custom map that sat in Wrong Turn's free slot moves ----------
-{const O=ccClean({slots:{'1:4':{id:'y',b:2,n:'Rust Belt'}}});ok(!O.slots['1:4']&&O.slots['2:3']&&O.slots['2:3'].id=='y'&&O.mv&&/Rust Belt.*moved to slot 4 of Zombville.*Black Iron Foundry now fills slot 5 of Wrong Turn/.test(O.mv[0]),'a custom map in slot 5 of Wrong Turn moves to the first free slot after it, with a note: '+(O.mv||[''])[0]);
+{const O=ccClean({slots:{'1:4':{id:'y',b:2,n:'Rust Belt'}}});ok(!O.slots['1:4']&&O.slots['2:4']&&O.slots['2:4'].id=='y'&&O.mv&&/Rust Belt.*moved to slot 5 of Zombville.*Black Iron Foundry now fills slot 5 of Wrong Turn/.test(O.mv[0]),'a custom map in slot 5 of Wrong Turn moves to the first free slot after it, with a note: '+(O.mv||[''])[0]);
  const full={slots:{'1:4':{id:'y',b:2,n:'Rust Belt'}}};ccFree().forEach(([s,k],i)=>{full.slots[s+':'+k]={id:'f'+i,b:2,n:'F'+i}});const O2=ccClean(full);ok(!Object.values(O2.slots).some(a=>a.id=='y')&&Object.keys(O2.slots).length==ccFree().length&&/taken out of the campaign/.test(O2.mv[0]),'with no slot free it comes out of the campaign, with a note')}
 // ---------- free play, the Workshop, the editor ----------
 setGM('f');mapId=16;S.mp=16;start();{const R=play(1,1,4000);ok(!R.err&&wave>=1&&mapId===16,'a Free Play run plays '+R.err);if(mode!='play')nextWave();const row=olRow();ok(row&&row.map===16&&row.mode=='f','its leaderboard board is map 16');over(1)}

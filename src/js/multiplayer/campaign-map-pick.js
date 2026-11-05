@@ -2,7 +2,7 @@
 // ---------- split screen campaign: pick the map on the same campaign map screens as single player ----------
 var CMLB=0;
 // the lobby's combined progress: a map or section counts as open when the players' progress together opens it
-function cMerge(acs){acs=(acs||[]).filter(Boolean);if(!acs.length)return S.ac;if(acs.length==1)return acs[0];const B=acs.map(bmOf);const cmc={};for(const A of acs)for(const id in A.cmc||{})cmc[id]=(cmc[id]||0)|A.cmc[id];const sl={};for(const m in SLATE){let b=0;for(const A of acs){secLate(A,0,+m);b|=A.sl[m]}sl[m]=b}return{name:'Team',g:1,bm:[0,1,2].map(d=>B.reduce((v,b)=>v|b[d],0)),un:[...new Set(acs.flatMap(A=>A.un||[]))],cmc,sl}}
+function cMerge(acs){acs=(acs||[]).filter(Boolean);if(!acs.length)return S.ac;if(acs.length==1)return acs[0];const B=acs.map(bmOf);const cmc={};for(const A of acs)for(const id in A.cmc||{})cmc[id]=(cmc[id]||0)|A.cmc[id];const slt={};for(const m in SLATE){let b=0;for(const A of acs){secLate(A,0,+m);b|=A.slt[m]}slt[m]=b}return{name:'Team',g:1,bm:[0,1,2].map(d=>B.reduce((v,b)=>v|b[d],0)),un:[...new Set(acs.flatMap(A=>A.un||[]))],cmc,slt}}
 function cAcc(){return CMLB?cMerge(lobAcs()):S.ac}
 function clbOpen(){if(GMD!='c'){sfx('deny');return}CMLB=1;CMV=null;sfx('click');cMap()}
 function clbBack(){CMLB=0;CMV=null;mode='lobby';UIS='';sfx('click');rL()}

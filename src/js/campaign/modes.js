@@ -1,7 +1,7 @@
 //# campaign/modes.js — Campaign / free play mode, map order, campaign end screens
 // ---------- campaign & free play ----------
 // campaign order: Suburb → School → Warehouse → Graveyard → Old West → Campground → Military Base → Neighborhood
-const CORD=[0,3,1,14,15,8,2,9,10,16,11,12,13,7,4,6,5];
+const CORD=[0,3,1,14,15,8,2,9,10,16,11,12,13,17,7,4,6,5];
 let GMD=S.gm=='c'?'c':'f';
 function cpOf(A){if(!A)return 0;if(A.cp==null){let n=0;while(n<OLDC.length&&(A.un||[]).includes(MUN[OLDC[n]]))n++;A.cp=n;A.cv=4}else{if(A.cv!==2&&A.cv!==3&&A.cv!==4){if(A.cp>=4)A.cp++;A.cv=2}if(A.cv===2){if(A.cp>=5)A.cp+=3;A.cv=3}if(A.cv===3){if(A.cp>=8)A.cp+=2;A.cv=4}}return A.cp}
 function mapOKA(A,m){return mOpen(A,GMD=='c'?DIF():0,m)}

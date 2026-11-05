@@ -85,10 +85,11 @@ if(rp&&(i>>1)==(red>>1)){X.fillStyle='#ff2a1a';X.globalAlpha=.35;X.beginPath();X
 // over people: hanging signs, then fog and wisps
 function cmFxTop(){const C=HS.CX;if(!C||!HS.CM)return;const t=performance.now()/1000;if(C.O.length)cmOverhead(C.O,t);for(const it of C.T)if(it.a||fxVis(it)){if(!it.o.r||it.a){it.f.top(it.o,t);continue}X.save();try{fxTurn(X,it.o);it.f.top(it.o,t)}finally{X.restore()}}}
 // hanging signs (props with ov): drawn from a picture made once, over everyone; while a player or zombie stands under one it
-// fades to see-through (so nobody hides under it) and back when they've gone
+// fades to see-through (so nobody hides under it) and back when they've gone. ovf: under means anywhere on its footprint (canopies
+// seen from above); ova: how far it fades
 function cmOverhead(O,t){const dt=Math.min(.1,Math.max(0,t-(cmOverhead.t||t)));cmOverhead.t=t;const vx0=cam.x-60,vy0=cam.y-60,vx1=cam.x+W+60,vy1=cam.y+H+120;let E=null;
 for(const it of O){const o=it.o,B=it.B,x0=o.x-B.w/2,y0=o.y-B.h;if(o.x+B.w/2<vx0||x0>vx1||o.y<vy0||y0>vy1)continue;
  if(!it.cv){it.cv=document.createElement('canvas');it.cv.width=B.w;it.cv.height=B.h;try{B.f(it.cv.getContext('2d'),B.w/2,B.h,o.vr!=null?o.vr:.5,o.c,o.tx)}catch(e){}}
  if(!E){E=[];for(const p of(typeof PL!='undefined'&&PL.length?PL:[P]))if(p&&alive(p))E.push([p.x,p.y-14]);for(const z of zs)if(z.hp>0&&z.x>vx0&&z.x<vx1&&z.y>vy0&&z.y<vy1)E.push([z.x,z.y-14])}
- const under=E.some(([ex,ey])=>ex>x0+4&&ex<x0+B.w-4&&ey>y0+30&&ey<o.y+18),to=under?.35:1;it.al+=(to-it.al)*Math.min(1,dt*8);
+ const under=E.some(([ex,ey])=>ex>x0+4&&ex<x0+B.w-4&&(B.ovf?ey+14>y0+2&&ey+14<o.y+2:ey>y0+30&&ey<o.y+18)),to=under?(B.ova||.35):1;it.al+=(to-it.al)*Math.min(1,dt*8);
  X.globalAlpha=it.al;X.drawImage(it.cv,Math.round(x0),Math.round(y0));X.globalAlpha=1}}

@@ -33,7 +33,7 @@ The full wish list is the "Map Workshop" prompt the owner attaches. This file re
   - There are about 15 vehicle kinds (`HWV`), drawn via `vDraw` (`world/vehicles.js`, `maps/highway.js`).
 - **Low-memory mode:** on phones it halves the background canvas (`system/phones-checkpoints-crashlog.js`).
 - **Campaign:**
-  - `SEC` (`campaign/sections.js`) has 5 sections. `-1` marks the **9** free "Coming Soon" slots (an earlier version of this file said 7): Wrong Turn 5, Zombville 4–5, Countryside 4–5, Island 2–5.
+  - `SEC` (`campaign/sections.js`) has 5 sections. `-1` marks the free "Coming Soon" slots: there were 9 (Wrong Turn 5, Zombville 4–5, Countryside 4–5, Island 2–5); the Black Iron Foundry (map 16) took Wrong Turn 5 and Zombville Stadium (map 17) Zombville 4, so 7 are left.
   - Each campaign map has a survivor boss (`MUN`, `SVS` in `bosses/survivors.js`) and a landmark on the painted world map (`CLM` in `campaign/map-screens.js`).
   - Beating a map in the campaign opens it in Free Play.
 - **Saves:** `localStorage.deadyard` (`S`) plus Supabase online saves of the main account. Custom maps must stay out of both, in IndexedDB.
@@ -385,6 +385,16 @@ No prop may block a doorway. `cmDoorBlocks` finds props and vehicles within 24 p
 - **New kit pieces:** the props in `maps/props/kit-downtown.js`; the `arena` shape, `tape`, the `sunshadow` area, `sunbeam` and `spray` decals and the `glint`, `pigeons`, `steam` and `litter` effects (`world/kit-downtown.js`); the `sunrise` lighting; the `flap` sound; vehicles `citybus` and `tanker`; props can animate (`an`). `maps/downtown.js` is gone.
 - **Checks:** `tests/suites/downtown.js` (66 checks): the asks one by one, each pick, no pockets, every intersection and spawn point reachable, campaign waves 1–3, 19 and the Fire Chief, Free Play, the Workshop copy, every piece draws.
 
+### Zombville Stadium (map 17): a new map, Nov 4, 2026 (owner's request)
+- **The file:** `src/maps/stadium.json` (128×86 tiles; `dark` lighting, "Lights only", 0.88; about 400 props, 450 decals, 17 areas, 40 paths). Made by a generator script (scratchpad), as a map file from the start. It is slot 4 of Zombville (`SEC`, after Downtown in `CORD`).
+- **Asked for:** the football stadium: the whole field and everything round it, but the player can't go into the stands; the field made into an emergency treatment center for the outbreak's victims that was overrun and abandoned: medical tents, lights, generators, medical supply tents, a sleeping area; only light from light sources, no sunlight.
+- **The stadium:** the `bowl` all round (448 px of stands along the sides so their top, the press box and the video board show from the wall on a laptop; 368 at the ends; round corners; entry-tunnel portals with exit lights; the padded wall with local businesses' ad boards and ZOMBVILLE STADIUM), three tunnels at field level (vehicles west, the teams' east, service south), a full `gridiron` at 24 px a yard, goalposts, pylons, team benches, drinks tables, TV cameras, the chain, the video board over the press box running an emergency alert, the light banks on the rim (one still on).
+- **The camp:** intake at the vehicle tunnel (ambulances, one still flashing, the Guard's trucks, flares, an LED sign, crowd-barrier lanes, screening and registration canopies); triage on red, yellow, green and black tarps; the command post; the supply tent and depot; five wards, surgery and the ICU (walk-in tents whose roofs fade when you go in); a sleeping area of cots in rows under string lights and the shelter tent; isolation and the morgue at the east end behind a torn-open fence; generators with cables, a diesel tank, light towers (two failing, one dead, one knocked over and shining down the street), string lights down the main street.
+- **Overrun:** the dead everywhere, blood and drag trails out of the tents, a tent burned down, a generator blown up and burning, a last stand at the service tunnel, spray paint (THEY'RE IN THE TENTS), litter in the stands.
+- **Survivor:** none yet: wave 20 plays like any wave and clearing it wins the map (`campNoBoss`). Players who had finished Zombville keep it finished (`SLATE`, now `A.slt`: the record moved off `A.sl`, which is the mastery screen's Zombie-Slayer looks); a custom map stored in the slot moves to a free one (`CCWAS`).
+- **New kit pieces:** the props in `maps/props/kit-stadium.js` (the new Medical & relief camp and Stadium & football groups); the `bowl`, `gridiron`, `tent` and `tarp` areas, the `bulbs` path and five decals (`world/kit-stadium.js`); the `dark` lighting; areas and paths can give light (`lts`); overhead props can fade anywhere on their footprint (`ovf`, `ova`).
+- **Checks:** `tests/suites/stadium.js` (64 checks): the asks, the stands solid everywhere, no pockets, every spawn reachable, the lights, tent roofs fading, campaign waves 1–3, 19 and the wave-20 finish with no survivor, old saves, Free Play, the Workshop copy, every piece draws.
+
 ## What each map still needs before converting
 Everything else on each map can be built with the kit; the conversion still has to be laid out, compared side by side and playtested (walls, zombie paths, spawns, its survivor boss).
 
@@ -407,3 +417,4 @@ Everything else on each map can be built with the kit; the conversion still has 
 | Hometown Market | **Converted and redesigned (Oct 28, 2026).** |
 | Main Street | **Converted and redesigned (Nov 1, 2026).** |
 | Black Iron Foundry | **New (Nov 3, 2026), a map file from the start.** Its survivor is Ken the welder. |
+| Zombville Stadium | **New (Nov 4, 2026), a map file from the start.** No survivor yet: wave 20 plays like any wave and clearing it wins the map. |
