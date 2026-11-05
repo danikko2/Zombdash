@@ -35,6 +35,7 @@ world/kit-foundry.js
 world/kit-graveyard.js
 world/kit-forest.js
 world/kit-downtown.js
+world/kit-stadium.js
 world/map-store.js
 world/custom-maps.js
 ui/core-ui.js
@@ -93,6 +94,7 @@ maps/props/kit-foundry.js
 maps/props/kit-graveyard.js
 maps/props/kit-forest.js
 maps/props/kit-downtown.js
+maps/props/kit-stadium.js
 bosses/penny-and-mayor.js
 bosses/ken.js
 system/phones-checkpoints-crashlog.js

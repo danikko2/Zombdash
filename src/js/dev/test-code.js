@@ -1,6 +1,6 @@
 //# dev/test-code.js — Test code entry, unlock-everything backup/restore
 // ---------- test mode (code 2059): everything unlocked; real progress is backed up and restored when turned off ----------
-const DVK=['un','sp','sk','wp','cm','ms','sl','tt','bd','cp','cv','cpE','cpH','bm'];
+const DVK=['un','sp','sk','wp','cm','ms','sl','slt','tt','bd','cp','cv','cpE','cpH','bm'];
 function devBox(){return `<div class=dvb><h3>Test code</h3>${S.dev?`<p class=note style="color:var(--tox)">✓ Test mode is ON. Everything starts OFF, so turn on only what you want to test:</p>${(dtCss(),dtBox())}<button class=red onclick="devOff()">TURN OFF TEST MODE<small>restores your real progress</small></button>`:`<div class=dvr><input id=dvc type=tel inputmode=numeric maxlength=4 placeholder="····" autocomplete=off onkeydown="if(event.key=='Enter')devTry()"><button data-q=1 onclick="devTry()">ENTER</button></div><p class=note id=dvm>Enter a 4-digit code.</p>`}</div>`}
 function devTry(){const i=document.getElementById('dvc'),v=((i&&i.value)||'').replace(/\D/g,''),m=document.getElementById('dvm');if(v==='2059'){devSet();sfx('power');options()}else{sfx('deny');if(m)m.textContent=v.length<4?'Codes are 4 digits.':'Wrong code.';if(i)i.value=''}}
 function devMax(A){if(A.dvb)return;const bk={};for(const k of DVK)if(A[k]!==undefined)bk[k]=A[k];A.dvb=JSON.stringify(bk);

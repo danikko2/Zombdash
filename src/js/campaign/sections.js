@@ -4,7 +4,7 @@
 var SEC=[
 {n:'Hometown',sub:'Where it all started',m:[0,3,1,14,15],c:'#8fd16a',c2:'#6cb04c',cl:'#a4855a',th:'home'},
 {n:'Wrong Turn',sub:'The road out goes bad',m:[8,2,9,10,16],c:'#7a8a74',c2:'#5e6e5a',cl:'#5a4a40',th:'spook'},
-{n:'Zombville',sub:'The city has fallen',m:[11,12,13,-1,-1],c:'#9aa6b4',c2:'#7e8a98',cl:'#5e6670',th:'city'},
+{n:'Zombville',sub:'The city has fallen',m:[11,12,13,17,-1],c:'#9aa6b4',c2:'#7e8a98',cl:'#5e6670',th:'city'},
 {n:'Countryside',sub:'Out where the roads end',m:[7,4,6,-1,-1],c:'#d8c070',c2:'#bca456',cl:'#8a6a3a',th:'farm'},
 {n:'Island',sub:'The last place to run',m:[5,-1,-1,-1,-1],c:'#f0d890',c2:'#d8bc70',cl:'#a8885a',th:'isle'}];
 var SORD=SEC.reduce((a,s)=>a.concat(s.m.filter(m=>m>=0)),[]);
@@ -17,13 +17,15 @@ function bmSet(A,d,m){if(cmIs(m)){if(CREP&&CREP.key===m)return bmSet(A,d,CREP.o)
 // a custom map's section is the one its slot is in (a replaced map's is the original's)
 function secOf(m){if(cmIs(m)){if(CREP&&CREP.key===m)return secOf(CREP.o);const e=ccOfKey(m);return e?e.s:-1}return SEC.findIndex(s=>s.m.includes(m))}
 function secDone(A,d,s){return SEC[s].m.every(m=>m<0||bBt(A,d,m)||secLate(A,d,m))}
-// maps that joined a section after it was made (the Black Iron Foundry, map 16, took Wrong Turn's free slot): an account that had
-// already beaten the rest of that section keeps it finished, so nothing that was open closes; the map itself stays to be played.
-// A.sl = {map: bits} (bit d = difficulty d) is worked out once per account from the progress it had before it beat anything more:
-// at its first win after the update (bmSet) or the first time the section is checked, whichever comes first.
-const SLATE={16:[8,2,9,10]};
-function slInit(A){if(!A)return;if(!A.sl||typeof A.sl!='object')A.sl={};for(const m in SLATE)if(A.sl[m]==null){let b=0;for(let k=0;k<3;k++)if(SLATE[m].every(q=>bBt(A,k,q)))b|=1<<k;A.sl[m]=b}}
-function secLate(A,d,m){if(!SLATE[m]||!A)return 0;slInit(A);for(let k=d;k<3;k++)if(A.sl[m]>>k&1)return 1;return 0}
+// maps that joined a section after it was made (the Black Iron Foundry, map 16, took Wrong Turn's free slot; Zombville Stadium, map 17,
+// took Zombville's fourth): an account that had already beaten the rest of that section keeps it finished, so nothing that was open
+// closes; the map itself stays to be played.
+// A.slt = {map: bits} (bit d = difficulty d) is worked out once per map per account from the progress it had before it beat anything
+// more: at its first win after the update (bmSet) or the first time the section is checked, whichever comes first. (It was A.sl until
+// Nov 2026, which the mastery screen also uses for its Zombie-Slayer looks, so it starts over under its own name.)
+const SLATE={16:[8,2,9,10],17:[11,12,13]};
+function slInit(A){if(!A)return;if(!A.slt||typeof A.slt!='object'||Array.isArray(A.slt))A.slt={};for(const m in SLATE)if(A.slt[m]==null){let b=0;for(let k=0;k<3;k++)if(SLATE[m].every(q=>bBt(A,k,q)))b|=1<<k;A.slt[m]=b}}
+function secLate(A,d,m){if(!SLATE[m]||!A)return 0;slInit(A);for(let k=d;k<3;k++)if(A.slt[m]>>k&1)return 1;return 0}
 function secOpen(A,d,s){for(let k=0;k<s;k++)if(!secDone(A,d,k))return SEC.slice(s).some(q=>q.m.some(m=>m>=0&&bBt(A,d,m)))?1:0;return 1}
 // a custom slot opens with the rest of its section (once the section's first map is beaten); it never blocks anything
 function mOpen(A,d,m){if(cmIs(m)&&!(CREP&&CREP.key===m)&&!ccOfKey(m))return 0;const s=secOf(m);if(s<0||!secOpen(A,d,s))return 0;const f=SEC[s].m[0];return m==f||bBt(A,d,f)}

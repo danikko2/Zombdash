@@ -84,7 +84,7 @@ ok(MUN[16]===17&&ccBossOf(16)===17&&UNM[17]===16&&CH[17].n=='Ken','Ken the welde
 // how a campaign map with no survivor yet plays (the foundry had none until Ken came): checked with Ken's spot emptied for now
 const KEN=MUN[16];delete MUN[16];
 const A=S.ac,bits=ms=>ms.reduce((v,m)=>v|1<<m,0),HT=[0,3,1,14,15];
-A.un=[0,MUN[0],MUN[3],MUN[1],MUN[14],MUN[15],MUN[8]];A.tut=1;A.bm=[0,1,2].map(()=>bits(HT.concat([8])));delete A.sl;S.lm='off';setGM('c');
+A.un=[0,MUN[0],MUN[3],MUN[1],MUN[14],MUN[15],MUN[8]];A.tut=1;A.bm=[0,1,2].map(()=>bits(HT.concat([8])));delete A.slt;S.lm='off';setGM('c');
 ok(mOpen(A,DIF(),16)&&/Survive 20 waves to clear it · survivor coming soon/.test(cMunT(16)),'it opens with the rest of Wrong Turn; its info says to survive 20 waves, survivor coming soon');
 mapId=16;S.mp=16;sel=0;start();ok(mapId===16&&HS.CM==='builtin-foundry','a campaign run starts in the foundry');
 const RNG=new Set([11,19]);

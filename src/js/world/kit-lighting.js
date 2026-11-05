@@ -1,6 +1,6 @@
 //# world/kit-lighting.js — Time-of-day lighting for custom maps: day, morning, dusk or night with an amount (0–100%), drawn over the world every frame, with light cut out around lamps, light effects, fires, sirens, glows, and lit windows; the same drawing previews it in the editor and darkens map thumbnails
 // ---------- time of day ----------
-// A map's d.lt = {t: 'day' | 'morning' | 'dusk' | 'night', a: 0..1} (file: "lighting": {"time", "amount"}). The world is multiplied
+// A map's d.lt = {t: 'day' | 'sunrise' | 'morning' | 'dusk' | 'night' | 'dark', a: 0..1} (file: "lighting": {"time", "amount"}). The world is multiplied
 // by a light map: the time's colour (mixed with white by the amount), plus light pools added around every light source.
 // lit is how strongly the light sources show through at that time (none by day, fully at night).
 const CMLT=[
@@ -8,7 +8,8 @@ const CMLT=[
 {id:'sunrise',n:'Sunrise',d:'The sun just up: low golden light, long cool shadows, the last lamps still on.',mul:'#e8b080',scr:'255,186,96',sa:.2,lit:.4,def:.6},
 {id:'morning',n:'Morning',d:'Soft, warm early light with a haze.',mul:'#e6c2ae',scr:'255,226,196',sa:.12,lit:.3,def:.6},
 {id:'dusk',n:'Dusk',d:'Orange-pink evening light.',mul:'#b0645a',lit:.8,def:.7},
-{id:'night',n:'Night',d:'Dark blue night.',mul:'#10173c',lit:1,def:.75}];
+{id:'night',n:'Night',d:'Dark blue night.',mul:'#10173c',lit:1,def:.75},
+{id:'dark',n:'Lights only',d:'No sun and no moon: only the lights light anything.',mul:'#0c0c12',lit:1,def:.85}];
 const CMLTI=Object.create(null);for(const p of CMLT)CMLTI[p.id]=p;
 function cmLtP(id){return typeof id=='string'&&cmOwn(CMLTI,id)?CMLTI[id]:null}
 function cmLtDef(id){const p=cmLtP(id);return p?p.def:.75}
@@ -38,7 +39,9 @@ if(o.veh)continue;const P=CMLP[o.k];if(P){const p=cmLtTurn(o,P[0],P[1]);L.push({
 // light props (spot lights, flood lights…): each lamp head is a beam (w = half its width in degrees; 0 = all round) aimed the way the prop is turned
 const B=cmOB(o.k);if(B&&B.lt){const c=cmCol(o.c,B.pc?B.pc[0][0]:'#fff2c8');for(const h of B.lt){const p=B.nr?[o.x+h.dx,o.y+h.dy]:cmLtTurn(o,h.dx,h.dy),s={x:p[0],y:p[1],r:h.r,c:h.c||c,i:h.i||1,ph};if(h.f)s.f=h.f;if(h.gs)s.gs=h.gs;if(h.ng)s.ng=1;if(h.w){s.cw=h.w*Math.PI/180;s.ca=((o.r||0)+90+(h.a||0))*Math.PI/180;if(h.sw){s.f='sweep';s.ca0=s.ca;s.sa=h.sw*Math.PI/180}}L.push(s)}}}
 // room lights: an area that lights its whole box (a room with the lights on), with a soft spill past its edges
-for(const a of d.areas||[]){if(a.a!='roomlight')continue;const s_=cl(+((a.o||{}).s??1)||1,.3,1.5);L.push({rect:[a.x,a.y,a.w,a.h],x:a.x+a.w/2,y:a.y+a.h/2,r:Math.hypot(a.w,a.h)/2+24,c:cmCol(a.c,'#fff2c8'),i:s_,ph:0})}
+for(const a of d.areas||[]){const T_=cmArea(a.a);if(T_&&T_.lts)T_.lts(a,L);if(a.a!='roomlight')continue;const s_=cl(+((a.o||{}).s??1)||1,.3,1.5);L.push({rect:[a.x,a.y,a.w,a.h],x:a.x+a.w/2,y:a.y+a.h/2,r:Math.hypot(a.w,a.h)/2+24,c:cmCol(a.c,'#fff2c8'),i:s_,ph:0})}
+// paths that give light (string lights)
+for(const l of d.paths||[]){const T_=cmPath(l.p);if(T_&&T_.lts)T_.lts(l,L)}
 // walls block light: each source keeps the outline of what it can see (vis), worked out once here; L.O keeps the walls for lights that move
 const O=cmLtBlk(d);for(const s of L)s.vis=s.cw&&!s.sa?cmLtVis(O,s.x,s.y,s.r,s.ca-s.cw*1.45,s.ca+s.cw*1.45):cmLtVis(O,s.x,s.y,s.r);L.O=O;return L}
 // ---------- walls block light ----------
