@@ -27,10 +27,11 @@ ok(UNM[18]===17&&MUN[17]===18&&ccBossOf(17)===18,'he holds out on Zombville Stad
 ok(CCBOSS.includes(18)&&!CCNOT[18]&&CCBOSS.indexOf(18)==CCBOSS.indexOf(12)+1&&ccRepOK(17),'his fight works on any map: custom campaign maps can have him (after Rusty, in campaign order), and the stadium can be replaced by a custom map');
 {const D=SVS[18];ok(D&&D.hp==820&&D.sp==100&&D.gn==6&&D.cv==430&&D.cl==430&&D.mt==2,'boss stats: 820 health, speed 100, 6 ghost teammates, charges 430 px at 430 px/s, 2 s minigun bursts')}
 // ---------- sprites ----------
-{const Q=PS[18];ok(Q&&Q.walk.length==6&&Q.idle.length==4&&Q.gun.length==WP.length&&Q.ball&&Q.mini,'his frames: 6 walking, 4 standing, every gun, a football in his hand, and his own minigun carried low in both hands');
+{const Q=PS[18];ok(Q&&Q.walk.length==6&&Q.idle.length==4&&Q.gun.length==WP.length&&Q.ball&&Q.mini&&Q.minid,'his frames: 6 walking, 4 standing, every gun, a football in his hand, his own minigun carried hanging at his side, and the same gun on its own (put down when he gives up)');
+ ok(Q.mini[2]==100&&Q.mini[3]==52&&Q.mini[4]==20&&Q.mini[5]==14,'the side-carry frame is taller (the gun hangs at his hip), still held from the shoulder');
  ok(JSON.stringify(Q.gun[8])=='[652,2192,80,32,6,14]'&&JSON.stringify(Q.ball)=='[567,2224,80,32,6,14]','his playable minigun and football frames did not move');
- const all=[];for(const k in PS)for(const a of['walk','idle','gun','mig','ball','mini'])for(const f of(a=='mig'||a=='ball'||a=='mini'?(PS[k][a]?[PS[k][a]]:[]):PS[k][a]))all.push([k,a,f]);
- const qb=all.filter(e=>e[0]=='18');ok(qb.every(e=>e[2][1]>=2159&&e[2][0]+e[2][2]<=1024&&e[2][1]+e[2][3]<=2256),'they sit below the old sheet (from y 2159)');
+ const all=[];for(const k in PS)for(const a of['walk','idle','gun','mig','ball','mini','minid'])for(const f of(a=='mig'||a=='ball'||a=='mini'||a=='minid'?(PS[k][a]?[PS[k][a]]:[]):PS[k][a]))all.push([k,a,f]);
+ const qb=all.filter(e=>e[0]=='18');ok(qb.every(e=>e[2][1]>=2159&&e[2][0]+e[2][2]<=1024&&e[2][1]+e[2][3]<=2276),'they sit below the old sheet (from y 2159)');
  let ov=0;for(const a of qb)for(const b of all){if(a===b)continue;const f=a[2],g=b[2];if(f[0]<g[0]+g[2]&&g[0]<f[0]+f[2]&&f[1]<g[1]+g[3]&&g[1]<f[1]+f[3])ov++}ok(!ov,'no frame overlaps another');
  ok(JSON.stringify(PS[0].gun[0])=='[490,0,80,32,6,14]'&&JSON.stringify(PS[17].walk[0])=='[0,2061,48,64,24,24]'&&JSON.stringify(PS[17].mig)=='[567,2126,80,32,6,14]','older frames did not move (Ken\\'s included)');
  ok(Q.walk.concat(Q.idle).every((f,i)=>f[2]==48&&f[3]==64&&f[4]==24&&f[5]==PS[0][i<6?'walk':'idle'][i<6?i:i-6][5])&&Q.gun.every(f=>f[2]==80&&f[3]==32&&f[4]==6&&f[5]==14),'same size and hand positions as every other survivor')}
@@ -76,6 +77,12 @@ const charge=(dy)=>{fresh();at(300,0);z.ab=0;z.nx='c';z.cd=99;tick(1);const run=
  ok(maxTurn<=SVS[18].mtr*.0161+1e-9&&z.fa-a0<.25,'it turns toward you only slowly ('+(z.fa-a0).toFixed(2)+' rad in half a second while you ran '+(1.2).toFixed(1)+' rad round him)');
  for(let f=0;f<200&&z.mg;f++)tick(1);ok(!z.mg&&z.ab>0,'after a 2 s burst he puts it away');
  ok(SND.includes('minigun'),'with the minigun\\'s own sound')}
+// he is drawn bigger, and the gun hangs at his side: the bullets leave its muzzle down at his hip, yet still fly at the player
+{fresh();z.x=p.x;z.y=p.y;z.mg=2;z.fa=0;const lv=qbMz(z);z.mg=0;ok(z.hr==18&&QBK==1.15,'Buck is drawn 15% bigger than the other survivor bosses, with a hit radius to match');
+ ok(lv.y-z.y>8&&lv.x-z.x>40,'the minigun hangs at his side: aimed level, its muzzle is down at his hip ('+Math.round(lv.y-z.y)+' px below his middle, '+Math.round(lv.x-z.x)+' px ahead)');
+ at(200,-230);z.ab=0;z.nx='m';for(let f=0;f<80&&z.mg!=2;f++){P.x=p.x+200;P.y=p.y-230;tick(1)}const m=qbMz(z),a=qbGa(z);tick(2);const b=ep.filter(q=>q.k==5).slice(-1)[0];
+ ok(z.fa<-.75&&Math.abs(a+.5)<1e-9,'with the player high above him the heavy gun only tilts up half a radian ('+a.toFixed(2)+'; his aim '+z.fa.toFixed(2)+')');
+ const ba=Math.atan2(b.vy,b.vx),ta=Math.atan2(P.y-m.y,P.x-m.x);ok(Math.abs(ba-ta)<.16,'and its bullets still fly from the muzzle at the player ('+ba.toFixed(2)+' vs '+ta.toFixed(2)+')');for(let f=0;f<200&&z.mg;f++)tick(1)}
 // it hurts: standing in front of it
 {fresh();at(200,0);z.ab=0;z.nx='m';for(let f=0;f<200&&(z.mg||f<2);f++){P.x=p.x+200;P.y=p.y;tick(1)}ok(P.hp<50&&P.hp>=47,'standing in front of the minigun costs a heart or more ('+(50-P.hp)+')')}
 // they take turns
@@ -86,7 +93,7 @@ const charge=(dy)=>{fresh();at(300,0);z.ab=0;z.nx='c';z.cd=99;tick(1);const run=
  fresh();at(300,0);z.ab=0;z.nx='c';tick(1);ok(QBG.length==8,'now the charge brings 8 ghosts ('+QBG.length+')');for(let f=0;f<120&&(z.qs||QBG.length);f++)tick(1);
  fresh();at(250,0);z.ab=0;z.nx='m';tick(1);let t=0;for(let f=0;f<400&&z.mg;f++){if(z.mg==2)t++;P.x=z.x+250;P.y=z.y;P.hp=50;tick(1)}ok(Math.abs(t*.016-2.6)<.1&&z.ab<=SVS[18].ca*.7*1.2+.02,'the minigun fires longer (2.6 s) and the breaks are shorter ('+(t*.016).toFixed(2)+' s)')}
 // it all draws
-{let err='';try{fresh();at(300,0);z.ab=0;z.nx='c';for(let f=0;f<60;f++)tick(1);z.ab=0;z.nx='m';for(let f=0;f<120;f++)tick(1);qbDrawS();svExtra7();svDraw(z);qbGhostImg();qbLit();z.mg=2;const L=[];qbLights(L);if(!L.length)err='no muzzle light'}catch(e){err=e.stack}ok(!err&&mode=='play','the fight runs and draws (after the light too, on dark maps like the stadium) '+err)}
+{let err='';try{fresh();at(300,0);z.ab=0;z.nx='c';for(let f=0;f<60;f++)tick(1);z.ab=0;z.nx='m';for(let f=0;f<120;f++)tick(1);qbDrawS();svExtra7();svDraw(z);qbGhostImg();qbLit();z.mg=2;const L=[];qbLights(L);if(!L.length)err='no muzzle light';svDraw(z);z.mg=0;const K0=KN;KN={ci:18,x:z.x,y:z.y,t:1,fl:1};svExtra();KN=K0}catch(e){err=e.stack}ok(!err&&mode=='play','the fight runs and draws (after the light too, on dark maps like the stadium) '+err)}
 // beaten: he kneels, gives up and joins
 {fresh();z.ab=0;z.nx='c';tick(1);hurt(z,z.hp+1,0,0);tick(2);ok(KN&&KN.ci==18&&!zs.includes(z)&&!QBG.length,'beaten, Buck kneels instead of popping (his ghost team vanishes)');
  ok(A.un.includes(18)&&bBt(A,DIF(),17),'he joins the survivors and the stadium counts as beaten');tick(Math.ceil(5.7/.016));

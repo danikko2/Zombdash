@@ -1,6 +1,6 @@
 //# bosses/quarterback.js — Buck, Zombville Stadium's quarterback (18): the charge with a ghost football team, and the minigun
 // ---------- Buck (18): navy helmet, the home team's red #7 jersey, white pants; a football in his hand, and his own heavy
-// minigun (PS[18].mini: six barrels in clamp rings, a carry handle, an ammo can) held low in both hands ----------
+// minigun (PS[18].mini: six barrels in clamp rings, a carry handle, an ammo can) carried hanging at his side ----------
 // Two attacks, taken in turn (whichever the distance allows):
 // * The charge: "HUT! HUT! HIKE!": a ghost football team appears in a line beside him and he and they crouch for a moment
 //   (their lanes show on the ground), then the whole team charges straight at where you were. Each runner that reaches you
@@ -15,8 +15,14 @@ var QBG=[];
 function qbClear(){QBG=[]}
 // where each ghost teammate lines up, in the order they join: [to the side, ahead (negative: behind)] in px from Buck
 const QBF=[[70,0],[-70,0],[140,8],[-140,8],[70,-56],[-70,-56],[210,16],[-210,16],[140,-48],[-140,-48]],QBR=20;
-// the end of the minigun's barrels: he carries it low with both hands (PS[18].mini: the muzzle is 72 px out and 8.5 px below the shoulder)
-function qbMz(z,a){const s=SVK/1.6,fl=Math.cos(z.fa)<0?-1:1,L=72*s,q=8.5*s,hy=z.y-10.2*s;return{x:z.x+Math.cos(a)*L-fl*q*Math.sin(a),y:hy+Math.sin(a)*L+fl*q*Math.cos(a)}}
+// Buck is drawn 15% bigger than the other survivor bosses (his ghost team too); his hit radius matches (z.hr 18)
+const QBK=1.15;
+// he carries the minigun hanging at his side (PS[18].mini: anchored at the shoulder, the muzzle 63 px out and 25 px down),
+// so it only tilts a little (up to 0.5 rad from level) wherever he aims; the bullets fly from its muzzle to where he aims
+function qbGa(z){if(!z.mg)return z.fa;const fl=Math.cos(z.fa)<0?-1:1,r=fl>0?z.fa:Math.PI-z.fa,c=cl(Math.atan2(Math.sin(r),Math.cos(r)),-.5,.5);return fl>0?c:Math.PI-c}
+function qbMz(z){const s=SVK*QBK/1.6,a=qbGa(z),fl=Math.cos(z.fa)<0?-1:1,L=63*s,q=25*s,hy=z.y-10.2*s;return{x:z.x+Math.cos(a)*L-fl*q*Math.sin(a),y:hy+Math.sin(a)*L+fl*q*Math.cos(a)}}
+// where the stream is going: the point along his aim at the player's distance (or 300 px), as seen from the muzzle
+function qbDir(z,m){const Q=tgt(z),D=cl(Q?Math.hypot(Q.x-z.x,Q.y-z.y):300,120,520),tx=z.x+Math.cos(z.fa)*D,ty=z.y+Math.sin(z.fa)*D;return Math.atan2(ty-m.y,tx-m.x)}
 function svQB(z,Q,d,sg,aim,dt,can){const D=SVS[18];z.mf=Math.max(0,(z.mf||0)-dt);
 const gap=()=>(D.ca??2)*(z.oc?.7:1)*(.8+Math.random()*.4);
 // half health: the two-minute warning
@@ -28,7 +34,7 @@ if(z.qs==3){z.qt-=dt;if(z.qt<=0){z.qs=0;z.lk=0;z.ab=gap()}return[0,0,0]}
 // --- the minigun: spin up, fire, put it away; it turns toward you slowly while it fires ---
 if(z.mg){const df=Math.atan2(Math.sin(aim-z.fa),Math.cos(aim-z.fa)),tr=(D.mtr??.45)*(z.mg==1?4:1);z.fa+=cl(df,-tr*dt,tr*dt);z.mt-=dt;
  if(z.mg==1){if(z.mt<=0){z.mg=2;z.mt=(D.mt??2)*(z.oc?1.3:1);z.mb=0}return[0,0,0]}
- if(z.mg==2){z.mb-=dt;while(z.mb<=0){z.mb+=Math.max(.02,D.mr??.07);const m=qbMz(z,z.fa),b=z.fa+(Math.random()-.5)*2*(D.ms??.1),v=D.mv??360;ep.push({x:m.x,y:m.y,vx:Math.cos(b)*v,vy:Math.sin(b)*v,l:D.ml??1.25,k:5,c:'#ffe27a'});z.mf=.06}
+ if(z.mg==2){z.mb-=dt;while(z.mb<=0){z.mb+=Math.max(.02,D.mr??.07);const m=qbMz(z),b=qbDir(z,m)+(Math.random()-.5)*2*(D.ms??.1),v=D.mv??360;ep.push({x:m.x,y:m.y,vx:Math.cos(b)*v,vy:Math.sin(b)*v,l:D.ml??1.25,k:5,c:'#ffe27a'});z.mf=.06}
   sfx('minigun',z.x,z.y,.5,.05);if(z.mt<=0){z.mg=3;z.mt=.45}const[a,m]=svKite(z,Q,d,sg,dt);return[a,D.sp*m*.3,0]}
  if(z.mt<=0){z.mg=0;z.lk=0;z.ab=gap()}return[0,0,0]}
 const[a,m]=svKite(z,Q,d,sg,dt);
@@ -65,7 +71,7 @@ let QBGI=null;
 function qbGhostImg(){if(QBGI)return QBGI;if(typeof document=='undefined'||!document.createElement||!PIMG.naturalWidth||!PS[18])return null;
 try{const F=PS[18].walk.concat(PS[18].idle),cv=document.createElement('canvas');cv.width=F.length*48;cv.height=64;const g=cv.getContext('2d');F.forEach((f,i)=>g.drawImage(PIMG,f[0],f[1],f[2],f[3],i*48,0,48,64));
  g.globalCompositeOperation='source-atop';g.fillStyle='rgba(200,230,255,.72)';g.fillRect(0,0,cv.width,64);g.globalCompositeOperation='source-over';return QBGI=cv}catch(e){return null}}
-function qbGhost(g,t){const k=SVK,s=k/1.6,w=48*s,h=64*s,fl=Math.cos(g.a)<0?-1:1,run=g.st==1,al=(g.st==2?Math.max(0,g.l/.35):Math.min(1,g.t/.25))*.62,fy=g.y+h*.45,I=qbGhostImg();
+function qbGhost(g,t){const k=SVK*QBK,s=k/1.6,w=48*s,h=64*s,fl=Math.cos(g.a)<0?-1:1,run=g.st==1,al=(g.st==2?Math.max(0,g.l/.35):Math.min(1,g.t/.25))*.62,fy=g.y+h*.45,I=qbGhostImg();
 X.globalAlpha=al*.5;X.fillStyle='#9ac8ff';X.beginPath();X.ellipse(g.x,fy-2,16,5,0,0,7);X.fill();X.globalAlpha=al*.25;X.beginPath();X.ellipse(g.x,fy-h*.45,18,h*.5,0,0,7);X.fill();
 X.globalAlpha=al;X.save();X.translate(g.x,fy);X.scale(fl,1);if(run)X.rotate(.18);
 if(I){const i=run?Math.floor(t*13+g.ph)%6:6+Math.floor(t*3+g.ph)%4;X.drawImage(I,i*48,0,48,64,-w/2,-h,w,h)}
@@ -73,16 +79,16 @@ else{X.fillStyle='#cfe6ff';X.fillRect(-w*.2,-h*.9,w*.4,h*.9)}
 X.restore();X.globalAlpha=1}
 // on Buck himself: the red line where the minigun points as it spins up, the muzzle flash, the crouch before the snap
 function qbFx(z,t){if(z.mg==1&&!cmLtOn())qbAim(z,t);
-if(z.mg==2&&z.mf>0){const m=qbMz(z,z.fa),r=6+Math.random()*5;X.fillStyle='#ffd84a';X.globalAlpha=.85;X.beginPath();X.arc(m.x+Math.cos(z.fa)*4,m.y+Math.sin(z.fa)*4,r,0,7);X.fill();X.fillStyle='#fff6c8';X.beginPath();X.arc(m.x+Math.cos(z.fa)*3,m.y+Math.sin(z.fa)*3,r*.5,0,7);X.fill();X.globalAlpha=1}}
+if(z.mg==2&&z.mf>0){const m=qbMz(z),r=6+Math.random()*5;X.fillStyle='#ffd84a';X.globalAlpha=.85;X.beginPath();X.arc(m.x+Math.cos(z.fa)*4,m.y+Math.sin(z.fa)*4,r,0,7);X.fill();X.fillStyle='#fff6c8';X.beginPath();X.arc(m.x+Math.cos(z.fa)*3,m.y+Math.sin(z.fa)*3,r*.5,0,7);X.fill();X.globalAlpha=1}}
 // the ghosts are drawn over everything else of the fight (on lit maps after the light: qbLit)
 function svExtra7(){if(cmLtOn())return;qbGhosts()}
 function qbGhosts(){if(!QBG.length)return;const t=performance.now()/1000;for(const g of QBG.slice().sort((a,b)=>a.y-b.y))qbGhost(g,t)}
 // after the light (world/kit-lighting.js) on dark maps: the ghosts glow and the lanes stay readable
 function qbLit(){qbLanes();qbGhosts();const t=performance.now()/1000;for(const z of zs)if(z.ci==18&&z.mg==1&&z.hp>0)qbAim(z,t)}
 // the red line where the minigun points while it spins up
-function qbAim(z,t){const m=qbMz(z,z.fa);X.globalAlpha=.25+.2*Math.sin(t*22);X.strokeStyle='#ff3a2a';X.lineWidth=10;X.beginPath();X.moveTo(m.x,m.y);X.lineTo(m.x+Math.cos(z.fa)*360,m.y+Math.sin(z.fa)*360);X.stroke();X.globalAlpha=1}
+function qbAim(z,t){const m=qbMz(z),a=qbDir(z,m);X.globalAlpha=.25+.2*Math.sin(t*22);X.strokeStyle='#ff3a2a';X.lineWidth=10;X.beginPath();X.moveTo(m.x,m.y);X.lineTo(m.x+Math.cos(a)*360,m.y+Math.sin(a)*360);X.stroke();X.globalAlpha=1}
 // on dark maps the minigun's muzzle flash lights things up (called from cmLight)
-function qbLights(S){for(const z of zs)if(z.ci==18&&z.mg==2&&z.hp>0){const m=qbMz(z,z.fa);S.push({x:m.x,y:m.y,r:z.mf>0?110:70,c:'#ffd88a',i:1})}}
+function qbLights(S){for(const z of zs)if(z.ci==18&&z.mg==2&&z.hp>0){const m=qbMz(z);S.push({x:m.x,y:m.y,r:z.mf>0?110:70,c:'#ffd88a',i:1})}}
 // ---------- sounds ----------
 Object.assign(SF,{
 // the snap count: three barked HUTs
