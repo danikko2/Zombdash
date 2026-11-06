@@ -30,6 +30,25 @@ if(c==8&&hsh(x,y,fr+99)<.03)r=gg=b=255;
 if(c==9&&col[1]>150){const q=.75+.35*Math.sin(fr*.785+x*.15);r*=q;gg*=q;b*=q}
 a[o]=cl(r,0,255);a[o+1]=cl(gg,0,255);a[o+2]=cl(b,0,255)}
 g.putImageData(d,0,0);CMK.push(key);if(CMK.length>300){const o=CMK.shift(),q=CMC[o];if(q){q.width=0;delete CMC[o]}}return CMC[key]=cv}catch(e){return null}}
+// a gun on its own, without the survivor's arm holding it (store pictures). The arm is the part of a survivor's gun frames
+// that is the same in all of them (armMask); bits of the arm's dark outline left floating once it is gone are dropped too.
+// Guns look the same in every survivor's hands, so Dave's frames are used, except a survivor's own laser version of a gun.
+const GOM={},GOC={},GOK=[];
+function gunSrc(ci,gi){const c=CH[ci];return c&&c.lv&&c.lv.includes(gi)&&!c.dw?ci:0}
+function gunMask(src,gi){const key=src+'_'+gi;if(GOM[key])return GOM[key];const f=PS[src].gun[gi],w=f[2],h=f[3],cv=document.createElement('canvas');cv.width=w;cv.height=h;const g=cv.getContext('2d',{willReadFrequently:true});g.drawImage(PIMG,f[0],f[1],w,h,0,0,w,h);
+const a=g.getImageData(0,0,w,h).data,M=armMask(src),K=new Uint8Array(w*h),B=new Uint8Array(w*h);cv.width=0;
+for(let i=0;i<w*h;i++){if(a[i*4+3]<10||M[i])continue;K[i]=1;if(lum([a[i*4],a[i*4+1],a[i*4+2]])>=40)B[i]=1}
+let x0=w,y0=h,x1=-1,y1=-1;for(let i=0;i<w*h;i++){if(!K[i])continue;const x=i%w,y=i/w|0;if(!B[i]){let n=0;for(let dy=-1;dy<=1&&!n;dy++)for(let dx=-1;dx<=1;dx++){const X_=x+dx,Y_=y+dy;if(X_>=0&&X_<w&&Y_>=0&&Y_<h&&B[Y_*w+X_]){n=1;break}}if(!n){K[i]=0;continue}}
+if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
+// the Pistol is mostly hidden by the hand: close the gap between its slide and grip with the nearest colour
+const Fl=new Int32Array(w*h).fill(-1);if(gi==0)for(let i=0;i<w*h;i++){if(K[i]||!M[i])continue;const x=i%w,y=i/w|0;let u=0,d=0;for(let k=1;k<6&&!u;k++)if(y-k>=0&&B[(y-k)*w+x])u=k;for(let k=1;k<6&&!d;k++)if(y+k<h&&B[(y+k)*w+x])d=k;if(u&&d)Fl[i]=u<=d?(y-u)*w+x:(y+d)*w+x}
+return GOM[key]={K,Fl,bb:x1<0?[0,0,w,h]:[x0,y0,x1-x0+1,y1-y0+1]}}
+function gunOnly(ci,gi,cm){if(!PIMG.naturalWidth||typeof document=='undefined'||!document.createElement)return null;const src=gunSrc(ci,gi);cm=cm||0;const key=src+'_'+gi+'_'+cm;if(GOC[key])return GOC[key];
+try{const f=PS[src].gun[gi],w=f[2],h=f[3],m=gunMask(src,gi),cc=cm?camoC(src,0,gi,cm,0):null,cv=document.createElement('canvas');cv.width=w;cv.height=h;const g=cv.getContext('2d',{willReadFrequently:true});g.drawImage(cc||PIMG,cc?0:f[0],cc?0:f[1],w,h,0,0,w,h);
+const d=g.getImageData(0,0,w,h),a=d.data;for(let i=0;i<w*h;i++){const s=m.Fl[i];if(s>=0){a[i*4]=a[s*4];a[i*4+1]=a[s*4+1];a[i*4+2]=a[s*4+2];a[i*4+3]=255}else if(!m.K[i])a[i*4+3]=0}g.putImageData(d,0,0);cv.bb=m.bb;GOK.push(key);if(GOK.length>120){const o=GOK.shift(),q=GOC[o];if(q){q.width=0;delete GOC[o]}}return GOC[key]=cv}catch(e){return null}}
+// canvas[data-gn=gun] (data-ci survivor, data-cm camo, data-w × data-h its size on the page): drawn at twice that for sharp pixels
+function paintGuns(root){if(!root||!root.querySelectorAll)return;for(const cv of root.querySelectorAll('canvas[data-gn]')){const gi=+cv.dataset.gn,W2=(+cv.dataset.w||110)*2,H2=(+cv.dataset.h||40)*2,g=cv.getContext&&cv.getContext('2d');if(!g)continue;if(cv.width!=W2)cv.width=W2;if(cv.height!=H2)cv.height=H2;g.clearRect(0,0,W2,H2);g.imageSmoothingEnabled=false;
+const o=gunOnly(+cv.dataset.ci||0,gi,+cv.dataset.cm||0);if(!o||!o.bb)continue;const b=o.bb,k=Math.min((W2-4)/b[2],(H2-4)/b[3],+cv.dataset.k||99);g.drawImage(o,b[0],b[1],b[2],b[3],Math.round((W2-b[2]*k)/2),Math.round((H2-b[3]*k)/2),b[2]*k,b[3]*k)}}
 function gunFr(){return Math.floor(performance.now()/110)}
 function paintCam(root){if(!root||!root.querySelectorAll)return;for(const cv of root.querySelectorAll('canvas[data-cg]')){const gi=+cv.dataset.cg,ci=+cv.dataset.ci||0,cm=+cv.dataset.cm||0,f=PS[ci]&&PS[ci].gun[gi],W2=+cv.dataset.w||64,H2=+cv.dataset.h||24,g=cv.getContext('2d');if(cv.width!=W2)cv.width=W2;if(cv.height!=H2)cv.height=H2;g.clearRect(0,0,W2,H2);g.imageSmoothingEnabled=false;if(!f||!PIMG.naturalWidth)continue;
 const cc=cm?camoC(ci,0,gi,cm,cv.classList.contains('anim')?ARF:0):null,k=Math.min((W2-4)/f[2],(H2-2)/f[3]);g.drawImage(cc||PIMG,cc?0:f[0],cc?0:f[1],f[2],f[3],(W2-f[2]*k)/2,(H2-f[3]*k)/2,f[2]*k,f[3]*k)}}

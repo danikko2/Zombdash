@@ -13,6 +13,4 @@ const N=RDY(p);if(q.jp(14)||q.jp(102))s=s==N?N:Math.max(0,s-1);if(q.jp(15)||q.jp
 if(s!==p.sc){p.sc=s;ch=1;sfx('click')}if(q.jp(0))return mb(pi,s);if(q.jp(9)||q.jp(3))return mb(pi,N)}if(ch)shop()}
 // ---------- multiplayer game over ----------
 function overMP(q){for(const p of PL){p.ze=wave*8+(p.k||0);if(!p.ac.g)p.ac.pts=(p.ac.pts||0)+p.ze}sv();
-show(`<div class="p wide">${CWIN?cwH():`<h2 style="color:${q?'var(--ac)':'var(--blood)'}">${q?'RUN ENDED':'THE HORDE WON'}</h2>`}<div class=sum><div><b>${wave}</b><small>Wave</small></div><div><b>${kills}</b><small>Team kills</small></div><div><b>${PL.length}</b><small>Players</small></div></div><div class=ovl>`+
-PL.map((p,i)=>`<div class=ovr style="--pc:${PC[i]}"><b class=px>P${i+1}</b><canvas data-ch=${p.ci} data-v=${p.v||0}></canvas><div class=nm><b>${pnm(p)}${p.ac.g?' · guest':bdH(p.ac)}</b>${ttH(p.ac)}<small>${p.k||0} kills · +${p.ze} Zombie Pts · +${p.xg||0} XP${p.lu?' · LEVEL UP!':''}</small>${p.nt&&p.nt.length?'<small class=unl>'+p.nt.slice(-2).join(' · ')+(p.nt.length>2?' · +'+(p.nt.length-2)+' more':'')+'</small>':''}</div><span class=lv>LV ${p.ac.lv}</span></div>`).join('')+
-`</div><div class=row><button onclick="menu()">MENU</button><button onclick="lobby()">LOBBY</button>${!q&&GMD=='c'&&!CWIN?'<button disabled style="opacity:.4;cursor:not-allowed" title="No lives left">CONTINUE · NO LIVES</button>':''}${CWIN?cwBtn(1):'<button class=go onclick="startMP()">AGAIN</button>'}</div></div>`)}
+endMP(q)}

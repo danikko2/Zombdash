@@ -29,15 +29,15 @@ ok(JSON.stringify(PS[0].gun[18])=='[0,1995,80,32,6,14]'&&JSON.stringify(PS[0].gu
 ok(INV==4&&WP.length==19&&MAG[18]==100,'the 4 weapon slots and the guns are unchanged');
 // ---------- store ----------
 setGM('f');mapId=0;sel=0;S.dlf=1;start();P.cash=1000;shop();
-ok(/data-ex=hl><\\/canvas>Headlamp<small>\\$100</.test(ui.innerHTML),'the store sells the Headlamp with its picture');
-ok(ui.innerHTML.includes('EXTRAS 0/2')&&(ui.innerHTML.match(/extra [12]<\\/small><span>empty/g)||[]).length==2,'the inventory shows 2 empty extras slots');
+SHX.t='gear';shop();ok(/data-ex=hl class=shexi><\\/canvas><\\/span><span class=shn>Headlamp<small>uses 1 extra slot<\\/small><\\/span><span class="shpr">\\$100</.test(ui.innerHTML),'the store sells the Headlamp with its picture');
+ok(ui.innerHTML.includes('EXTRAS 0/2')&&(ui.innerHTML.match(/class="shxs em"/g)||[]).length==2,'the inventory shows 2 empty extras slots');
 ok(P.ex&&P.ex.length==0&&P.hlo==0,'a new player has no extras');
 let c0=P.cash;exBuy('hl');ok(c0-P.cash==100&&P.ex.join()=='hl'&&P.hlo==1&&P.exp.hl==100,'bought for \\$100; the light starts on');
-ok(P.own.length==1&&ui.innerHTML.includes('INVENTORY 1/4')&&ui.innerHTML.includes('EXTRAS 1/2'),'it takes an extras slot, not a weapon slot');
-ok(/extra 1<\\/small><canvas data-ex=hl><\\/canvas><b>Headlamp<\\/b><button[^>]*>LIGHT ON<\\/button><button[^>]*exSell\\('hl'\\)[^>]*>SELL \\$60</.test(ui.innerHTML),'its slot shows LIGHT ON and SELL \\$60');
-ok(ui.innerHTML.includes('Light on/off: F key · controller B · LIGHT button'),'the store says how to switch it');
+ok(P.own.length==1&&(ui.innerHTML.match(/Slot \\d · empty/g)||[]).length==3&&ui.innerHTML.includes('EXTRAS 1/2'),'it takes an extras slot, not a weapon slot');
+SHX.gr='hl';shop();ok(/class="shxs on"[^>]*><canvas data-ex=hl>/.test(ui.innerHTML)&&ui.innerHTML.includes('TURN LIGHT OFF')&&/exSell\\('hl'\\)[^>]*>SELL · \\$60</.test(ui.innerHTML),'its slot shows LIGHT ON and SELL \\$60');
+ok(ui.innerHTML.includes('Switch it on or off with F (controller B)'),'the store says how to switch it');
 P.cash=100000;for(const g of[2,3,5])buy(g);ok(P.own.length==4&&exHas(P,'hl'),'all 4 weapon slots can still be filled');
-c0=P.cash;exBuy('hl');ok(P.cash==c0&&P.hlo==0&&P.ex.length==1&&ui.innerHTML.includes('LIGHT OFF'),'pressing it again in the store turns the light off (no charge)');exBuy('hl');ok(P.hlo==1,'and on');
+c0=P.cash;exBuy('hl');ok(P.cash==c0&&P.hlo==0&&P.ex.length==1&&ui.innerHTML.includes('TURN LIGHT ON'),'pressing it again in the store turns the light off (no charge)');exBuy('hl');ok(P.hlo==1,'and on');
 ok(exUsed(P)==1&&exFits({ex:[]},'hl')&&!exFits({ex:['hl','hl']},'hl'),'extras slots are counted');
 c0=P.cash;exSell('hl');ok(P.cash-c0==60&&!P.ex.length&&P.hlo==0,'selling gives \\$60 back');EXG.slots=0;c0=P.cash;exBuy('hl');ok(!P.ex.length&&P.cash==c0&&ui.innerHTML.includes('extras full'),'with no free extras slot it can\\'t be bought');EXG.slots=2;exBuy('hl');ok(exHas(P,'hl')&&P.hlo==1,'bought again');
 // ---------- on and off ----------
@@ -88,7 +88,7 @@ const idx=lab=>BALR.findIndex(e=>e.g=='ex'&&e.lab.startsWith(lab));
 balSet(idx('Light reach'),500);balSet(idx('Brightness'),1.5);balSet(idx('Beam width'),90);balSet(idx('Fade going out'),2);balSet(idx('Store price'),250);balSet(idx('Extras slots'),3);
 ok(EXI.hl.r==500&&EXI.hl.i==1.5&&EXI.hl.w==90&&EXI.hl.fd==2&&EXI.hl.cost==250&&EXG.slots==3,'sliders change the Headlamp');
 ok(/xRhl|xIhl/.test(atob(balCode().slice(5).replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-balCode().slice(5).length%4)%4))),'the settings code keeps them');
-setGM('f');mapId=0;S.mp=0;start();P.cash=1000;shop();ok(ui.innerHTML.includes('Headlamp<small>\\$250')&&ui.innerHTML.includes('EXTRAS 0/3'),'the store uses the new price and slots');
+setGM('f');mapId=0;S.mp=0;start();P.cash=1000;shop();SHX.t='gear';shop();ok(ui.innerHTML.includes('Headlamp<small>uses 1 extra slot</small></span><span class="shpr">$250')&&ui.innerHTML.includes('EXTRAS 0/3'),'the store uses the new price and slots');
 exBuy('hl');nextWave();toSp=0;P.x=best.x;P.y=best.y;P.a=0;L=[];hlLights(L);ok(L[0].r==500&&near(L[0].cw,45*Math.PI/180)&&L[0].i==1.5&&L[0].fd==2,'and the light the new reach, width, brightness and fade');
 devOff();ok(EXI.hl.r==300&&EXI.hl.i==1&&EXI.hl.w==50&&EXI.hl.fd==1&&EXI.hl.cost==100&&EXG.slots==2,'test mode off puts the defaults back');devSet();balOpen('ex');balReset(0);devOff();
 // ---------- saves ----------

@@ -17,11 +17,11 @@ const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();
 setGM('f');mapId=0;sel=0;start();P.mx=P.hp=999;P.cash=100000;shop();
 ok(P.own.length==1&&P.own[0]==CH[0].w,'start: 1 weapon (starter)');
 buy(1);buy(2);buy(3);ok(P.own.length==4,'bought 3 more -> 4/4');const c0=P.cash;buy(5);ok(P.own.length==4&&P.cash==c0,'5th weapon refused when full');
-ok(ui.innerHTML.includes('INVENTORY 4/4')&&ui.innerHTML.includes('slots full')&&ui.innerHTML.includes('SELL $'),'shop shows inventory, sell buttons, slots full');
+SHX.g=5;shop();const h1=ui.innerHTML;SHX.g=3;shop();ok(h1.includes('SLOTS FULL')&&!/Slot \\d · empty/.test(h1)&&ui.innerHTML.includes('SELL · $'),'shop shows inventory, sell buttons, slots full');
 const paid=P.paid[3];wSell(3);ok(!P.own.includes(3)&&P.cash==c0+Math.round(paid*.6),'sold rifle for 60% ('+Math.round(paid*.6)+' of '+paid+')');
 const c1=P.cash;wSell(CH[0].w);ok(P.own.includes(CH[0].w)&&P.cash==c1,'starter cannot be sold');
 buy(5);ok(P.own.length==4&&P.own.includes(5),'free slot -> can buy again');
-ok(ui.innerHTML.includes('AMMO')&&ui.innerHTML.includes('Shotgun shells'),'ammo section in shop');const sh=P.am.sh;amBuy('sh');ok(P.am.sh==Math.min(AMI.sh.max,sh+AMI.sh.buy),'bought shells');
+SHX.t='ammo';shop();ok(ui.innerHTML.includes('AMMO')&&ui.innerHTML.includes('Shotgun shells'),'ammo section in shop');const sh=P.am.sh;amBuy('sh');ok(P.am.sh==Math.min(AMI.sh.max,sh+AMI.sh.buy),'bought shells');
 // ammo use + reload
 nextWave();P.hp=999;toSp=0;const keep=()=>{const k=mk(0,20,20);k.hp=1e9;zs=[k]};keep();P.cur=1;P.mg[1]=3;P.am.pa=10;let shots=0;inp=p=>({mx:0,my:0,fire:true});const m0=P.mg[1];for(let f=0;f<20;f++){tick(1);}
 ok(P.rl>0||P.mg[1]>0,'SMG emptied mag and started reloading');tick(Math.ceil(1.5/.016));ok(P.mg[1]>0&&P.am.pa<10,'reload pulled pistol ammo from reserve ('+P.mg[1]+' / '+P.am.pa+')');

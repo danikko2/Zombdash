@@ -42,6 +42,9 @@ ui/core-ui.js
 ui/nx-core.js
 ui/hub.js
 ui/setup.js
+ui/shop.js
+ui/run-screens.js
+ui/lobby-screen.js
 progress/skills.js
 ui/menus.js
 game/waves-and-shop.js

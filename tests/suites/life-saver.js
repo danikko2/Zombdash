@@ -32,7 +32,7 @@ ok(JSON.stringify(PS[0].gun[13])=='[0,1698,80,32,6,14]'&&JSON.stringify(PS[0].gu
 ok(ZS.heart&&JSON.stringify(ZS.heart.fly[0])=='[580,1641,18,16]'&&JSON.stringify(ZS.fbolt.fly[1])=='[549,1641,30,14]','the heart frame sits next to the old frames');
 // ---------- store ----------
 setGM('f');mapId=0;sel=0;S.dlf=1;start();P.cash=100000;P.am.rk=0;shop();
-ok(/data-gun=16[^>]*><\\/canvas>Life Saver<small>\\$1200</.test(ui.innerHTML),'the store sells the Life Saver with its picture');
+ok(/data-gn=16[^>]*><\\/canvas><\\/span><span class=shn>Life Saver<\\/span><span class="shpr[^"]*">\\$1,200</.test(ui.innerHTML),'the store sells the Life Saver with its picture');
 let c0=P.cash;buy(LS);ok(c0-P.cash==1200&&P.mg[LS]==1&&P.am.rk==6&&amTxt(P,LS)=='1 / 2','bought for \\$1200: 1 heart loaded + 6 rockets (2 more hearts)');
 // ---------- a wall in front: the heart bounces back and heals the shooter ----------
 nextWave();toSp=0;P.mx=10;P.inv=1e9;

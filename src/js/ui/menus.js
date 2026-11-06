@@ -11,7 +11,7 @@ function setO(v){S.or=v;sv();rs();options()}
 function setQ(v){S.qs=v;sv();options()}
 function setD(v){S.df=v;sv();options()}
 function stepW(d){S.sw=cl(S.sw+d,1,DT('wave')?99:S.best);sv();options()}
-function pauseMenu(){if(mode!='play'&&mode!='pause')return;if(mode=='play')sfx('pause');mode='pause';L=R=null;mouse.d=0;duck(.3);OPF=1;show(`<div class=p><h2>PAUSED</h2><div class=sum><div><b>${wave}</b><small>Wave</small></div><div><b>${kills}</b><small>Kills</small></div><div><b>$${P.cash}</b><small>Cash</small></div></div>${MPn?'':chMini(P.ac)}<button class=go onclick="resume()">RESUME</button><button onclick="options(1)">OPTIONS</button>${PTX?'<button class=red onclick="ptEnd()">BACK TO EDITOR<small>ends the playtest</small></button>':'<button class=red onclick="quitRun()">QUIT RUN<small>ends the run, keeps Zombie Pts</small></button>'}</div>`)}
-function resume(){if(mode!='pause')return;OPF=0;mode='play';ui.innerHTML='';duck(1);last=performance.now()}
+function pauseMenu(){if(mode!='play'&&mode!='pause')return;if(mode=='play')sfx('pause');mode='pause';L=R=null;mouse.d=0;duck(.3);OPF=1;pauseNX()}
+function resume(){if(mode!='pause')return;RXC=0;OPF=0;mode='play';ui.innerHTML='';duck(1);last=performance.now()}
 function quitRun(){OPF=0;duck(1);over(1)}
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&mode=='play')pauseMenu()});

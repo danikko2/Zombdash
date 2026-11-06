@@ -36,7 +36,7 @@ ok(JSON.stringify(PS[0].gun[0])=='[490,0,80,32,6,14]'&&JSON.stringify(PS[0].gun[
 ok(ZS.bbolt&&ZS.bbolt.fly.length==1&&ZS.fbolt&&ZS.fbolt.fly.length==2&&ZS.bbolt.fly[0][0]>=487&&JSON.stringify(ZS.bolt.fly[0])=='[456,1641,30,10]'&&JSON.stringify(ZS.chicken.fly[0])=='[0,1641,56,48]','blast bolt and burning bolt frames added next to the old ones');
 // ---------- store ----------
 setGM('f');mapId=0;sel=0;S.dlf=1;start();P.mx=P.hp=999;P.cash=100000;shop();
-ok(/data-gun=13[^>]*><\\/canvas>Blastbow<small>\\$1800</.test(ui.innerHTML)&&/data-gun=14[^>]*><\\/canvas>Death Row<small>\\$2500</.test(ui.innerHTML)&&/data-gun=15[^>]*><\\/canvas>Firebow<small>\\$850</.test(ui.innerHTML),'the store sells all three, each with its picture');
+ok(/data-gn=13[^>]*><\\/canvas><\\/span><span class=shn>Blastbow<\\/span><span class="shpr[^"]*">\\$1,800</.test(ui.innerHTML)&&/data-gn=14[^>]*><\\/canvas><\\/span><span class=shn>Death Row<\\/span><span class="shpr[^"]*">\\$2,500</.test(ui.innerHTML)&&/data-gn=15[^>]*><\\/canvas><\\/span><span class=shn>Firebow<\\/span><span class="shpr[^"]*">\\$850</.test(ui.innerHTML),'the store sells all three, each with its picture');
 P.am.ar=0;P.am.rk=0;let c0=P.cash;buy(BB);ok(P.own.includes(BB)&&c0-P.cash==1800&&P.mg[BB]==6&&P.am.ar==12,'Blastbow: $1800, 6 bolts loaded + 12 arrows');
 c0=P.cash;buy(DW);ok(c0-P.cash==2500&&P.mg[DW]==1&&P.am.rk==2,'Death Row: $2500, 1 shot loaded + 2 rockets');
 c0=P.cash;buy(FB);ok(c0-P.cash==850&&P.mg[FB]==10&&P.am.ar==32,'Firebow: $850, 10 bolts loaded + 20 arrows');

@@ -44,5 +44,23 @@ cGo(0);ok(nxKey('escape')&&CWV.v==='w','Esc zooms back out');ok(nxKey('escape')&
 menu();sel=0;hubCampGo();ok(GMD=='c'&&mapId==campFront()&&mode!='menu','PLAY on the campaign card starts the next map');
 // split screen picks the campaign map from the same world map
 CMLB=1;cGo(0);ok(hx_().includes('SPLIT-SCREEN LOBBY')&&hx_().includes('CHOOSE'),'lobby map pick uses the world map');CMLB=0;
+// ---------- stage 2: store, leaving a run, pause, end screens, lobby ----------
+const has=t=>hx_().includes(t);
+setGM('f');mapId=0;sel=0;S.dlf=1;start();wave=3;zs=[];toSp=0;P.cash=1000;shop();ok(mode=='shop'&&has('SUPPLY STOP')&&has('START WAVE 4')&&has('data-gn=')&&!has('data-gun='),'store: tabs, list and arm-free gun pictures');
+ok(shKey('e')&&SHX.t=='gear'&&has('Armor'),'E opens the next store tab');ok(shKey('q')&&SHX.t=='guns','Q goes back');
+SHX.g=1;shop();ok(has('BUY · $120')&&has('Goes into slot 2 of 4'),'picked gun: price and the slot it goes into');shKey('enter');ok(P.own.includes(1)&&P.cash==880,'Enter buys the picked gun');
+shKey('arrowdown');ok(SHX.g===2,'arrow down picks the next gun in the list');
+SHX.t='hp';shop();ok(has('HEAL +1')&&has('Max HP'),'health tab');SHX.t='guns';shop();
+ok(has('+1 ♥')&&has('heal()'),'quick heal in the store header');
+runExit();ok(RXC==1&&has('Leave the run?')&&has("rxGo('m')")&&has("rxGo('e')"),'leaving from the store asks first');ok(rxKey('escape')&&RXC==0&&!has('Leave the run?'),'Esc closes the question');
+runExit();rxGo('m');const cp=cpOK();ok(mode=='menu'&&UIS=='hub'&&cp&&cp.w==3&&cp.p.own.includes(1),'Main Menu from the store keeps the run (with what was bought)');
+ok(has('CONTINUE · SUBURB WAVE 4'),'the main menu offers to continue it');
+cpResume();ok(mode!='menu'&&P.own.includes(1)&&wave>=3,'continuing picks the run back up');
+mode='play';pauseMenu();ok(has('PAUSED')&&has('LEAVE THE RUN')&&has("runExit('m')")&&has("runExit('e')")&&!has("runExit('c')"),'pause: resume, options and the ways out (no campaign map in free play)');
+runExit('e');ok(has('End this run?'),'End Run asks first');rxGo('e');ok(mode=='over'&&has('RUN ENDED')&&has('MAIN MENU')&&has('NEW GAME')&&has('TRY AGAIN')&&has('id=ovgo'),'end screen: Main Menu, New Game, Try Again');ok(!cpOK(),'ending the run clears it');
+setGM('c');mapId=0;sel=0;S.dlc=1;start();mode='play';pauseMenu();ok(has("runExit('c')")&&has('LIVES LEFT'),'campaign pause has Campaign Map and lives');runExit('c');ok(has('Go to the campaign map?'),'asks first');rxGo('c');ok(mode=='menu'&&UIS=='cmap','goes to the campaign map');
+setGM('c');mapId=0;start();P.hp=0;P.inv=0;mode='play';lifeDeath();ok(has('YOU WERE EATEN')&&has('lifeMenu()')&&has('lifeMap()')&&has('lifeCont()'),'life lost: Main Menu, Campaign Map, Continue');lifeMap();ok(UIS=='cmap','Campaign Map from the life screen');
+setGM('f');lobby();ok(mode=='lobby'&&has('PLAYER 1')&&has('lbMap(-1)')&&has('lbMode')&&has('MAIN MENU'),'split-screen lobby on one screen with the top bar');menu();
+options(0);ok(has('nxtop')&&has('MAIN MENU')&&has('OPTIONS'),'older screens get the shared top bar');menu();
 console.log('TOTAL errors',errs.length,errs);`;
 globalThis.LOG=m=>require("fs").writeSync(2,m+"\n");new Function("docL","ivs","errs","started_",out)(docL,ivs,errs);

@@ -35,8 +35,8 @@ ok(ZS.chicken&&ZS.chicken.fly.length==4&&ZS.chicken.eat.length==2&&ZS.chicken.pu
 ok(JSON.stringify(ZS[0].walk[0])=='[0,0,58,62]'&&JSON.stringify(ZS[20].walk[0])=='[0,1423,102,108]'&&JSON.stringify(ZS[14].bite[3])=='[837,1190,92,82]','older zombie frames did not move');
 // ---------- store ----------
 setGM('f');mapId=0;sel=0;S.dlf=1;start();P.mx=P.hp=999;P.cash=100000;shop();
-ok(/data-gun=11[^>]*><\\/canvas>Crossbow<small>\\$280</.test(ui.innerHTML)&&/data-gun=12[^>]*><\\/canvas>Chicken Gun<small>\\$2000</.test(ui.innerHTML),'store sells the Crossbow ($280) and the Chicken Gun ($2000), each with its picture');
-ok(ui.innerHTML.includes("amBuy('ar')")&&/Arrows<small>0\\/500 · \\+100 \\$40/.test(ui.innerHTML),'store sells arrows: +100 for $40, 500 max');
+ok(/data-gn=11[^>]*><\\/canvas><\\/span><span class=shn>Crossbow<\\/span><span class="shpr">\\$280</.test(ui.innerHTML)&&/data-gn=12[^>]*><\\/canvas><\\/span><span class=shn>Chicken Gun<\\/span><span class="shpr">\\$2,000</.test(ui.innerHTML),'store sells the Crossbow ($280) and the Chicken Gun ($2000), each with its picture');
+SHX.t='ammo';SHX.am='ar';shop();ok(ui.innerHTML.includes("amBuy('ar')")&&/Arrows<small>0 \\/ 500/.test(ui.innerHTML)&&ui.innerHTML.includes('BUY +100 · $40'),'store sells arrows: +100 for $40, 500 max');
 let c0=P.cash;buy(XB);ok(P.own.includes(XB)&&c0-P.cash==280&&P.cur==XB&&P.mg[XB]==10&&P.am.ar==20,'bought the Crossbow for $280: 10 bolts loaded + 20 arrows');
 c0=P.cash;let a0=P.am.ar;amBuy('ar');ok(P.am.ar==a0+100&&c0-P.cash==40,'100 arrows for $40');for(let i=0;i<9;i++)amBuy('ar');c0=P.cash;amBuy('ar');ok(P.am.ar==500&&P.cash==c0,'arrows stop at 500');
 ok(ui.innerHTML.includes('Crossbow')&&ui.innerHTML.includes('10 / 500'),'inventory shows the Crossbow with 10 / 500');

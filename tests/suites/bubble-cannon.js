@@ -32,7 +32,7 @@ ok(JSON.stringify(PS[0].gun[16])=='[0,1863,80,32,6,14]'&&JSON.stringify(PS[0].gu
 ok(ZS.bubble&&JSON.stringify(ZS.bubble.fly)=='[[599,1641,18,18],[618,1641,18,18]]'&&JSON.stringify(ZS.heart.fly[0])=='[580,1641,18,16]','bubble frames sit next to the old frames');
 // ---------- store ----------
 setGM('f');mapId=0;sel=0;S.dlf=1;start();P.cash=100000;P.am.rk=0;shop();
-ok(/data-gun=17[^>]*><\\/canvas>Bubble Cannon<small>\\$2250</.test(ui.innerHTML),'the store sells the Bubble Cannon with its picture');
+ok(/data-gn=17[^>]*><\\/canvas><\\/span><span class=shn>Bubble Cannon<\\/span><span class="shpr[^"]*">\\$2,250</.test(ui.innerHTML),'the store sells the Bubble Cannon with its picture');
 let c0=P.cash;buy(BC);ok(c0-P.cash==2250&&P.mg[BC]==4&&P.am.rk==16&&amTxt(P,BC)=='4 / 8','bought for \\$2250: 4 shots loaded + 16 rockets (8 more shots)');
 // ---------- an open spot ----------
 nextWave();toSp=0;P.mx=P.hp=999;P.inv=1e9;

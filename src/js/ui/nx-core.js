@@ -32,3 +32,6 @@ function nxDif(after){const c=GMD=='c';return nxSeg([0,1,2].map(d=>[DNm(d,c),`se
 // a survivor sprite drawn by paintUI (lk = dark silhouette for locked ones)
 function nxCh(ci,lk,cls){return `<canvas class="nch ${cls||''}" data-ch=${ci}${lk?' data-lk=1':''}></canvas>`}
 const nxN=n=>fmt(Math.round(n||0));
+// older screens (options, accounts, survivor select…) get the same top bar: their own BACK, the screen's title, Main Menu
+function topFrame(h){const z=nxS(),m=/<h2[^>]*>([\s\S]*?)<\/h2>/.exec(h),t=m?m[1].replace(/<small[\s\S]*?<\/small>/g,'').replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').trim():'',bk=/<button[^>]*onclick="([^"]*)"[^>]*>(?:BACK|CANCEL|DONE)</.exec(h);
+return `<div class="nx hubf${z.pt?' pt':''}${z.w<1180?' nar':''}${PCM()?'':' touch'}" style="height:calc(72px * var(--nxs,1))"><div class=nxs>${nxTop({back:bk?bk[1]:'menu()',crumbs:[[t||'Menu']]})}</div></div><div class=hubp style="top:calc(72px * var(--nxs,1))">${h}</div>`}

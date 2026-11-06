@@ -280,6 +280,9 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 | `ui/core-ui.js` | UI helpers: show(), canvas painting for menus, skill tree data |
 | `ui/nx-core.js` | Night Ops look for the new screens: the scaled 1280×720 stage (`nxWrap`, `--nxs`), icons, key hints, the shared top bar (`nxTop`: Back, where you are, Main Menu, settings), segmented choices, difficulty |
 | `ui/hub.js` | The main menu: tab bar (Play, Loadout, Survivors, Progress, Workshop), the Play tab cards, and the frame that shows older screens under the tab bar (`HUBX`, `hubFrame`) |
+| `ui/shop.js` | The single-player store between waves: Guns / Gear / Ammo / Health tabs, a grouped list, the picked item with stats against your gun, your loadout and START WAVE (`shopNX`, `SHX`) |
+| `ui/run-screens.js` | Pause menu, the leave-the-run dialog (Main Menu and Campaign Map keep the run as a checkpoint; End Run finishes it), and the end-of-run screens with Main Menu / Campaign Map / Next buttons |
+| `ui/lobby-screen.js` | The split-screen lobby on one screen (`lobbyNX`, called by `rL()`) |
 | `ui/setup.js` | New game setup for Free Play on one screen (map strip, survivor grid, difficulty, start wave); Q/E, LB/RB and Esc for the new screens (`nxKey`, `nxPads`) |
 | `ui/menus.js` | Name screen, main menu, options, pause |
 | `ui/map-and-survivor-select.js` | play() / mapGo() / mapStep(), the survivor screen, map descriptions and thumbnails |
@@ -313,7 +316,7 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 | `render/sprites.js` | Zombie and survivor sprite atlases + drawing, wave boss drawing |
 | `render/world-and-hud.js` | Drawing the world and the HUD |
 | `render/survivor-colours.js` | Survivor colour variants |
-| `render/camos.js` | Camo pattern rendering |
+| `render/camos.js` | Camo pattern rendering; `gunOnly` / `paintGuns`: gun pictures without the survivor's arm (`canvas[data-gn]`, used by the store) |
 
 ### Split screen (`src/js/multiplayer/`)
 

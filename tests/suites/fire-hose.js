@@ -33,7 +33,7 @@ ok(JSON.stringify(PS[0].gun[17])=='[0,1929,80,32,6,14]'&&JSON.stringify(PS[0].gu
 ok(ZS.flame&&JSON.stringify(ZS.flame.fly)=='[[637,1641,16,16],[654,1641,16,16],[671,1641,16,16]]'&&JSON.stringify(ZS.bubble.fly[1])=='[618,1641,18,18]','flame frames sit next to the old frames');
 // ---------- store ----------
 setGM('f');mapId=0;sel=0;S.dlf=1;start();P.cash=100000;P.am.rk=0;shop();
-ok(/data-gun=18[^>]*><\\/canvas>Fire Hose<small>\\$1600</.test(ui.innerHTML),'the store sells the Fire Hose with its picture');
+ok(/data-gn=18[^>]*><\\/canvas><\\/span><span class=shn>Fire Hose<\\/span><span class="shpr[^"]*">\\$1,600</.test(ui.innerHTML),'the store sells the Fire Hose with its picture');
 let c0=P.cash;buy(FH);ok(c0-P.cash==1600&&P.mg[FH]==100&&P.am.rk==8&&amTxt(P,FH)=='100 / 200','bought for \\$1600: 100 rounds loaded + 8 rockets (200 more rounds)');
 // ---------- an open spot ----------
 nextWave();toSp=0;P.mx=P.hp=999;P.inv=1e9;
