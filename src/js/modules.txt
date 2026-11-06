@@ -39,6 +39,9 @@ world/kit-stadium.js
 world/map-store.js
 world/custom-maps.js
 ui/core-ui.js
+ui/nx-core.js
+ui/hub.js
+ui/setup.js
 progress/skills.js
 ui/menus.js
 game/waves-and-shop.js
@@ -89,6 +92,7 @@ extras/extras.js
 extras/headlamp.js
 campaign/sections.js
 campaign/map-screens.js
+campaign/world-map.js
 maps/props/home-props.js
 maps/props/forest-props.js
 maps/props/kit-props.js

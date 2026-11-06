@@ -278,8 +278,11 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 | File | What's in it |
 |---|---|
 | `ui/core-ui.js` | UI helpers: show(), canvas painting for menus, skill tree data |
+| `ui/nx-core.js` | Night Ops look for the new screens: the scaled 1280×720 stage (`nxWrap`, `--nxs`), icons, key hints, the shared top bar (`nxTop`: Back, where you are, Main Menu, settings), segmented choices, difficulty |
+| `ui/hub.js` | The main menu: tab bar (Play, Loadout, Survivors, Progress, Workshop), the Play tab cards, and the frame that shows older screens under the tab bar (`HUBX`, `hubFrame`) |
+| `ui/setup.js` | New game setup for Free Play on one screen (map strip, survivor grid, difficulty, start wave); Q/E, LB/RB and Esc for the new screens (`nxKey`, `nxPads`) |
 | `ui/menus.js` | Name screen, main menu, options, pause |
-| `ui/map-and-survivor-select.js` | Map select, survivor select, map descriptions and thumbnails |
+| `ui/map-and-survivor-select.js` | play() / mapGo() / mapStep(), the survivor screen, map descriptions and thumbnails |
 | `ui/armory.js` | Armory and challenge screens, gun progress in codes |
 
 ### Progression (`src/js/progress/`)
@@ -354,7 +357,8 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 | `campaign/wave-replay.js` | A restarted wave replays the same zombies |
 | `campaign/life-lost.js` | "You were eaten" screen |
 | `campaign/sections.js` | Campaign sections (SEC) and progress |
-| `campaign/map-screens.js` | Campaign world/section map screens and their painted art |
+| `campaign/map-screens.js` | Campaign map navigation (cMap, cGo, cPick, slots) and the painted world art (`cWorldArt`) |
+| `campaign/world-map.js` | The campaign on one world map: whole-world view and a camera that zooms into a section with its neighbours still around it; pins, labels, the side panel |
 
 ### Bosses (`src/js/bosses/`)
 

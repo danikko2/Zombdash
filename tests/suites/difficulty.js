@@ -19,7 +19,7 @@ setGM('c');S.dlc=1;ok(cpD(A,1)==0&&mapOK(0)&&!mapOK(3),'fresh: medium only Subur
 const beat=(d,m)=>{S.dlc=d;setGM('c');mapId=m;sel=0;start();P.mx=P.hp=999;wave=19;zs=[];toSp=0;nextWave();const b=zs.find(q=>ZT[q.t].sv);b.ph=2;hurt(b,1e9,0,0)};
 beat(1,0);ok(A.cp==1&&mapOK(3),'medium: beat Suburb -> School open on medium');
 S.dlc=2;ok(!mapOK(3)&&mapOK(0),'hard: School still locked (Suburb not beaten on hard)');ok(campFront()==0,'hard campaign front is Suburb');
-play();ok(ui.innerHTML.includes('dsel')&&ui.innerHTML.includes('Medium')&&ui.innerHTML.includes('Hard'),'campaign map screen has Easy/Medium/Hard selector');
+play();ok(ui.innerHTML.includes('ndif')&&ui.innerHTML.includes('Medium')&&ui.innerHTML.includes('Hard'),'campaign map screen has Easy/Medium/Hard selector');
 S.dlc=0;ok(mapOK(3),'easy: School open (medium win counts for easy)');
 beat(2,0);S.dlc=2;ok(mapOK(3)&&A.cpH==1,'hard: beat Suburb on hard -> School open on hard');
 S.dlc=0;setGM('c');mapId=0;start();ok(LIVES==4,'easy campaign: 4 lives');S.dlc=1;start();ok(LIVES==3,'medium: 3 lives');S.dlc=2;start();ok(LIVES==1,'hard: 1 life');

@@ -52,7 +52,7 @@ ok(!mOpen(A,1,kC),'a map that is not in a slot is never a campaign map');
 {const keep=A.bm[1];A.bm[1]|=bits([12,13,17]);ok(secDone(A,1,2)&&secOpen(A,1,3)&&!bBt(A,1,kA),'custom slots are optional: Zombville is done and Countryside opens without it');A.bm[1]=keep}
 ok(cFront(A,1)===12&&campNx&&!SORD.includes(kA),'the campaign front only ever points at built-in maps');
 // the map screens
-setGM('c');mapId=11;CMV=2;CSEL=null;cMap();ok(ui.innerHTML.includes('cnode cu')&&ui.innerHTML.includes('Junkyard'),'section map: the custom slot shows with its name');
+setGM('c');mapId=11;CMV=2;CSEL=null;cMap();ok(ui.innerHTML.includes('cwp cu')&&ui.innerHTML.includes('Junkyard'),'section map: the custom slot shows with its name');
 ok(ui.innerHTML.includes('custom 0/1'),'the section header counts custom maps separately');
 cPick(kA);ok(mapId===kA&&S.mp!==kA&&ui.innerHTML.includes('Officer Ray')&&ui.innerHTML.includes('optional'),'picking it: its info names the boss; S.mp never holds a custom key');
 ok(ui.innerHTML.includes('boss &amp; slot')||ui.innerHTML.includes('boss & slot'),'single player offers the boss & slot links');

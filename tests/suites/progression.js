@@ -15,7 +15,7 @@ const out=code+`;S.ac.cp=8;
 docL.pointerdown[0]();endIntro();
 const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
 const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)errs.push(m)};
-S.ac.name='Tester';menu();ok(ui.innerHTML.includes('ARMORY')&&ui.innerHTML.includes('CHALLENGES'),'menu has armory + challenges');
+S.ac.name='Tester';menu();ok(ui.innerHTML.includes('LOADOUT')&&ui.innerHTML.includes('PROGRESS')&&ui.innerHTML.includes('all challenges'),'menu has Loadout and Progress tabs + challenges link');
 mapId=0;S.sw=1;sel=0;start();const A=S.ac;ok(A.ch&&A.ch.D.length==3&&A.ch.W.length==3,'challenges generated '+A.ch.D.map(q=>q.k+':'+q.n).join(',')+' | '+A.ch.W.map(q=>q.k+':'+q.n).join(','));
 ok(new Set(A.ch.D.map(q=>q.k)).size==3,'dailies distinct');
 // real shooting credits the gun

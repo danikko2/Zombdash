@@ -23,30 +23,13 @@ var CWR=[
 {p:[[384,86],[556,70],[612,200],[574,330],[430,382],[376,386],[338,312],[418,206]],l:[490,230],dc:[[450,140,0],[540,150,1],[470,310,2],[540,280,3],[400,280,4]]},
 {p:[[568,74],[770,60],[900,152],[884,330],[704,380],[584,330],[622,200]],l:[750,215],dc:[[650,130,0],[820,170,1],[700,300,2],[830,290,3],[640,250,4]]},
 {p:[[706,462],[822,430],[928,476],[940,560],[826,602],[704,572]],l:[820,520],dc:[[740,490,0],[900,500,1],[760,570,2],[880,575,3]]}];
-function cWorld(){const A=cAcc(),d=DIF(),cur=secOf(cFront(A,d));let lb='';
-for(let i=0;i<5;i++){const S_=SEC[i],op=secOpen(A,d,i),dn=secDone(A,d,i),n=S_.m.filter(m=>m>=0),b=n.filter(m=>bBt(A,d,m)).length,[x,y]=CWC[i];
-lb+=`<button data-q=1 class="creg ${op?'':'lk'}" style="left:${x/10}%;top:${(y+(i==4?-14:30))/6.2}%" onclick="${op?`cGo(${i})`:`sfx('deny')`}"><b>${S_.n}</b><small>${op?(dn?'✓ complete':b+'/'+n.length+' beaten'):'🔒 finish '+SEC[i-1].n}${ccAll().some(e=>e.s===i)?' · +'+ccAll().filter(e=>e.s===i).length+' custom':''}</small>${i==cur?'<em class=cpn></em>':''}</button>`}
-show(`<div class="p wide cmp"><div class=cmh><button class="cbk cbm" data-q=1 onclick="${CMLB?'clbBack()':'modes()'}">${CMLB?'LOBBY':'MENU'}</button><h2>CAMPAIGN · WORLD MAP</h2>${difSel()}</div><div class="cmb cww"><canvas id=cmc width=1600 height=992></canvas>${lb}</div>
-<p class=cmn>Pick a section. Each section opens with one map; beat it and the rest of that section opens in any order. Beat every map in a section to reach the next.</p><div class=row><button class=go onclick="cGo(${cur})">GO TO ${SEC[cur].n.toUpperCase()}</button></div></div>`);
-const cv=document.getElementById&&document.getElementById('cmc'),g=cv&&cv.getContext&&cv.getContext('2d');if(!g||!g.drawImage)return;const art=cWorldArt();g.drawImage(art,0,0);const Q=AU.cmrg;if(!Q)return;g.save();g.scale(1.6,1.6);
-for(let i=0;i<5;i++){if(secOpen(A,d,i))continue;const R=cRng(9+i);g.fillStyle='rgba(70,80,96,.62)';for(let j=0;j<Q.gh;j++)for(let k=0;k<Q.gw;k++)if(Q.M[j*Q.gw+k]==i)g.fillRect(k*Q.cs,j*Q.cs,Q.cs+.5,Q.cs+.5);g.fillStyle='rgba(220,228,236,.22)';for(let k=0;k<26;k++){const x=CWC[i][0]+(R()-.5)*260,y=CWC[i][1]+(R()-.5)*170;if(Q.M[Math.floor(y/Q.cs)*Q.gw+Math.floor(x/Q.cs)]!==i)continue;g.beginPath();g.arc(x,y,16+R()*20,0,7);g.fill()}}g.restore()}
+function cWorld(){return cwShow('w')}
 function cSea(){let w='<rect width="1000" height="620" fill="#7ec8e8"/>';for(let x=0;x<1000;x+=40)w+=`<path d="M${x} 0V620" stroke="#8fd2ee" stroke-width="1.5"/>`;for(let y=0;y<620;y+=40)w+=`<path d="M0 ${y}H1000" stroke="#8fd2ee" stroke-width="1.5"/>`;for(let i=0;i<14;i++){const x=(i*173)%960+20,y=(i*97)%580+20;w+=`<path d="M${x} ${y} q5 -5 10 0" stroke="#fff" stroke-width="2.5" fill="none" opacity=".7"/>`}return w}
 function cCompass(x,y){return `<g transform="translate(${x} ${y})" opacity=".85"><circle r="30" fill="#d8b884" stroke="#8a6a3a" stroke-width="3"/><path d="M0 -34 L6 0 L0 34 L-6 0Z" fill="#8a5a32"/><path d="M-34 0 L0 6 L34 0 L0 -6Z" fill="#a8783e"/><text y="-38" text-anchor="middle" class="cwc">N</text></g>`}
 // one section: its island, roads and the five map spots
 var CSL=[[175,390],[330,205],[515,330],[690,180],[830,400]],CRD=[[0,1],[0,2],[1,3],[2,3],[2,4],[3,4]];
 var CIS=[[70,330],[150,170],[300,110],[470,150],[620,90],[800,100],[920,220],[930,380],[860,520],[680,560],[520,500],[360,560],[180,540],[80,460]];
-function cSec(si){const A=cAcc(),d=DIF(),S_=SEC[si],op=secOpen(A,d,si);if(!op)return cWorld();const front=cFront(A,d);let nodes='';
-S_.m.forEach((m,k)=>{const[x,y]=CSL[k],L=(x/10).toFixed(1)+'%',T=((y-78)/6.2).toFixed(1)+'%';
-if(m<0){const e=ccSlot(si,k);if(e){const o=mOpen(A,d,e.key),b=bBt(A,d,e.key),on=e.key===mapId&&!CSEL,img=mpImg(e.key);
-nodes+=`<button data-q=1 class="cnode cu ${o?'':'lk'} ${b?'dn':''} ${on?'on':''}" style="left:${L};top:${T}" onclick="cPick(${e.key})"><span class=ci>${img?`<img class=cthumb alt="" src="${img}">`:''}${!o?'<em class=clk>🔒</em>':''}</span>${b?'<span class=cdn>✓</span>':''}${o&&!b?'<span class=cnew>★</span>':''}<span class=cnl>${edEsc(mpName(e.key))}</span></button>`;return}
-const bad=ccSlotBad(si,k),sel=CSEL&&CSEL[0]===si&&CSEL[1]===k;nodes+=`<button data-q=1 class="cnode cs ${sel?'on':''}" style="left:${L};top:${T}" onclick="cSlotPick(${si},${k})"><span class=ci><b>${bad?'!':'?'}</b></span><span class=cnl>Coming Soon</span></button>`;return}
-const o=mOpen(A,d,m),b=bBt(A,d,m),on=m===mapId&&!CSEL,rp=ccRep(m);
-nodes+=`<button data-q=1 class="cnode ${o?'':'lk'} ${b?'dn':''} ${on?'on':''}" style="left:${L};top:${T}" onclick="cPick(${m})"><span class=ci>${!o?'<em class=clk>🔒</em>':''}</span>${b?'<span class=cdn>✓</span>':''}${o&&!b?'<span class=cnew>★</span>':''}${k==0?'<span class=cst>START</span>':''}${m===front&&o?'<span class=cme>YOU</span>':''}${rp?'<span class=crp title="Your custom map plays here instead">✎</span>':''}<span class=cnl>${MP[m].n}</span></button>`});
-const m=mapId,o=mOpen(A,d,m),done=S_.m.filter(q=>q>=0),nb=done.filter(q=>bBt(A,d,q)).length,nx=si<4?SEC[si+1].n:null,cus=ccAll().filter(e=>e.s===si),ncb=cus.filter(e=>bBt(A,d,e.key)).length;
-const info=CSEL&&CSEL[0]===si?cSlotInfo(si,CSEL[1]):`<div class=cmi><div><b>${edEsc(mpName(m))}</b><small>${edEsc(mpDesc(m))}</small><span class=munl>${munT(m)}</span>${cManage(m)}</div><button id=mgo class="go ${o?'':'no'}" onclick="mapGo()">${o?(CMLB?'CHOOSE':'PLAY'):'🔒 LOCKED'}</button></div>`;
-show(`<div class="p wide cmp"><div class=cmh><button class=cbk data-q=1 onclick="cGo('w')" aria-label="World map">⟵ WORLD MAP</button><button class="cbk cbm" data-q=1 onclick="${CMLB?'clbBack()':'modes()'}">${CMLB?'LOBBY':'MENU'}</button><h2>${si+1}. ${S_.n.toUpperCase()}<small>${S_.sub} · ${nb}/${done.length} beaten${cus.length?' · custom '+ncb+'/'+cus.length:''}${nx?' · beat them all to reach '+nx:''}</small></h2>${difSel()}</div>
-<div class=cmb><canvas id=cmc width=1600 height=992></canvas>${nodes}</div>${info}${CCW.length&&!CMLB?`<p class=cmn style="color:#ffb86a">⚠ ${edEsc(CCW[0])}${CCW.length>1?' (+'+(CCW.length-1)+' more in the Map Workshop)':''}</p>`:''}</div>`);
-const cv=document.getElementById&&document.getElementById('cmc'),g=cv&&cv.getContext&&cv.getContext('2d');if(g&&g.drawImage)g.drawImage(cSecArt(si),0,0)}
+function cSec(si){return cwShow(si)}
 // end-of-map text and button
 function cMunT(m){const A=cAcc(),d=DIF(),s=secOf(m),o=mOpen(A,d,m);
 if(cmIs(m)){const e=ccOfKey(m);if(!e)return '';if(!o)return !secOpen(A,d,s)?`🔒 Beat every map in ${SEC[s-1].n} on ${DNm(d,1)} first`:`🔒 Beat ${MP[SEC[s].m[0]].n} on ${DNm(d,1)} to open this map`;
@@ -186,7 +169,8 @@ return AU.cma[key]=cv}
 var CWP=[[60,380],[90,200],[200,80],[380,60],[560,50],[780,48],[920,140],[930,330],[860,400],[700,400],[560,390],[420,420],[380,560],[220,590],[80,520]];
 var CWC=[[215,455],[235,205],[495,250],[765,235],[820,520]];
 function cRg(x,y){if(cInPoly(CWR[4].p,x,y))return 4;if(!cInPoly(CWP,x,y))return -1;let b=0,bd=1e9;for(let i=0;i<4;i++){const d=Math.hypot(x-CWC[i][0],(y-CWC[i][1])*1.25);if(d<bd){bd=d;b=i}}return b}
-function cWorldArt(){AU.cma=AU.cma||{};if(AU.cma.w)return AU.cma.w;const W=1000,H=620,cv=document.createElement('canvas');cv.width=W*1.6;cv.height=H*1.6;const g=cv.getContext('2d');if(!g||!g.scale)return cv;g.scale(1.6,1.6);const R=cRng(777);cSeaPaint(g,W,H,R);
+// R = pixels per world unit (the painting is 1000×620 world units); every map sits on it at its spot (CWR[].dc)
+function cWorldArt(sc){sc=sc||1.6;AU.cma=AU.cma||{};const ck='w'+sc;if(AU.cma[ck])return AU.cma[ck];const W=1000,H=620,cv=document.createElement('canvas');cv.width=Math.round(W*sc);cv.height=Math.round(H*sc);const g=cv.getContext('2d');if(!g||!g.scale)return cv;g.scale(sc,sc);const R=cRng(777);cSeaPaint(g,W,H,R);
 const ISL=CWR[4].p;cLand(g,CWP,'home',R);cLand(g,ISL,'isle',R);const cs=6,gw=Math.ceil(W/cs),gh=Math.ceil(H/cs),M=new Int8Array(gw*gh);
 for(let j=0;j<gh;j++)for(let i=0;i<gw;i++)M[j*gw+i]=cRg(i*cs+3,j*cs+3);AU.cmrg={M,gw,gh,cs};
 g.save();cPoly(g,CWP.map(q=>[q[0]+(500-q[0])*.03,q[1]+(310-q[1])*.05]));g.clip();for(let j=0;j<gh;j++)for(let i=0;i<gw;i++){const r=M[j*gw+i];if(r<0||r>3)continue;const T=CTH[SEC[r].th];g.fillStyle=T.b;g.fillRect(i*cs,j*cs,cs+.5,cs+.5)}
@@ -196,8 +180,14 @@ g.fillStyle='rgba(50,34,18,.75)';for(let j=0;j<gh-1;j++)for(let i=0;i<gw-1;i++){
 g.strokeStyle='#4e7a88';g.lineWidth=7;g.lineCap='round';g.beginPath();g.moveTo(600,58);g.bezierCurveTo(590,160,640,230,620,320);g.bezierCurveTo(610,360,570,390,540,392);g.stroke();g.strokeStyle='#7ab0c0';g.lineWidth=3;g.stroke();g.lineCap='butt';
 cMesa(g,850,250,1.3);cMesa(g,690,320,1);cMtn(g,130,170,1.5,'#6a6a6e','#4a4a52');cMtn(g,330,110,1.2,'#6a6a6e','#4a4a52');cMtn(g,120,440,1.1,'#8a8a7a','#6a6a5a',1);cMtn(g,420,110,1.1,'#8a8a8e','#6a6a72',1);
 const LMW=[[0,215,420],[9,235,165],[13,495,205],[4,765,195],[5,820,490]];const V=[];
-for(let k=0;k<4000&&V.length<330;k++){const x=R()*W,y=R()*H,r=cRg(x,y);if(r<0||cRg(x,y+12)!=r)continue;if(LMW.some(q=>Math.hypot(q[1]-x,(q[2]-y)*1.5)<80))continue;if(Math.hypot(x-CWC[r][0],(y-CWC[r][1]-30)*1.8)<70)continue;V.push([x,y,r])}
+for(let k=0;k<4000&&V.length<330;k++){const x=R()*W,y=R()*H,r=cRg(x,y);if(r<0||cRg(x,y+12)!=r)continue;if(CWR.some(r=>r.dc.some(q=>Math.hypot(q[0]-x,(q[1]-y)*1.4)<30)))continue;if(Math.hypot(x-CWC[r][0],(y-CWC[r][1]-30)*1.8)<70)continue;V.push([x,y,r])}
 V.sort((a,b)=>a[1]-b[1]);for(const[x,y,r]of V)cVeg(g,SEC[r].th,x,y,R);
-for(const[m,x,y]of LMW){g.save();g.translate(x,y);g.scale(.9,.9);CLM[m](g,0,0);g.restore()}
-cShip(g,640,480,1.3);cShip(g,960,400,1);cShip(g,40,150,1);cCompassC(g,930,70,1.1);return AU.cma.w=cv}
+for(let i=0;i<5;i++){const pts=SEC[i].m.map((m,k)=>{const q=cwPos(i,k);return{x:q[0],y:q[1],m}});
+// dirt roads joining the section's maps (shortest network), then each map's landmark
+const T=[0],E=[];while(T.length<pts.length){let b=null;for(const a of T)for(let c=0;c<pts.length;c++){if(T.includes(c))continue;const dd=Math.hypot(pts[a].x-pts[c].x,pts[a].y-pts[c].y);if(!b||dd<b[2])b=[a,c,dd]}T.push(b[1]);E.push(b)}
+g.lineCap='round';for(const[a,c]of E){const p=pts[a],q=pts[c],mx=(p.x+q.x)/2+((p.x*7+q.y)%20-10),my=(p.y+q.y)/2+4;g.beginPath();g.moveTo(p.x,p.y+8);g.quadraticCurveTo(mx,my,q.x,q.y+8);g.strokeStyle='rgba(70,52,28,.7)';g.lineWidth=4.2;g.stroke();g.strokeStyle='rgba(214,190,140,.95)';g.lineWidth=2.2;g.stroke()}g.lineCap='butt';
+for(const p of pts)if(p.m>=0&&CLM[p.m]){g.save();g.translate(p.x,p.y+12);g.scale(.5,.5);CLM[p.m](g,0,0);g.restore()}}
+cShip(g,640,480,1.3);cShip(g,960,400,1);cShip(g,40,150,1);cCompassC(g,930,70,1.1);return AU.cma[ck]=cv}
+// where map slot k of section si sits on the world map (the Island's fifth slot has no spot of its own)
+function cwPos(si,k){const d=CWR[si].dc.find(q=>q[2]===k);return d?[d[0],d[1]]:[CWR[si].l[0]-2,CWR[si].l[1]+2]}
 

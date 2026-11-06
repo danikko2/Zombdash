@@ -16,11 +16,8 @@ function mapFix(acs){if(mapOK(mapId,acs))return;const O=ORD();let m=GMD=='c'?cam
 function munT(m){const A=S.ac,ci=MUN[m],ok=mapOK(m),i=CORD.indexOf(m);
 if(GMD=='c'&&(!cmIs(m)||ccOfKey(m)))return cMunT(m);if(cmIs(m))return cmMunT(m);
 if(!ok)return `🔒 Unlock it in the campaign first`;const b=mBest(A,m);return `Best wave here: ${b||'—'}`}
-function modes(){CMLB=0;ccRunBack();UIS='mode';mode='menu';MPn=0;const A=S.ac,c=cBeat(A),nf=MP.filter((_,m)=>mapOKA(A,m)).length;
-show(`<div class="p wide mds"><h2>CHOOSE A MODE</h2><div class=mdg>
-<button data-q=1 class="mdb ${GMD=='c'?'on':''}" onclick="setGM('c');mapId=campFront();S.mp=mapId;CMV=null;play()"><b>CAMPAIGN</b><span class=mdp>${c>=CORD.length?'✓ COMPLETE':c+'/'+CORD.length+' maps beaten'}</span><small>Survive 20 waves on each map, then defeat the survivor holding out there. Beat them and they join you, and the next map opens up.</small></button>
-<button data-q=1 class="mdb ${GMD=='f'?'on':''}" onclick="setGM('f');play()"><b>FREE PLAY</b><span class=mdp>${nf}/${MP.length} maps unlocked${cmFree().length?' · '+cmFree().length+' custom':''}</span><small>Endless waves on any map you've opened up in the campaign. Chase your best wave.</small></button>
-</div><p class=note style="text-align:center;margin:6px 0 0"><button class=lnk data-q=1 onclick="tutAgain()">play the tutorial again</button></p><div class=row><button onclick="UIS='';menu()">BACK</button></div></div>`)}
+// choosing a mode now happens on the main menu's Play tab
+function modes(){CMLB=0;ccRunBack();mode='menu';MPn=0;HUBX=null;hub()}
 // ----- end of a campaign map -----
 function cwH(){const C=CWIN,cu=cmIs(C.m),nb=C.ci==null||!CH[C.ci],own=!nb&&(S.ac.un||[]).includes(C.ci);return `<h2 style="color:var(--tox)">${edEsc(mpName(C.m).toUpperCase())} COMPLETE!</h2><div class=cwin>${nb?'':`<canvas data-ch=${C.ci}></canvas>`}<div><b>${nb?'You survived all 20 waves!':CH[C.ci].n+' '+(cu?'gives up!':'joined your survivors!')}</b><small>${nb?'No survivor is holding out here yet. ':cu?(own?CH[C.ci].n+' is already one of your survivors. ':'Beat '+CH[C.ci].n+' on '+ccHome(C.ci)+' to recruit them. ')+'This map is now open in Free Play. ':''}${C.nx!=null?'Next up: '+MP[C.nx].n+' ('+SEC[secOf(C.nx)].n+').':cBeat(S.ac)>=SORD.length?'You beat the whole campaign. Every map is open in free play.':'Pick your next map on the campaign map.'}</small></div></div>`}
 function cwBtn(mp){const C=CWIN;if(C.nx==null)return `<button class=go onclick="setGM('c');CMV=null;play()">CAMPAIGN MAP</button>`;return `<button class=go onclick="campNext(${mp?1:0})">NEXT: ${MP[C.nx].n.toUpperCase()}</button>`}

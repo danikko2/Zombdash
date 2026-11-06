@@ -41,7 +41,7 @@ msXP(P,2,1e6);ok(s2.l==10&&A.sl[2]==1,'Bill mastered, slayer on');ok(ttN(A)!=''&
 run(2);ok(P.v==9,'slayer look used in single player');P.cur=2;tick(3);
 for(let i=0;i<5;i++)s2.cd|=1<<i;ok(ttOK(A,2,4),'all-challenges title unlocked');
 // screens
-menu();ok(ui.innerHTML.includes('MASTERY')&&ui.innerHTML.includes('class=bdg')&&ui.innerHTML.includes('class=ttl'),'menu shows mastery + badge + title');
+menu();ok(ui.innerHTML.includes('SURVIVORS')&&ui.innerHTML.includes('class=bdg')&&ui.innerHTML.includes('class=ttl'),'menu shows the Survivors tab + badge + title');
 mastery(2);ok(ui.innerHTML.includes('Quick Pump')&&ui.innerHTML.includes('Zombie-Slayer'),'mastery screen');slT(2);ok(A.sl[2]==0,'slayer toggle off');slT(2);
 titles();ok(ui.innerHTML.includes('Sheriff of the Dead'),'titles screen');setTT('2-4');ok(ttN(A)=='High Noon','equip title');
 survs();ok(ui.innerHTML.includes('Mastery LV'),'survivor select shows mastery');
