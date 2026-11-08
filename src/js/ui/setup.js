@@ -22,7 +22,7 @@ function suSW(d){S.sw=cl(S.sw+d,1,DT('wave')?99:S.best);try{sv()}catch(e){}sfx('
 function nxKey(k){if(mode!='menu')return 0;
 if(UIS=='map'){if(k=='arrowleft'||k=='a'){mapStep(-1);return 1}if(k=='arrowright'||k=='d'){mapStep(1);return 1}if(k=='enter'){mapGo();return 1}if(k=='escape'){menu();return 1}if(k=='q'){hubCamp();return 1}if(k=='e'&&PCM()){lobby();return 1}}
 if(UIS=='cmap'){if(k=='escape'){if(CWV.v==='w'){CMLB?clbBack():menu()}else cGo('w');return 1}if(k=='q'||k=='e'){cwNext(k=='q'?-1:1);return 1}if(k=='enter'){if(CWV.v==='w')cwSec(CWV.ws);else{const b=ui.querySelector&&ui.querySelector('#mgo');b?b.click():mapGo()}return 1}if(k=='y'&&!CMLB){survs();return 1}}
-if(UIS=='hub'||HUBX){if(k=='q'||k=='e'){hubStep(k=='q'?-1:1);return 1}if(k=='escape'&&HUBX){menu();return 1}}
+if(UIS=='hub'||HUBX){if(k=='q'||k=='e'){hubStep(k=='q'?-1:1);return 1}if(k=='enter'&&HUBX&&ui.querySelector){const b=ui.querySelector('.htm .np.go');if(b){b.click();return 1}}if(k=='escape'&&HUBX){menu();return 1}}
 return 0}
 function nxPads(){if(mode=='shop'&&!MPn)return shPads();if(mode!='menu')return 0;for(const q of GP){const lb=q.jp(4),rb=q.jp(5);if(!lb&&!rb)continue;const dr=lb?-1:1;
 if(UIS=='map'){mapStep(dr);return 1}if(UIS=='cmap'){cwNext(dr);return 1}if(UIS=='hub'||HUBX){hubStep(dr);return 1}}return 0}

@@ -9,7 +9,7 @@ const SHK=['SIDEARM','SIDEARM · RAPID FIRE','SHOTGUN · CLOSE RANGE','RIFLE · 
 const SHD={hl:'A light on your head that lights the way on dark maps. Switch it on or off with F (controller B). It uses an extra slot, not one of your weapon slots.'};
 const SHU={pa:'rounds',ri:'rounds',sh:'shells',rk:'rockets',bl:'rounds',ar:'bolts'};
 // a gun picture without the arm (see gunOnly in render/camos.js)
-function gunPic(i,ci,w,h,cls){return `<canvas class="gn ${cls||''}" data-gn=${i} data-ci=${ci} data-cm=${cmOf(P.ac,i)} data-w=${w} data-h=${h} style="width:${w}px;height:${h}px"></canvas>`}
+function gunPic(i,ci,w,h,cls,cm){if(cm==null)cm=P&&P.ac?cmOf(P.ac,i):0;return `<canvas class="gn ${cls||''}" data-gn=${i} data-ci=${ci} data-cm=${cm} data-w=${w} data-h=${h} style="width:${w}px;height:${h}px"></canvas>`}
 // 1–5 bar segments
 function shSeg(n,cls){return `<span class="shseg ${cls||''}">${[1,2,3,4,5].map(k=>`<i class="${k<=n?'on':''}"></i>`).join('')}</span>`}
 function shStats(i,ci){const w=WP[i],dw=CH[ci]&&CH[ci].dw&&i==0,dmg=w.d*(w.p||1),rate=1/(w.r*(dw?.5:1)),mag=AMG(i,ci),t=AMT[i];

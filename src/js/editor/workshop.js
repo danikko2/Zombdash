@@ -6,19 +6,11 @@ function wsAgo(t){const s=(Date.now()-Date.parse(t))/1000;if(!isFinite(s))return
 function wsImg(u){return typeof u=='string'&&/^data:image\/(png|jpeg);base64,[A-Za-z0-9+/=]+$/.test(u)?u:''}
 async function workshop(msg){mode='menu';UIS='ws';MPn=0;music('menu');duck(1);if(!CMLOK)show(`<div class="p wide ws"><h2>MAP WORKSHOP</h2><p class=note>Loading your maps…</p></div>`);
 try{await cmLoadAll()}catch(e){}try{WSD=await msGet('kv','draft')}catch(e){WSD=null}if(UIS!='ws'||mode!='menu')return;wsDraw(msg)}
-function wsDraw(msg){const touch=wsTouch(),D_=WSD&&WSD.json?WSD:null;
-show(`<div class="p wide ws"><h2>MAP WORKSHOP</h2>${msg?`<p class=wsmsg>${msg}</p>`:''}
-${D_?`<div class=cpb><b>Unsaved changes found</b><small>Your changes to “${edEsc(D_.name)}” from ${wsAgo(new Date(D_.t).toISOString())} were never saved.</small><div class=row><button onclick="wsDraft(0)">DISCARD</button><button class=go onclick="wsDraft(1)"${touch?' disabled':''}>RECOVER</button></div></div>`:''}
-${CCW.length?`<div class=cpb><b>Campaign</b><small>${CCW.map(edEsc).join('<br>')}</small></div>`:''}${msMem()?'<div class=cpb><b>This browser can\'t store maps</b><small>Maps made now last until the page is closed. Use EXPORT to keep a map as a file.</small></div>':''}
-${touch?'<p class=note>Making and editing maps needs a mouse and keyboard. You can still play, import, export and delete maps here.</p>':''}
-<div class=wsbar><input type=search id=wsq placeholder="Search your maps" value="${edEsc(WSQ)}" oninput="wsSearch(this.value)" autocomplete=off><button class=go onclick="wsNew()"${touch?' disabled':''}>NEW MAP</button><button onclick="wsImport()">IMPORT</button></div>
-<div class=wsl id=wsl>${wsList()}</div>${wsSamples()}${wsBuiltins()}<div class=row><button onclick="UIS='';menu()">BACK</button></div></div>`)}
+function wsDraw(msg){wsNX(msg)}
 function wsSearch(v){WSQ=v;const el=document.getElementById('wsl');if(el)el.innerHTML=wsList()}
 function wsList(){const q=WSQ.trim().toLowerCase(),touch=wsTouch();if(!CML.length)return `<div class=wsemp><b>No maps yet</b><p class=note>Press NEW MAP to start one, or IMPORT a map file someone sent you.</p></div>`;
 const L=CML.map((e,i)=>({e,i})).filter(({e})=>!q||String(e.meta.name||'').toLowerCase().includes(q)||String(e.meta.desc||'').toLowerCase().includes(q));if(!L.length)return `<p class=note>No map matches “${edEsc(WSQ)}”.</p>`;
-return L.map(({e,i})=>{const m=e.meta,ok=!!e.doc,img=wsImg(m.thumb),pr=ok?e.warnings.length:0;
-return `<div class="wsc${ok?'':' bad'}">${img?`<img class=wst alt="" src="${img}">`:'<i class=wst></i>'}<div class=wsi><b>${edEsc(m.name||'Untitled map')}</b><small>${m.w}×${m.h} tiles · edited ${wsAgo(m.updated)}</small>${wcStatus(e.id)}${ok?(pr?`<small class=wsw>⚠ ${edEsc(e.warnings[0])}</small>`:`<small>${edEsc(m.desc||'')}</small>`):`<small class=wsw>✖ Can't open: ${edEsc(e.errors[0]||'unknown problem')}</small>`}
-<div class=wsa>${ok?`<button class=go onclick="wsEdit(${i})"${touch?' disabled':''}>EDIT</button><button onclick="wsPlay(${i})">PLAY</button>`:''}<span class=wslk>${ok?`<button class=lnk onclick="wsRename(${i})">rename</button><button class=lnk onclick="wsDup(${i})">duplicate</button>`:''}${ok?`<button class=lnk onclick="wcOpen(CML[${i}].id,'ws')">campaign</button>`:ccSlotOfId(e.id)||ccRepOfId(e.id)!=null?`<button class=lnk onclick="wsCampOut(${i})">remove from campaign</button>`:''}<button class=lnk onclick="wsExport(${i})">export</button><button class=lnk onclick="wsDel(${i})">delete</button></span></div></div></div>`}).join('')}
+return L.map(({e,i})=>wsCard(e,i,touch)).join('')}
 // ----- new map -----
 function wsNew(){const g=CMTER.map(t=>`<option value="${t.id}"${t.id=='grass'?' selected':''}>${edEsc(t.n)}</option>`).join('');
 show(`<div class="p wide ws wsn"><h2>NEW MAP</h2><label class=wsf><span>Name</span><input id=wsn maxlength=40 value="My map" autocomplete=off></label><label class=wsf><span>About (optional)</span><input id=wsd maxlength=240 autocomplete=off placeholder="What happens on this map?"></label>

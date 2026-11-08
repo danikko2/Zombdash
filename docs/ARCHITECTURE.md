@@ -283,6 +283,7 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 | `ui/shop.js` | The single-player store between waves: Guns / Gear / Ammo / Health tabs, a grouped list, the picked item with stats against your gun, your loadout and START WAVE (`shopNX`, `SHX`) |
 | `ui/run-screens.js` | Pause menu, the leave-the-run dialog (Main Menu and Campaign Map keep the run as a checkpoint; End Run finishes it), and the end-of-run screens with Main Menu / Campaign Map / Next buttons |
 | `ui/lobby-screen.js` | The split-screen lobby on one screen (`lobbyNX`, called by `rL()`) |
+| `ui/hub-tabs.js` | The main menu's other tabs: Loadout (guns, levels, camos), Survivors (mastery, perk, Play as), Progress (skills with challenges, challenges, leaderboards, titles), Workshop; and the survivor picker (`survsNX`) |
 | `ui/setup.js` | New game setup for Free Play on one screen (map strip, survivor grid, difficulty, start wave); Q/E, LB/RB and Esc for the new screens (`nxKey`, `nxPads`) |
 | `ui/menus.js` | Name screen, main menu, options, pause |
 | `ui/map-and-survivor-select.js` | play() / mapGo() / mapStep(), the survivor screen, map descriptions and thumbnails |

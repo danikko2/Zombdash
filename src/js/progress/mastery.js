@@ -61,8 +61,7 @@ function slAura(by,w,h){const t=performance.now()/1000,a=.28+.12*Math.sin(t*5);X
 if(mode=='play'&&Math.random()<.3)pt.push({x:P.x+(Math.random()-.5)*w*.6,y:by-Math.random()*h*.8,vx:(Math.random()-.5)*20,vy:-30-Math.random()*40,l:.45,c:Math.random()<.5?'#ff4a2a':'#ffb03a'})}
 // ----- mastery screen -----
 function mastery(ci){UIS='ms';mode='menu';if(ci!=null){if(ci!==MSI)sfx('click');MSI=ci}const A=prA();msA(A);
-show(`<div class="p wide mst"><h2>SURVIVOR MASTERY</h2><div class=prl>${prSw('mastery')}<button class=lnk data-q=1 onclick="titles()">titles & badges</button></div><div class=acols><div class=mgd>${CH.map((c,i)=>{const s=A.ms[i],u=(A.un||[0]).includes(i);return `<button data-q=1 class="${i==MSI?'on':''} ${u?'':'no'}" onclick="mastery(${i})"><canvas data-ch=${i} data-v=${slOn(A,i)?9:0} data-lk=${u?0:1}></canvas>${c.n}<small>${u?'LV '+s.l+(s.l>=MMAX?' ★':''):'locked'}</small><span class=mb><i style="width:${s.l>=MMAX?100:Math.round(s.x/sNeed(s.l)*100)}%"></i></span></button>`}).join('')}</div>
-<div class=adet>${msDet(A,MSI)}</div></div><div class=row><button onclick="UIS='';menu()">BACK</button></div></div>`)}
+masteryNX(A)}
 function msDet(A,ci){const s=msA(A)[ci],c=CH[ci],u=(A.un||[0]).includes(ci),mx=s.l>=MMAX;
 return `<div class=shead><canvas class=big data-ch=${ci} data-v=${slOn(A,ci)?9:0} data-lk=${u?0:1}></canvas><div style="flex:1;min-width:0"><b class=sn>${c.n}</b><div class=alv><span class=lv>LV ${s.l}</span><div class="xpb ms"><i style="width:${mx?100:Math.round(s.x/sNeed(s.l)*100)}%"></i></div></div><small class=note>${mx?'MASTERED':fmt(s.x)+'/'+fmt(sNeed(s.l))+' mastery XP'}${u?'':' · unlock '+c.n+' to earn mastery'}</small></div></div>
 <div class="spk ${s.l>=3?'on':''}"><b>${s.l>=3?'✓ ':'🔒 '}${SPK[ci].n}</b><small>${SPK[ci].d}${s.l>=3?'':' Unlocks at mastery LV 3.'}</small></div>
@@ -72,10 +71,7 @@ return `<div class=shead><canvas class=big data-ch=${ci} data-v=${slOn(A,ci)?9:0
 ${SCH[ci].map((q,i)=>{const d=s.cd>>i&1,p=Math.min(s[q[0]],q[1]);return `<div class="chc ${d?'dn':''}"><div class=cht><b>${scT(ci,q)}</b><small>+400 mastery XP · +200 Zombie Pts</small></div><div class=chb><span class=mb><i style="width:${Math.round(p/q[1]*100)}%"></i></span><small>${d?'DONE ✓':fmt(p)+'/'+fmt(q[1])}</small></div></div>`}).join('')}`}
 function slT(ci){const A=prA();if(msA(A)[ci].l<MMAX){sfx('deny');return}A.sl[ci]=A.sl[ci]?0:1;sv();sfx('buy');mastery()}
 function titles(){UIS='tt';mode='menu';const A=prA();msA(A);const T=[],B=[];CH.forEach((c,ci)=>{TT[ci].forEach((t,i)=>{if(ttOK(A,ci,i))T.push([ci+'-'+i,t,c.n])});for(let b=1;b<=bdT(A,ci);b++)B.push([ci+'-'+b,c,b])});
-show(`<div class="p wide ttp"><h2>TITLES & BADGES</h2><div class=prl>${prSw('titles')}</div><div class="acct ttc"><span class=lv>LV ${A.lv}</span><div class=nm><b>${A.name||'Survivor'} ${bdH(A)}</b>${ttH(A)||'<small class=ttl style="color:var(--mut)">no title</small>'}</div></div>
-<div class=chh><b>TITLES</b><small>${T.length}/${CH.length*5} earned</small></div><div class=tgd><button data-q=1 class="${!ttN(A)?'on':''}" onclick="setTT('')">None</button>${T.map(([id,t,n])=>`<button data-q=1 class="${A.tt==id?'on':''}" onclick="setTT('${id}')">${t}<small>${n}</small></button>`).join('')}</div>
-<div class=chh><b>BADGES</b><small>Bronze LV 5 · Silver LV 7 · Gold LV 10</small></div><div class=tgd><button data-q=1 class="${!bdG(A)?'on':''}" onclick="setBD('')">None</button>${B.map(([id,c,b])=>`<button data-q=1 class="${A.bd==id?'on':''}" onclick="setBD('${id}')"><span class=bdg style="--bc:${BDC[b]}">★ ${c.n.toUpperCase()}</span><small>${BDN[b]}</small></button>`).join('')}</div>
-${T.length?'':'<p class=note>Earn titles and badges by leveling up survivor mastery.</p>'}<div class=row><button onclick="mastery()">BACK</button></div></div>`)}
+titlesNX(A,T,B)}
 function setTT(id){const A=prA();A.tt=id;sv();sfx('click');titles()}
 function setBD(id){const A=prA();A.bd=id;sv();sfx('click');titles()}
 // ----- account codes carry mastery -----

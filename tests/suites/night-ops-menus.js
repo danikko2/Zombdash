@@ -19,7 +19,7 @@ menu();ok(UIS=='hub'&&hx_().includes('hubbar')&&['PLAY','LOADOUT','SURVIVORS','P
 ok(hx_().includes('CAMPAIGN')&&hx_().includes('FREE PLAY')&&hx_().includes('hubCampGo()'),'Play tab: campaign card plays the next map straight away');
 ok(hx_().includes('class="hcg go"'),'the highlighted card has the green bar (first focus for controllers)');
 // other tabs show their screen under the bar
-hubTab('loadout');ok(HUBX=='loadout'&&hx_().includes('hubf')&&hx_().includes('hubbar'),'Loadout tab: the old screen sits under the tab bar');
+hubTab('loadout');ok(HUBX=='loadout'&&hx_().includes('hubbar')&&hx_().includes('ARMORY')&&hx_().includes('CAMOS')&&!hx_().includes('hubf'),'Loadout tab: guns, levels and camos under the tab bar');
 hubTab('prog');ok(hx_().includes('hubsub')&&hx_().includes('CHALLENGES')&&hx_().includes('LEADERBOARDS'),'Progress tab has its sub-tabs');
 ok(nxKey('e')&&HUBX=='ws','E moves to the next tab');ok(nxKey('q')&&HUBX=='prog','Q moves back');
 ok(nxKey('escape')&&UIS=='hub'&&HUBX==null,'Esc on a tab goes back to Play');
@@ -62,5 +62,16 @@ setGM('c');mapId=0;sel=0;S.dlc=1;start();mode='play';pauseMenu();ok(has("runExit
 setGM('c');mapId=0;start();P.hp=0;P.inv=0;mode='play';lifeDeath();ok(has('YOU WERE EATEN')&&has('lifeMenu()')&&has('lifeMap()')&&has('lifeCont()'),'life lost: Main Menu, Campaign Map, Continue');lifeMap();ok(UIS=='cmap','Campaign Map from the life screen');
 setGM('f');lobby();ok(mode=='lobby'&&has('PLAYER 1')&&has('lbMap(-1)')&&has('lbMode')&&has('MAIN MENU'),'split-screen lobby on one screen with the top bar');menu();
 options(0);ok(has('nxtop')&&has('MAIN MENU')&&has('OPTIONS'),'older screens get the shared top bar');menu();
+// ---------- stage 3: tab pages ----------
+hubTab('surv');ok(HUBX=='surv'&&has('SURVIVORS · ')&&has('SIGNATURE PERK')&&/PLAY(ING)? AS /.test(hx_()),'Survivors tab: grid, perk, mastery and Play as');
+mastery(1);ok(has('NOT RECRUITED YET')&&has('🔒 BEAT ROBOT'),'a locked survivor says how to recruit them');svPlay(1);ok(sel==0,'a locked survivor cannot be picked');
+mastery(0);svPlay(0);ok(UIS=='hub'&&HUBX==null&&has('Playing as <b>Dave'),'Play as goes back to the Play tab with that survivor');
+hubTab('prog');ok(has('PLAYER LEVEL')&&has('POINTS TO SPEND')&&has('DAILY')&&has('WEEKLY')&&has('ALL CHALLENGES'),'Progress: skills with the challenges beside them');
+S.ac.sp=2;selSk('spd');ok(has('LEARN · 1 PT'),'picking a skill shows LEARN');buySk();ok(S.ac.sk.spd==1&&S.ac.sp==1,'learning a skill');resetSk();
+chals();ok(HUBX=='prog'&&has('class="hubsub"')===false&&has('hubsub')&&has('new in'),'Progress: challenges page');
+titles();ok(has('TITLES · ')&&has('BADGES'),'Progress: titles and badges page');
+lbOpen();ok(has('ALL MAPS')&&has('Best free-play wave'),'Progress: leaderboards page');
+ok(nxKey('escape')&&UIS=='hub','Esc on a tab page goes back to Play');
+setGM('c');mapId=0;survs();ok(UIS=='surv'&&has('SELECT A SURVIVOR')&&has('START')&&has('Mastery LV')&&has('BACK'),'survivor picker in the new look');viewS(1);ok(SV==1&&sel==0&&/GO TO [A-Z]/.test(hx_()),'a locked survivor in the picker points to their map');viewS(0);
 console.log('TOTAL errors',errs.length,errs);`;
 globalThis.LOG=m=>require("fs").writeSync(2,m+"\n");new Function("docL","ivs","errs","started_",out)(docL,ivs,errs);

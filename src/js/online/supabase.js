@@ -43,10 +43,10 @@ function lbDraw(r){const me=S.ol&&S.ol.uid,d=OL.lbd;if(cmIs(OL.lbm)&&!cmDocOf(OL
 if(r&&r.err&&cu&&/cmap/.test(r.err))body='<p class=note>Leaderboards for custom maps aren\'t switched on on the server yet.</p>';else if(r=='off')body='<p class=note>Leaderboards need the game to be online.</p>';else if(r&&r.err)body=`<p class=note>${r.err}.</p><button data-q=1 onclick="OL.lbk='';lbOpen()">TRY AGAIN</button>`;else if(!r)body='<p class=note>Loading…</p>';
 else if(!r.length)body='<p class=note>No scores yet. Be the first!</p>';
 else body='<div class=lbl>'+r.map((x,i)=>`<div class="lbr${x.user_id==me?' me':''}"><b>${i+1}</b><span>${String(x.name).replace(/[<>&]/g,'')}${m<0&&MP[x.map]?`<small>${MP[x.map].n}</small>`:''}</span><span>${CH[x.survivor]?CH[x.survivor].n:''}</span><b>W${x.wave}</b><small>${x.kills} kills</small></div>`).join('')+'</div>';
-show(`<div class="p wide"><h2>LEADERBOARDS</h2><p class=note>Best free-play wave per player.${cu?' Custom map: everyone with this same map file shares this board.':''}${S.ol?'':' Your scores post after your first free-play run.'}</p><div class=row><button data-q=1 onclick="lbStep(-1)">◀</button><b style="flex:2;text-align:center;align-self:center">${m<0?'ALL MAPS':edEsc(mpName(m).toUpperCase())}</b><button data-q=1 onclick="lbStep(1)">▶</button></div><div class=seg>${[0,1,2].map(k=>`<button class="${d==k?'on':''}" onclick="lbOpen(null,${k})">${DNm(k,0)}</button>`).join('')}</div>${body}<button class=go onclick="UIS='';menu()">BACK</button></div>`)}
+lbNX(m,d,cu,body)}
 // ----- the online screen -----
 function olTag(){return!OLX?'offline':S.ol?(S.ol.anon?'guest account':S.ol.email):'not signed in'}
-function olMenu(msg){UIS='ol';mode='menu';const s=S.ol,c=OL.cloud;
+function olMenu(msg){HUBX=null;UIS='ol';mode='menu';const s=S.ol,c=OL.cloud;
 show(`<div class="p wide"><h2>ONLINE</h2>${msg?`<p class=note style="color:#9be860">${msg}</p>`:''}
 ${OL.last?`<p class=note style="color:#ff8a5a">Last problem: ${String(OL.last).replace(/[<>&]/g,'')}</p>`:''}${!OLX?'<p class=note>Online features are not available here.</p>':OL.ok===0?'<p class=note style="color:#ff8a5a">Can\'t reach the online server right now. The game still saves on this device.</p>':''}
 ${c?`<div class=cpb><b>Newer progress found online</b><small>${String(c.name).replace(/[<>&]/g,'')} · LV ${c.data.lv} · saved ${new Date(c.updated_at).toLocaleString()}</small><div class=row><button class=go onclick="olUseCloud()">USE ONLINE SAVE</button><button onclick="olKeepLocal()">KEEP THIS DEVICE</button></div></div>`:''}

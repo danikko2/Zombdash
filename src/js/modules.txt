@@ -45,6 +45,7 @@ ui/setup.js
 ui/shop.js
 ui/run-screens.js
 ui/lobby-screen.js
+ui/hub-tabs.js
 progress/skills.js
 ui/menus.js
 game/waves-and-shop.js
