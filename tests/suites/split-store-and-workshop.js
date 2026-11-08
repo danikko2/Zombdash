@@ -62,6 +62,14 @@ ok(has('Hometown and Wrong Turn are full')&&has('Urban Outskirts')&&has('Not off
 wcSlot(4,1);ok(has('PUT IN ISLAND')&&has('Island · slot 2')&&has('id=wcgo'),'picking a spot fills in where it goes');
 await wcSave();ok(ccSlot(4,1)&&ccSlot(4,1).key===cmKeyById(e.id),'PUT IN puts it in that slot');
 wcOpen(e.id,'ws');document.getElementById('wcrep').value='3';wcRepAsk();ok(has('PLAY THIS INSTEAD?')&&has('class="nx wmo'),'playing it instead of a campaign map asks first, over the page');
+// ---------- the last older screens: options, accounts, online, name, account codes ----------
+menu();options(0);ok(has('nx npg opts')&&has('nxtop')&&has('Music')&&has('id=dvc')&&!has('class="p'),'Options: the new page look with its cards');
+mode='play';pauseMenu();options(1);ok(has('nx npg opts')&&has("pauseMenu()")&&!has('nxHome()')&&!has('options(0)'),'Options from pause: back to the pause menu, no Main Menu or settings button');mode='menu';OPF=0;
+accounts(0);ok(has('nx npg accs')&&has('ON THIS DEVICE'.toLowerCase().replace(/^./,c=>c.toUpperCase()))||has('On this device'),'Accounts page');ok(has('NEW PROFILE')&&has('ENTER CODE')&&has('showCode(0)'),'Accounts: profiles, codes');
+newProf();ok(has('wmo npd')&&has('id=pnm')&&has('data-ent'),'new profile is a small card');showCode(0);ok(has('ACCOUNT CODE')&&has('ZD.'),'account code card');
+codeIn();document.getElementById('cdi').value=enc(S.ac);chkCode();ok(has('CODE OK')&&has('UPDATE MY ACCOUNT'),'entering a code: CODE OK card');
+olMenu();ok(has('nx npg olp')&&has('Leaderboards')&&!has('class="p'),'Online page');
+const nm=S.ac.name;S.ac.name='';nameScreen(0);ok(has('NEW SURVIVOR')&&has('CREATE ACCOUNT')&&has('wmo npd'),'first-run name card');S.ac.name=nm;
 console.log('TOTAL fails '+fails+' of '+n);
 `;
 const AF=Object.getPrototypeOf(async function(){}).constructor;

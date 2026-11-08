@@ -23,7 +23,11 @@ function kc(t){return `<span class=kc>${t}</span>`}
 // the top bar every menu screen shares: Back on the left, where you are, extra controls, Main Menu on the right
 // o = {back:'js', crumbs:[['Campaign','js'],['Hometown']], mid:'html', right:'html', home:false to hide Main Menu}
 function nxTop(o){const cr=(o.crumbs||[]).map((c,i,a)=>i<a.length-1&&c[1]?`<button data-q=1 class=ncr onclick="${c[1]}">${edEsc(c[0])}</button>${nxi('r',14)}`:`<b class=ncr>${edEsc(c[0])}</b>`).join('');
-return `<div class=nxtop>${o.back?`<button data-q=1 class=nb onclick="${o.back}">${nxi('back')}BACK${kc('ESC')}</button>`:''}<nav class=ncrs aria-label="Where you are">${cr}</nav>${o.mid?`<div class=nxmid>${o.mid}</div>`:''}<div class=nxr>${o.right||''}${o.home===false?'':`<button data-q=1 class=nb onclick="nxHome()">${nxi('home')}<span class=nbt>MAIN MENU</span></button>`}<button data-q=1 class="nb nbi" onclick="options(0)" aria-label="Settings">${nxi('gear')}</button></div></div>`}
+return `<div class=nxtop>${o.back?`<button data-q=1 class=nb onclick="${o.back}">${nxi('back')}BACK${kc('ESC')}</button>`:''}<nav class=ncrs aria-label="Where you are">${cr}</nav>${o.mid?`<div class=nxmid>${o.mid}</div>`:''}<div class=nxr>${o.right||''}${o.home===false?'':`<button data-q=1 class=nb onclick="nxHome()">${nxi('home')}<span class=nbt>MAIN MENU</span></button>`}${o.gear===false?'':`<button data-q=1 class="nb nbi" onclick="options(0)" aria-label="Settings">${nxi('gear')}</button>`}</div></div>`}
+// a settings-style page under the shared top bar (options, accounts, online, game balance): cards in a scrolling area
+function nxPage(cls,title,top,inner){return nxWrap('npg '+cls,`${nxTop(top)}<h2 class=sr>${title}</h2><div class=npm><div class=npi>${inner}</div></div>`)}
+// a small card on its own (your name, new profile, account codes); Esc / Enter press the buttons marked data-esc / data-ent
+function nxCard(title,inner,btns){return nxWrap('wmo npd',`<div class="wmd wmsm" role=dialog aria-label="${edEsc(title)}"><b class=wmt>${title}</b>${inner}${btns}</div>`)}
 function nxHome(){sfx('click');if(CMLB)return clbBack();menu()}
 // segmented control: items [[label, js, on, small text]]
 function nxSeg(items,cls){return `<div class="nseg ${cls||''}">${items.map(([t,js,on,sm])=>`<button data-q=1 class="${on?'on':''}" onclick="${js}">${t}${sm?`<small>${sm}</small>`:''}</button>`).join('')}</div>`}

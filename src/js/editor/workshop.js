@@ -4,7 +4,7 @@ let WSQ='',WSD=null;
 function wsTouch(){try{return !!(globalThis.matchMedia&&!matchMedia('(pointer:fine)').matches)}catch(e){return 0}}
 function wsAgo(t){const s=(Date.now()-Date.parse(t))/1000;if(!isFinite(s))return '';if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+' min ago';if(s<86400)return Math.floor(s/3600)+' h ago';if(s<86400*30)return Math.floor(s/86400)+' days ago';try{return new Date(t).toLocaleDateString()}catch(e){return ''}}
 function wsImg(u){return typeof u=='string'&&/^data:image\/(png|jpeg);base64,[A-Za-z0-9+/=]+$/.test(u)?u:''}
-async function workshop(msg){mode='menu';UIS='ws';MPn=0;music('menu');duck(1);if(!CMLOK)show(`<div class="p wide ws"><h2>MAP WORKSHOP</h2><p class=note>Loading your maps…</p></div>`);
+async function workshop(msg){mode='menu';UIS='ws';MPn=0;music('menu');duck(1);if(!CMLOK)show(hubPage('ws','<section class="hpan wkl"><span class=cwk>YOUR MAPS</span><p class=npn>Loading your maps…</p></section>'));
 try{await cmLoadAll()}catch(e){}try{WSD=await msGet('kv','draft')}catch(e){WSD=null}if(UIS!='ws'||mode!='menu')return;wsDraw(msg)}
 function wsDraw(msg){wsNX(msg)}
 function wsSearch(v){WSQ=v;const el=document.getElementById('wsl');if(el)el.innerHTML=wsList()}

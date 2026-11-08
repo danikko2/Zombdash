@@ -14,7 +14,7 @@ global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.s
 const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+ms/1000,f])};
 const out=code+`;S.ac.cp=8;docL.pointerdown[0]();endIntro();{let F=0,NP=0;const OK=(c,m)=>{if(c)NP++;else{F++;LOG('FAIL '+m)}};const SAY=m=>LOG('  '+m);
 S.ac.name='T';setGM('f');mapId=0;sel=0;
-options();OK(!ui.innerHTML.includes('GAME BALANCE'),'no balance menu without the test code');balOpen();OK(!ui.innerHTML.includes('class="p wide bal"'),'balance screen refuses to open without the test code');
+options();OK(!ui.innerHTML.includes('GAME BALANCE'),'no balance menu without the test code');balOpen();OK(!ui.innerHTML.includes('npg bal'),'balance screen refuses to open without the test code');
 const un0=S.ac.un.length,sp0=S.ac.sp;devSet();options();OK(ui.innerHTML.includes('balOpen()'),'Options shows GAME BALANCE with the test code');
 // ---- test switches start OFF ----
 OK(S.ac.un.length==un0&&S.ac.sp==sp0&&!DT('money')&&!DT('god')&&!DT('wave'),'entering the code changes nothing by itself');
@@ -25,7 +25,7 @@ dtSet('sp',1);OK(S.ac.sp==9999,'skill points switch');dtSet('sp',0);OK(S.ac.sp==
 S.sw=50;options();OK(S.sw==Math.max(1,S.best),'start wave limited to your best while the wave switch is off');dtSet('wave',1);S.sw=50;options();OK(S.sw==50,'wave switch allows wave 50');dtSet('wave',0);
 start();P.hp=3;P.inv=0;dtSet('god',1);P.hp=3;P.hp-=arm(2);OK(P.hp==3,'infinite health blocks damage');mode='play';P.hp=1;dtFrame();OK(P.hp==P.mx,'and tops health up');dtSet('god',0);P.hp=5;P.hp-=arm(2);OK(P.hp<5,'normal damage when off');
 dtSet('money',1);dtSet('unl',1);devOff();OK(!S.dt||!Object.keys(S.dt).length,'turning test mode off clears every switch');OK(S.ac.un.length==un0,'and restores progress');devSet();
-balOpen();OK(ui.innerHTML.includes('class="p wide bal"')&&ui.innerHTML.includes('Damage')&&ui.innerHTML.includes('Magazine')&&ui.innerHTML.includes('Store price'),'Guns tab: damage, magazine, price');
+balOpen();OK(ui.innerHTML.includes('npg bal')&&ui.innerHTML.includes('Damage')&&ui.innerHTML.includes('Magazine')&&ui.innerHTML.includes('Store price'),'Guns tab: damage, magazine, price');
 const tabs={guns:/Rifle/,ammo:/Max carried.*Amount per purchase|Amount per purchase/s,caps:/Ranged cap.*Special cap \\(free play\\).*Hometown.*Island.*Hard adds/s,zhp:/Rotwood.*|Walker/s,bhp:/Juggernaut.*Bill/s,php:/Dave.*The Mayor/s};
 for(const t in tabs){balOpen(t);OK(tabs[t].test(ui.innerHTML),'tab '+t+' lists its values');SAY(t+': '+BALR.filter(e=>e.g==t).length+' sliders')}
 const idx=(g,sub,lab)=>BALR.findIndex(e=>e.g==g&&e.sub.startsWith(sub)&&e.lab==lab);

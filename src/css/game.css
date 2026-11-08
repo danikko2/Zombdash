@@ -909,3 +909,54 @@ background:var(--n0);color:var(--nt);font:14px/1.3 'Barlow',system-ui,sans-serif
 @media(max-width:1360px){#ed .edtb{width:46px}.edtg>span{letter-spacing:.1em}}
 @media(max-width:1180px){#ed .edtb{width:40px;height:40px}#ed .edtop .edtb>span{display:none}.edtg>span{display:none}.edtrow{padding-top:6px}#ed .edtop .edtv button>span{display:none}#ed .edbar button[data-a=undo]>span,#ed .edbar button[data-a=redo]>span{display:none}}
 @media(max-width:900px){#ed .edl,#ed .edr{width:236px}#ed .edcl{left:242px}#ed .edcr{right:242px}#ed .edname{max-width:200px}#ed .edpc>span{display:none}}
+/* ---------- Night Ops: settings-style pages (options, accounts, online, game balance) and small cards ---------- */
+/* nxPage() in ui/nx-core.js: the shared top bar, then cards in a scrolling area. The cards still use the older inner
+   markup (.opt > div with h3, .seg, .step, .row, .note…), restyled here inside .npg. */
+.npm{flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#2a3a2e transparent}
+.npi{display:flex;flex-direction:column;gap:14px;max-width:1180px;margin:0 auto;padding:20px 32px 32px}
+.npg .opt{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px;align-items:start}
+.npg .opt>div{display:flex;flex-direction:column;gap:10px;min-width:0;padding:18px 20px;background:rgba(13,19,16,.9);border:1px solid rgba(236,243,230,.08);border-radius:8px;text-align:left}
+.npg h3{margin:6px 0 0;font:600 12px 'Barlow',sans-serif;letter-spacing:.2em;color:var(--nm);text-transform:uppercase;display:block}.npg h3:first-child{margin-top:0}.npg h3::before,.npg h3::after{display:none}
+.npg .note,.npn{margin:0;font-size:13px;line-height:1.45;color:var(--nm);text-align:left;opacity:1}.npg .note b{color:var(--nt)}
+.npg .row{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+.nx.npg button:where(:not(.nb):not(.np):not(.ncr):not(.lnk)){display:inline-flex;align-items:center;justify-content:center;gap:4px 8px;flex-wrap:wrap;min-height:40px;padding:0 14px;background:var(--nf);border:1px solid rgba(236,243,230,.14);border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:.06em;color:var(--nt);text-transform:uppercase}
+.nx.npg button:where(:not(.nb):not(.np):not(.ncr):not(.lnk)):hover{background:rgba(236,243,230,.12)}
+.nx.npg button.go:not(.nb):not(.np){background:var(--na);border-color:transparent;color:#0E1A08;font-weight:800}
+.nx.npg button.red:not(.nb):not(.np){background:rgba(255,107,94,.12);border-color:rgba(255,107,94,.5);color:#FF8F84}
+.npg button small{flex-basis:100%;margin:0;font-family:'Barlow',sans-serif;font-weight:500;font-size:11px;letter-spacing:0;text-transform:none;opacity:.85}
+.nx.npg .seg{display:flex;gap:3px;margin:0;padding:3px;background:var(--nf);border-radius:6px;box-shadow:none}
+.nx.npg .seg button:not(.nb){flex:1;min-height:34px;background:transparent;border:0;border-radius:4px;color:var(--nb);font-size:15px}
+.nx.npg .seg button.on:not(.nb){background:var(--nt);color:#0E1A08}
+.npg .step{display:flex;align-items:center;gap:12px}.nx.npg .step button:not(.nb){width:44px;padding:0;font-size:22px}.npg .step b{min-width:40px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:28px}
+.npg .sl{display:grid;grid-template-columns:70px 1fr 48px;align-items:center;gap:12px;margin:0;font-size:14px}.npg .sl span{color:var(--nb)}.npg .sl output{text-align:right;font-weight:600}
+.nx.npg input[type=range]{height:6px;margin:0;border-radius:3px;box-shadow:none;background:linear-gradient(90deg,var(--na) var(--v,50%),rgba(236,243,230,.14) var(--v,50%))}
+.nx.npg input[type=range]::-webkit-slider-thumb{width:18px;height:18px;border-radius:9px;background:var(--nt);box-shadow:0 0 0 3px rgba(10,14,12,.8)}
+.nx.npg input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:9px;background:var(--nt);box-shadow:none}
+.nx.npg input:not([type=range]):not([type=checkbox]),.nx.npg textarea,.nx.npg select{width:100%;margin:0;padding:8px 12px;background:var(--nf);border:1px solid rgba(236,243,230,.18);border-radius:6px;box-shadow:none;color:var(--nt);font:15px 'Barlow',sans-serif;letter-spacing:0;text-align:left}
+.nx.npg input:focus,.nx.npg textarea:focus,.nx.npg select:focus{border-color:var(--na);box-shadow:none;outline:0}
+.nx.npg .wnin input:not([type=range]){padding:0;border:0;background:none}
+.npg select option{background:#0F1612;color:var(--nt)}
+.npg .dvr{display:flex;gap:8px}.nx.npg .dvr input{flex:1;font-size:22px;letter-spacing:8px;text-align:center}
+.npg .dts{gap:6px;margin:0}.npg .dtr{grid-template-columns:1fr 132px;padding:8px 10px;background:var(--nf);border-radius:6px}.npg .dtr b{font:600 14px 'Barlow',sans-serif;color:var(--nt)}.npg .dtr small{font-size:12px;color:var(--nm)}.nx.npg .dtr .seg button:not(.nb){min-height:30px;font-size:14px;padding:0}
+.npmsg{margin:0;padding:10px 14px;border-radius:6px;background:var(--nf);font-size:14px;color:var(--nb)}.npmsg.ok{background:rgba(155,232,96,.1);color:var(--na)}.npmsg.bad{background:rgba(255,107,94,.1);color:#FF8F84}
+/* accounts */
+.npg .opt>.acw{grid-column:span 2}.pt .npg .opt>.acw,.npg.pt .opt>.acw{grid-column:auto}
+.npg .accl{display:flex;flex-direction:column;gap:8px}
+.npg .acct{display:flex;align-items:center;gap:12px;margin:0;padding:10px 12px;background:var(--nf);border:0;border-radius:8px;box-shadow:none}
+.npg .acct .lv,.nplv{flex:none;display:inline-flex;align-items:center;justify-content:center;min-width:52px;height:36px;padding:0 8px;border-radius:6px;background:var(--ng);color:#2A1D05;font:800 16px 'Barlow Condensed',sans-serif;box-shadow:none}
+.npg .acct .nm{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;text-align:left}.npg .acct .nm b{font:700 19px 'Barlow Condensed',sans-serif;color:var(--nt)}.npg .acct .nm b small{font:500 13px 'Barlow',sans-serif;color:var(--nm)}
+.npg .acct .ttl{font-size:13px;color:var(--na)}.npg .acct .note{font-size:12px}.npg .bdg{font-family:'Barlow Condensed',sans-serif;font-size:11px;padding:2px 6px;border-radius:3px;box-shadow:none}
+.npd .wmmap .nplv{min-width:56px}.npst{display:flex;flex-direction:column;gap:8px}.nx .npst button{justify-content:center;width:100%;min-height:46px;flex-wrap:wrap}.nx .npst button small{flex-basis:100%;font-size:11px;font-weight:500;font-family:'Barlow',sans-serif;letter-spacing:0;opacity:.8}
+.nx .npst .wmyes{border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;letter-spacing:.06em;background:var(--na);color:#0E1A08}.nx .npst .wmyes .kc{border-color:rgba(14,26,8,.5);color:#0E1A08}
+.npd .wnin input[readonly]{font-size:14px;font-weight:500;color:var(--nb)}.nx .npcp{align-self:flex-start}
+.npd .wmd .wnin input{margin:0;box-shadow:none;width:auto;border:0;background:none;padding:0}
+/* game balance (test mode) */
+.nx.bal .btab{position:sticky;top:-20px;z-index:3;flex-wrap:wrap;margin:-20px -4px 0;padding:10px 4px;background:#0C120E;box-shadow:none;border-radius:0}
+.nx.bal .btab button:not(.nb){flex:1 1 0;min-width:90px;font-size:14px}
+.nx.bal .bbody{padding:16px 20px;background:rgba(13,19,16,.9);border:1px solid rgba(236,243,230,.08);border-radius:8px}
+.nx.bal .bsub{margin:16px 0 6px;padding:0 0 4px;font:600 12px 'Barlow',sans-serif;letter-spacing:.18em;color:var(--ng);text-transform:uppercase;border-bottom:1px solid rgba(255,207,64,.2)}
+.nx.bal .brow{gap:10px;padding:5px 8px;border-radius:6px}.nx.bal .brow span{font-size:14px;color:var(--nb)}.nx.bal .brow.ch{background:rgba(255,207,64,.1)}.nx.bal .brow.ch span{color:var(--ng)}
+.nx.bal .bnum{width:76px!important;padding:5px 8px!important;font:14px 'Barlow',sans-serif!important}.nx.bal .brow select{max-width:none;font:14px 'Barlow',sans-serif;padding:5px 8px}
+.nx.npg.bal .brs:not(.nb){min-height:30px;width:32px;padding:0;font-size:15px}
+.nx.bal .bft{display:flex;flex-wrap:wrap;gap:8px}.nx.bal .bcode{display:flex;flex-direction:column;gap:8px;padding:16px 20px;background:rgba(13,19,16,.9);border:1px solid rgba(236,243,230,.08);border-radius:8px}.nx.bal .bcode h4{margin:0;font:600 12px 'Barlow',sans-serif;letter-spacing:.2em;color:var(--nm)}.nx.bal textarea{min-height:70px;font:12px ui-monospace,monospace}
+.pt .npi,.short .npi{padding:14px 16px 24px}

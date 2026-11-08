@@ -278,7 +278,7 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 | File | What's in it |
 |---|---|
 | `ui/core-ui.js` | UI helpers: show(), canvas painting for menus, skill tree data |
-| `ui/nx-core.js` | Night Ops look for the new screens: the scaled 1280×720 stage (`nxWrap`, `--nxs`), icons, key hints, the shared top bar (`nxTop`: Back, where you are, Main Menu, settings), segmented choices, difficulty |
+| `ui/nx-core.js` | Night Ops look for the new screens: the scaled 1280×720 stage (`nxWrap`, `--nxs`), icons, key hints, the shared top bar (`nxTop`: Back, where you are, Main Menu, settings), segmented choices, difficulty, settings-style pages (`nxPage`: options, accounts, online, game balance) and small cards (`nxCard`: your name, new profile, account codes) |
 | `ui/hub.js` | The main menu: tab bar (Play, Loadout, Survivors, Progress, Workshop), the Play tab cards, and the frame that shows older screens under the tab bar (`HUBX`, `hubFrame`) |
 | `ui/shop.js` | The single-player store between waves: Guns / Gear / Ammo / Health tabs, a grouped list, the picked item with stats against your gun, your loadout and START WAVE (`shopNX`, `SHX`) |
 | `ui/run-screens.js` | Pause menu, the leave-the-run dialog (Main Menu and Campaign Map keep the run as a checkpoint; End Run finishes it), and the end-of-run screens with Main Menu / Campaign Map / Next buttons |
