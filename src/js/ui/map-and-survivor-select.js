@@ -25,7 +25,7 @@ function pick(i){if(S.ac.un.includes(i))sel=i;else sfx('deny');SV=i;survs()}
 // keyboard and controller extras for menus (Q/E and LB/RB switch tabs, maps and sections; Esc goes back); everything
 // else falls through to the normal controller navigation
 function uiPads(){return nxPads()}
-function uiKey(k){if(mode=='pause'&&RXC)return rxKey(k);if(mode=='shop'&&!MPn)return shKey(k);if(mode=='over'||mode=='lifeo')return endKey(k);if(mode!='menu')return 0;if(nxKey(k))return 1;
+function uiKey(k){if(mode=='pause'&&RXC)return rxKey(k);if(mode=='shop')return MPn?msKey(k):shKey(k);if(mode=='over'||mode=='lifeo')return endKey(k);if(mode!='menu')return 0;if(nxKey(k))return 1;
 if(UIS=='surv'&&ui.querySelector&&ui.querySelector('.svx')){if(k=='arrowleft'||k=='arrowright'){viewS((SV+(k=='arrowleft'?-1:1)+CH.length)%CH.length);return 1}}
 if(k=='escape'){const b=navBtns().find(e=>/^(BACK|CANCEL)/.test((e.textContent||'').trim()));if(b){b.click();return 1}}return 0}
 

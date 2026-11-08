@@ -75,16 +75,24 @@ function edZoom(f,sx,sy){const E=ED;if(sx==null){sx=edVW()/2;sy=edVH()/2}const w
 // ----- panels -----
 function edUI(){if(!ED||!ED.root)return;edTop();edLeft();edRight();edStatus();const r=ED.root;r.classList.toggle('nol',!ED.pl);r.classList.toggle('nor',!ED.pr);setTimeout(()=>{if(ED)edLay()},0)}
 function edTB(a,ico,tip,on,dis,txt){return `<button data-a="${a}" class="${on?'on':''}" title="${edEsc(tip)}"${dis?' disabled':''}>${edIco(ico)}${txt?'<span>'+txt+'</span>':''}</button>`}
+// the top bar: map name and save state, then every tool in named groups (Night Ops look, see css "map editor, Night Ops")
+const EDTG=[['SELECT',['select']],['GROUND',['brush','fill','rect','erase','pick']],['BUILD',['wall','room','door','area']],['PLACE',['place','path','prefab']],['ZOMBIES & START',['start','spawn','zone','feat']]];
+const EDTN={select:'Select',brush:'Paint',erase:'Erase',fill:'Fill',rect:'Box',pick:'Pick',place:'Prop',wall:'Walls',room:'Room',door:'Doors',area:'Area',path:'Path',prefab:'Prefab',start:'Start',spawn:'Spawn',zone:'Zone',feat:'Special'};
 function edTop(){const E=ED,el=E.root.querySelector('#edtop'),dirty=edIsDirty(),pc=E.probs.filter(p=>p.lv!='info').length;
-el.innerHTML=`${edTB('back','back','Back to the Map Workshop',0,0,'Workshop')}<b class=edname title="Map settings" data-a=mapset>${edEsc(E.d.name)}${dirty?' <i class=eddot title="Unsaved changes">●</i>':''}</b><span class=edsep></span>`+
-EDT.map(t=>edTB('tool:'+t[0],t[0],t[1]+' ('+t[2]+')',E.tool==t[0])).join('')+`<span class=edsep></span>${edTB('undo','undo','Undo'+(EDH.u.length?': '+EDH.u[EDH.u.length-1].n:'')+' (Ctrl+Z)',0,!EDH.u.length)}${edTB('redo','redo','Redo'+(EDH.r.length?': '+EDH.r[EDH.r.length-1].n:'')+' (Ctrl+Y)',0,!EDH.r.length)}<span class=edsep></span>`+
-`${edTB('grid','grid','Grid (Shift+G)',E.grid)}${edTB('coll','coll','Show collision: red stops bullets, orange is solid props, blue is see-through like fences and water (Shift+C)',E.coll)}${edTB('snap','snap','Snap to a '+E.step+'px grid (Shift+S)',E.snap)}<span class=edsep></span>`+
-`${edTB('probs','check','Problems with the map: click one to go to it',0,0,pc?String(pc):'✓')}<span class=edgrow></span><button data-a=save class="${dirty?'edsave':'edsaved'}" title="${dirty?'Unsaved changes: save them (Ctrl+S)':'Everything is saved (Ctrl+S saves)'}">${edIco('save')}<span>${dirty?'Save ●':'Saved ✓'}</span></button><button data-a=playtest class=edgo title="Play this map with the real game, then come back here">${edIco('play')}<span>Playtest</span></button>`}
+el.innerHTML=`<div class=edbar>${edTB('back','back','Back to the Map Workshop',0,0,'WORKSHOP')}<div class=edttl><b class=edname title="Map settings: name, size, ground, light" data-a=mapset>${edEsc(E.d.name)}</b><small class="${dirty?'eduns':'edok'}">${dirty?'● Unsaved changes':'✓ All changes saved'}</small></div><span class=edgrow></span>`+
+`${edTB('undo','undo','Undo'+(EDH.u.length?': '+EDH.u[EDH.u.length-1].n:'')+' (Ctrl+Z)',0,!EDH.u.length,'UNDO')}${edTB('redo','redo','Redo'+(EDH.r.length?': '+EDH.r[EDH.r.length-1].n:'')+' (Ctrl+Y)',0,!EDH.r.length,'REDO')}`+
+`<button data-a=probs class="edpc${pc?' bad':''}" title="Problems with the map: click one to go to it">${edIco('check')}<span>${pc?pc+' problem'+(pc>1?'s':''):'No problems'}</span></button>`+
+`<button data-a=save class="${dirty?'edsave':'edsaved'}" title="${dirty?'Unsaved changes: save them (Ctrl+S)':'Everything is saved (Ctrl+S saves)'}">${edIco('save')}<span>${dirty?'SAVE':'SAVED'}</span></button><button data-a=playtest class=edgo title="Play this map with the real game, then come back here">${edIco('play')}<span>TEST PLAY</span></button></div>`+
+`<div class=edtrow>${EDTG.map(([g,L])=>`<div class=edtg><span>${g}</span><div>${L.map(id=>{const t=EDT.find(x=>x[0]==id);return `<button data-a="tool:${id}" class="edtb${E.tool==id?' on':''}" title="${edEsc(t[1]+' ('+t[2]+') · '+t[4])}">${edIco(id)}<span>${EDTN[id]}</span></button>`}).join('')}</div></div>`).join('')}<span class=edgrow></span>`+
+`<div class=edtv>${edTB('grid','grid','Grid (Shift+G)',E.grid,0,'Grid')}${edTB('coll','coll','Show what blocks: red stops bullets, orange is solid props, blue is see-through like fences and water (Shift+C)',E.coll,0,'Blocking')}${edTB('snap','snap','Snap to a '+E.step+'px grid (Shift+S)',E.snap,0,'Snap')}</div></div>`}
 function edTerSw(t,ov){const k=(ov?'o:':'t:')+t.id;if(EDTH[k])return EDTH[k];const c=document.createElement('canvas');c.width=c.height=32;const g=c.getContext('2d');if(ov){(t.mk?CMTI.asphalt:CMTI.concrete).f(g,0,0,3,5);t.f(g,0,0,3,5)}else t.f(g,0,0,3,5);let u='';try{u=c.toDataURL()}catch(e){}return EDTH[k]=u}
-function edLeft(){const E=ED,el=E.root.querySelector('#edl');const tabs=[['terrain','Terrain'],['build','Build'],['paths','Paths'],['assets','Props'],['decals','Decals'],['prefabs','Prefabs'],['markers','Markers']];
-let h=`<div class="edtabs edtabs7">${tabs.map(t=>`<button data-a="tab:${t[0]}" class="${E.tab==t[0]?'on':''}">${t[1]}</button>`).join('')}</div><div class=edpane>`;
-if(E.tab=='terrain'){const tool=['brush','erase','fill','rect','pick'].includes(E.tool)?E.tool:'brush';
-h+=`<div class=edtools>${['brush','erase','fill','rect','pick'].map(id=>{const t=EDT.find(x=>x[0]==id);return edTB('tool:'+id,id,t[1]+' ('+t[2]+')',E.tool==id,0,t[1])}).join('')}</div>`;
+// the library: one search over everything, or one kind at a time
+const EDLT=[['terrain','Ground'],['build','Build'],['paths','Paths'],['assets','Props'],['decals','Decals'],['prefabs','Prefabs'],['markers','Markers']];
+function edLeft(){const E=ED,el=E.root.querySelector('#edl');if(E.qa==null)E.qa='';
+el.innerHTML=`<div class=edlh><div class=edlt><b>LIBRARY</b><small>pick, then click the map</small></div><label class=edqa><svg class=edi viewBox="0 0 24 24" aria-hidden="true"><path d="M10 3a7 7 0 015.6 11.2l5 5-1.4 1.4-5-5A7 7 0 1110 3zm0 2a5 5 0 100 10 5 5 0 000-10z"/></svg><input type=search data-f=qa placeholder="Search all: car, grass, fence…" value="${edEsc(E.qa)}" autocomplete=off aria-label="Search everything"><span class=edk>/</span></label>
+<div class=edchips>${EDLT.map(t=>`<button data-a="tab:${t[0]}" class="${!E.qa.trim()&&E.tab==t[0]?'on':''}">${t[1]}</button>`).join('')}</div></div><div class=edpane id=edlp>${edLeftPane()}</div>`}
+function edLeftPane(){const E=ED;if(E.qa&&E.qa.trim())return edFindAll(E.qa);let h='';
+if(E.tab=='terrain'){
 {const tl=cmLy(E.d,E.pt=='r'?'roads':'terrain');h+=`<h4>Paint on</h4><div class="edrow edseg"><button data-a="pt:t" class="${E.pt=='t'?'on':''}" title="The ground under everything">${edEsc(cmLy(E.d,'terrain').n)}</button><button data-a="pt:r" class="${E.pt=='r'?'on':''}" title="Tiles painted over the ground: erasing shows the ground again">${edEsc(cmLy(E.d,'roads').n)}</button></div>${tl.lock||tl.hid?`<p class=edhint>⚠ This layer is ${tl.lock?'locked':'hidden'}: ${tl.lock?'unlock':'show'} it in the Layers panel to paint.</p>`:''}`}
 for(const[c,cn]of CMTCAT){const L=CMTER.filter(t=>t.cat==c);if(L.length)h+=`<h4>${cn}</h4><div class=edsw>${L.map(t=>`<button data-a="ter:${t.id}" class="${E.terK=='t'&&E.ter==t.id?'on':''}" title="${edEsc(t.n)}${t.walk===0?' (blocks walking)':''}${t.curb?' (curbs where it meets a road)':''}"><img alt="" src="${edTerSw(t)}"><span>${edEsc(t.n)}</span></button>`).join('')}</div>`}
 const ovb=t=>`<button data-a="ovl:${t.id}" class="${E.terK=='o'&&E.ter==t.id?'on':''}" title="${edEsc(t.n)}${t.mk?': joins up with the same marking next to it':''}"><img alt="" src="${edTerSw(t,1)}"><span>${edEsc(t.n)}</span></button>`;
@@ -99,7 +107,21 @@ else{const P=edPalOf({k:a.k});if(P){const cur=E.pcol[a.k]||P[0][0];h+=`<h4>Colou
 h+=`<div class=edag id=edag>${edGrid()}</div>`}
 else if(E.tab=='prefabs')h+=edPfLeft();
 else h+=edKitLeft(E.tab);
-el.innerHTML=h+'</div>'}
+return h}
+// search results from every part of the library; each one is the same button its own tab has
+// how well a name matches: 3 a whole word, 2 the start of a word, 1 anywhere, 0 not at all (best groups and items first)
+function edQS(n,q){n=String(n||'').toLowerCase();if(!n.includes(q))return 0;const W=n.split(/[^a-z0-9']+/);return W.includes(q)?3:W.some(w=>w.startsWith(q))?2:1}
+function edFindAll(q0){const E=ED,q=q0.trim().toLowerCase(),m=s=>edQS(s,q)>0,out=[];let n=0;
+const grp=(t,L,names)=>{if(!L.length)return;n+=L.length;const sc=names.map(x=>edQS(x,q)),ix=L.map((_,i)=>i).sort((a,b)=>sc[b]-sc[a]||a-b);L=ix.map(i=>L[i]);
+out.push({s:sc[ix[0]],h:`<h4>${t} <small>${L.length}</small></h4><div class=edag>${L.slice(0,48).join('')}</div>${L.length>48?`<p class=edhint>${L.length-48} more: type more of the name.</p>`:''}`})};
+{const A=CMTER.filter(t=>m(t.n)),B=CMOVL.filter(t=>m(t.n));grp('Ground',A.map(t=>edKB('ter:'+t.id,edTerSw(t),t.n,E.terK=='t'&&E.ter==t.id)).concat(B.map(t=>edKB('ovl:'+t.id,edTerSw(t,1),t.n,E.terK=='o'&&E.ter==t.id))),A.concat(B).map(t=>t.n))}
+{const A=edAssets().filter(a=>m(a.n));grp('Props &amp; vehicles',A.map(a=>edKB(edEsc('asset:'+a.id),edThumb(a),a.n,E.asset&&E.asset.id==a.id)),A.map(a=>a.n))}
+{const A=CMWALL.filter(s=>m(s.n));grp('Walls',A.map(s=>`<button data-a="wst:${s.id}" class="${E.tool=='wall'&&E.wall==s.id?'on':''}" title="${edEsc(s.n)}"><i class="edws edwsb" style="${edWallSw(s)}"></i><span>${edEsc(s.n)}</span></button>`),A.map(s=>s.n))}
+{const A=CMAREA.filter(t=>m(t.n));grp('Floors, roofs &amp; areas',A.map(T=>edKB('ak:'+T.id,edAreaThumb(T),T.n,E.tool=='area'&&E.ak==T.id)),A.map(t=>t.n))}
+{const A=CMPA.filter(t=>m(t.n));grp('Paths',A.map(T=>edKB('pk:'+T.id,edPathThumb(T),T.n,E.tool=='path'&&E.pk==T.id)),A.map(t=>t.n))}
+{const a=E.asset,A=CMDEC.filter(t=>m(t.n)),B=CMFX.filter(t=>m(t.n));grp('Decals &amp; effects',A.map(T=>edKB('dc:'+T.id,edDecThumb(T),T.n,a&&a.t=='d'&&a.k==T.id)).concat(B.map(T=>edKB('fx:'+T.id,edFxThumb(T),T.n,a&&a.t=='x'&&a.k==T.id))),A.concat(B).map(t=>t.n))}
+{const A=edPfAll().filter(p=>m(p.n));grp('Prefabs',A.map(p=>edKB(edEsc('pf:'+p.id),edPfThumb(p),p.n,E.pf===p)),A.map(p=>p.n))}
+return (n?`<p class=edhint>${n} found for “${edEsc(q0.trim())}”. <button data-a=qaclr class=lnk>Clear</button></p>`:`<p class=edhint>Nothing matches “${edEsc(q0.trim())}”. <button data-a=qaclr class=lnk>Clear</button></p>`)+out.sort((x,y)=>y.s-x.s).map(o=>o.h).join('')}
 function edWallSw(s){if(!s)return 'background:#7a695c';const c={wall:'#7a695c',brick:'#9a4632',concrete:'#8c9099',wood:'#8a5a2c',fence:'repeating-linear-gradient(45deg,#aab1bd 0 2px,transparent 2px 6px)',hidden:'rgba(170,110,255,.5)'}[s.id];if(c)return 'background:'+c;const u=edKitThumb('w:'+s.id,g=>{g.fillStyle='#3a4a3a';g.fillRect(0,0,48,48);s.f(g,2,20,44,9,s.pal?s.pal[0][0]:undefined)});return `background:url(${u}) center/cover`}
 function edGrid(){const E=ED,q=E.q.trim().toLowerCase(),L=edAssets().filter(a=>(E.cat=='all'||a.cat==E.cat)&&(!q||a.n.toLowerCase().includes(q)||a.k.toLowerCase().includes(q)));
 if(!L.length)return `<p class=edhint>Nothing matches “${edEsc(E.q)}”.</p>`;return L.map(a=>`<button data-a="asset:${a.id}" class="${E.asset&&E.asset.id==a.id?'on':''}" title="${edEsc(a.n)}${a.t=='v'||edPalOf({k:a.k})?' (comes in colours)':''}"><img alt="" loading=lazy src="${edThumb(a)}"><span>${edEsc(a.n)}</span></button>`).join('')}
@@ -116,9 +138,10 @@ function edModalOn(){return !!(ED&&ED.mb)}
 // ----- clicks and fields in the panels -----
 function edClick(e){const b=e.target.closest&&e.target.closest('[data-a]');if(!b||b.disabled)return;const a=b.dataset.a,E=ED;if(!E)return;
 if(a.startsWith('mb:')){const fn=E.mb&&E.mb[+a.slice(3)];edModalOff();if(fn)fn[2]();return}
-if(a.startsWith('tool:'))return edTool(a.slice(5));
+if(a.startsWith('tool:')){if(b.classList&&b.classList.contains('edtb'))E.qa='';return edTool(a.slice(5))}
 if(a.startsWith('pt:')){E.pt=a[3]=='r'?'r':'t';if(E.pt=='r'&&E.terK=='o')E.terK='t';E.al=E.pt=='r'?'roads':'terrain';if(!['brush','erase','fill','rect','pick'].includes(E.tool))return edTool('brush');return edUI()}
-if(a.startsWith('tab:')){if(E.pd)edPathFinish();E.tab=a.slice(4);const at=E.asset&&E.asset.t,def={terrain:'brush',assets:at=='p'||at=='v'?'place':'select',build:['room','door','wall'].includes(E.tool)||E.tool=='area'&&['floor','build','struct'].includes((cmArea(E.ak)||{}).cat)?E.tool:'room',paths:E.pk&&E.pk!='@graph'?'path':'select',decals:at=='d'||at=='x'?'place':'select',prefabs:E.pf?'prefab':'select',markers:['start','spawn','zone','feat'].includes(E.tool)?E.tool:'zone'}[E.tab];return edTool(def,1)}
+if(a=='qaclr'){E.qa='';return edLeft()}
+if(a.startsWith('tab:')){if(E.pd)edPathFinish();E.qa='';E.tab=a.slice(4);const at=E.asset&&E.asset.t,def={terrain:'brush',assets:at=='p'||at=='v'?'place':'select',build:['room','door','wall'].includes(E.tool)||E.tool=='area'&&['floor','build','struct'].includes((cmArea(E.ak)||{}).cat)?E.tool:'room',paths:E.pk&&E.pk!='@graph'?'path':'select',decals:at=='d'||at=='x'?'place':'select',prefabs:E.pf?'prefab':'select',markers:['start','spawn','zone','feat'].includes(E.tool)?E.tool:'zone'}[E.tab];return edTool(def,1)}
 if(edKitClick(a)||edPfClick(a))return;
 if(a.startsWith('ter:')||a.startsWith('ovl:')){E.terK=a[0]=='t'?'t':'o';E.ter=a.slice(4);if(E.terK=='o')E.pt='t';if(!['brush','erase','fill','rect'].includes(E.tool))E.tool='brush';return edUI()}
 if(a.startsWith('asset:')){if(E.pd)edPathFinish();E.asset=edAssets().find(x=>x.id==a.slice(6))||null;E.pvr=Math.random();if(E.asset&&E.asset.t=='v'&&!E.vcol)E.vcol=EDVC[0];E.sel=[];return edTool('place',1)}
@@ -132,9 +155,9 @@ case 'mapset':E.sel=[];E.rt='props';E.pr=1;return edUI();case 'save':return edSa
 case 'pl':E.pl^=1;return edUI();case 'pr':E.pr^=1;return edUI();case 'bs-':E.brush=cl(E.brush-1,1,9);return edLeft();case 'bs+':E.brush=cl(E.brush+1,1,9);return edLeft();
 case 'del':return edDelete();case 'rot-':return edRotate(-15);case 'rot+':return edRotate(15);
 case 'resize':{const f=E.root.querySelector('[data-f=nw]'),g=E.root.querySelector('[data-f=nh]');return edResize(+f.value,+g.value)}}}
-function edInput(e){const f=e.target.dataset&&e.target.dataset.f,E=ED;if(!f||!E)return;if(edLtField(f,e.target,0))return;if(f=='q2'){E.q2=e.target.value;const pos=e.target.selectionStart;edLeft();const el=E.root.querySelector('[data-f=q2]');if(el&&el.focus){el.focus();try{el.setSelectionRange(pos,pos)}catch(_){}}return}if(f=='dsc'){edKitField(f,e.target);return}if(f=='q'){E.q=e.target.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid()}else if(f=='brush'){E.brush=cl(+e.target.value,1,9);const v=E.root.querySelector('.edval');if(v)v.textContent=E.brush+'×'+E.brush;E.need=1}}
+function edInput(e){const f=e.target.dataset&&e.target.dataset.f,E=ED;if(!f||!E)return;if(edLtField(f,e.target,0))return;if(f=='qa'){E.qa=e.target.value;const p=E.root.querySelector('#edlp');if(p)p.innerHTML=edLeftPane();for(const c of E.root.querySelectorAll('.edchips button'))c.classList.toggle('on',!E.qa.trim()&&c.dataset.a=='tab:'+E.tab);return}if(f=='q2'){E.q2=e.target.value;const pos=e.target.selectionStart;edLeft();const el=E.root.querySelector('[data-f=q2]');if(el&&el.focus){el.focus();try{el.setSelectionRange(pos,pos)}catch(_){}}return}if(f=='dsc'){edKitField(f,e.target);return}if(f=='q'){E.q=e.target.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid()}else if(f=='brush'){E.brush=cl(+e.target.value,1,9);const v=E.root.querySelector('.edval');if(v)v.textContent=E.brush+'×'+E.brush;E.need=1}}
 function edChange(e){const t=e.target,f=t.dataset&&t.dataset.f,E=ED;if(!f||!E)return;const num=+t.value,ok=isFinite(num)&&t.value!=='';
-if(f=='cat'){E.cat=t.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid();return}if(f=='q'||f=='q2'||f=='brush'||f=='nw'||f=='nh')return;if(edKitField(f,t))return;
+if(f=='cat'){E.cat=t.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid();return}if(f=='qa'||f=='q'||f=='q2'||f=='brush'||f=='nw'||f=='nh')return;if(edKitField(f,t))return;
 if(f=='vcolnew'||f=='pcolnew'){const v=String(t.value).toLowerCase();if(/^#[0-9a-f]{6}$/.test(v)){if(f=='vcolnew')E.vcol=v;else if(E.asset)E.pcol[E.asset.k]=v;E.need=1;edLeft()}return}
 if(f=='wth'){E.wth=cl(ok?Math.round(num):8,4,64);t.value=E.wth;return}
 if(f=='name'){const v=String(t.value).replace(/[<>]/g,'').trim().slice(0,40)||'Untitled map';if(v!==E.d.name)edSet(E.d,{name:v},'Rename map');return}
@@ -259,6 +282,7 @@ function edWheel(e){if(!ED||edModalOn())return;e.preventDefault();const p=edLoca
 function edKey(e){const E=ED;if(!E)return;const k=e.key||'',kl=k.toLowerCase(),c=e.ctrlKey||e.metaKey,tg=e.target&&e.target.tagName,typing=tg=='INPUT'||tg=='TEXTAREA'||tg=='SELECT';
 const stop=()=>{if(e.preventDefault)e.preventDefault()};
 if(edModalOn()){if(k=='Escape'){stop();const b=E.mb&&E.mb[0];edModalOff();if(b&&b[0]=='Cancel')b[2]()}return}
+if(k=='/'&&!typing&&!c&&E.root){const q=E.root.querySelector('[data-f=qa]');if(q&&q.focus){stop();if(!E.pl){E.pl=1;edUI()}const q2=E.root.querySelector('[data-f=qa]');if(q2){q2.focus();if(q2.select)q2.select()}return}}
 // the path being drawn: Enter finishes, Backspace takes the last point back, Esc throws it away
 if(E.pd&&!typing&&!c){if(k=='Enter'){stop();return edPathFinish()}if(k=='Backspace'||k=='Delete'){stop();E.pd.pts.pop();if(!E.pd.pts.length)E.pd=null;E.need=1;return}if(k=='Escape'){stop();E.pd=null;E.need=1;return edToast('Path cancelled')}}
 if(c&&kl=='s'){stop();if(typing&&e.target.blur)e.target.blur();return edSave()}

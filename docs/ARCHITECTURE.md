@@ -259,7 +259,7 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 | `editor/assets.js` | The prop browser: names and categories for OB props and HWV vehicles, sprite and thumbnail cache |
 | `editor/history.js` | The one undo/redo history |
 | `editor/editor-view.js` | Drawing the editor: cached terrain chunks, props, walls, spawns, overlays, minimap, map thumbnails |
-| `editor/editor.js` | The editor: layout, left panel, tools, mouse and keys, save, resize, playtest options |
+| `editor/editor.js` | The editor: layout, the top bar (title bar plus every tool in named groups, `EDTG` / `EDTN`), the library panel (one search over everything, `edFindAll`, or one kind at a time), tools, mouse and keys, save, resize, playtest options |
 | `editor/selection.js` | Multi-select, group move / turn / delete, copy / paste / duplicate, layer operations, solid and collision shapes |
 | `editor/panels.js` | The right panel: Properties (one or several things), Layers, Problems |
 | `editor/playtest.js` | Playtest with the real game, keeping nothing it earns |
@@ -284,6 +284,8 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 | `ui/run-screens.js` | Pause menu, the leave-the-run dialog (Main Menu and Campaign Map keep the run as a checkpoint; End Run finishes it), and the end-of-run screens with Main Menu / Campaign Map / Next buttons |
 | `ui/lobby-screen.js` | The split-screen lobby on one screen (`lobbyNX`, called by `rL()`) |
 | `ui/hub-tabs.js` | The main menu's other tabs: Loadout (guns, levels, camos), Survivors (mastery, perk, Play as), Progress (skills with challenges, challenges, leaderboards, titles), Workshop; and the survivor picker (`survsNX`) |
+| `ui/split-shop.js` | The split-screen store (`msNX`, called by `mshop()`): a small store in each player's part of the screen with GUNS / GEAR / AMMO / HEALTH tabs, a list and the picked item; each player's tab and pick live in `p.sx`; controller (`msPads`) and keyboard (`msKey`) controls; the info panel for the empty quarter with three players |
+| `ui/workshop-forms.js` | The Workshop's small forms: dialogs drawn over the Workshop tab (`wsMod`, Esc / Enter via `wmKey`), the new map card with a preview (`wsNewNX`, state in `WSN`), rename, delete, import problems, the add-to-campaign page (`wcPage`) and its confirm dialog, and picking a map for an empty campaign slot |
 | `ui/setup.js` | New game setup for Free Play on one screen (map strip, survivor grid, difficulty, start wave); Q/E, LB/RB and Esc for the new screens (`nxKey`, `nxPads`) |
 | `ui/menus.js` | Name screen, main menu, options, pause |
 | `ui/map-and-survivor-select.js` | play() / mapGo() / mapStep(), the survivor screen, map descriptions and thumbnails |

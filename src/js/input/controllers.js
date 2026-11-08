@@ -14,7 +14,7 @@ if(md=='pause'&&GP.some(q=>q.jp(9)))return resume();
 if(uiPads())return;navPads()}
 // ---------- controller navigation for normal menus ----------
 const NAV={on:0,i:0,h:null,pad:null};
-function navBtns(){return ui.querySelectorAll?[...ui.querySelectorAll('button,input[type=range]')].filter(b=>b.offsetParent!==null&&!b.disabled):[]}
+function navBtns(){return ui.querySelectorAll?[...ui.querySelectorAll('button,input[type=range]')].filter(b=>b.offsetParent!==null&&!b.disabled&&!(b.closest&&b.closest('[inert]'))):[]}
 function navMark(){if(!ui.querySelectorAll)return;ui.querySelectorAll('.pf').forEach(e=>e.classList.remove('pf'));const b=navBtns();if(!b.length)return;NAV.i=cl(NAV.i,0,b.length-1);const e=b[NAV.i];e.classList.add('pf');if(e.scrollIntoView)e.scrollIntoView({block:'nearest'})}
 function navNew(){if(!ui.querySelector||mode=='lobby'||(mode=='shop'&&MPn))return;const h2=ui.querySelector('h2,.logo'),h=h2?h2.textContent:'';if(h!==NAV.h){NAV.h=h;const b=navBtns(),g=b.findIndex(e=>e.classList.contains('go'));NAV.i=g<0?0:g}if(NAV.on)navMark()}
 function navMove(dx,dy){const b=navBtns();if(!b.length)return;const cur=b[cl(NAV.i,0,b.length-1)];

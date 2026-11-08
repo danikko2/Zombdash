@@ -691,7 +691,229 @@ div.cwgo{display:flex;flex-direction:column;gap:6px;padding-top:6px;background:r
 .svd .svgo{position:sticky;bottom:-18px;margin:auto -20px -18px;padding:12px 20px 18px;background:rgba(13,19,16,.97);border-top:1px solid rgba(236,243,230,.06)}.short .svd .svgo{bottom:-12px;margin:auto -14px -12px;padding:10px 14px 12px}.pt .svd .svgo{position:static;margin:0;padding:8px 0 0;background:none;border:0}
 .lobig{min-width:0;overflow:hidden}.nx.nar .lobig canvas.big,.nx.short .lobig canvas.big{width:220px!important;height:70px!important}.nar .lopk{flex-basis:210px}
 .nx .hlb>button{align-self:flex-start;height:40px;padding:0 14px;border-radius:6px;background:var(--nf);border:1px solid var(--nl);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:.06em}
-.httme .ttl{color:var(--ng)}</style></head><body>
+.httme .ttl{color:var(--ng)}
+/* ---------- Night Ops: split-screen store (ui/split-shop.js) ---------- */
+/* One .msp panel per player, laid out at about 640 × 340 and scaled with transform to that player's part of the screen. */
+.msx{background:rgba(5,8,6,.55)}
+.msp{position:absolute;transform-origin:0 0;display:flex;flex-direction:column;gap:8px;padding:10px 12px;background:rgba(10,14,12,.94);border:2px solid var(--pc,#4d6b4f);border-radius:8px;overflow:hidden}
+.msph{flex:none;display:flex;align-items:center;gap:10px;height:30px}
+.mspx{display:inline-flex;align-items:center;height:26px;padding:0 8px;border-radius:4px;background:var(--pc);color:#0A0E0C;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px}
+.mspn{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px}
+.mshp{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;white-space:nowrap}.mshp svg{color:var(--nr)}.mshp em{margin-left:6px;font-style:normal;color:var(--nc)}
+.msc{margin-left:8px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:26px;line-height:1;color:var(--ng)}
+.mstb{flex:none;display:flex;align-items:center;gap:6px}.mstb>div{flex:1;display:flex;gap:3px;padding:3px;background:var(--nf);border-radius:6px}
+.nx .mstb button{flex:1;justify-content:center;height:28px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:.06em;color:var(--nb)}
+.nx .mstb button:hover{background:rgba(236,243,230,.08)}.nx .mstb button.on{background:var(--nt);color:#0E1A08}
+.msm{flex:1;min-height:0;display:flex;gap:8px}
+.msli{flex:0 0 280px;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding-right:2px;scrollbar-width:thin}
+.msgh{margin:6px 0 0 4px;font-size:10px;font-weight:600;letter-spacing:.18em;color:#8FA191}.msgh:first-child{margin-top:0}
+.nx .msrw{flex:none;display:flex;align-items:center;gap:10px;height:46px;padding:0 10px 0 4px;border:2px solid transparent;border-radius:6px;text-align:left}
+.nx .msrw:hover{background:rgba(236,243,230,.05)}.nx .msrw.on{background:rgba(236,243,230,.08);border-color:var(--pc)}
+.msrw.dim .msn,.msrw.dim .msq{opacity:.45}
+.msq{flex:none;display:flex;align-items:center;justify-content:center;width:74px;height:32px}
+.msn{min-width:0;display:flex;flex-direction:column;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;line-height:1.05;white-space:nowrap}.msn small{font-family:'Barlow',sans-serif;font-weight:500;font-size:11px;color:var(--nm)}
+.msrw .shb{font-size:10px;padding:2px 6px}
+.mspr{margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;color:var(--ng);white-space:nowrap}.mspr.no{color:#C9776E}
+.msic{font-size:20px;color:var(--nc)}.msic.hr{color:var(--nr);font-size:16px;font-weight:700}
+.msac{display:block;width:12px;height:24px;border-radius:3px;background:var(--ac);box-shadow:0 0 0 2px rgba(0,0,0,.4)}
+.msxi{width:64px!important;height:24px!important}
+.msd{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;padding:8px 12px;background:rgba(236,243,230,.04);border-radius:6px;overflow:hidden}
+.msd .cwk{font-size:10px;letter-spacing:.16em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msd>*{flex-shrink:0}.msdh{display:flex;align-items:baseline;gap:8px}.msdt{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:24px;line-height:1;text-transform:uppercase;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.msdh .mspr{font-size:22px}
+.msd>.msbig{flex:1 1 auto;min-height:30px;max-height:90px;display:flex;align-items:center;justify-content:center;gap:10px}
+.msbi{font-size:40px;color:var(--nc)}.msbx{width:128px!important;height:48px!important}.msbig .msac{width:16px;height:40px}
+.msst{display:grid;grid-template-columns:76px 1fr auto;align-items:center;gap:2px 8px}.msst .shseg{gap:3px}.msst .shseg i{height:6px}.msst b{font-size:12px;font-weight:600;white-space:nowrap}
+.mssk{font-size:10px;font-weight:600;letter-spacing:.14em;color:var(--nm)}
+.msbar{display:block;height:8px;background:rgba(236,243,230,.12);border-radius:2px;overflow:hidden}.msbar i{display:block;height:100%}
+.msp_{font-size:12px;line-height:1.35;color:var(--nb)}
+.mshs{display:flex;flex-wrap:wrap;justify-content:center;gap:3px}.mshs i{color:rgba(236,243,230,.18)}.mshs i.on{color:var(--nr)}.mshs i.nw{color:var(--na)}
+.msac2{display:flex;align-items:center;gap:6px;margin-top:4px}
+.nx .msb{flex:1;justify-content:center;height:34px;padding:0 10px 0 6px;border-radius:5px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;letter-spacing:.04em;white-space:nowrap}
+.nx .msb.ya{background:var(--na);color:#0E1A08}.nx .msb.ya:hover{filter:brightness(1.08)}.nx .msb.no{background:rgba(236,243,230,.08);color:var(--nm)}
+.nx .mssl{height:34px;padding:0 10px 0 6px;border:1px solid rgba(236,243,230,.25);border-radius:5px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.04em;white-space:nowrap}
+.msub{font-size:11px;color:var(--nm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msg{display:inline-flex;align-items:center;justify-content:center;flex:none;width:22px;height:22px;border-radius:11px;background:#0E1A08;color:var(--na);font-style:normal;font-family:'Barlow',sans-serif;font-weight:600;font-size:12px}
+.msg.x{background:#1C3550;color:#8FC8FF}.msg.b{width:20px;height:20px;background:none;border:1.5px solid var(--nm);color:var(--nt);font-size:11px}
+.msb .kc{border-color:rgba(14,26,8,.5);color:#0E1A08}
+.msf{flex:none;display:flex;align-items:center;gap:6px;height:34px}.msf .cwk{font-size:10px;letter-spacing:.16em;margin-right:2px}
+.msls{display:flex;align-items:center;justify-content:center;width:58px;height:28px;border:1px solid rgba(236,243,230,.22);border-radius:4px;background:rgba(236,243,230,.04)}.msls.on{border-color:var(--pc)}.msls.em{border-style:dashed;border-color:rgba(236,243,230,.16)}
+.nx .msrd{margin-left:auto;height:32px;padding:0 12px 0 8px;border:1px solid rgba(236,243,230,.3);border-radius:5px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:.06em;white-space:nowrap}.nx .msrd:hover{border-color:var(--pc);background:rgba(236,243,230,.06)}
+.nx .msov{position:absolute;inset:0;z-index:2;flex-direction:column;justify-content:center;gap:6px;background:rgba(10,14,12,.88);text-align:center}
+.msok{display:flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:32px;background:var(--pc);color:#0A0E0C}
+.msov>b{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:34px;letter-spacing:.1em}.msov>span:not(.msok){font-size:15px;color:var(--nb)}.msov small{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--nm)}
+.msp.tall .msm{gap:10px}.msp.tall .msli{flex-basis:300px}.msp.tall .msd>.msbig{max-height:180px}.msp.tall .msdt{font-size:32px}.msp.tall .msd{padding:14px 16px;gap:6px}.msp.tall .msst{gap:8px 10px}
+.msi{align-items:flex-start;justify-content:center;gap:6px;padding:20px 24px;border-color:rgba(236,243,230,.14)}
+.msit{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:34px;line-height:1}.msin{font-size:15px;color:var(--nb)}
+.msil{display:flex;flex-direction:column;gap:6px;margin:8px 0}.msil span{display:flex;align-items:center;gap:8px;font-size:15px}.msil i{width:12px;height:12px;border-radius:6px;border:2px solid var(--pc)}.msil i.on{background:var(--pc)}.msil b{font-family:'Barlow Condensed',sans-serif;font-weight:800;color:var(--pc)}.msil em{font-style:normal;font-size:13px;color:var(--nm)}
+.msih{font-size:12px;color:var(--nm)}
+/* ---------- Night Ops: Workshop dialogs, new map card, campaign slot page (ui/workshop-forms.js) ---------- */
+.wmo{z-index:20}.wmo .nxs{align-items:center;justify-content:center;padding:20px}
+.wmbg{position:absolute;inset:0;background:rgba(5,8,6,.72);backdrop-filter:blur(3px)}
+.wmd{position:relative;display:flex;flex-direction:column;gap:14px;max-height:100%;padding:24px 26px;background:#0F1612;border:1px solid rgba(236,243,230,.14);border-radius:10px;box-shadow:0 24px 60px rgba(0,0,0,.6);overflow:auto}
+.wmd.wmsm{width:420px}.wmd.wmdel{border-color:rgba(255,107,94,.4)}.wmd.wmimp{border-color:rgba(255,207,64,.4)}
+.wmt{display:flex;align-items:center;gap:10px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:30px;letter-spacing:.02em;line-height:1}
+.wmwarn{color:var(--ng);flex:none}
+.wmp{font-size:15px;line-height:1.45;color:var(--nb)}.wmp b{color:var(--nt)}.wmp2{font-size:13px;color:var(--nm)}.wmp2 b{color:var(--nt)}
+.wmbt{display:flex;gap:8px;margin-top:4px}.nx .wmbt button{flex:1;justify-content:center;height:48px;min-height:48px;padding:0 12px;width:auto;white-space:nowrap;font-size:17px}.nx .wmbt .wmyes{font-size:19px}
+.nx .wmyes{border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:19px;letter-spacing:.06em;background:var(--na);color:#0E1A08}.nx .wmyes .kc{border-color:rgba(14,26,8,.5);color:#0E1A08}
+.nx .wmyes.red{background:#E8564A;color:#1A0806}.nx .wmyes.red .kc{border-color:rgba(26,8,6,.5);color:#1A0806}.nx .wmyes:disabled{background:rgba(236,243,230,.1);color:var(--nm)}
+.wmmap{display:flex;align-items:center;gap:12px;padding:8px;background:var(--nf);border-radius:8px}.wmmap img,.wmmap i{flex:none;width:96px;height:64px;object-fit:cover;border-radius:4px;background:#18211B}
+.wmmap span{display:flex;flex-direction:column;gap:2px;min-width:0}.wmmap b{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;line-height:1.05;text-transform:uppercase}.wmmap small{font-size:13px;color:var(--nm)}
+.nx .wmexp{gap:10px;padding:10px 12px;background:rgba(111,211,255,.08);border:1px solid rgba(111,211,255,.35);border-radius:6px;color:var(--nc)}.wmexp span{display:flex;flex-direction:column;color:var(--nt)}.wmexp b{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:.06em}.wmexp small{font-size:12px;color:var(--nm)}
+.wmul{margin:0;padding:10px 12px 10px 30px;background:rgba(255,207,64,.07);border-radius:6px;font-size:14px;line-height:1.5}
+.wnin{display:flex;align-items:center;gap:10px;height:46px;padding:0 12px;background:var(--nf);border:2px solid rgba(236,243,230,.18);border-radius:6px}.wnin:focus-within{border-color:var(--na)}
+.nx .wnin input{flex:1;min-width:0;width:auto;height:100%;margin:0;padding:0;background:none;border:0;outline:0;box-shadow:none;color:var(--nt);font:inherit;font-size:18px;font-weight:600}.wnin small{font-size:12px;color:var(--nm)}
+.wnf{display:flex;flex-direction:column;gap:6px}.wnf .cwk em{font-style:normal;font-weight:500;letter-spacing:.04em;text-transform:none}
+.wnfh{display:flex;align-items:center;justify-content:space-between}.wnfh .lnk{font-size:13px!important;color:var(--nb)!important}
+.wmd.wnd{flex-direction:row;gap:28px;width:1030px;max-width:100%;height:600px;max-height:100%}
+.wnl{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+.wnr{flex:0 0 320px;display:flex;flex-direction:column;gap:8px;padding-left:28px;border-left:1px solid rgba(236,243,230,.1)}
+.wnfr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nx .wnfrom{gap:12px;height:64px;padding:0 14px;background:var(--nf);border:2px solid transparent;border-radius:8px;text-align:left}.nx .wnfrom:hover{background:rgba(236,243,230,.09)}.nx .wnfrom.on{background:rgba(155,232,96,.1);border-color:var(--na)}
+.wnfrom i{display:flex;align-items:center;justify-content:center;flex:none;width:40px;height:40px;border-radius:6px;background:rgba(236,243,230,.08);color:var(--nb)}.wnfrom.on i{background:rgba(155,232,96,.16);color:var(--na)}
+.wnfrom span{display:flex;flex-direction:column}.wnfrom b{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:19px;letter-spacing:.04em}.wnfrom small{font-size:13px;color:var(--nb)}
+.wnsz{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.nx .wnsc{gap:10px;height:66px;padding:0 10px;background:var(--nf);border:2px solid transparent;border-radius:8px}.nx .wnsc:hover{background:rgba(236,243,230,.09)}.nx .wnsc.on{background:rgba(155,232,96,.1);border-color:var(--na)}
+.wnsi{position:relative;flex:none;width:36px;height:36px}.wnsi i{position:absolute;left:0;bottom:0;width:36px;height:36px;border:1px dashed rgba(236,243,230,.22)}.wnsi i.f{border:1.5px solid rgba(236,243,230,.5);background:rgba(155,232,96,.35)}.wnsc.on .wnsi i.f{border-color:var(--na);background:rgba(155,232,96,.6)}
+.wnsc span:last-child{display:flex;flex-direction:column}.wnsc b{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;letter-spacing:.04em;line-height:1.1}.wnsc small{font-size:12px;color:var(--nm)}
+.wnex{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 10px;background:var(--nf);border-radius:6px;font-size:13px;color:var(--nb)}.wnex label{display:flex;align-items:center;gap:8px}
+.nx .wnex input{margin:0;box-shadow:none;width:80px;height:34px;padding:0 8px;background:rgba(0,0,0,.25);border:1px solid rgba(236,243,230,.2);border-radius:4px;color:var(--nt);font:inherit;font-size:15px}.wnex small{flex-basis:100%;color:var(--nm)}
+.wngr{display:flex;flex-wrap:wrap;gap:8px}
+.nx .wngs{flex-direction:column;gap:4px;width:62px;padding:4px 4px 6px;background:var(--nf);border-radius:6px;outline:2px solid transparent;outline-offset:-2px}.nx .wngs.on{background:rgba(155,232,96,.12);outline-color:var(--na)}
+.wngs img{display:block;width:54px;height:36px;object-fit:cover;border-radius:3px;image-rendering:pixelated}.wngs small{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:54px}
+.wnall{display:flex;align-items:center}.wnall select{height:40px;width:104px;padding:0 8px;background:var(--nf);border:1px dashed rgba(236,243,230,.3);border-radius:6px;color:var(--nb);font:inherit;font-size:13px}.wnall option,.wnall optgroup{background:#0F1612;color:var(--nt)}
+.nx .wnab{margin:0;box-shadow:none;width:100%;height:40px;padding:0 12px;background:var(--nf);border:1px solid rgba(236,243,230,.16);border-radius:6px;color:var(--nt);font:inherit;font-size:14px;outline:0}.nx .wnab:focus{border-color:var(--na);box-shadow:none}
+.wncg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.nx .wncp{flex-direction:column;align-items:stretch;gap:3px;padding:6px 6px 8px;background:var(--nf);border:2px solid transparent;border-radius:8px;text-align:left}.nx .wncp:hover{background:rgba(236,243,230,.09)}.nx .wncp.on{background:rgba(155,232,96,.1);border-color:var(--na)}
+.wncp img,.wncp i{display:block;width:100%;height:74px;object-fit:cover;border-radius:4px;background:#18211B}.wncp b{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;line-height:1.1}.wncp small{font-size:11px;color:var(--nm)}
+.wnpv{display:flex;align-items:center;justify-content:center;height:250px;background:#0A0E0C;border-radius:8px;overflow:hidden}
+.wnpm{position:relative;display:flex;align-items:center;justify-content:center;background-size:14px 14px;image-rendering:pixelated;box-shadow:0 0 0 2px rgba(236,243,230,.5)}
+.wnpm b{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:12px;background:#2F7BEA;border:2px solid #fff;color:#fff;font-size:12px}
+.wnpi{width:100%;height:100%;object-fit:cover;background:#18211B}
+.wnpt{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;letter-spacing:.02em;line-height:1.05;text-transform:uppercase;word-break:break-word}.wnps{font-size:14px;color:var(--nb)}.wnpn{font-size:13px;color:var(--nm)}
+.wnerr{font-size:13px;color:var(--nr)}.wnerr:empty{display:none}
+.nx .wngo{margin-top:auto;justify-content:center;min-height:56px;padding:0 14px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:19px;letter-spacing:.04em;white-space:nowrap;background:var(--na);color:#0E1A08}.nx .wngo .kc{border-color:rgba(14,26,8,.5);color:#0E1A08}.nx .wngo:disabled{background:rgba(236,243,230,.1);color:var(--nm)}
+.nx .wncx{justify-content:center;height:42px;background:none;border-color:transparent!important;color:var(--nb)}
+.pt .wmd.wnd{flex-direction:column;height:auto;overflow-y:auto}.pt .wnr{flex-basis:auto;padding:16px 0 0;border:0;border-top:1px solid rgba(236,243,230,.1)}.pt .wnsz,.pt .wncg{grid-template-columns:repeat(2,minmax(0,1fr))}.pt .wnfr{grid-template-columns:1fr}.pt .wmd.wmsm{width:100%}
+.short .wmd.wnd{height:100%}.short .wnpv{height:170px}
+/* campaign slot page */
+.wcmn{flex:1;min-height:0;display:flex;gap:24px;padding:18px 40px 20px}
+.wcl{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+.wch{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-top:6px}.wch i{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:14px;background:var(--na);color:#0E1A08;font-style:normal;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;align-self:center}
+.wch b{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:26px;letter-spacing:.02em}.wch span{font-size:14px;color:var(--nm)}
+.wcrs2{display:flex;flex-direction:column;gap:8px}.wcr{display:flex;align-items:center;gap:8px}
+.wcrn{flex:0 0 124px;display:flex;flex-direction:column}.wcrn b{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;letter-spacing:.04em;line-height:1.05}.wcrn small{font-size:12px;color:var(--nm)}
+.nx .wcs{position:relative;flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:2px;height:66px;padding:0 10px;border-radius:6px;overflow:hidden;text-align:left}
+.wcs small{position:relative;font-size:11px;font-weight:600;letter-spacing:.08em;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wcs b{position:relative;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;line-height:1.05;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wcs.bi{background:var(--nf);border:1px solid rgba(236,243,230,.06);color:#7F8F81}
+.nx button.wcs{background:rgba(155,232,96,.05);border:2px dashed rgba(155,232,96,.5);color:var(--na)}.nx button.wcs:hover{background:rgba(155,232,96,.12)}
+.nx button.wcs.on{background:rgba(155,232,96,.22);border:2px solid var(--na);color:var(--nt)}.wcs.on::before{content:'';position:absolute;inset:0;background-image:var(--wi);background-size:cover;background-position:center;opacity:.35}
+.nx button.wcs.tk{background:var(--nf);border:1px solid rgba(236,243,230,.08);color:#7F8F81;cursor:default}
+.wcfull{font-size:13px;color:var(--nm)}
+.wcbg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.nx .wcb{flex-direction:column;align-items:center;gap:2px;height:96px;padding:6px 4px;background:rgba(13,19,16,.85);border-radius:6px;outline:2px solid transparent;outline-offset:-2px}.nx .wcb:hover{background:rgba(236,243,230,.08)}.nx .wcb.on{background:rgba(155,232,96,.14);outline-color:var(--na)}
+.wcb canvas{width:40px!important;height:48px!important;object-fit:contain;object-position:top}.wcb b{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;line-height:1}.wcb small{font-size:11px;color:var(--nm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.wcsum{flex:0 0 360px;display:flex;flex-direction:column;gap:10px;padding:16px;overflow-y:auto}
+.wcth{display:block;width:100%;height:118px;object-fit:cover;border-radius:4px;background:#18211B}.wcnm{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:24px;letter-spacing:.02em;line-height:1;text-transform:uppercase}
+.wcrows{display:flex;flex-direction:column}.wcrows span{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:34px;border-bottom:1px solid rgba(236,243,230,.08);font-size:14px}.wcrows em{font-style:normal;font-size:11px;font-weight:600;letter-spacing:.16em;color:var(--nm)}.wcrows b{font-weight:600;text-align:right}
+.wcul{margin:2px 0 0;padding-left:18px;font-size:13px;line-height:1.45;color:var(--nb)}
+.nx .wcgo{justify-content:center;height:54px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;letter-spacing:.06em;background:var(--na);color:#0E1A08}.nx .wcgo .kc{border-color:rgba(14,26,8,.5);color:#0E1A08}.nx .wcgo:disabled{background:rgba(236,243,230,.1);color:var(--nm)}
+.nx .wcrm{justify-content:center;color:#FF8F84}
+.wcor{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;letter-spacing:.2em;color:#8FA191}.wcor i{flex:1;height:1px;background:rgba(236,243,230,.12)}
+.wcrp{display:flex;flex-direction:column;gap:6px;padding:10px 12px;border:1px solid rgba(236,243,230,.18);border-radius:6px}.wcrp b{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:.04em}.wcrp small{font-size:12px;color:var(--nm)}
+.wcrs{display:flex;gap:6px}.wcrs select{flex:1;min-width:0;height:40px;padding:0 8px;background:var(--nf);border:1px solid rgba(236,243,230,.2);border-radius:6px;color:var(--nt);font:inherit;font-size:13px}.wcrs option{background:#0F1612}
+.wcpk{flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;padding:18px 40px 20px;overflow-y:auto}
+.wcpg{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.nx .wcpc{flex-direction:column;align-items:stretch;gap:4px;padding:8px 8px 10px;background:rgba(13,19,16,.9);border:1px solid rgba(236,243,230,.1);border-radius:8px;text-align:left}.nx .wcpc:hover{border-color:var(--na)}
+.wcpc img,.wcpc i{display:block;width:100%;height:120px;object-fit:cover;border-radius:4px;background:#18211B}.wcpc b{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px}.wcpc small{font-size:12px;color:var(--nm)}
+.nar .wcsum{flex-basis:320px}.nar .wcmn{padding:14px 24px}.nar .wcbg{grid-template-columns:repeat(5,minmax(0,1fr))}.nar .wcrn{flex-basis:96px}
+.pt .wcmn{flex-direction:column;overflow-y:auto;padding:14px 16px}.pt .wcl{overflow:visible}.pt .wcsum{flex:none}.pt .wcr{flex-wrap:wrap}.pt .wcrn{flex-basis:100%}.pt .wcbg{grid-template-columns:repeat(4,minmax(0,1fr))}
+/* ---------- map editor, Night Ops look (editor/editor.js, panels.js, kit-tools.js) ---------- */
+/* Same structure as before; these rules come last so they win over the old pixel styling above. */
+#ed{--n0:#0A0E0C;--n1:#0D1310;--nt:#ECF3E6;--nm:#A9B9AA;--nb:#C3D0C4;--na:#9BE860;--ng:#FFCF40;--nr:#FF6B5E;--nl:rgba(236,243,230,.1);--nf:rgba(236,243,230,.06);
+background:var(--n0);color:var(--nt);font:14px/1.3 'Barlow',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+#ed button{min-height:30px;padding:4px 9px;gap:6px;background:var(--nf);border:1px solid rgba(236,243,230,.12);border-radius:6px;box-shadow:none;color:var(--nt);font:600 13px/1.1 'Barlow',system-ui,sans-serif;letter-spacing:0;text-transform:none}
+#ed button:hover{background:rgba(236,243,230,.11);filter:none}#ed button:active{transform:none;box-shadow:none}
+#ed button.on{background:rgba(155,232,96,.16);border-color:var(--na);box-shadow:none;color:var(--nt)}
+#ed button.go{background:var(--na);border-color:transparent;color:#0E1A08;font:800 16px 'Barlow Condensed',sans-serif;letter-spacing:.06em;padding:4px 14px}
+#ed button.red{background:#E8564A;border-color:transparent;color:#1A0806}
+#ed button:disabled{opacity:.4}
+#ed button:focus-visible{outline:2px solid var(--na);outline-offset:2px}
+#ed button.lnk{min-height:0;padding:0 2px;background:none;border:0;color:var(--na);text-decoration:underline;font-weight:500}
+#ed .edi{width:16px;height:16px}
+#ed input,#ed select,#ed textarea{margin:0;padding:6px 9px;background:var(--nf);border:1px solid rgba(236,243,230,.16);border-radius:6px;box-shadow:none;color:var(--nt);font:14px 'Barlow',system-ui,sans-serif}
+#ed input:focus,#ed select:focus,#ed textarea:focus{border-color:var(--na);box-shadow:none}
+#ed select option,#ed select optgroup{background:#0F1612;color:var(--nt)}
+#ed input[type=range]{height:6px;padding:0;border:0;border-radius:3px;background:rgba(236,243,230,.16);accent-color:var(--na)}
+#ed input[type=checkbox]{width:16px;height:16px;padding:0;border:0;accent-color:var(--na)}
+#ed input[type=color]{height:30px;padding:2px}
+#ed h3{margin:2px 0 10px;font:800 20px/1.1 'Barlow Condensed',sans-serif;letter-spacing:.04em;color:var(--nt);text-transform:uppercase}
+#ed h4{margin:14px 0 6px;font:600 11px 'Barlow',sans-serif;letter-spacing:.16em;color:#8FA191;text-transform:uppercase}#ed h4 small{font-size:11px;letter-spacing:0;color:var(--nm)}
+#ed p{margin:6px 0}.edhint{font-size:12px!important;line-height:1.4!important;color:var(--nm)!important}
+/* top: title bar + tool row */
+#ed .edtop{flex-direction:column;align-items:stretch;gap:0;padding:0;background:var(--n1);box-shadow:none;border-bottom:1px solid var(--nl);overflow:visible}
+.edbar{display:flex;align-items:center;gap:8px;height:52px;padding:0 14px}
+#ed .edbar>button{height:36px}#ed .edbar>button>span{display:inline}
+#ed .edbar button[data-a=back]{font:700 15px 'Barlow Condensed',sans-serif;letter-spacing:.06em;padding:4px 12px 4px 8px}
+#ed .edbar button[data-a=undo],#ed .edbar button[data-a=redo]{font:700 15px 'Barlow Condensed',sans-serif;letter-spacing:.06em}
+.edttl{display:flex;flex-direction:column;gap:1px;min-width:0;margin-left:6px}
+#ed .edname{max-width:420px;padding:0;font:800 21px/1 'Barlow Condensed',sans-serif;letter-spacing:.03em;color:var(--nt);text-transform:uppercase;cursor:pointer}#ed .edname:hover{color:var(--na)}
+.edttl small{font-size:12px}.edttl .edok{color:var(--na)}.edttl .eduns{color:#FFB86A}
+#ed .edpc{color:var(--nt)}#ed .edpc .edi{color:var(--na)}#ed .edpc.bad{border-color:rgba(255,184,106,.5)}#ed .edpc.bad .edi{color:#FFB86A}
+#ed button.edsave{background:var(--ng);border-color:transparent;color:#2A1D05;box-shadow:none;font:800 16px 'Barlow Condensed',sans-serif;letter-spacing:.06em}
+#ed button.edsaved{background:transparent;border-color:rgba(155,232,96,.35);box-shadow:none;color:var(--na);font:700 15px 'Barlow Condensed',sans-serif;letter-spacing:.06em}
+#ed button.edgo{height:40px!important;padding:4px 18px;background:var(--na);border-color:transparent;color:#0E1A08;font:800 18px 'Barlow Condensed',sans-serif;letter-spacing:.08em}
+.edtrow{display:flex;align-items:flex-end;gap:8px;padding:0 14px 7px;border-top:1px solid rgba(236,243,230,.05);overflow-x:auto;scrollbar-width:none}
+.edtg{display:flex;flex-direction:column;gap:2px;padding-right:8px;border-right:1px solid var(--nl)}.edtg:last-of-type{border-right:0}
+.edtg>span{padding:5px 0 0 4px;font-size:10px;font-weight:600;letter-spacing:.18em;color:#8FA191;white-space:nowrap}.edtg>div{display:flex;gap:2px}
+#ed .edtb{flex-direction:column;justify-content:center;gap:3px;width:54px;height:46px;min-height:0;padding:0;background:transparent;border-color:transparent;color:var(--nb)}
+#ed .edtb:hover{background:rgba(236,243,230,.07)}#ed .edtb.on{background:rgba(155,232,96,.18);border-color:transparent;color:var(--na)}
+#ed .edtb .edi{width:18px;height:18px}#ed .edtop .edtb>span{display:block;font-size:11px;font-weight:600;line-height:1}
+.edtv{display:flex;gap:4px;padding-bottom:4px}#ed .edtv button{height:34px;background:transparent;border-color:transparent;color:var(--nb)}#ed .edtv button.on{background:rgba(155,232,96,.14);color:var(--nt)}#ed .edtop .edtv button>span{display:inline}
+/* side panels */
+#ed .edl,#ed .edr{width:286px;background:rgba(13,19,16,.98);box-shadow:none;scrollbar-color:#2E3A31 transparent}
+#ed .edl{border-right:1px solid var(--nl)}#ed .edr{border-left:1px solid var(--nl)}
+#ed .edcl{left:292px}#ed .edcr{right:292px}#ed.nol .edcl{left:8px}#ed.nor .edcr{right:8px}
+#ed .edcol{top:12px;min-height:28px;width:28px;padding:0;justify-content:center;border-radius:14px;background:rgba(10,14,12,.9);opacity:1}
+.edlh{position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:10px;padding:14px 14px 10px;background:rgba(13,19,16,.98);border-bottom:1px solid rgba(236,243,230,.06)}
+.edlt{display:flex;align-items:baseline;justify-content:space-between}.edlt b{font:800 22px 'Barlow Condensed',sans-serif;letter-spacing:.04em}.edlt small{font-size:12px;color:var(--nm)}
+.edqa{display:flex;align-items:center;gap:8px;height:38px;padding:0 10px;background:var(--nf);border:1px solid rgba(236,243,230,.16);border-radius:6px;color:var(--nm)}.edqa:focus-within{border-color:var(--na)}
+#ed .edqa input{flex:1;min-width:0;height:100%;padding:0;background:none;border:0}.edk{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:20px;border:1px solid rgba(236,243,230,.35);border-radius:4px;font-size:11px;color:var(--nb)}
+.edchips{display:flex;flex-wrap:wrap;gap:5px}#ed .edchips button{min-height:28px;padding:0 10px;border:0;border-radius:14px;background:rgba(236,243,230,.07);color:var(--nb);font-size:12px}#ed .edchips button.on{background:var(--nt);color:#0E1A08}
+#ed .edpane{padding:10px 14px 16px}#ed .edr .edpane{padding:12px 14px 16px}
+#ed .edtabs{position:sticky;top:0;z-index:2;display:flex;gap:3px;margin:10px 14px 0;padding:3px;background:var(--nf);border-radius:6px;box-shadow:none}
+#ed .edtabs button{flex:1;min-height:30px;padding:0 4px;justify-content:center;background:transparent;border:0;border-radius:4px;box-shadow:none;color:var(--nb);font:700 14px 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase}
+#ed .edtabs button.on{background:var(--nt);color:#0E1A08;box-shadow:none}#ed .edtabs button.edwarnb{color:#FFB86A}#ed .edtabs button.on.edwarnb{color:#5A3000}
+.edbadge{border-radius:8px;padding:1px 5px!important;font-family:'Barlow',sans-serif!important;font-size:11px!important}
+.edtools{gap:4px}#ed .edtools button{font-size:12px}
+.edsw{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}#ed .edsw button,#ed .edag button{flex-direction:column;gap:4px;padding:4px 4px 5px;border-color:transparent;background:rgba(236,243,230,.04);font-size:12px;font-weight:500;line-height:1.1;text-align:center}
+#ed .edsw button.on,#ed .edag button.on{background:rgba(155,232,96,.12);border-color:var(--na)}
+#ed .edsw img{width:100%;height:40px;object-fit:cover;border-radius:3px;box-shadow:none}
+.edag{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}#ed .edag img{width:56px;height:48px;object-fit:contain}#ed .edag span{line-height:1.1;min-height:2.2em}
+#ed .edag .edwsb{width:100%;height:40px;border-radius:3px;box-shadow:none}
+.edrow{gap:6px;margin:6px 0}#ed .edseg button{flex:1;justify-content:center;min-height:32px;font-size:13px}.edval{color:var(--na)!important;font-weight:600}
+.edcur{gap:10px;padding:8px;margin:8px 0;background:var(--nf);border-radius:8px}.edcur img{border-radius:4px;background:rgba(0,0,0,.25)}.edcur b{font:800 17px 'Barlow Condensed',sans-serif;letter-spacing:.02em}.edcur small{font-size:12px!important;color:var(--nm)!important}
+.edcols{gap:6px}#ed .edcols button{min-height:24px;height:24px;border-radius:12px;border:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.3)}#ed .edcols button.on{box-shadow:0 0 0 2px var(--n1),0 0 0 4px var(--nt)}
+#ed .edlist button{gap:10px;padding:8px 10px;border-color:transparent;background:rgba(236,243,230,.04);font-size:13px}#ed .edlist button.on{background:rgba(155,232,96,.12);border-color:var(--na)}.edlist small{font-size:12px!important;font-weight:400;color:var(--nm)!important}
+.edws{border-radius:3px;box-shadow:none!important}
+.edf{grid-template-columns:84px 1fr;gap:8px;margin:6px 0}.edf span{font-size:12px!important;color:var(--nm)!important}
+.edck{font-size:13px!important}
+#ed .edwide{min-height:36px}#ed .edmini{font:600 12px 'Barlow',sans-serif}
+#ed .edp{gap:8px;padding:6px 8px;border-color:transparent;background:rgba(236,243,230,.04);font-size:12px;font-weight:500;line-height:1.3}#ed .edp b{font-weight:700}
+.edly{border-radius:6px;background:rgba(236,243,230,.04)!important;box-shadow:none!important}.edly.on{background:rgba(155,232,96,.12)!important;box-shadow:inset 0 0 0 1px var(--na)!important}
+#ed .edlyb{border:0;background:transparent}#ed .edlyn{border:0;background:transparent;font-size:13px}#ed .edlyn small{font-size:11px}
+/* map area, minimap, bottom bar, dialogs */
+#ed .edc{background:#0A0E0C}
+#edmm{inset:auto 12px 12px auto!important;border-radius:6px;box-shadow:0 0 0 1px rgba(236,243,230,.25),0 8px 20px rgba(0,0,0,.5)!important}
+.edtoast{top:12px!important;padding:8px 14px!important;border-radius:6px;background:rgba(10,14,12,.94)!important;box-shadow:0 0 0 1px rgba(236,243,230,.14)!important;color:var(--nt)!important;font:600 13px 'Barlow',sans-serif!important}
+#ed .edst{gap:16px;height:34px;padding:0 14px;background:var(--n1);box-shadow:none;border-top:1px solid var(--nl);font-size:12px;color:var(--nm)}
+#ed .edst b{font:800 14px 'Barlow Condensed',sans-serif;letter-spacing:.08em;color:var(--nt);text-transform:uppercase;margin-right:6px}#ed .edxy{min-width:200px}
+#ed .edmod{background:rgba(5,8,6,.7)}
+#ed .edbox{width:min(92%,460px);padding:22px 24px;background:#0F1612;border:1px solid rgba(236,243,230,.14);border-radius:10px;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+#ed .edbox p{font-size:14px;line-height:1.45;color:var(--nb)}#ed .edbox p b{color:var(--nt)}#ed .edbox .edrow{gap:8px}#ed .edbox .edrow button{min-height:40px;padding:0 14px}
+@media(max-width:1360px){#ed .edtb{width:46px}.edtg>span{letter-spacing:.1em}}
+@media(max-width:1180px){#ed .edtb{width:40px;height:40px}#ed .edtop .edtb>span{display:none}.edtg>span{display:none}.edtrow{padding-top:6px}#ed .edtop .edtv button>span{display:none}#ed .edbar button[data-a=undo]>span,#ed .edbar button[data-a=redo]>span{display:none}}
+@media(max-width:900px){#ed .edl,#ed .edr{width:236px}#ed .edcl{left:242px}#ed .edcr{right:242px}#ed .edname{max-width:200px}#ed .edpc>span{display:none}}</style></head><body>
 <div id="game" style="width:100vw;height:100vh"><canvas id="c"></canvas><div id="ui"><div class="p" id="boot" style="animation:none"><h2>LOADING ZOMBDASH...</h2><p class="note">If this message stays on screen, tell Claude.</p></div></div><div id="sb"></div><button id="pz" aria-label="Pause" data-q="1" onclick="pauseMenu()"></button></div>
 <script>window.__zb=1;addEventListener('error',function(e){try{if(window.__zstarted)return;var d=document.getElementById('zerr0');if(!d){d=document.createElement('div');d.id='zerr0';d.style.cssText='position:fixed;left:8px;right:8px;bottom:8px;z-index:99;background:rgba(120,10,10,.95);color:#fff;font:14px monospace;padding:8px;white-space:pre-wrap;pointer-events:auto';document.body.appendChild(d)}var t=document.createElement('div');t.textContent='Startup error (please tell Claude): '+(e.message||e)+' @'+(e.lineno||'?')+':'+(e.colno||'?');d.appendChild(t);if(!document.getElementById('zrst')){var b=document.createElement('button');b.id='zrst';b.textContent='Try again with a fresh save (your old save is backed up)';b.style.cssText='margin-top:6px;font:14px monospace;padding:6px 10px;width:auto;display:inline-block';b.onclick=function(){try{if(localStorage.deadyard){localStorage.deadyard_backup=localStorage.deadyard;localStorage.removeItem('deadyard')}}catch(_){}location.reload()};d.appendChild(b)}}catch(_){}});</script>
 <script>
@@ -3381,7 +3603,7 @@ function suMap(k){mapId=k;if(!cmIs(k))S.mp=k;SVD=1;sfx('click');play()}
 function suSurv(i){SV=i;if(S.ac.un.includes(i)){sel=i;sfx('click')}else sfx('deny');play()}
 function suSW(d){S.sw=cl(S.sw+d,1,DT('wave')?99:S.best);try{sv()}catch(e){}sfx('click');play()}
 // keys and controller buttons for the new screens (the rest goes to normal menu navigation)
-function nxKey(k){if(mode!='menu')return 0;
+function nxKey(k){if(mode!='menu')return 0;if(wmKey(k))return 1;if(k=='enter'&&ui.querySelector&&ui.querySelector('.wcx')){const b=ui.querySelector('#wcgo');if(b&&!b.disabled){b.click();return 1}}
 if(UIS=='map'){if(k=='arrowleft'||k=='a'){mapStep(-1);return 1}if(k=='arrowright'||k=='d'){mapStep(1);return 1}if(k=='enter'){mapGo();return 1}if(k=='escape'){menu();return 1}if(k=='q'){hubCamp();return 1}if(k=='e'&&PCM()){lobby();return 1}}
 if(UIS=='cmap'){if(k=='escape'){if(CWV.v==='w'){CMLB?clbBack():menu()}else cGo('w');return 1}if(k=='q'||k=='e'){cwNext(k=='q'?-1:1);return 1}if(k=='enter'){if(CWV.v==='w')cwSec(CWV.ws);else{const b=ui.querySelector&&ui.querySelector('#mgo');b?b.click():mapGo()}return 1}if(k=='y'&&!CMLB){survs();return 1}}
 if(UIS=='hub'||HUBX){if(k=='q'||k=='e'){hubStep(k=='q'?-1:1);return 1}if(k=='enter'&&HUBX&&ui.querySelector){const b=ui.querySelector('.htm .np.go');if(b){b.click();return 1}}if(k=='escape'&&HUBX){menu();return 1}}
@@ -3597,7 +3819,9 @@ function titlesNX(A,T,B){show(hubPage('prog',`<section class="hpan htt"><div cla
 <div class=lomh><span class=cwk>BADGES</span><small>Bronze at mastery 5 · Silver at 7 · Gold at 10</small></div><div class=httg><button data-q=1 class="htb${!bdG(A)?' on':''}" onclick="setBD('')">None</button>${B.map(([id,c,b])=>`<button data-q=1 class="htb${A.bd==id?' on':''}" onclick="setBD('${id}')"><span class=bdg style="--bc:${BDC[b]}">★ ${c.n.toUpperCase()}</span><small>${BDN[b]}</small></button>`).join('')}</div>
 ${T.length?'':'<p class=skhint>Earn titles and badges by levelling up survivor mastery on the Survivors tab.</p>'}</section>`,hubSub('titles')))}
 // ----- Workshop -----
-function wsNX(msg){const touch=wsTouch(),D_=WSD&&WSD.json?WSD:null,n=CML.length;
+function wsNX(msg){show(wsPage(msg))}
+// the Workshop tab's markup (dialogs draw it underneath themselves, see ui/workshop-forms.js)
+function wsPage(msg){const touch=wsTouch(),D_=WSD&&WSD.json?WSD:null,n=CML.length;
 const notes=(msg?`<p class=wsmsg2>${msg}</p>`:'')+(D_?`<div class=cpb><b>Unsaved changes found</b><small>Your changes to “${edEsc(D_.name)}” from ${wsAgo(new Date(D_.t).toISOString())} were never saved.</small><div class=row><button onclick="wsDraft(0)">DISCARD</button><button class=go onclick="wsDraft(1)"${touch?' disabled':''}>RECOVER</button></div></div>`:'')
 +(CCW.length?`<div class=cpb><b>Campaign</b><small>${CCW.map(edEsc).join('<br>')}</small></div>`:'')+(msMem()?'<div class=cpb><b>This browser can\'t store maps</b><small>Maps made now last until the page is closed. Use EXPORT to keep a map as a file.</small></div>':'')
 +(touch?'<p class=skhint>Making and editing maps needs a mouse and keyboard. You can still play, import, export and delete maps here.</p>':'');
@@ -3605,9 +3829,9 @@ const L=Object.keys(typeof BIMF=='object'?BIMF:{}).map(Number);
 const from=`<button data-q=1 class=wkf onclick="wsNew()"${touch?' disabled':''}><i class=wkfi>${nxi('plus',22)}</i><span><b>Blank map</b><small>Pick a size and a ground</small></span></button>`
 +CMSAMPLES.map((j,i)=>{const img=wsImg(wsSampleThumb(i));return `<button data-q=1 class=wkf onclick="wsSample(${i},${touch?0:1})">${img?`<img alt="" src="${img}">`:'<i class=wkfi></i>'}<span><b>${edEsc(j.name)}</b><small>Sample map · ${touch?'add to your maps':'edit a copy'}</small></span></button>`}).join('')
 +L.map(m=>{const img=typeof MPI!='undefined'&&MPI[m]||'';return `<button data-q=1 class=wkf onclick="wsBuiltin(${m},${touch?0:1})">${img?`<img alt="" src="${img}">`:'<i class=wkfi></i>'}<span><b>Copy of ${edEsc(MP[m].n)}</b><small>Campaign map · ${touch?'add a copy':'tweak it your way'}</small></span></button>`}).join('');
-show(hubPage('ws',`<section class="hpan wkl"><div class=wkh><div><span class=cwk>YOUR MAPS</span><small>${n} map${n==1?'':'s'} · build in the editor, then play them in Free Play or put them in the campaign</small></div><button data-q=1 class=nb onclick="wsImport()">IMPORT</button><button data-q=1 class="np go wknew" onclick="wsNew()"${touch?' disabled':''}>${nxi('plus',18)}NEW MAP</button></div>
+return hubPage('ws',`<section class="hpan wkl"><div class=wkh><div><span class=cwk>YOUR MAPS</span><small>${n} map${n==1?'':'s'} · build in the editor, then play them in Free Play or put them in the campaign</small></div><button data-q=1 class=nb onclick="wsImport()">IMPORT</button><button data-q=1 class="np go wknew" onclick="wsNew()"${touch?' disabled':''}>${nxi('plus',18)}NEW MAP</button></div>
 <input type=search id=wsq class=wkq placeholder="Search your maps" value="${edEsc(WSQ)}" oninput="wsSearch(this.value)" autocomplete=off>${notes}<div class=wkls id=wsl>${wsList()}</div></section>
-<section class="hpan wkr"><span class=cwk>NEW MAP</span><small class=wkrs>START A NEW MAP FROM</small><div class=wkfs>${from}</div><div class=wkcs><span class=cwk>CAMPAIGN SLOTS</span><p>Put a map in a free slot of any campaign section and pick its wave-20 boss, or play it in place of a campaign map.</p><button data-q=1 class=nb onclick="HUBX=null;setGM('c');CMV='w';play()">${nxi('map')}MANAGE SLOTS</button></div></section>`))}
+<section class="hpan wkr"><span class=cwk>NEW MAP</span><small class=wkrs>START A NEW MAP FROM</small><div class=wkfs>${from}</div><div class=wkcs><span class=cwk>CAMPAIGN SLOTS</span><p>Put a map in a free slot of any campaign section and pick its wave-20 boss, or play it in place of a campaign map.</p><button data-q=1 class=nb onclick="HUBX=null;setGM('c');CMV='w';play()">${nxi('map')}MANAGE SLOTS</button></div></section>`)}
 // a map card in the workshop list
 function wsCard(e,i,touch){const m=e.meta,ok=!!e.doc,img=wsImg(m.thumb),pr=ok?e.warnings.length:0;
 return `<div class="wkc${ok?'':' bad'}">${img?`<img class=wkt alt="" src="${img}">`:'<i class=wkt></i>'}<div class=wki>${wcStatus(e.id)}<b>${edEsc(m.name||'Untitled map')}</b><small>${m.w}×${m.h} tiles · edited ${wsAgo(m.updated)}</small>${ok?(pr?`<small class=wsw>⚠ ${edEsc(e.warnings[0])}</small>`:m.desc?`<small>${edEsc(m.desc)}</small>`:''):`<small class=wsw>✖ Can't open: ${edEsc(e.errors[0]||'unknown problem')}</small>`}
@@ -3622,6 +3846,184 @@ show(nxWrap('svx',`${nxTop({back:'play()',crumbs:[[GMD=='c'?'Campaign':'Free pla
 <div class=svgun>${gunPic(c.w,i,120,40,'',cmOf(S.ac,c.w))}<div><b>${wN(i,c.w)}${lz?' · '+(c.lzn||'laser bolts'):''}</b><small>${w.d} dmg${w.p>1?' × '+w.p+' pellets':''} · ${(1/(w.r*(c.dw&&c.w==0?.5:1))).toFixed(1)} shots/sec</small></div></div>
 <div class="svpk${s.l>=3?' on':''}"><span class=cwk>Mastery LV ${s.l} · SIGNATURE PERK</span><p><b>${SPK[i].n}</b> · ${SPK[i].d}${s.l>=3?'':' (unlocks at mastery 3)'}</p></div>
 <div class=svgo>${u?`<button data-q=1 class="np go" onclick="sel=${i};start()">START${kc('ENTER')}</button>`:`<button data-q=1 class="np" onclick="setGM('c');mapId=${UNM[i]};S.mp=mapId;play()">GO TO ${MP[UNM[i]].n.toUpperCase()}<small>beat ${c.n} there to recruit them</small></button>`}</div></section></div>`))}
+// ---------- split-screen store ----------
+// mshop() in multiplayer/shop-and-game-over.js calls msNX(). It works like the one-player store (ui/shop.js): tabs, a list
+// and the picked item in detail, but every player keeps their own tab and pick in p.sx. Each panel is laid out at a base
+// size (about 640 × 340) and scaled to fit that player's part of the screen. Buying runs the normal shop functions with P
+// set to that player; they call shop() again, which redraws every panel.
+// Controller: LB / RB (or ◀ ▶) tabs, ▲ ▼ pick, A buy, X sell, START or Y ready, B back to shopping.
+// Keyboard & mouse player: Q / E tabs, W / S pick, Enter buy, X sell, Space ready, Esc back to shopping (or click).
+function msSt(p){const w=wave+'|'+PRE;if(!p.sx||p.sx.w!==w)p.sx={t:'guns',g:p.cur,gr:'ar',am:AMT[p.cur]||'pa',hp:p.hp<p.mx?'heal':'max',w};
+const x=p.sx;if(x.g==null||!WP[x.g])x.g=p.cur;if(!AMI[x.am])x.am='pa';if(x.gr!='ar'&&!EXI[x.gr])x.gr='ar';if(!SHT.some(q=>q[0]==x.t))x.t='guns';return x}
+function msItems(p){const t=msSt(p).t;if(t=='guns')return SHG.flatMap(g=>g[1]);if(t=='gear')return['ar',...EXL];if(t=='ammo')return Object.keys(AMI);return['heal','max']}
+const msKy=t=>({guns:'g',gear:'gr',ammo:'am',hp:'hp'})[t];
+function msPad(p){return p.inp!=='km'&&p.inp!=='any'}
+function msTab(pi,t){const p=PL[pi];if(!p||p.rdy||!SHT.some(q=>q[0]==t))return;msSt(p).t=t;sfx('click');shop()}
+function msStep(pi,d){const p=PL[pi];if(!p||p.rdy)return;const x=msSt(p),i=SHT.findIndex(q=>q[0]==x.t);x.t=SHT[(i+d+SHT.length)%SHT.length][0];sfx('click');shop()}
+function msMove(pi,d){const p=PL[pi];if(!p||p.rdy)return;const x=msSt(p),L=msItems(p),k=msKy(x.t),i=L.indexOf(x[k]),j=cl((i<0?0:i)+d,0,L.length-1);if(L[j]===x[k])return;x[k]=L[j];sfx('click');shop()}
+function msSel(pi,k,v){const p=PL[pi];if(!p||p.rdy)return;msSt(p)[k]=v;sfx('click');shop()}
+// the main action for what this player has picked (buy / equip / repair / light / heal), done as that player
+function msAct(pi){const p=PL[pi];if(!p||p.rdy)return;const x=msSt(p),t=x.t;P=p;if(t=='guns')return buy(x.g);if(t=='gear')return x.gr=='ar'?armor():exBuy(x.gr);if(t=='ammo')return amBuy(x.am);return x.hp=='max'?mhp():heal()}
+function msSell(pi){const p=PL[pi];if(!p||p.rdy)return;const x=msSt(p);P=p;if(x.t=='guns'&&p.own.includes(x.g)&&!amSt(p,x.g))return wSell(x.g);if(x.t=='gear'&&x.gr!='ar'&&exHas(p,x.gr))return exSell(x.gr);P=PL[0];sfx('deny')}
+// ready (v=1), back to shopping (v=0) or switch; the wave starts when everyone is ready
+function msReady(pi,v){const p=PL[pi];if(!p)return;const r=v==null?(p.rdy?0:1):v;if(r==(p.rdy?1:0))return;p.rdy=r;sfx(r?'buy':'click');P=PL[0];if(PL.every(q=>q.rdy))return nextWave();shop()}
+function msFit(v){const s=Math.round(cl(Math.min(v.w/640,v.h/340),.55,3)*1000)/1000;return{s,w:Math.round(v.w/s),h:Math.round(v.h/s)}}
+function msAnd(L){return L.length<2?L.join(''):L.slice(0,-1).join(', ')+' and '+L[L.length-1]}
+function msNX(){const V=VL(PL.length),P0=PL[0];let h='';PL.forEach((p,pi)=>{h+=msPanel(p,pi,V[pi])});if(V.length>PL.length)h+=msInfo(V[PL.length]);P=P0;
+show(`<div class="nx msx"><h2 class=sr>STORE</h2>${h}</div>`);P=P0;
+try{for(const l of ui.querySelectorAll('.msli')){const e=l.querySelector('.msrw.on');if(e)l.scrollTop=Math.max(0,e.offsetTop-l.offsetTop-l.clientHeight/2+e.offsetHeight/2)}}catch(e){}}
+function msPanel(p,pi,v){P=p;const f=msFit(v),x=msSt(p),t=x.t,ci=p.ci||0,cash=p.cash,ar=p.ar||0,pad=msPad(p),tall=f.h>=470;amFix(p);exFix(p);
+const AC=pc(Math.round((S.df?800:500)*(1-.1*rk('arm')))),RC=pc(Math.round(30*(1-.1*rk('arm'))));
+const gA=pad?'<i class=msg>A</i>':kc('ENTER'),gX=pad?'<i class="msg x">X</i>':kc('X');
+const pic=(i,w,h)=>gunPic(i,ci,w,h,'',cmOf(p.ac,i));
+const price=(c,ok)=>`<b class="mspr${ok?'':' no'}">$${nxN(c)}</b>`,tag=(on,s)=>`<em class="shb${on?' on':''}">${s}</em>`;
+const row=(on,dim,k,val,q,name,right)=>`<button data-q=1 class="msrw${on?' on':''}${dim?' dim':''}" onclick="msSel(${pi},'${k}',${typeof val=='string'?`'${val}'`:val})"><span class=msq>${q}</span><span class=msn>${name}</span>${right}</button>`;
+const btn=(lab,on)=>`<button data-q=1 class="msb${on?' ya':' no'}" onclick="${on?`msAct(${pi})`:"sfx('deny')"}">${on?gA:''}${lab}</button>`;
+const sellB=v=>`<button data-q=1 class=mssl onclick="msSell(${pi})">${gX}SELL $${nxN(v)}</button>`;
+const sr=(k,s,v)=>`<span class=mssk>${k}</span>${shSeg(s)}<b>${v}</b>`;
+let list='',k_='',n_='',pr='',big='',body='',a='',sub='',sl='';
+if(t=='guns'){list=SHG.map(([n,G])=>(tall?`<div class=msgh>${n}</div>`:'')+G.map(i=>{const w=WP[i],o=p.own.includes(i),c=pc(w.cost,p);return row(x.g==i,!o&&(cash<c||p.own.length>=INV),'g',i,pic(i,72,28),wN(ci,i),o?tag(p.cur==i,p.cur==i?'EQUIPPED':'OWNED'):price(c,cash>=c))}).join('')).join('');
+ const i=x.g,w=WP[i],o=p.own.includes(i),c=pc(w.cost,p),st=shStats(i,ci),inf=amSt(p,i);k_=SHK[i]||'';n_=wN(ci,i);if(!o)pr=price(c,cash>=c);big=pic(i,tall?300:220,tall?72:52);
+ body=`<div class=msst>${sr('DAMAGE',st.ds,st.dmg)}${sr('FIRE RATE',st.rs,st.rate)}${sr('MAGAZINE',st.ms,st.mag)}</div>`;
+ if(o){a=btn(p.cur==i?'EQUIPPED':'EQUIP',p.cur!=i);sub=inf?'Starting gun: endless ammo':`In slot ${p.own.indexOf(i)+1} of ${INV}`;if(!inf)sl=sellB(wSV(p,i))}
+ else if(p.own.length>=INV){a=btn('SLOTS FULL',0);sub='Sell a gun to make room'}
+ else if(cash<c){a=btn('BUY $'+nxN(c),0);sub='You need $'+nxN(c-cash)+' more'}
+ else{a=btn('BUY $'+nxN(c),1);sub=`Goes in slot ${p.own.length+1} of ${INV}`}}
+else if(t=='gear'){const arT=!ar?price(AC,cash>=AC):ar<6?`<b class="mspr${cash>=RC?'':' no'}">repair $${nxN((6-ar)*RC)}</b>`:tag(1,'FULL');
+ list=(tall?'<div class=msgh>PROTECTION</div>':'')+row(x.gr=='ar',!ar&&cash<AC,'gr','ar','<span class=msic>▣</span>','Armor',arT)
+ +(tall?`<div class=msgh>EXTRAS · ${exUsed(p)}/${EXG.slots} SLOTS</div>`:'')+EXL.map(id=>{const I=EXI[id],o=exHas(p,id),c=pc(I.cost,p);return row(x.gr==id,!o&&(cash<c||!exFits(p,id)),'gr',id,`<canvas data-ex=${id} class=msxi></canvas>`,I.n,o?tag(id=='hl'&&p.hlo,id=='hl'?(p.hlo?'LIGHT ON':'OWNED'):'OWNED'):price(c,cash>=c&&exFits(p,id)))}).join('');
+ if(x.gr=='ar'){const kk=Math.min(6-ar,Math.floor(cash/RC));k_='GEAR · TAKES HITS BEFORE YOUR HEALTH';n_='Armor';if(!ar)pr=price(AC,cash>=AC);big='<span class=msbi>▣</span>';
+  body=`<div class=msst><span class=mssk>ARMOR</span><span class="shseg s6">${[1,2,3,4,5,6].map(q=>`<i class="${q<=ar?'on':''}"></i>`).join('')}</span><b>${ar} / 6</b></div>`;
+  if(!ar){a=btn('BUY $'+nxN(AC),cash>=AC);sub=cash>=AC?'Soaks up 6 hits':'You need $'+nxN(AC-cash)+' more'}
+  else if(ar<6){a=btn(`REPAIR +${Math.max(1,kk)} · $${nxN(Math.max(1,kk)*RC)}`,kk>0);sub='$'+RC+' a point'}
+  else{a=btn('ARMOR FULL',0);sub='All 6 points'}}
+ else{const id=x.gr,I=EXI[id],o=exHas(p,id),c=pc(I.cost,p),fit=exFits(p,id);k_=`GEAR · USES ${I.sl} EXTRA SLOT${I.sl>1?'S':''}`;n_=I.n;if(!o)pr=price(c,cash>=c);big=`<canvas data-ex=${id} class=msbx></canvas>`;
+  body=`<p class=msp_>${id=='hl'?'Lights the way on dark maps. Turn it on or off in the game with '+(pad?'B':'F')+'.':''}</p>`;
+  if(o){a=btn(id=='hl'?(p.hlo?'TURN LIGHT OFF':'TURN LIGHT ON'):'OWNED',id=='hl');sub='You own it';sl=sellB(exSV(p,id))}
+  else if(!fit){a=btn('EXTRAS FULL',0);sub='Sell an extra to make room'}
+  else{a=btn('BUY $'+nxN(c),cash>=c);sub=cash>=c?'Goes in an extra slot':'You need $'+nxN(c-cash)+' more'}}}
+else if(t=='ammo'){list=Object.keys(AMI).map(kk=>{const I=AMI[kk],c=pc(I.cost,p),full=p.am[kk]>=I.max;return row(x.am==kk,!full&&cash<c,'am',kk,`<span class=msac style="--ac:${I.c}"></span>`,`${I.n}<small>${nxN(p.am[kk])} / ${nxN(I.max)}</small>`,full?tag(1,'FULL'):price(c,cash>=c))}).join('');
+ const kk=x.am,I=AMI[kk],c=pc(I.cost,p),full=p.am[kk]>=I.max,mine=WP.map((_,i)=>i).filter(i=>AMT[i]==kk&&p.own.includes(i));k_=`AMMO · ${I.buy} FOR $${c}`;n_=I.n;pr=price(c,cash>=c);
+ big=mine.length?mine.slice(0,2).map(i=>pic(i,130,44)).join(''):`<span class=msac style="--ac:${I.c}"></span>`;
+ body=`<div class=msst><span class=mssk>CARRYING</span><span class=msbar><i style="width:${Math.round(p.am[kk]/I.max*100)}%;background:${I.c}"></i></span><b>${nxN(p.am[kk])} / ${nxN(I.max)}</b></div>`;
+ if(full){a=btn('FULL',0);sub='You can\'t carry more'}else{a=btn(`BUY +${I.buy} · $${nxN(c)}`,cash>=c);sub=cash<c?'You need $'+nxN(c-cash)+' more':mine.length?'For your '+msAnd(mine.map(i=>wN(ci,i))):'None of your guns use it yet'}}
+else{const mh=MXH(p),hc=pc(25,p),mc=pc(250,p);
+ list=row(x.hp=='heal',cash<hc&&p.hp<p.mx,'hp','heal',`<span class="msic hr">+♥</span>`,`Heal +1<small>${p.hp} / ${p.mx}</small>`,p.hp>=p.mx?tag(1,'FULL'):price(hc,cash>=hc))
+ +row(x.hp=='max',p.mx<mh&&cash<mc,'hp','max',`<span class="msic hr">♥+</span>`,`Max HP +1<small>up to ${mh}</small>`,p.mx>=mh?tag(1,'MAXED'):price(mc,cash>=mc));
+ big=`<div class=mshs>${Array.from({length:p.mx},(_,q)=>`<i class="${q<p.hp?'on':''}">${nxi('heart',20)}</i>`).join('')}${p.mx<mh&&x.hp=='max'?`<i class=nw>${nxi('heart',20)}</i>`:''}</div>`;
+ if(x.hp=='heal'){k_='HEALTH · ONE HEART';n_='Heal +1';pr=price(hc,cash>=hc);if(p.hp>=p.mx){a=btn('FULL HEALTH',0);sub='Nothing to heal'}else{a=btn('HEAL +1 · $'+hc,cash>=hc);sub=cash>=hc?`Health ${p.hp} of ${p.mx}`:'You need $'+(hc-cash)+' more'}}
+ else{k_='HEALTH · ONE MORE HEART';n_='Max HP +1';pr=price(mc,cash>=mc);if(p.mx>=mh){a=btn('MAXED',0);sub='Already at '+mh}else{a=btn('MAX HP +1 · $'+mc,cash>=mc);sub=cash>=mc?`${CH[ci].n} can go up to ${mh}`:'You need $'+(mc-cash)+' more'}}}
+const tabs=SHT.map(([kk,n])=>`<button data-q=1 class="${kk==t?'on':''}" onclick="msTab(${pi},'${kk}')">${n}</button>`).join('');
+const slots=Array.from({length:INV},(_,q)=>{const i=p.own[q];return i==null?'<span class="msls em"></span>':`<span class="msls${p.cur==i?' on':''}" title="${wN(ci,i)}">${pic(i,50,20)}</span>`}).join('');
+const wait=PL.map((q,j)=>q.rdy?'':'P'+(j+1)).filter(Boolean);
+const sty=`left:${Math.round(v.x)}px;top:${Math.round(v.y)}px;width:${f.w}px;height:${f.h}px;transform:scale(${f.s});--pc:${PC[pi]}`;
+return `<section class="msp${tall?' tall':''}${p.rdy?' rd':''}" style="${sty}" aria-label="Player ${pi+1} store">
+<div class=msph><b class=mspx>P${pi+1}</b><span class=mspn>${edEsc(pnm(p))}</span><span class=mshp>${nxi('heart',15)}${p.hp}/${p.mx}${ar?`<em>▣ ${ar}/6</em>`:''}</span><b class=msc>$${nxN(cash)}</b></div>
+<nav class=mstb aria-label="Store tabs">${kc(pad?'LB':'Q')}<div>${tabs}</div>${kc(pad?'RB':'E')}</nav>
+<div class=msm><div class=msli>${list}</div><div class=msd><span class=cwk>${k_}</span><div class=msdh><b class=msdt>${n_}</b>${pr}</div><div class=msbig>${big}</div>${body}<div class=msac2>${a}${sl}</div><span class=msub>${sub}</span></div></div>
+<div class=msf><span class=cwk>GUNS</span>${slots}<button data-q=1 class=msrd onclick="msReady(${pi},1)">${kc(pad?'START':'SPACE')}READY${PRE?' FOR WAVE ':' · WAVE '}${wave+1}</button></div>
+${p.rdy?`<button data-q=1 class=msov onclick="msReady(${pi},0)"><span class=msok>${nxi('check',34)}</span><b>READY</b><span>${wait.length?'Waiting for '+msAnd(wait):'Starting…'}</span><small>${pad?'<i class="msg b">B</i>':kc('ESC')} keep shopping</small></button>`:''}</section>`}
+// the empty quarter when three people play: what's next and who is ready
+function msInfo(v){const f=msFit(v),boss=(wave+1)%10==0;
+return `<section class="msp msi" style="left:${Math.round(v.x)}px;top:${Math.round(v.y)}px;width:${f.w}px;height:${f.h}px;transform:scale(${f.s})"><span class=cwk>${PRE?'GET READY':'WAVE '+wave+' CLEARED'}</span><b class=msit>${PRE?'WAVE '+(wave+1)+' NEXT':'SUPPLY STOP'}</b><span class=msin>Next: wave ${wave+1}${boss?' · BOSS':''}</span>
+<div class=msil>${PL.map((p,i)=>`<span style="--pc:${PC[i]}"><i class="${p.rdy?'on':''}"></i><b>P${i+1}</b>${edEsc(pnm(p))}<em>${p.rdy?'ready':'shopping'}</em></span>`).join('')}</div>
+<p class=msih>The next wave starts when everyone is ready.<br>Controller: LB / RB tabs · ▲ ▼ pick · A buy · X sell · START ready</p></section>`}
+// keyboard for the player on keyboard & mouse
+function msKey(k){const pi=PL.findIndex(p=>p.inp=='km'||p.inp=='any');if(pi<0)return 0;const p=PL[pi];
+if(p.rdy){if(k=='escape'||k==' '||k=='enter'){msReady(pi,0);return 1}return 0}
+if(k=='q'||k=='arrowleft'||k=='a'){msStep(pi,-1);return 1}if(k=='e'||k=='arrowright'||k=='d'){msStep(pi,1);return 1}
+if(k=='w'||k=='arrowup'){msMove(pi,-1);return 1}if(k=='s'||k=='arrowdown'){msMove(pi,1);return 1}
+if(k=='enter'){msAct(pi);return 1}if(k=='x'){msSell(pi);return 1}if(k==' '){msReady(pi,1);return 1}return 0}
+// controllers: each pad drives its own player's store
+// (several players can press in the same frame; stop as soon as the wave has started)
+function msPads(){let n=0;for(const q of GP){if(mode!='shop')break;const pi=PL.findIndex(p=>p.inp===q.i||p.inp=='any');if(pi<0)continue;const p=PL[pi];n++;
+if(p.rdy){if(q.jp(1)||q.jp(9)||q.jp(3))msReady(pi,0);continue}
+if(q.jp(9)||q.jp(3))msReady(pi,1);
+else if(q.jp(4)||q.jp(14)||q.jp(102))msStep(pi,-1);else if(q.jp(5)||q.jp(15)||q.jp(103))msStep(pi,1);
+else if(q.jp(12)||q.jp(100))msMove(pi,-1);else if(q.jp(13)||q.jp(101))msMove(pi,1);
+else if(q.jp(0))msAct(pi);else if(q.jp(2))msSell(pi);else n--}return n>0}
+// ---------- dialogs over the Workshop tab ----------
+// The Workshop tab stays drawn underneath (and can't be reached with a controller or Tab while a dialog is open).
+// Esc presses the button marked data-esc, Enter the one marked data-ent (see wmKey).
+function wmWrap(inner,lab,cls){return nxWrap('wmo',`<div class="wmd ${cls||''}" role=dialog aria-modal=true aria-label="${edEsc(lab)}">${inner}</div>`,'<div class=wmbg></div>')}
+function wmUnder(h){return h.replace('<div class=nxs>','<div class=nxs inert aria-hidden=true>')}
+function wsMod(inner,lab,cls){show(wmUnder(wsPage(''))+wmWrap(inner,lab,cls))}
+function wmKey(k){if(!ui.querySelector)return 0;const m=ui.querySelector('.wmo');if(!m)return 0;if(k=='escape'||k=='enter'){const b=m.querySelector(k=='escape'?'[data-esc]':'[data-ent]');if(b&&!b.disabled)b.click();return 1}return 1}
+function wmBtns(no,noJs,yes,yesJs,cls,on){return `<div class=wmbt><button data-q=1 data-esc=1 class="nb wmno" onclick="${noJs}">${no}${kc('ESC')}</button><button data-q=1 data-ent=1 class="np ${cls||'go'} wmyes" onclick="${yesJs}"${on===false?' disabled':''}>${yes}${kc('ENTER')}</button></div>`}
+const wmEnter=js=>`onkeydown="if(event.key=='Enter'){${js}}else if(event.key=='Escape'){workshop()}"`;
+// ----- new map -----
+// WSN keeps what is picked while the card is open: name, about, blank or a copy, size, ground
+var WSN=null;
+const WSNS=[['s','SMALL',48,36,'Quick, close fights'],['m','MEDIUM',72,56,'About the Suburb'],['l','LARGE',100,80,'Room to explore'],['h','HUGE',128,128,'Takes a while to fill']];
+const WSNG=['grass','dirt','sand','gravel','forest','asphalt','concrete'];
+function wsNewNX(){if(!WSN)WSN={name:'My map',desc:'',from:'blank',cm:null,sz:'m',w:72,h:56,g:'grass',ex:0};const N=WSN,copy=N.from=='copy',T=CMTER.find(t=>t.id==N.g)||CMTER[0];
+const sz=WSNS.find(q=>q[0]==N.sz),cps=wsNCopies();if(copy&&!cps.some(c=>c.k==N.cm))N.cm=cps.length?cps[0].k:null;const cp=cps.find(c=>c.k==N.cm);
+const sw=WSNG.map(id=>CMTER.find(t=>t.id==id||t.n.toLowerCase()==id||t.n.toLowerCase()==id+' floor')).filter(Boolean),inSw=sw.includes(T);
+const left=copy?`<div class=wnf><span class=cwk>PICK A MAP TO COPY</span><div class=wncg>${cps.map(c=>`<button data-q=1 class="wncp${c.k==N.cm?' on':''}" onclick="WSN.cm='${c.k}';sfx('click');wsNewNX()">${c.img?`<img alt="" src="${c.img}">`:'<i></i>'}<b>${edEsc(c.n)}</b><small>${c.sub}</small></button>`).join('')}</div></div>`
+:`<label class=wnf><span class=cwk>NAME</span><span class=wnin><input id=wsn maxlength=40 value="${edEsc(N.name)}" autocomplete=off oninput="WSN.name=this.value;wsNPv()" ${wmEnter('wsCreate()')}><small id=wsnc>${N.name.length} / 40</small></span></label>
+<div class=wnf><span class=wnfh><span class=cwk>SIZE</span><button data-q=1 class=lnk onclick="WSN.ex=WSN.ex?0:1;wsNewNX()">${N.ex?'Hide exact size':'Exact size…'}</button></span><div class=wnsz>${WSNS.map(([k,n,w,h,d])=>{const s=36/128;return `<button data-q=1 class="wnsc${N.sz==k?' on':''}" onclick="wsNSz('${k}')" title="${d}"><span class=wnsi><i></i><i class=f style="width:${Math.round(w*s)}px;height:${Math.round(h*s)}px"></i></span><span><b>${n}</b><small>${w} × ${h}</small></span></button>`}).join('')}</div>
+${N.ex?`<div class=wnex><label>Width<input type=number id=wsw min=${CMMIN[0]} max=${CMMAX} value=${N.w} oninput="WSN.w=+this.value;WSN.sz='c';wsNPv()"></label><span>×</span><label>Height<input type=number id=wsh min=${CMMIN[1]} max=${CMMAX} value=${N.h} oninput="WSN.h=+this.value;WSN.sz='c';wsNPv()"></label><small>tiles of ${CMTILE}px · ${CMMIN[0]}–${CMMAX} wide, ${CMMIN[1]}–${CMMAX} high</small></div>`:''}</div>
+<div class=wnf><span class=cwk>GROUND</span><div class=wngr>${sw.map(t=>`<button data-q=1 class="wngs${t.id==N.g?' on':''}" onclick="WSN.g='${t.id}';sfx('click');wsNewNX()" title="${edEsc(t.n)}"><img alt="" src="${edTerSw(t)}"><small>${edEsc(t.n.replace(/ floor$/,''))}</small></button>`).join('')}<label class=wnall><span class=sr>Other ground</span><select id=wsg onchange="if(this.value){WSN.g=this.value;wsNewNX()}"><option value=""${inSw?' selected':''} disabled>All ${CMTER.length}…</option>${CMTCAT.map(([c,cn])=>`<optgroup label="${cn}">${CMTER.filter(t=>t.cat==c).map(t=>`<option value="${t.id}"${!inSw&&t.id==N.g?' selected':''}>${edEsc(t.n)}</option>`).join('')}</optgroup>`).join('')}</select></label></div></div>
+<label class=wnf><span class=cwk>ABOUT <em>(optional)</em></span><input id=wsd class=wnab maxlength=240 value="${edEsc(N.desc)}" autocomplete=off placeholder="What happens on this map? Players see it in Free Play." oninput="WSN.desc=this.value"></label>`;
+const pv=copy?(cp&&cp.img?`<img class=wnpi alt="" src="${cp.img}">`:'<i class=wnpi></i>'):`<div class=wnpm id=wnpm style="${wsNBox(N.w,N.h)};background-image:url(${edTerSw(T)})"><b>P</b></div>`;
+const inner=`<div class=wnl><b class=wmt>NEW MAP</b><div class=wnf><span class=cwk>START FROM</span><div class=wnfr>
+<button data-q=1 class="wnfrom${copy?'':' on'}" onclick="WSN.from='blank';sfx('click');wsNewNX()"><i>${nxi('plus',20)}</i><span><b>BLANK MAP</b><small>Bare ground, you build the rest</small></span></button>
+<button data-q=1 class="wnfrom${copy?' on':''}" onclick="WSN.from='copy';sfx('click');wsNewNX()"><i>${nxi('map',20)}</i><span><b>A COPY OF A MAP</b><small>Tweak a campaign or sample map</small></span></button></div></div>${left}</div>
+<div class=wnr><span class=cwk>WHAT YOU'LL GET</span><div class=wnpv>${pv}</div><b class=wnpt id=wnpt>${edEsc(copy?(cp?cp.n+' (my copy)':''):(N.name.trim()||'Untitled map'))}</b><span class=wnps id=wnps>${copy?(cp?cp.sub:''):wsNSum()}</span>
+<p class=wnpn>${copy?'A copy goes into your maps. The original stays as it is.':'You start in the middle. Name, size and ground can all be changed later in Map settings.'}</p><p class=wnerr id=wserr></p>
+<button data-q=1 data-ent=1 class="np go wngo" onclick="${copy?'wsNCopy()':'wsCreate()'}"${copy&&!cp?' disabled':''}>${copy?'COPY &amp; START BUILDING':'CREATE &amp; START BUILDING'}${kc('ENTER')}</button><button data-q=1 data-esc=1 class="nb wmno wncx" onclick="workshop()">CANCEL${kc('ESC')}</button></div>`;
+wsMod(inner,'New map','wnd');try{const n=document.getElementById('wsn');if(n&&n.select&&!wsNNoFocus){n.focus();n.select()}}catch(e){}wsNNoFocus=1}
+var wsNNoFocus=0;
+function wsNBox(w,h){const s=Math.min(280/Math.max(1,w),210/Math.max(1,h));return `width:${Math.max(12,Math.round(w*s))}px;height:${Math.max(10,Math.round(h*s))}px`}
+function wsNSum(){const N=WSN,s=WSNS.find(q=>q[0]==N.sz),T=CMTER.find(t=>t.id==N.g);return `${s?s[1][0]+s[1].slice(1).toLowerCase()+' · ':''}${N.w} × ${N.h} tiles · ${T?T.n.toLowerCase():''}`}
+function wsNSz(k){const s=WSNS.find(q=>q[0]==k);if(!s||!WSN)return;WSN.sz=k;WSN.w=s[2];WSN.h=s[3];sfx('click');wsNewNX()}
+// refresh the preview without drawing the card again (so typing isn't interrupted)
+function wsNPv(){try{const N=WSN,t=document.getElementById('wnpt'),s=document.getElementById('wnps'),m=document.getElementById('wnpm'),c=document.getElementById('wsnc');if(t)t.textContent=N.name.trim()||'Untitled map';if(c)c.textContent=N.name.length+' / 40';if(s)s.textContent=wsNSum();
+if(m&&N.w>0&&N.h>0){const b=wsNBox(N.w,N.h).match(/\d+/g);m.style.width=b[0]+'px';m.style.height=b[1]+'px'}}catch(e){}}
+// the maps you can start from a copy of: the samples and the campaign maps
+function wsNCopies(){const L=CMSAMPLES.map((j,i)=>({k:'s'+i,n:j.name,sub:'Sample map · '+j.width+' × '+j.height,img:wsImg(wsSampleThumb(i))}));
+for(const m of Object.keys(typeof BIMF=='object'?BIMF:{}).map(Number))L.push({k:'b'+m,n:MP[m].n,sub:'Campaign map · '+BIMF[m].width+' × '+BIMF[m].height,img:typeof MPI!='undefined'&&MPI[m]||''});return L}
+function wsNCopy(){const k=WSN&&WSN.cm;if(!k){sfx('deny');return}WSN=null;if(k[0]=='s')return wsSample(+k.slice(1),1);return wsBuiltin(+k.slice(1),1)}
+// ----- rename / delete / import problems -----
+function wsRenameNX(i){const e=CML[i];wsMod(`<b class=wmt>RENAME MAP</b><label class=wnf><span class=cwk>NAME</span><span class=wnin><input id=wsrn maxlength=40 value="${edEsc(e.doc.name)}" autocomplete=off oninput="const c=document.getElementById('wsrc');if(c)c.textContent=this.value.length+' / 40'" ${wmEnter(`wsRenameOk(${i})`)}><small id=wsrc>${e.doc.name.length} / 40</small></span></label>
+<p class=wmp>This is the name everyone sees in Free Play and the campaign.</p>${wmBtns('CANCEL','workshop()','SAVE NAME',`wsRenameOk(${i})`)}`,'Rename map','wmsm');try{const n=document.getElementById('wsrn');n.focus();n.select()}catch(_){}}
+function wsDelNX(i){const e=CML[i],m=e.meta,img=wsImg(m.thumb),inC=ccSlotOfId(e.id)||ccRepOfId(e.id)!=null;
+wsMod(`<b class=wmt>DELETE THIS MAP?</b><div class=wmmap>${img?`<img alt="" src="${img}">`:'<i></i>'}<span><b>${edEsc(m.name||'Untitled map')}</b><small>${m.w} × ${m.h} tiles · edited ${wsAgo(m.updated)}</small></span></div>
+<p class=wmp>It's removed from this device and <b>can't be brought back</b>.${inC?' It\'s also taken out of the campaign (what you beat on it is kept).':''}</p>
+<button data-q=1 class=wmexp onclick="wsExport(${i})">${nxi('up',20)}<span><b>EXPORT A BACKUP FIRST</b><small>Saves a file you can import again later</small></span></button>${wmBtns('KEEP IT','workshop()','DELETE',`wsDelOk(${i})`,'red')}`,'Delete map','wmsm wmdel')}
+var WSIF='';
+function wsImpErr(errs){wsMod(`<b class=wmt><svg class=wmwarn width=26 height=26 viewBox="0 0 24 24" fill=none stroke=currentColor stroke-width=2 stroke-linejoin=round aria-hidden=true><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01" stroke-linecap=round/></svg>COULDN'T IMPORT IT</b><p class=wmp>Nothing was changed. Here's what was wrong${WSIF?' with <b>'+edEsc(WSIF)+'</b>':''}:</p><ul class=wmul>${errs.slice(0,6).map(x=>`<li>${edEsc(x)}</li>`).join('')}</ul>
+<p class=wmp2>Map files come from <b>EXPORT</b> on a map in the Workshop.</p><div class=wmbt><button data-q=1 class="nb wmno" onclick="wsImport()">PICK ANOTHER FILE</button><button data-q=1 data-esc=1 data-ent=1 class="np go wmyes" onclick="workshop()">OK${kc('ENTER')}</button></div>`,"Couldn't import",'wmsm wmimp')}
+// ---------- putting a map in the campaign ----------
+// one page: pick an empty spot (sections with one), then the wave-20 boss; or play it instead of a campaign map
+function wcPage(){const e=wcEnt(),nm=edEsc(e.doc.name),cur=ccSlotOfId(WC.id),rp=ccRepOfId(WC.id),img=wsImg(e.meta&&e.meta.thumb);
+const full=[],rows=SEC.map((S_,si)=>{if(!S_.m.includes(-1)){full.push(S_.n);return ''}const fr=S_.m.filter(m=>m===-1).length;
+return `<div class=wcr><span class=wcrn><b>${S_.n.toUpperCase()}</b><small>Section ${si+1} · ${fr} empty</small></span>${S_.m.map((m,k)=>{if(m!==-1)return `<span class="wcs bi"><small>SLOT ${k+1}</small><b>${edEsc(MP[m]?MP[m].n:'')}</b></span>`;
+const a=CCS.slots[ccSK(si,k)],mine=a&&a.id===WC.id,taken=a&&!mine,on=WC.s===si&&WC.k===k;
+return `<button data-q=1 class="wcs${on?' on':''}${taken?' tk':''}"${taken?' disabled':''} onclick="wcSlot(${si},${k})"${on&&img?` style="--wi:url(${img})"`:''}><small>SLOT ${k+1}${on?' · THIS MAP':''}</small><b>${taken?'“'+edEsc(a.n||'another map')+'”':on?nm:mine?'This map now':'Empty'}</b></button>`}).join('')}</div>`}).join('');
+const boss=CCBOSS.map(ci=>`<button data-q=1 class="wcb${WC.b===ci?' on':''}" onclick="wcBoss(${ci})"><canvas data-ch=${ci}></canvas><b>${CH[ci].n}</b><small>${ccHome(ci)}</small></button>`).join('');
+const repL=CORD.filter(ccRepOK).map(m=>`<option value="${m}">${CORD.indexOf(m)+1}. ${MP[m].n}${CCS.rep[m]?' (now: “'+edEsc(CCS.rep[m].n)+'”)':''}</option>`).join('');
+const ok=WC.s!=null&&WC.b!=null,where=WC.s!=null?`${SEC[WC.s].n} · slot ${WC.k+1}`:'pick a spot',bn=WC.b!=null?CH[WC.b].n:'pick a boss';
+const now=cur?`In ${SEC[cur.s].n}, slot ${cur.k+1}`:rp!=null?`Plays instead of ${MP[rp].n}`:'Not in the campaign yet';
+const sum=`<div class="hpan wcsum">${img?`<img class=wcth alt="" src="${img}">`:'<i class=wcth></i>'}<b class=wcnm>${nm}</b>
+<div class=wcrows><span><em>NOW</em><b>${now}</b></span><span><em>GOES IN</em><b>${where}</b></span><span><em>BOSS AT WAVE 20</em><b>${bn}</b></span></div>
+<ul class=wcul><li>Plays with ${WC.s!=null?SEC[WC.s].n+'\'s':'that section\'s'} zombies, lives and difficulty.</li><li>Beat ${WC.b!=null?CH[WC.b].n:'the boss'} to mark it beaten and open it in Free Play.</li><li>It never blocks the next section.</li></ul>
+<button data-q=1 id=wcgo class="np go wcgo" onclick="wcSave()"${ok?'':' disabled'}>${cur?'SAVE':WC.s!=null?'PUT IN '+SEC[WC.s].n.toUpperCase():'PUT IN SLOT'}${kc('ENTER')}</button>${cur?'<button data-q=1 class="nb wcrm" onclick="wcRemove()">REMOVE FROM CAMPAIGN</button>':''}
+<div class=wcor><i></i>OR<i></i></div>
+${rp!=null?`<div class=wcrp><b>Plays instead of ${MP[rp].n}</b><small>Progress, the section, the boss (${CH[MUN[rp]].n}) and the difficulty stay ${MP[rp].n}'s.</small><button data-q=1 class=nb onclick="wcRestore(${rp})">RESTORE ${MP[rp].n.toUpperCase()}</button></div>`
+:`<div class=wcrp><b>Play it instead of a campaign map</b><small>For a map made from or for one of them. Progress stays with the original, and you can restore it any time.</small><span class=wcrs><select id=wcrep aria-label="Campaign map">${repL}</select><button data-q=1 class=nb onclick="wcRepAsk()">PLAY INSTEAD…</button></span></div>`}</div>`;
+const nb=[13,14,15,16].map(ci=>CH[ci].n);
+return nxWrap('wcx',`${nxTop({back:'wcBack()',crumbs:[[WC.back=='cmap'?'Campaign':'Workshop','wcBack()'],['Add to the campaign']]})}<h2 class=sr>CAMPAIGN · ${nm}</h2><div class=wcmn><div class=wcl>
+<div class=wch><i>1</i><b>PICK AN EMPTY SPOT</b><span>Each section has five maps. Yours can fill a gap.</span></div><div class=wcrs2>${rows}</div>${full.length?`<small class=wcfull>${msAnd(full)} ${full.length>1?'are':'is'} full.</small>`:''}
+<div class=wch><i>2</i><b>WHO'S THE BOSS AT WAVE 20?</b><span>Beat them to finish the map.</span></div><div class=wcbg>${boss}</div>
+<small class=wcfull>Not offered: ${msAnd(nb)}. Their fights need their own map.</small></div>${sum}</div>`)}
+function wcDrawNX(){show(wcPage())}
+function wcRepAskNX(m){const e=wcEnt(),old=CCS.rep[m],cur=ccSlotOfId(WC.id);
+show(wmUnder(wcPage())+wmWrap(`<b class=wmt>PLAY THIS INSTEAD?</b><p class=wmp>In the campaign, “${edEsc(e.doc.name)}” will be played instead of <b>${MP[m].n}</b>. Your progress, the section, the boss (${CH[MUN[m]].n}) and the difficulty stay ${MP[m].n}'s, and you can restore the original with one click.${old&&old.id!==WC.id?` It takes the place of “${edEsc(old.n)}”, which plays there now.`:''}${cur?` It will be taken out of its slot in ${SEC[cur.s].n}.`:''}</p>${wmBtns('CANCEL','wcDraw()','PLAY INSTEAD',`wcRepOk(${m})`)}`,'Play this instead?','wmsm'))}
+// from an empty campaign slot on the world map: which of your maps goes here
+function wcPickNX(s,k,L){show(nxWrap('wcx',`${nxTop({back:"setGM('c');cMap()",crumbs:[['Campaign',"setGM('c');cMap()"],[SEC[s].n+' · slot '+(k+1)]]})}<h2 class=sr>${SEC[s].n.toUpperCase()} · SLOT ${k+1}</h2><div class=wcpk>
+<div class=wch><i>1</i><b>PICK ONE OF YOUR MAPS</b><span>Next you choose the survivor boss for wave 20.</span></div><div class=wcpg>${L.map(({e,i})=>{const img=wsImg(e.meta.thumb),cs=ccSlotOfId(e.id),cr=ccRepOfId(e.id);
+return `<button data-q=1 class=wcpc onclick="wcOpen(CML[${i}].id,'cmap',[${s},${k}])">${img?`<img alt="" src="${img}">`:'<i></i>'}<b>${edEsc(e.doc.name)}</b><small>${e.doc.w} × ${e.doc.h} tiles${cs?' · now in '+SEC[cs.s].n+', slot '+(cs.k+1)+' (it moves here)':cr!=null?' · now plays instead of '+MP[cr].n+' (that stops)':''}</small></button>`}).join('')}</div></div>`))}
 const rk=id=>((P&&P.ac)||S.ac).sk[id]||0;const SKA=()=>[S.ac,...S.prof][SKI]||S.ac,rkS=id=>SKA().sk[id]||0;
 const xpNeed=lv=>100+40*(lv-1);
 function xpMul(){return(S.sw>1?Math.max(.4,1-(S.sw-1)*.04):1)*(S.df?1.25:DIF()==0?.85:1)}
@@ -3870,7 +4272,7 @@ if(md=='pause'&&GP.some(q=>q.jp(9)))return resume();
 if(uiPads())return;navPads()}
 // ---------- controller navigation for normal menus ----------
 const NAV={on:0,i:0,h:null,pad:null};
-function navBtns(){return ui.querySelectorAll?[...ui.querySelectorAll('button,input[type=range]')].filter(b=>b.offsetParent!==null&&!b.disabled):[]}
+function navBtns(){return ui.querySelectorAll?[...ui.querySelectorAll('button,input[type=range]')].filter(b=>b.offsetParent!==null&&!b.disabled&&!(b.closest&&b.closest('[inert]'))):[]}
 function navMark(){if(!ui.querySelectorAll)return;ui.querySelectorAll('.pf').forEach(e=>e.classList.remove('pf'));const b=navBtns();if(!b.length)return;NAV.i=cl(NAV.i,0,b.length-1);const e=b[NAV.i];e.classList.add('pf');if(e.scrollIntoView)e.scrollIntoView({block:'nearest'})}
 function navNew(){if(!ui.querySelector||mode=='lobby'||(mode=='shop'&&MPn))return;const h2=ui.querySelector('h2,.logo'),h=h2?h2.textContent:'';if(h!==NAV.h){NAV.h=h;const b=navBtns(),g=b.findIndex(e=>e.classList.contains('go'));NAV.i=g<0?0:g}if(NAV.on)navMark()}
 function navMove(dx,dy){const b=navBtns();if(!b.length)return;const cur=b[cl(NAV.i,0,b.length-1)];
@@ -3919,13 +4321,10 @@ function shopIt(p){const P0=P;P=p;const AC=pc(Math.round((S.df?800:500)*(1-.1*rk
 const a=WP.map((w,i)=>{const o=p.own.includes(i);return{h:`<canvas data-gun=${i} data-ci=${p.ci} data-v=${p.v||0} data-cm=${cmOf(p.ac,i)}></canvas>${wN(p.ci,i)}<small>${o?(p.cur==i?'equipped':'equip'):p.own.length>=INV?'slots full':'$'+pc(w.cost,p)}</small>`,c:`${p.cur==i?'on':''} ${!o&&(p.cash<pc(w.cost,p)||p.own.length>=INV)?'no':''}`,f:()=>buy(i)}});
 a.push({h:`<span class=ico>+♥</span>Heal +1<small>$${pc(25,p)}</small>`,c:p.cash<pc(25,p)||p.hp>=p.mx?'no':'',f:heal},{h:`<span class=ico>♥+</span>Max HP<small>${p.mx>=MXH(p)?'max '+MXH(p):'$'+pc(250,p)}</small>`,c:p.mx>=MXH(p)||p.cash<pc(250,p)?'no':'',f:mhp},
 {h:`<span class="ico arc">▣</span>${!ar?'Armor +6':ar<6?'Repair':'Armor'}<small>${!ar?'$'+AC:ar<6?'$'+(6-ar)*RC:'full'}</small>`,c:!ar?(p.cash<AC?'no':''):ar>=6||p.cash<RC?'no':'',f:armor});if(!p.am)amInit(p);for(const t in AMI){const I=AMI[t],c=pc(I.cost,p);a.push({h:`<span class=aic style="background:${I.c}"></span>${I.s}<small>${p.am[t]}/${I.max} · +${I.buy} $${c}</small>`,c:p.am[t]>=I.max||p.cash<c?'no':'',f:()=>amBuy(t)})}{const i=p.cur,st=amSt(p,i);a.push({h:`<span class=ico>$</span>Sell ${wN(p.ci,i)}<small>${st?'starter gun':'$'+wSV(p,i)} · ${p.own.length}/${INV}</small>`,c:st?'no':'',f:()=>wSell(i)})}return exShopIt(p,a)}
-function mshop(){const V=VL(PL.length);show(`<div class=msh>`+PL.map((p,pi)=>{const v=V[pi],it=shopIt(p),ar=p.ar||0;return `<div class="mpn ${p.rdy?'rd':''}" style="left:${v.x}px;top:${v.y}px;width:${v.w}px;height:${v.h}px;--pc:${PC[pi]}"><div class=mh><b class=px>P${pi+1}</b><span class=mn>${pnm(p)}</span><span class=chip>$<b>${p.cash}</b></span><span class=chip><span class=hp>♥</span> <b>${p.hp}/${p.mx}</b></span>${ar?`<span class=chip><span class=arc>▣</span> <b>${ar}/6</b></span>`:''}</div>
-<div class=mg>${it.map((x,j)=>`<button data-q=1 class="${x.c} ${p.sc==j?'pf':''}" onclick="mb(${pi},${j})">${x.h}</button>`).join('')}</div><button data-q=1 class="${p.rdy?'on':'go'} ${p.sc==RDY(p)?'pf':''}" onclick="mb(${pi},RDY(PL[${pi}]))">${p.rdy?'READY ✓ · waiting for team':PRE?'READY FOR WAVE '+(wave+1):'READY · WAVE '+(wave+1)}</button></div>`}).join('')+
-(V.length>PL.length?`<div class="mpn info" style="left:${V[PL.length].x}px;top:${V[PL.length].y}px;width:${V[PL.length].w}px;height:${V[PL.length].h}px"><h2>${PRE?'GET READY':'WAVE '+wave+' CLEARED'}</h2><p>Next: wave ${wave+1}${(wave+1)%10?'':' · BOSS'}</p><p class=note>Everyone presses READY to start.<br>Controller: D-pad to move · A to buy · START to ready.</p></div>`:'')+`</div>`);P=PL[0]}
+// the store screen itself is drawn by msNX() in ui/split-shop.js; shopIt() above is the item list mb() works on
+function mshop(){msNX()}
 function mb(pi,j){const p=PL[pi];if(!p)return;P=p;p.sc=j;if(j==RDY(p)){p.rdy=p.rdy?0:1;sfx(p.rdy?'buy':'click');P=PL[0];if(PL.every(q=>q.rdy))return nextWave();return shop()}const it=shopIt(p)[j];if(it)it.f();else shop()}
-function shopPads(){let ch=0;for(const q of GP){const pi=PL.findIndex(p=>p.inp===q.i||p.inp=='any');if(pi<0)continue;const p=PL[pi];let s=p.sc||0;
-const N=RDY(p);if(q.jp(14)||q.jp(102))s=s==N?N:Math.max(0,s-1);if(q.jp(15)||q.jp(103))s=s==N?N:Math.min(N-1,s+1);if(q.jp(12)||q.jp(100))s=s==N?N-7:Math.max(0,s-7);if(q.jp(13)||q.jp(101))s=s+7>=N?N:s+7;
-if(s!==p.sc){p.sc=s;ch=1;sfx('click')}if(q.jp(0))return mb(pi,s);if(q.jp(9)||q.jp(3))return mb(pi,N)}if(ch)shop()}
+function shopPads(){return msPads()}
 // ---------- multiplayer game over ----------
 function overMP(q){for(const p of PL){p.ze=wave*8+(p.k||0);if(!p.ac.g)p.ac.pts=(p.ac.pts||0)+p.ze}sv();
 endMP(q)}
@@ -4020,7 +4419,7 @@ function pick(i){if(S.ac.un.includes(i))sel=i;else sfx('deny');SV=i;survs()}
 // keyboard and controller extras for menus (Q/E and LB/RB switch tabs, maps and sections; Esc goes back); everything
 // else falls through to the normal controller navigation
 function uiPads(){return nxPads()}
-function uiKey(k){if(mode=='pause'&&RXC)return rxKey(k);if(mode=='shop'&&!MPn)return shKey(k);if(mode=='over'||mode=='lifeo')return endKey(k);if(mode!='menu')return 0;if(nxKey(k))return 1;
+function uiKey(k){if(mode=='pause'&&RXC)return rxKey(k);if(mode=='shop')return MPn?msKey(k):shKey(k);if(mode=='over'||mode=='lifeo')return endKey(k);if(mode!='menu')return 0;if(nxKey(k))return 1;
 if(UIS=='surv'&&ui.querySelector&&ui.querySelector('.svx')){if(k=='arrowleft'||k=='arrowright'){viewS((SV+(k=='arrowleft'?-1:1)+CH.length)%CH.length);return 1}}
 if(k=='escape'){const b=navBtns().find(e=>/^(BACK|CANCEL)/.test((e.textContent||'').trim()));if(b){b.click();return 1}}return 0}
 
@@ -7973,16 +8372,24 @@ function edZoom(f,sx,sy){const E=ED;if(sx==null){sx=edVW()/2;sy=edVH()/2}const w
 // ----- panels -----
 function edUI(){if(!ED||!ED.root)return;edTop();edLeft();edRight();edStatus();const r=ED.root;r.classList.toggle('nol',!ED.pl);r.classList.toggle('nor',!ED.pr);setTimeout(()=>{if(ED)edLay()},0)}
 function edTB(a,ico,tip,on,dis,txt){return `<button data-a="${a}" class="${on?'on':''}" title="${edEsc(tip)}"${dis?' disabled':''}>${edIco(ico)}${txt?'<span>'+txt+'</span>':''}</button>`}
+// the top bar: map name and save state, then every tool in named groups (Night Ops look, see css "map editor, Night Ops")
+const EDTG=[['SELECT',['select']],['GROUND',['brush','fill','rect','erase','pick']],['BUILD',['wall','room','door','area']],['PLACE',['place','path','prefab']],['ZOMBIES & START',['start','spawn','zone','feat']]];
+const EDTN={select:'Select',brush:'Paint',erase:'Erase',fill:'Fill',rect:'Box',pick:'Pick',place:'Prop',wall:'Walls',room:'Room',door:'Doors',area:'Area',path:'Path',prefab:'Prefab',start:'Start',spawn:'Spawn',zone:'Zone',feat:'Special'};
 function edTop(){const E=ED,el=E.root.querySelector('#edtop'),dirty=edIsDirty(),pc=E.probs.filter(p=>p.lv!='info').length;
-el.innerHTML=`${edTB('back','back','Back to the Map Workshop',0,0,'Workshop')}<b class=edname title="Map settings" data-a=mapset>${edEsc(E.d.name)}${dirty?' <i class=eddot title="Unsaved changes">●</i>':''}</b><span class=edsep></span>`+
-EDT.map(t=>edTB('tool:'+t[0],t[0],t[1]+' ('+t[2]+')',E.tool==t[0])).join('')+`<span class=edsep></span>${edTB('undo','undo','Undo'+(EDH.u.length?': '+EDH.u[EDH.u.length-1].n:'')+' (Ctrl+Z)',0,!EDH.u.length)}${edTB('redo','redo','Redo'+(EDH.r.length?': '+EDH.r[EDH.r.length-1].n:'')+' (Ctrl+Y)',0,!EDH.r.length)}<span class=edsep></span>`+
-`${edTB('grid','grid','Grid (Shift+G)',E.grid)}${edTB('coll','coll','Show collision: red stops bullets, orange is solid props, blue is see-through like fences and water (Shift+C)',E.coll)}${edTB('snap','snap','Snap to a '+E.step+'px grid (Shift+S)',E.snap)}<span class=edsep></span>`+
-`${edTB('probs','check','Problems with the map: click one to go to it',0,0,pc?String(pc):'✓')}<span class=edgrow></span><button data-a=save class="${dirty?'edsave':'edsaved'}" title="${dirty?'Unsaved changes: save them (Ctrl+S)':'Everything is saved (Ctrl+S saves)'}">${edIco('save')}<span>${dirty?'Save ●':'Saved ✓'}</span></button><button data-a=playtest class=edgo title="Play this map with the real game, then come back here">${edIco('play')}<span>Playtest</span></button>`}
+el.innerHTML=`<div class=edbar>${edTB('back','back','Back to the Map Workshop',0,0,'WORKSHOP')}<div class=edttl><b class=edname title="Map settings: name, size, ground, light" data-a=mapset>${edEsc(E.d.name)}</b><small class="${dirty?'eduns':'edok'}">${dirty?'● Unsaved changes':'✓ All changes saved'}</small></div><span class=edgrow></span>`+
+`${edTB('undo','undo','Undo'+(EDH.u.length?': '+EDH.u[EDH.u.length-1].n:'')+' (Ctrl+Z)',0,!EDH.u.length,'UNDO')}${edTB('redo','redo','Redo'+(EDH.r.length?': '+EDH.r[EDH.r.length-1].n:'')+' (Ctrl+Y)',0,!EDH.r.length,'REDO')}`+
+`<button data-a=probs class="edpc${pc?' bad':''}" title="Problems with the map: click one to go to it">${edIco('check')}<span>${pc?pc+' problem'+(pc>1?'s':''):'No problems'}</span></button>`+
+`<button data-a=save class="${dirty?'edsave':'edsaved'}" title="${dirty?'Unsaved changes: save them (Ctrl+S)':'Everything is saved (Ctrl+S saves)'}">${edIco('save')}<span>${dirty?'SAVE':'SAVED'}</span></button><button data-a=playtest class=edgo title="Play this map with the real game, then come back here">${edIco('play')}<span>TEST PLAY</span></button></div>`+
+`<div class=edtrow>${EDTG.map(([g,L])=>`<div class=edtg><span>${g}</span><div>${L.map(id=>{const t=EDT.find(x=>x[0]==id);return `<button data-a="tool:${id}" class="edtb${E.tool==id?' on':''}" title="${edEsc(t[1]+' ('+t[2]+') · '+t[4])}">${edIco(id)}<span>${EDTN[id]}</span></button>`}).join('')}</div></div>`).join('')}<span class=edgrow></span>`+
+`<div class=edtv>${edTB('grid','grid','Grid (Shift+G)',E.grid,0,'Grid')}${edTB('coll','coll','Show what blocks: red stops bullets, orange is solid props, blue is see-through like fences and water (Shift+C)',E.coll,0,'Blocking')}${edTB('snap','snap','Snap to a '+E.step+'px grid (Shift+S)',E.snap,0,'Snap')}</div></div>`}
 function edTerSw(t,ov){const k=(ov?'o:':'t:')+t.id;if(EDTH[k])return EDTH[k];const c=document.createElement('canvas');c.width=c.height=32;const g=c.getContext('2d');if(ov){(t.mk?CMTI.asphalt:CMTI.concrete).f(g,0,0,3,5);t.f(g,0,0,3,5)}else t.f(g,0,0,3,5);let u='';try{u=c.toDataURL()}catch(e){}return EDTH[k]=u}
-function edLeft(){const E=ED,el=E.root.querySelector('#edl');const tabs=[['terrain','Terrain'],['build','Build'],['paths','Paths'],['assets','Props'],['decals','Decals'],['prefabs','Prefabs'],['markers','Markers']];
-let h=`<div class="edtabs edtabs7">${tabs.map(t=>`<button data-a="tab:${t[0]}" class="${E.tab==t[0]?'on':''}">${t[1]}</button>`).join('')}</div><div class=edpane>`;
-if(E.tab=='terrain'){const tool=['brush','erase','fill','rect','pick'].includes(E.tool)?E.tool:'brush';
-h+=`<div class=edtools>${['brush','erase','fill','rect','pick'].map(id=>{const t=EDT.find(x=>x[0]==id);return edTB('tool:'+id,id,t[1]+' ('+t[2]+')',E.tool==id,0,t[1])}).join('')}</div>`;
+// the library: one search over everything, or one kind at a time
+const EDLT=[['terrain','Ground'],['build','Build'],['paths','Paths'],['assets','Props'],['decals','Decals'],['prefabs','Prefabs'],['markers','Markers']];
+function edLeft(){const E=ED,el=E.root.querySelector('#edl');if(E.qa==null)E.qa='';
+el.innerHTML=`<div class=edlh><div class=edlt><b>LIBRARY</b><small>pick, then click the map</small></div><label class=edqa><svg class=edi viewBox="0 0 24 24" aria-hidden="true"><path d="M10 3a7 7 0 015.6 11.2l5 5-1.4 1.4-5-5A7 7 0 1110 3zm0 2a5 5 0 100 10 5 5 0 000-10z"/></svg><input type=search data-f=qa placeholder="Search all: car, grass, fence…" value="${edEsc(E.qa)}" autocomplete=off aria-label="Search everything"><span class=edk>/</span></label>
+<div class=edchips>${EDLT.map(t=>`<button data-a="tab:${t[0]}" class="${!E.qa.trim()&&E.tab==t[0]?'on':''}">${t[1]}</button>`).join('')}</div></div><div class=edpane id=edlp>${edLeftPane()}</div>`}
+function edLeftPane(){const E=ED;if(E.qa&&E.qa.trim())return edFindAll(E.qa);let h='';
+if(E.tab=='terrain'){
 {const tl=cmLy(E.d,E.pt=='r'?'roads':'terrain');h+=`<h4>Paint on</h4><div class="edrow edseg"><button data-a="pt:t" class="${E.pt=='t'?'on':''}" title="The ground under everything">${edEsc(cmLy(E.d,'terrain').n)}</button><button data-a="pt:r" class="${E.pt=='r'?'on':''}" title="Tiles painted over the ground: erasing shows the ground again">${edEsc(cmLy(E.d,'roads').n)}</button></div>${tl.lock||tl.hid?`<p class=edhint>⚠ This layer is ${tl.lock?'locked':'hidden'}: ${tl.lock?'unlock':'show'} it in the Layers panel to paint.</p>`:''}`}
 for(const[c,cn]of CMTCAT){const L=CMTER.filter(t=>t.cat==c);if(L.length)h+=`<h4>${cn}</h4><div class=edsw>${L.map(t=>`<button data-a="ter:${t.id}" class="${E.terK=='t'&&E.ter==t.id?'on':''}" title="${edEsc(t.n)}${t.walk===0?' (blocks walking)':''}${t.curb?' (curbs where it meets a road)':''}"><img alt="" src="${edTerSw(t)}"><span>${edEsc(t.n)}</span></button>`).join('')}</div>`}
 const ovb=t=>`<button data-a="ovl:${t.id}" class="${E.terK=='o'&&E.ter==t.id?'on':''}" title="${edEsc(t.n)}${t.mk?': joins up with the same marking next to it':''}"><img alt="" src="${edTerSw(t,1)}"><span>${edEsc(t.n)}</span></button>`;
@@ -7997,7 +8404,21 @@ else{const P=edPalOf({k:a.k});if(P){const cur=E.pcol[a.k]||P[0][0];h+=`<h4>Colou
 h+=`<div class=edag id=edag>${edGrid()}</div>`}
 else if(E.tab=='prefabs')h+=edPfLeft();
 else h+=edKitLeft(E.tab);
-el.innerHTML=h+'</div>'}
+return h}
+// search results from every part of the library; each one is the same button its own tab has
+// how well a name matches: 3 a whole word, 2 the start of a word, 1 anywhere, 0 not at all (best groups and items first)
+function edQS(n,q){n=String(n||'').toLowerCase();if(!n.includes(q))return 0;const W=n.split(/[^a-z0-9']+/);return W.includes(q)?3:W.some(w=>w.startsWith(q))?2:1}
+function edFindAll(q0){const E=ED,q=q0.trim().toLowerCase(),m=s=>edQS(s,q)>0,out=[];let n=0;
+const grp=(t,L,names)=>{if(!L.length)return;n+=L.length;const sc=names.map(x=>edQS(x,q)),ix=L.map((_,i)=>i).sort((a,b)=>sc[b]-sc[a]||a-b);L=ix.map(i=>L[i]);
+out.push({s:sc[ix[0]],h:`<h4>${t} <small>${L.length}</small></h4><div class=edag>${L.slice(0,48).join('')}</div>${L.length>48?`<p class=edhint>${L.length-48} more: type more of the name.</p>`:''}`})};
+{const A=CMTER.filter(t=>m(t.n)),B=CMOVL.filter(t=>m(t.n));grp('Ground',A.map(t=>edKB('ter:'+t.id,edTerSw(t),t.n,E.terK=='t'&&E.ter==t.id)).concat(B.map(t=>edKB('ovl:'+t.id,edTerSw(t,1),t.n,E.terK=='o'&&E.ter==t.id))),A.concat(B).map(t=>t.n))}
+{const A=edAssets().filter(a=>m(a.n));grp('Props &amp; vehicles',A.map(a=>edKB(edEsc('asset:'+a.id),edThumb(a),a.n,E.asset&&E.asset.id==a.id)),A.map(a=>a.n))}
+{const A=CMWALL.filter(s=>m(s.n));grp('Walls',A.map(s=>`<button data-a="wst:${s.id}" class="${E.tool=='wall'&&E.wall==s.id?'on':''}" title="${edEsc(s.n)}"><i class="edws edwsb" style="${edWallSw(s)}"></i><span>${edEsc(s.n)}</span></button>`),A.map(s=>s.n))}
+{const A=CMAREA.filter(t=>m(t.n));grp('Floors, roofs &amp; areas',A.map(T=>edKB('ak:'+T.id,edAreaThumb(T),T.n,E.tool=='area'&&E.ak==T.id)),A.map(t=>t.n))}
+{const A=CMPA.filter(t=>m(t.n));grp('Paths',A.map(T=>edKB('pk:'+T.id,edPathThumb(T),T.n,E.tool=='path'&&E.pk==T.id)),A.map(t=>t.n))}
+{const a=E.asset,A=CMDEC.filter(t=>m(t.n)),B=CMFX.filter(t=>m(t.n));grp('Decals &amp; effects',A.map(T=>edKB('dc:'+T.id,edDecThumb(T),T.n,a&&a.t=='d'&&a.k==T.id)).concat(B.map(T=>edKB('fx:'+T.id,edFxThumb(T),T.n,a&&a.t=='x'&&a.k==T.id))),A.concat(B).map(t=>t.n))}
+{const A=edPfAll().filter(p=>m(p.n));grp('Prefabs',A.map(p=>edKB(edEsc('pf:'+p.id),edPfThumb(p),p.n,E.pf===p)),A.map(p=>p.n))}
+return (n?`<p class=edhint>${n} found for “${edEsc(q0.trim())}”. <button data-a=qaclr class=lnk>Clear</button></p>`:`<p class=edhint>Nothing matches “${edEsc(q0.trim())}”. <button data-a=qaclr class=lnk>Clear</button></p>`)+out.sort((x,y)=>y.s-x.s).map(o=>o.h).join('')}
 function edWallSw(s){if(!s)return 'background:#7a695c';const c={wall:'#7a695c',brick:'#9a4632',concrete:'#8c9099',wood:'#8a5a2c',fence:'repeating-linear-gradient(45deg,#aab1bd 0 2px,transparent 2px 6px)',hidden:'rgba(170,110,255,.5)'}[s.id];if(c)return 'background:'+c;const u=edKitThumb('w:'+s.id,g=>{g.fillStyle='#3a4a3a';g.fillRect(0,0,48,48);s.f(g,2,20,44,9,s.pal?s.pal[0][0]:undefined)});return `background:url(${u}) center/cover`}
 function edGrid(){const E=ED,q=E.q.trim().toLowerCase(),L=edAssets().filter(a=>(E.cat=='all'||a.cat==E.cat)&&(!q||a.n.toLowerCase().includes(q)||a.k.toLowerCase().includes(q)));
 if(!L.length)return `<p class=edhint>Nothing matches “${edEsc(E.q)}”.</p>`;return L.map(a=>`<button data-a="asset:${a.id}" class="${E.asset&&E.asset.id==a.id?'on':''}" title="${edEsc(a.n)}${a.t=='v'||edPalOf({k:a.k})?' (comes in colours)':''}"><img alt="" loading=lazy src="${edThumb(a)}"><span>${edEsc(a.n)}</span></button>`).join('')}
@@ -8014,9 +8435,10 @@ function edModalOn(){return !!(ED&&ED.mb)}
 // ----- clicks and fields in the panels -----
 function edClick(e){const b=e.target.closest&&e.target.closest('[data-a]');if(!b||b.disabled)return;const a=b.dataset.a,E=ED;if(!E)return;
 if(a.startsWith('mb:')){const fn=E.mb&&E.mb[+a.slice(3)];edModalOff();if(fn)fn[2]();return}
-if(a.startsWith('tool:'))return edTool(a.slice(5));
+if(a.startsWith('tool:')){if(b.classList&&b.classList.contains('edtb'))E.qa='';return edTool(a.slice(5))}
 if(a.startsWith('pt:')){E.pt=a[3]=='r'?'r':'t';if(E.pt=='r'&&E.terK=='o')E.terK='t';E.al=E.pt=='r'?'roads':'terrain';if(!['brush','erase','fill','rect','pick'].includes(E.tool))return edTool('brush');return edUI()}
-if(a.startsWith('tab:')){if(E.pd)edPathFinish();E.tab=a.slice(4);const at=E.asset&&E.asset.t,def={terrain:'brush',assets:at=='p'||at=='v'?'place':'select',build:['room','door','wall'].includes(E.tool)||E.tool=='area'&&['floor','build','struct'].includes((cmArea(E.ak)||{}).cat)?E.tool:'room',paths:E.pk&&E.pk!='@graph'?'path':'select',decals:at=='d'||at=='x'?'place':'select',prefabs:E.pf?'prefab':'select',markers:['start','spawn','zone','feat'].includes(E.tool)?E.tool:'zone'}[E.tab];return edTool(def,1)}
+if(a=='qaclr'){E.qa='';return edLeft()}
+if(a.startsWith('tab:')){if(E.pd)edPathFinish();E.qa='';E.tab=a.slice(4);const at=E.asset&&E.asset.t,def={terrain:'brush',assets:at=='p'||at=='v'?'place':'select',build:['room','door','wall'].includes(E.tool)||E.tool=='area'&&['floor','build','struct'].includes((cmArea(E.ak)||{}).cat)?E.tool:'room',paths:E.pk&&E.pk!='@graph'?'path':'select',decals:at=='d'||at=='x'?'place':'select',prefabs:E.pf?'prefab':'select',markers:['start','spawn','zone','feat'].includes(E.tool)?E.tool:'zone'}[E.tab];return edTool(def,1)}
 if(edKitClick(a)||edPfClick(a))return;
 if(a.startsWith('ter:')||a.startsWith('ovl:')){E.terK=a[0]=='t'?'t':'o';E.ter=a.slice(4);if(E.terK=='o')E.pt='t';if(!['brush','erase','fill','rect'].includes(E.tool))E.tool='brush';return edUI()}
 if(a.startsWith('asset:')){if(E.pd)edPathFinish();E.asset=edAssets().find(x=>x.id==a.slice(6))||null;E.pvr=Math.random();if(E.asset&&E.asset.t=='v'&&!E.vcol)E.vcol=EDVC[0];E.sel=[];return edTool('place',1)}
@@ -8030,9 +8452,9 @@ case 'mapset':E.sel=[];E.rt='props';E.pr=1;return edUI();case 'save':return edSa
 case 'pl':E.pl^=1;return edUI();case 'pr':E.pr^=1;return edUI();case 'bs-':E.brush=cl(E.brush-1,1,9);return edLeft();case 'bs+':E.brush=cl(E.brush+1,1,9);return edLeft();
 case 'del':return edDelete();case 'rot-':return edRotate(-15);case 'rot+':return edRotate(15);
 case 'resize':{const f=E.root.querySelector('[data-f=nw]'),g=E.root.querySelector('[data-f=nh]');return edResize(+f.value,+g.value)}}}
-function edInput(e){const f=e.target.dataset&&e.target.dataset.f,E=ED;if(!f||!E)return;if(edLtField(f,e.target,0))return;if(f=='q2'){E.q2=e.target.value;const pos=e.target.selectionStart;edLeft();const el=E.root.querySelector('[data-f=q2]');if(el&&el.focus){el.focus();try{el.setSelectionRange(pos,pos)}catch(_){}}return}if(f=='dsc'){edKitField(f,e.target);return}if(f=='q'){E.q=e.target.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid()}else if(f=='brush'){E.brush=cl(+e.target.value,1,9);const v=E.root.querySelector('.edval');if(v)v.textContent=E.brush+'×'+E.brush;E.need=1}}
+function edInput(e){const f=e.target.dataset&&e.target.dataset.f,E=ED;if(!f||!E)return;if(edLtField(f,e.target,0))return;if(f=='qa'){E.qa=e.target.value;const p=E.root.querySelector('#edlp');if(p)p.innerHTML=edLeftPane();for(const c of E.root.querySelectorAll('.edchips button'))c.classList.toggle('on',!E.qa.trim()&&c.dataset.a=='tab:'+E.tab);return}if(f=='q2'){E.q2=e.target.value;const pos=e.target.selectionStart;edLeft();const el=E.root.querySelector('[data-f=q2]');if(el&&el.focus){el.focus();try{el.setSelectionRange(pos,pos)}catch(_){}}return}if(f=='dsc'){edKitField(f,e.target);return}if(f=='q'){E.q=e.target.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid()}else if(f=='brush'){E.brush=cl(+e.target.value,1,9);const v=E.root.querySelector('.edval');if(v)v.textContent=E.brush+'×'+E.brush;E.need=1}}
 function edChange(e){const t=e.target,f=t.dataset&&t.dataset.f,E=ED;if(!f||!E)return;const num=+t.value,ok=isFinite(num)&&t.value!=='';
-if(f=='cat'){E.cat=t.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid();return}if(f=='q'||f=='q2'||f=='brush'||f=='nw'||f=='nh')return;if(edKitField(f,t))return;
+if(f=='cat'){E.cat=t.value;const g=E.root.querySelector('#edag');if(g)g.innerHTML=edGrid();return}if(f=='qa'||f=='q'||f=='q2'||f=='brush'||f=='nw'||f=='nh')return;if(edKitField(f,t))return;
 if(f=='vcolnew'||f=='pcolnew'){const v=String(t.value).toLowerCase();if(/^#[0-9a-f]{6}$/.test(v)){if(f=='vcolnew')E.vcol=v;else if(E.asset)E.pcol[E.asset.k]=v;E.need=1;edLeft()}return}
 if(f=='wth'){E.wth=cl(ok?Math.round(num):8,4,64);t.value=E.wth;return}
 if(f=='name'){const v=String(t.value).replace(/[<>]/g,'').trim().slice(0,40)||'Untitled map';if(v!==E.d.name)edSet(E.d,{name:v},'Rename map');return}
@@ -8157,6 +8579,7 @@ function edWheel(e){if(!ED||edModalOn())return;e.preventDefault();const p=edLoca
 function edKey(e){const E=ED;if(!E)return;const k=e.key||'',kl=k.toLowerCase(),c=e.ctrlKey||e.metaKey,tg=e.target&&e.target.tagName,typing=tg=='INPUT'||tg=='TEXTAREA'||tg=='SELECT';
 const stop=()=>{if(e.preventDefault)e.preventDefault()};
 if(edModalOn()){if(k=='Escape'){stop();const b=E.mb&&E.mb[0];edModalOff();if(b&&b[0]=='Cancel')b[2]()}return}
+if(k=='/'&&!typing&&!c&&E.root){const q=E.root.querySelector('[data-f=qa]');if(q&&q.focus){stop();if(!E.pl){E.pl=1;edUI()}const q2=E.root.querySelector('[data-f=qa]');if(q2){q2.focus();if(q2.select)q2.select()}return}}
 // the path being drawn: Enter finishes, Backspace takes the last point back, Esc throws it away
 if(E.pd&&!typing&&!c){if(k=='Enter'){stop();return edPathFinish()}if(k=='Backspace'||k=='Delete'){stop();E.pd.pts.pop();if(!E.pd.pts.length)E.pd=null;E.need=1;return}if(k=='Escape'){stop();E.pd=null;E.need=1;return edToast('Path cancelled')}}
 if(c&&kl=='s'){stop();if(typing&&e.target.blur)e.target.blur();return edSave()}
@@ -8614,7 +9037,7 @@ function edFxThumb(T){return edKitThumb('x:'+T.id,g=>{g.fillStyle='#2a3a2a';g.fi
 function edKB(a,img,label,on,tip){return `<button data-a="${a}" class="${on?'on':''}" title="${edEsc(tip||label)}"><img alt="" src="${img}"><span>${edEsc(label)}</span></button>`}
 function edColSw(cur,P,act,fld){return P?`<div class=edcols>${P.map(([c,n])=>`<button data-a="${act}:${c}" class="${cur==c?'on':''}" style="--c:${c}" title="${edEsc(n)}"></button>`).join('')}</div>${fld?`<label class=edf title="Any colour"><span>Custom</span><input type=color data-f=${fld} value="${cur&&/^#[0-9a-f]{6}$/i.test(cur)?cur:P[0][0]}"></label>`:''}`:''}
 function edKitLeft(tab){const E=ED;let h='';
-if(tab=='build'){h+=`<div class=edtools>${['room','door','wall','area'].map(id=>{const t=EDT.find(x=>x[0]==id);return edTB('tool:'+id,id,t[1]+' ('+t[2]+')',E.tool==id,0,t[1])}).join('')}</div>`;
+if(tab=='build'){if(!['room','door','wall','area'].includes(E.tool))h+=`<p class=edhint>Pick Walls, Room, Doors or Area in the top bar, or a piece below.</p>`;
 if(E.tool=='room'){h+=`<h4>Room</h4><div class="edrow edseg"><button data-a="rm:room" class="${E.rm=='room'?'on':''}" title="Drag a rectangle: walls all round and a floor">Room</button><button data-a="rm:wall" class="${E.rm=='wall'?'on':''}" title="Drag a line inside a room">Interior wall</button></div>
 <label class=edf><span>Walls</span><select data-f=rws>${EDROOMW.concat(CMWALL.map(s=>s.id).filter(id=>!EDROOMW.includes(id)&&!EDOPEN.some(k=>k[0]==id))).filter(id=>CMWI[id]).map(id=>`<option value="${id}"${E.rws==id?' selected':''}>${edEsc(CMWI[id].n)}</option>`).join('')}</select></label>${CMWI[E.rws]&&CMWI[E.rws].pal?edColSw(E.rwc||CMWI[E.rws].pal[0][0],CMWI[E.rws].pal,'rwc',''):''}
 <label class=edf><span>Thickness</span><input type=number min=4 max=32 step=1 value="${E.rwt}" data-f=rwt></label>`;
@@ -8847,39 +9270,34 @@ function wsList(){const q=WSQ.trim().toLowerCase(),touch=wsTouch();if(!CML.lengt
 const L=CML.map((e,i)=>({e,i})).filter(({e})=>!q||String(e.meta.name||'').toLowerCase().includes(q)||String(e.meta.desc||'').toLowerCase().includes(q));if(!L.length)return `<p class=note>No map matches “${edEsc(WSQ)}”.</p>`;
 return L.map(({e,i})=>wsCard(e,i,touch)).join('')}
 // ----- new map -----
-function wsNew(){const g=CMTER.map(t=>`<option value="${t.id}"${t.id=='grass'?' selected':''}>${edEsc(t.n)}</option>`).join('');
-show(`<div class="p wide ws wsn"><h2>NEW MAP</h2><label class=wsf><span>Name</span><input id=wsn maxlength=40 value="My map" autocomplete=off></label><label class=wsf><span>About (optional)</span><input id=wsd maxlength=240 autocomplete=off placeholder="What happens on this map?"></label>
-<div class=wsrow><label class=wsf><span>Width (tiles)</span><input type=number id=wsw min=${CMMIN[0]} max=${CMMAX} value=72></label><label class=wsf><span>Height (tiles)</span><input type=number id=wsh min=${CMMIN[1]} max=${CMMAX} value=56></label></div>
-<div class="seg wsps">${[['SMALL',48,36],['MEDIUM',72,56],['LARGE',100,80],['HUGE',128,128]].map(p=>`<button data-q=1 onclick="wsSize(${p[1]},${p[2]})">${p[0]}<small>${p[1]}×${p[2]}</small></button>`).join('')}</div>
-<p class=note>Each tile is ${CMTILE}px. MEDIUM is about the size of the Suburb; you can change the size later.</p>
-<label class=wsf><span>Ground</span><select id=wsg>${g}</select></label><p class=note id=wserr></p>
-<div class=row><button onclick="workshop()">CANCEL</button><button class=go onclick="wsCreate()">CREATE</button></div></div>`);try{const n=document.getElementById('wsn');if(n&&n.select){n.focus();n.select()}}catch(e){}}
+// the form itself is drawn by wsNewNX() in ui/workshop-forms.js (one card with a preview)
+function wsNew(){WSN=null;wsNNoFocus=0;wsNewNX()}
 function wsSize(w,h){const a=document.getElementById('wsw'),b=document.getElementById('wsh');if(a)a.value=w;if(b)b.value=h;sfx('click')}
 function wsVal(id){const e=document.getElementById(id);return e?e.value:''}
-async function wsCreate(){const w=+wsVal('wsw'),h=+wsVal('wsh'),er=document.getElementById('wserr');
+async function wsCreate(){const N=WSN||{name:wsVal('wsn'),desc:wsVal('wsd'),w:wsVal('wsw'),h:wsVal('wsh'),g:wsVal('wsg')},w=+N.w,h=+N.h,er=document.getElementById('wserr');
 if(!(w>=CMMIN[0]&&w<=CMMAX&&h>=CMMIN[1]&&h<=CMMAX)){if(er)er.textContent='Width must be '+CMMIN[0]+'–'+CMMAX+' and height '+CMMIN[1]+'–'+CMMAX+' tiles.';sfx('deny');return}
-const d=cmNew({name:String(wsVal('wsn')).replace(/[<>]/g,'').trim()||'Untitled map',desc:String(wsVal('wsd')).replace(/[<>]/g,'').trim(),w,h,ground:wsVal('wsg')});sfx('click');
+const d=cmNew({name:String(N.name||'').replace(/[<>]/g,'').trim()||'Untitled map',desc:String(N.desc||'').replace(/[<>]/g,'').trim(),w,h,ground:N.g});WSN=null;sfx('click');
 try{await wsStore(d)}catch(e){if(er)er.textContent='Could not save the new map: '+(e&&e.message||e);return}edOpen(d,'saved')}
 // write a map (doc) and its list entry
 function wsStore(d){d.updated=new Date().toISOString();let thumb='';try{thumb=edMakeThumb(d)}catch(e){}return msWrite([['put','maps',{id:d.id,json:cmWrite(d)}],['put','meta',{id:d.id,name:d.name,desc:d.desc,w:d.w,h:d.h,created:d.created,updated:d.updated,thumb}]]).then(()=>cmLoadAll())}
 // ----- the actions on a map -----
 function wsEdit(i){const e=CML[i];if(!e||!e.doc)return;sfx('click');edOpen(cmClone(e.doc),'saved')}
 function wsPlay(i){const e=CML[i];if(!e||!e.doc)return;setGM('f');mapId=e.key;sfx('click');play()}
-function wsRename(i){const e=CML[i];if(!e||!e.doc)return;show(`<div class="p ws"><h2>RENAME MAP</h2><label class=wsf><span>Name</span><input id=wsrn maxlength=40 value="${edEsc(e.doc.name)}" autocomplete=off></label><div class=row><button onclick="workshop()">CANCEL</button><button class=go onclick="wsRenameOk(${i})">RENAME</button></div></div>`);try{const n=document.getElementById('wsrn');n.focus();n.select()}catch(_){}}
+function wsRename(i){const e=CML[i];if(!e||!e.doc)return;sfx('click');wsRenameNX(i)}
 async function wsRenameOk(i){const e=CML[i];if(!e||!e.doc)return workshop();const v=String(wsVal('wsrn')).replace(/[<>]/g,'').trim().slice(0,40);if(!v){sfx('deny');return}
 const d=cmClone(e.doc);d.name=v;try{await wsStore(d)}catch(err){return workshop('Could not rename: '+edEsc(err&&err.message||err))}workshop('Renamed to “'+edEsc(v)+'”.')}
 async function wsDup(i){const e=CML[i];if(!e||!e.doc)return;const d=cmClone(e.doc);d.id=cmUid('m');d.name=(e.doc.name.slice(0,33)+' (copy)');d.created=new Date().toISOString();try{await wsStore(d)}catch(err){return workshop('Could not duplicate: '+edEsc(err&&err.message||err))}workshop('Made “'+edEsc(d.name)+'”.')}
 // export the stored file exactly as it is (works even for maps that can't be opened)
 async function wsExport(i){const e=CML[i];if(!e)return;let rec=null;try{rec=await msGet('maps',e.id)}catch(_){}if(!rec||!rec.json){sfx('deny');return workshop('There is no map data to export for “'+edEsc(e.meta.name)+'”.')}cmDownload(e.meta.name,rec.json);sfx('click')}
-function wsDel(i){const e=CML[i];if(!e)return;show(`<div class="p ws"><h2>DELETE MAP?</h2><p>“${edEsc(e.meta.name)}” will be deleted from this device. This can't be undone. EXPORT it first if you might want it back.</p><div class=row><button onclick="workshop()">CANCEL</button><button class=red onclick="wsDelOk(${i})">DELETE</button></div></div>`)}
+function wsDel(i){const e=CML[i];if(!e)return;sfx('click');wsDelNX(i)}
 async function wsDelOk(i){const e=CML[i];if(!e)return workshop();const ops=[['del','maps',e.id],['del','meta',e.id]];if(WSD&&WSD.id===e.id)ops.push(['del','kv','draft']);try{await msWrite(ops)}catch(err){return workshop('Could not delete: '+edEsc(err&&err.message||err))}const inC=ccUnassign(e.id);sfx('click');workshop('Deleted “'+edEsc(e.meta.name)+'”.'+(inC?' It was taken out of the campaign too (what you beat on it is kept).':''))}
 // a map that can't be opened can still be taken out of the campaign
 function wsCampOut(i){const e=CML[i];if(!e)return workshop();ccUnassign(e.id);sfx('click');workshop('“'+edEsc(e.meta.name)+'” was taken out of the campaign.')}
 // ----- import -----
 function wsImport(){let f;try{f=document.createElement('input');f.type='file';f.accept='.json,application/json';f.onchange=()=>{const x=f.files&&f.files[0];if(x)wsImportFile(x)};f.click()}catch(e){}}
-async function wsImportFile(file){if(file.size>40*1024*1024)return workshop('That file is too big to be a map.');let txt='';try{txt=await file.text()}catch(e){return workshop('Could not read the file.')}return wsImportText(txt)}
+async function wsImportFile(file){WSIF=String(file.name||'').slice(0,80);if(file.size>40*1024*1024)return workshop('That file is too big to be a map.');let txt='';try{txt=await file.text()}catch(e){return workshop('Could not read the file.')}return wsImportText(txt)}
 async function wsImportText(txt){const r=cmRead(txt);
-if(!r.doc){show(`<div class="p wide ws"><h2>CAN'T IMPORT</h2><p>The file was not imported, and nothing was changed:</p><ul class=wsul>${r.errors.slice(0,8).map(x=>`<li>${edEsc(x)}</li>`).join('')}</ul><div class=row><button class=go onclick="workshop()">OK</button></div></div>`);sfx('deny');return null}
+if(!r.doc){wsImpErr(r.errors);WSIF='';sfx('deny');return null}WSIF='';
 const d=r.doc,note=[];if(CML.some(e=>e.id===d.id)){d.id=cmUid('m');d.name=d.name.slice(0,29)+' (imported)';note.push('A map with the same id is already here, so this one was added as a separate map.')}
 try{await wsStore(d)}catch(err){workshop('Could not save the imported map: '+edEsc(err&&err.message||err));return null}
 workshop('Imported “'+edEsc(d.name)+'”.'+(note.length?' '+note.join(' '):'')+(r.warnings.length?' ⚠ '+edEsc(r.warnings.slice(0,3).join(' ')):''));return d}
@@ -8895,22 +9313,8 @@ function wcOpen(id,back,pre){const e=CML.find(x=>x.id===id);if(!e||!e.doc){sfx('
 WC={id,back:back||'ws',s:null,k:null,b:null};if(pre){WC.s=pre[0];WC.k=pre[1]}else if(cur){WC.s=cur.s;WC.k=cur.k}
 WC.b=cur?cur.b:WC.s!=null?ccBossFor(WC.s):null;sfx('click');wcDraw()}
 function wcBack(msg){const b=WC&&WC.back;WC=null;if(b=='cmap'){setGM('c');return cMap()}workshop(msg)}
-function wcDraw(){const e=wcEnt();if(!e||!e.doc)return wcBack();const cur=ccSlotOfId(WC.id),rp=ccRepOfId(WC.id),nm=edEsc(e.doc.name);
-const secs=SEC.map((S_,si)=>({si,ks:S_.m.map((m,k)=>m===-1?k:-1).filter(k=>k>=0)})).filter(q=>q.ks.length);
-const slots=secs.map(({si,ks})=>`<div class=wcsec><b>${si+1}. ${SEC[si].n}</b><span>${ks.map(k=>{const a=CCS.slots[ccSK(si,k)],mine=a&&a.id===WC.id,taken=a&&!mine;
-return `<button data-q=1 class="${WC.s===si&&WC.k===k?'on':''}"${taken?' disabled':''} onclick="wcSlot(${si},${k})">Slot ${k+1}<small>${taken?'“'+edEsc(a.n||'another map')+'”':mine?'this map':'free'}</small></button>`}).join('')}</span></div>`).join('');
-const boss=CCBOSS.map(ci=>`<button data-q=1 class="${WC.b===ci?'on':''}" onclick="wcBoss(${ci})"><canvas data-ch=${ci}></canvas><b>${CH[ci].n}</b><small>${ccHome(ci)}</small></button>`).join('');
-const repL=CORD.filter(ccRepOK).map(m=>`<option value="${m}">${CORD.indexOf(m)+1}. ${MP[m].n}${CCS.rep[m]?' (now: “'+edEsc(CCS.rep[m].n)+'”)':''}</option>`).join('');
-show(`<div class="p wide ws wcm"><h2>CAMPAIGN · ${nm}</h2>
-<p class=note>${cur?`In the campaign: <b>${SEC[cur.s].n}, slot ${cur.k+1}</b>, boss <b>${CH[cur.b].n}</b>.`:rp!=null?`Plays instead of <b>${MP[rp].n}</b> in the campaign.`:'Not in the campaign yet.'} A custom map in a slot plays with that section's zombies, lives and difficulty, waves 1–20 end with the boss you pick, and it never blocks the next section.</p>
-<h3>1. A free slot</h3><div class=wcsl>${slots}</div>
-<h3>2. The wave-20 boss</h3><div class=wcbs>${boss}</div>
-<p class=note>Not offered: ${[13,14,15,16].map(ci=>CH[ci].n).join(', ')}. Their fights need their own map (the road network for the truck, the fire engine and the cruiser, City Hall's roof, the market's shelves and cart corrals).</p>
-<p class=note><b>Beating the boss</b> marks this map beaten (on that difficulty) and opens it in Free Play. The survivor gives up but doesn't join you here: everyone is recruited on their own map, so a custom map can't skip ahead in the story.</p>
-<div class=row><button onclick="wcBack()">BACK</button>${cur?'<button class=red onclick="wcRemove()">REMOVE FROM CAMPAIGN</button>':''}<button class=go onclick="wcSave()"${WC.s==null||WC.b==null?' disabled':''}>${cur?'SAVE':'PUT IN SLOT'}</button></div>
-<h3>Or: play it instead of a campaign map</h3>
-${rp!=null?`<div class=cpb><b>Plays instead of ${MP[rp].n}</b><small>Progress, the section, the boss (${CH[MUN[rp]].n}) and the difficulty stay ${MP[rp].n}'s.</small><div class=row><button class=go onclick="wcRestore(${rp})">RESTORE ${MP[rp].n.toUpperCase()}</button></div></div>`
-:`<p class=note>For a map you made from or for one of the campaign maps. Progress stays with the original map, its boss and section stay the same, and you can restore the original with one click.</p><div class=wsbar><select id=wcrep aria-label="Campaign map">${repL}</select><button onclick="wcRepAsk()">PLAY INSTEAD…</button></div><p class=note>Not offered: ${MP.map((q,m)=>m).filter(m=>SORD.includes(m)&&!ccRepOK(m)).map(m=>MP[m].n).join(', ')} (their bosses need those maps).</p>`}</div>`)}
+// the page itself is drawn by wcPage() in ui/workshop-forms.js
+function wcDraw(){const e=wcEnt();if(!e||!e.doc)return wcBack();wcDrawNX()}
 function wcSlot(s,k){if(!WC||!ccIsFree(s,k))return;const a=CCS.slots[ccSK(s,k)];if(a&&a.id!==WC.id){sfx('deny');return}const ns=WC.s!==s;WC.s=s;WC.k=k;if(WC.b==null||ns&&!ccSlotOfId(WC.id))WC.b=ccBossFor(s);sfx('click');wcDraw()}
 function wcBoss(ci){if(!WC||!CCBOSS.includes(ci))return;WC.b=ci;sfx('click');wcDraw()}
 function wcSave(){if(!WC||WC.s==null||WC.b==null){sfx('deny');return}const e=wcEnt(),wasRep=ccRepOfId(WC.id);if(!e||!ccAssign(WC.id,WC.s,WC.k,WC.b)){sfx('deny');return wcDraw()}sfx('buy');
@@ -8918,16 +9322,11 @@ const msg=`“${edEsc(e.doc.name)}” is in ${SEC[WC.s].n}, slot ${WC.k+1}, with
 if(WC.back=='cmap'){const s=WC.s,key=cmKeyById(WC.id);WC=null;setGM('c');CSEL=null;CMV=s;if(key!=null)mapId=key;return cMap()}wcBack(msg)}
 function wcRemove(){if(!WC)return;const e=wcEnt();ccUnassign(WC.id);sfx('click');if(WC.back=='cmap'){WC=null;setGM('c');CSEL=null;mapId=cFront(cAcc(),DIF());return cMap()}wcBack(`“${edEsc(e?e.doc.name:'')}” was taken out of the campaign. What you beat on it is kept.`)}
 // replacing a campaign map always asks first
-function wcRepAsk(){if(!WC)return;const sel=document.getElementById('wcrep'),m=sel?+sel.value:NaN,e=wcEnt();if(!ccRepOK(m)||!e){sfx('deny');return}const old=CCS.rep[m],cur=ccSlotOfId(WC.id);sfx('click');
-show(`<div class="p ws"><h2>PLAY THIS INSTEAD?</h2><p>In the campaign, “${edEsc(e.doc.name)}” will be played instead of <b>${MP[m].n}</b>. Your progress, the section, the boss (${CH[MUN[m]].n}) and the difficulty stay ${MP[m].n}'s, and you can restore the original with one click.${old&&old.id!==WC.id?` It takes the place of “${edEsc(old.n)}”, which plays there now.`:''}${cur?` It will be taken out of its slot in ${SEC[cur.s].n}.`:''}</p>
-<div class=row><button onclick="wcDraw()">CANCEL</button><button class=go onclick="wcRepOk(${m})">PLAY INSTEAD</button></div></div>`)}
+function wcRepAsk(){if(!WC)return;const sel=document.getElementById('wcrep'),m=sel?+sel.value:NaN,e=wcEnt();if(!ccRepOK(m)||!e){sfx('deny');return}sfx('click');wcRepAskNX(m)}
 function wcRepOk(m){if(!WC)return;const e=wcEnt();if(!e||!ccSetRep(WC.id,m)){sfx('deny');return wcDraw()}sfx('buy');wcBack(`“${edEsc(e.doc.name)}” now plays instead of ${MP[m].n} in the campaign.`)}
 function wcRestore(m){if(!ccRestore(m)){sfx('deny');return}sfx('click');if(WC){const back=WC.back;WC=null;if(back=='cmap'){setGM('c');return cMap()}}workshop(`${MP[m].n} is back to the original map.`)}
 // from an empty campaign slot: which of your maps goes here
-function wcPickMap(s,k){const L=CML.map((e,i)=>({e,i})).filter(q=>q.e.doc);if(!L.length)return workshop();sfx('click');
-show(`<div class="p wide ws"><h2>${SEC[s].n.toUpperCase()} · SLOT ${k+1}</h2><p class=note>Pick one of your maps for this slot. Next you choose the survivor boss for wave 20.</p><div class=wsl>${L.map(({e,i})=>{const img=wsImg(e.meta.thumb),cs=ccSlotOfId(e.id),cr=ccRepOfId(e.id);
-return `<div class=wsc>${img?`<img class=wst alt="" src="${img}">`:'<i class=wst></i>'}<div class=wsi><b>${edEsc(e.doc.name)}</b><small>${e.doc.w}×${e.doc.h} tiles${cs?' · now in '+SEC[cs.s].n+', slot '+(cs.k+1)+' (it moves here)':cr!=null?' · now plays instead of '+MP[cr].n+' (that stops)':''}</small><div class=wsa><button class=go onclick="wcOpen(CML[${i}].id,'cmap',[${s},${k}])">CHOOSE</button></div></div></div>`}).join('')}</div>
-<div class=row><button onclick="setGM('c');cMap()">BACK</button></div></div>`)}
+function wcPickMap(s,k){const L=CML.map((e,i)=>({e,i})).filter(q=>q.e.doc);if(!L.length)return workshop();sfx('click');wcPickNX(s,k,L)}
 // the Workshop's line about where a map is in the campaign
 function wcStatus(id){const s=ccSlotOfId(id);if(s)return `<small class=wscp>🏁 Campaign: ${SEC[s.s].n}, slot ${s.k+1} · boss ${CH[s.b].n}</small>`;const r=ccRepOfId(id);return r!=null?`<small class=wscp>🏁 Plays instead of ${MP[r].n} in the campaign</small>`:''}
 // ---------- sample maps ----------

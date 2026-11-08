@@ -96,7 +96,7 @@ dead=L.filter(z=>z.hp<=0).length;const got=PL.map((p,i)=>(p.k||0)-k0s[i]);
 ok(share2==0&&!CK.length,'six chickens from two players never went after the same zombie');
 ok(got[0]>=15&&got[1]>=15&&got[0]+got[1]==dead,'each player gets the kills of their own chickens: '+got.join(' + ')+' = '+dead);
 inp=inp0;mode='shop';shop();const it=shopIt(PL[1]),j=it.findIndex(x=>x.h.includes('ARROWS'));
-ok(j>=0&&ui.innerHTML.split('ARROWS').length==3,'the split-screen shop sells arrows to each player');
+for(const p of PL)msSt(p).t='ammo';shop();ok(j>=0&&ui.innerHTML.split('Arrows<small>').length==3,'the split-screen shop sells arrows to each player');
 PL[1].cash=1000;const a1=PL[1].am.ar;mb(1,j);ok(PL[1].am.ar==a1+100&&PL[1].cash==960,'player 2 buys 100 arrows for $40');
 const g=it.findIndex(x=>x.h.includes('data-gun=11'));ok(g>=0&&it[g+1].h.includes('data-gun=12'),'and both new guns, with their pictures');
 ok(!ERRS.length,'no errors in split screen: '+ERRS.join(' | '))}

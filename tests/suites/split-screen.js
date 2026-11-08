@@ -52,8 +52,8 @@ let t1=Date.now();tick(100);console.log('mp ms/tick',(Date.now()-t1)/100,'zombie
 if(mode!='play'){startMP()}PL[2].dead=1;PL[2].dn=0;nextWave();console.log('dead player back next wave',!PL[2].dead,'hp',PL[2].hp,'/',PL[2].mx);
 // shop with pads
 toSp=0;zs=[];tick(2);ET=0.01;tick(3);console.log('wave clear -> mode',mode);
-if(mode=='shop'){PL[1].cash=5000;PL[1].own=[0];PL[1].sc=0;press(0,15);press(0,0);console.log('pad0 bought SMG',PL[1].own.includes(1),'cash',PL[1].cash);
-press(0,13);press(0,13);console.log('pad0 cursor on ready',PL[1].sc);press(0,0);console.log('P2 ready',PL[1].rdy);mb(0,14);press(1,9);press(2,9);console.log('after all ready mode',mode,'wave',wave)}
+if(mode=='shop'){PL[1].cash=5000;PL[1].own=[0];PL[1].sx=null;shop();press(0,13);press(0,0);console.log('pad0 bought SMG',PL[1].own.includes(1),'cash',PL[1].cash);
+press(0,9);console.log('P2 ready',PL[1].rdy);msReady(0,1);press(1,9);press(2,9);console.log('after all ready mode',mode,'wave',wave)}
 // everyone down -> game over
 for(const p of PL){P=p;p.hp=0;ded()}P=PL[0];tick(2);zs=[mk(0,PL[0].x+300,PL[0].y)];tick(2);console.log('all down ->',mode);
 over(0);console.log('over has players',ui.innerHTML.includes('THE HORDE WON'),'pts host',S.ac.pts);
