@@ -3,7 +3,7 @@
 let MSI=0;
 const MMAX=10,sNeed=l=>400+300*l;
 const SPK=[
-{n:'Bargain Hunter',d:'Everything in the shop costs 10% less.'},
+{n:'Bargain Hunter',d:'Everything at the workbench costs 10% less.'},
 {n:'Reinforced Plating',d:'Shrugs off the first hit every wave.'},
 {n:'Quick Pump',d:'Starting shotgun fires 1.5× faster.'},
 {n:'Adrenaline',d:'Every kill gives a short burst of extra speed.'},
@@ -11,7 +11,7 @@ const SPK=[
 {n:'Shove',d:'Zombies that hit him get knocked back hard.'},
 {n:'Phase Bolts',d:'Laser shots pierce through one extra zombie.'},
 {n:'Heroic Entrance',d:'Invincible for 3 seconds when each wave starts.'},
-{n:'Dead Eye',d:'Dual Pistol shots have a 15% chance to crit.'},{n:'Stopping Power',d:'Starting shotgun fires 2 extra pellets.'},{n:'Ghost Step',d:'1 in 5 hits pass right through her.'},{n:'Soul Harvest',d:'Every 25 kills restores 1 health.'},{n:'Tuned Up',d:'Starting SMG fires 15% faster.'},{n:'Brain Freeze',d:'SMG hits can freeze zombies to half speed.'},{n:'Turnout Gear',d:'Big hits (2+ damage) deal 1 less.'},{n:'Express Lane',d:'Reloads 30% faster.'},{n:'Campaign Fund',d:'+20% cash from kills.'},{n:'Welding Leathers',d:'Acid and fire on the ground can\'t hurt him, and he never catches fire.'},{n:'Field General',d:'Minigun shots do 15% more damage.'}];
+{n:'Dead Eye',d:'Dual Pistol shots have a 15% chance to crit.'},{n:'Stopping Power',d:'Starting shotgun fires 2 extra pellets.'},{n:'Ghost Step',d:'1 in 5 hits pass right through her.'},{n:'Soul Harvest',d:'Every 25 kills restores 1 health.'},{n:'Tuned Up',d:'Starting SMG fires 15% faster.'},{n:'Brain Freeze',d:'SMG hits can freeze zombies to half speed.'},{n:'Turnout Gear',d:'Big hits (2+ damage) deal 1 less.'},{n:'Express Lane',d:'Reloads 30% faster.'},{n:'Campaign Fund',d:'+20% Scrap from kills.'},{n:'Welding Leathers',d:'Acid and fire on the ground can\'t hurt him, and he never catches fire.'},{n:'Field General',d:'Minigun shots do 15% more damage.'}];
 const TT=[
 ['Couch Potato','Weekend Warrior','Neighborhood Hero','Dave the Destroyer','Just a Regular Legend'],
 ['Spare Parts','Tin Guardian','Iron Sentinel','Unit Zero','No Shutdown'],

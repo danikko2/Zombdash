@@ -7,8 +7,8 @@ var RXC=0;
 function runExit(d){RXC=d||1;sfx('click');rxBack(1)}
 function rxBack(keep){if(!keep)RXC=0;if(mode=='shop')return shop();if(mode=='pause')return pauseMenu()}
 // can this run be kept to continue later?
-function rxCan(){if(MPn||TUT||PTX||cmPT(mapId))return 0;if(mode=='shop')return!(GMD=='c'&&wave>=20);return!!cpOK()}
-function rxDlg(){const c=GMD=='c'&&!MPn,can=rxCan(),at=mode=='shop'?wave+1:Math.max(1,wave),d=RXC;
+function rxCan(){if(MPn||TUT||PTX||cmPT(mapId))return 0;if(mode=='shop'||BRK)return!(GMD=='c'&&wave>=20);return!!cpOK()}
+function rxDlg(){const c=GMD=='c'&&!MPn,can=rxCan(),at=mode=='shop'||BRK?wave+1:Math.max(1,wave),d=RXC;
 const keep=can?`Your run is kept: continue it from the main menu${c?' or the campaign map':''}, starting at wave ${at}.`:MPn?'Split-screen runs can\'t be kept, so leaving ends the run. Everyone keeps the Zombie Pts and XP they earned.':'This run can\'t be kept yet, so leaving ends it. You keep the Zombie Pts and XP you earned.';
 const B=(k,lab,ic,cls)=>`<button data-q=1 class="np ${cls||''}" onclick="rxGo('${k}')">${nxi(ic,18)}${lab}</button>`;
 let t,b,btn;
@@ -25,7 +25,7 @@ if(d=='c'&&GMD=='c'&&!MPn){setGM('c');CMV=null;CWIN0=0;mode='menu';music('menu')
 // ---------- pause ----------
 function pauseNX(){const c=GMD=='c',mp=MPn,pt=PTX;
 show(nxWrap('pz',`<div class=pzm><div class=pzp><span class=cwk>${pt?'PLAYTEST':(c?'CAMPAIGN':'FREE PLAY')+(mp?' · SPLIT SCREEN':'')} · ${edEsc(mpName(mapId).toUpperCase())}</span><b class=pzt>PAUSED</b><h2 class=sr>PAUSED</h2>
-<div class=ovs><span><b>${wave}</b>WAVE</span><span><b>${nxN(kills)}</b>KILLS</span>${mp?`<span><b>${mp}</b>PLAYERS</span>`:`<span><b>$${nxN(P.cash)}</b>CASH</span>`}${c&&!pt?`<span><b>${LIVES}</b>${LIVES==1?'LIFE':'LIVES'} LEFT</span>`:''}</div>
+<div class=ovs><span><b>${wave}</b>WAVE</span><span><b>${nxN(kills)}</b>KILLS</span>${mp?`<span><b>${mp}</b>PLAYERS</span>`:`<span><b>${scr(P.cash)}</b>SCRAP</span>`}${c&&!pt?`<span><b>${LIVES}</b>${LIVES==1?'LIFE':'LIVES'} LEFT</span>`:''}</div>
 ${mp?'':chMini(P.ac)}<button data-q=1 class="np go" onclick="resume()">RESUME${kc('ESC')}</button><button data-q=1 class="np pzo" onclick="options(1)">OPTIONS</button>
 ${pt?'<button data-q=1 class="np rxr" onclick="ptEnd()">BACK TO EDITOR<small>ends the playtest</small></button>':`<div class=pzl><span class=cwk>LEAVE THE RUN</span><div class=pzlb><button data-q=1 class=nb onclick="runExit('m')">${nxi('home')}MAIN MENU</button>${c&&!mp?`<button data-q=1 class=nb onclick="runExit('c')">${nxi('map')}CAMPAIGN MAP</button>`:''}<button data-q=1 class="nb rxr" onclick="runExit('e')">${nxi('flag')}END RUN</button></div></div>`}</div></div>${RXC?rxDlg():''}`,'<div class="nxbg pzbg"></div>'))}
 // ---------- end of a run ----------
@@ -39,14 +39,14 @@ function ovMid(mp){if(mp)return['LOBBY','lobby()','r'];return GMD=='c'?['CAMPAIG
 function ovGo(mp){const C=CWIN;if(C){if(C.nx!=null)return[`NEXT: ${MP[C.nx].n.toUpperCase()}`,`campNext(${mp?1:0})`];return['CAMPAIGN MAP',"setGM('c');CMV=null;play()"]}return['TRY AGAIN',mp?'startMP()':'start()']}
 function endNX(q,e){const c=GMD=='c',win=!!CWIN,nl=!q&&c&&!win,mid=win&&CWIN.nx==null?['NEW GAME',"setGM('f');play()",'play']:ovMid(0);
 show(ovWrap(win?'MAP COMPLETE':(c?'CAMPAIGN':'FREE PLAY')+' · '+edEsc(mpName(mapId).toUpperCase()),win?cwH():`<h2 class="ovt${q?'':' bad'}">${q?'RUN ENDED':'YOU WERE EATEN'}</h2>`,
-`<div class=ovs><span><b>${wave}</b>WAVE</span><span><b>${nxN(kills)}</b>KILLS</span><span><b>+${nxN(e)}</b>ZOMBIE PTS</span></div>${ovXP(P)}${runLog(P)}${nl?'<p class=ovn>No lives left: next time this map starts again from wave 1.</p>':''}`,ovBtns(mid,ovGo(0))))}
+`<div class=ovs><span><b>${wave}</b>WAVE</span><span><b>${nxN(kills)}</b>KILLS</span><span><b>+${nxN(e)}</b>ZOMBIE PTS</span></div>${zpNote(ZPR)}${ovXP(P)}${runLog(P)}${nl?'<p class=ovn>No lives left: next time this map starts again from wave 1.</p>':''}`,ovBtns(mid,ovGo(0))))}
 function endLife(left){show(ovWrap('CAMPAIGN · '+edEsc(mpName(mapId).toUpperCase()),'<h2 class="ovt bad">YOU WERE EATEN</h2>',
-`<div class=ovs><span><b>${wave}</b>WAVE</span><span><b class=ovh>${'♥'.repeat(Math.max(0,left))}</b>${left==1?'LIFE LEFT':'LIVES LEFT'}</span><span><b>${nxN(kills)}</b>KILLS</span></div><p class=ovn>${left==1?'⚠ This is your last life! ':''}Continue to try wave ${wave} again with your guns and cash. Leaving now ends the run.</p>`,
+`<div class=ovs><span><b>${wave}</b>WAVE</span><span><b class=ovh>${'♥'.repeat(Math.max(0,left))}</b>${left==1?'LIFE LEFT':'LIVES LEFT'}</span><span><b>${nxN(kills)}</b>KILLS</span></div><p class=ovn>${left==1?'⚠ This is your last life! ':''}Continue to try wave ${wave} again with your guns and Scrap. Leaving now ends the run.</p>`,
 `<div class=ovb><button data-q=1 class=nb onclick="lifeMenu()">${nxi('home')}MAIN MENU</button><button data-q=1 class=nb onclick="lifeMap()">${nxi('map')}CAMPAIGN MAP</button><button data-q=1 id=ovgo class="np go" onclick="lifeCont()">CONTINUE${kc('ENTER')}</button></div>`))}
 function lifeMap(){if(mode!='lifeo')return;LIVES=0;mode='play';over(1);setGM('c');CMV=null;play()}
 function endMP(q){const win=!!CWIN;
 show(ovWrap(win?'MAP COMPLETE':(GMD=='c'?'CAMPAIGN':'FREE PLAY')+' · SPLIT SCREEN · '+edEsc(mpName(mapId).toUpperCase()),win?cwH():`<h2 class="ovt${q?'':' bad'}">${q?'RUN ENDED':'THE HORDE WON'}</h2>`,
-`<div class=ovs><span><b>${wave}</b>WAVE</span><span><b>${nxN(kills)}</b>TEAM KILLS</span><span><b>${PL.length}</b>PLAYERS</span></div><div class=ovl>`+PL.map((p,i)=>`<div class=ovr style="--pc:${PC[i]}"><b class=px>P${i+1}</b><canvas data-ch=${p.ci} data-v=${p.v||0}></canvas><div class=nm><b>${pnm(p)}${p.ac.g?' · guest':bdH(p.ac)}</b>${ttH(p.ac)}<small>${p.k||0} kills · +${p.ze} Zombie Pts · +${p.xg||0} XP${p.lu?' · LEVEL UP!':''}</small>${p.nt&&p.nt.length?'<small class=unl>'+p.nt.slice(-2).join(' · ')+(p.nt.length>2?' · +'+(p.nt.length-2)+' more':'')+'</small>':''}</div><span class=lv>LV ${p.ac.lv}</span></div>`).join('')+'</div>'+(!q&&GMD=='c'&&!win?'<p class=ovn>No lives left: next time this map starts again from wave 1.</p>':''),
+`<div class=ovs><span><b>${wave}</b>WAVE</span><span><b>${nxN(kills)}</b>TEAM KILLS</span><span><b>${PL.length}</b>PLAYERS</span></div><div class=ovl>`+PL.map((p,i)=>`<div class=ovr style="--pc:${PC[i]}"><b class=px>P${i+1}</b><canvas data-ch=${p.ci} data-v=${p.v||0}></canvas><div class=nm><b>${pnm(p)}${p.ac.g?' · guest':bdH(p.ac)}</b>${ttH(p.ac)}<small>${p.k||0} kills · +${nxN(p.ze)} Zombie Pts${p.zr&&p.zr.fc?' (first clear bonus +'+nxN(p.zr.fc)+')':''} · +${p.xg||0} XP${p.lu?' · LEVEL UP!':''}</small>${p.nt&&p.nt.length?'<small class=unl>'+p.nt.slice(-2).join(' · ')+(p.nt.length>2?' · +'+(p.nt.length-2)+' more':'')+'</small>':''}</div><span class=lv>LV ${p.ac.lv}</span></div>`).join('')+'</div>'+(!q&&GMD=='c'&&!win?'<p class=ovn>No lives left: next time this map starts again from wave 1.</p>':''),
 ovBtns(ovMid(1),ovGo(1))))}
 // Enter on an end screen = its main button
 function endKey(k){if(k=='enter'&&ui.querySelector){const b=ui.querySelector('#ovgo');if(b){b.click();return 1}}return 0}

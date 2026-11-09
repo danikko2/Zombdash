@@ -11,7 +11,7 @@ global.started=0;let nodes=0,errs=[];const P_=()=>({value:0,setValueAtTime(v,t){
 const node=()=>{nodes++;return{connect(){},disconnect(){},start(){global.started++},stop(){},frequency:P_(),gain:P_(),detune:P_(),Q:P_(),pan:P_(),threshold:P_(),ratio:P_(),type:'',setPeriodicWave(){},buffer:null,loop:false}};
 global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.sampleRate=8000;this.destination={}}get currentTime(){return global.AT_}createGain(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBufferSource(){return node()}createStereoPanner(){return node()}createDynamicsCompressor(){return node()}createPeriodicWave(){return{}}createBuffer(c,n){return{getChannelData:()=>new Float32Array(n)}}resume(){}};
 const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+ms/1000,f])};
-const out=code+`;docL.pointerdown[0]();endIntro();
+const out=code+`;S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();
 const ok=(c,m)=>{LOG((c?"PASS ":"FAIL ")+m);if(!c)errs.push(m)};S.ac.name="T";
 const hx_=()=>ui.innerHTML;
 // main menu: the Play tab
@@ -32,7 +32,7 @@ const lk=O.find(k=>!mapOK(k));if(lk!=null){mapId=lk;play();ok(hx_().includes('MA
 mapId=0;suSurv(1);ok(SV==1&&sel==0&&hx_().includes('SURVIVOR LOCKED'),'picking a locked survivor shows it but keeps your survivor');mapGo();ok(mode=='menu','locked survivor cannot start');
 suSurv(0);S.best=5;S.sw=1;suSW(1);suSW(1);ok(S.sw==3,'start wave stepper');for(let i=0;i<9;i++)suSW(1);ok(S.sw==5,'start wave stops at your best');S.sw=1;
 ok(nxKey('escape')&&UIS=='hub','Esc on setup goes to the main menu');
-setGM('f');mapId=0;sel=0;SV=0;play();mapGo();ok(mode=='play'||mode=='shop'||mode=='tut','START starts the game');
+setGM('f');mapId=0;sel=0;SV=0;play();mapGo();ok((mode=='play'&&!BRK)||(mode=='shop'||!!BRK)||mode=='tut','START starts the game');
 // campaign world map
 menu();hubCamp();ok(UIS=='cmap'&&GMD=='c'&&hx_().includes('cwZ')&&hx_().includes('class="cwp')&&hx_().includes('Suburb'),'Campaign card opens the world map zoomed into the current section');
 ok((hx_().match(/class="cwl/g)||[]).length==5,'all five sections stay on the map while zoomed');
@@ -46,9 +46,9 @@ menu();sel=0;hubCampGo();ok(GMD=='c'&&mapId==campFront()&&mode!='menu','PLAY on 
 CMLB=1;cGo(0);ok(hx_().includes('SPLIT-SCREEN LOBBY')&&hx_().includes('CHOOSE'),'lobby map pick uses the world map');CMLB=0;
 // ---------- stage 2: store, leaving a run, pause, end screens, lobby ----------
 const has=t=>hx_().includes(t);
-setGM('f');mapId=0;sel=0;S.dlf=1;start();wave=3;zs=[];toSp=0;P.cash=1000;shop();ok(mode=='shop'&&has('SUPPLY STOP')&&has('START WAVE 4')&&has('data-gn=')&&!has('data-gun='),'store: tabs, list and arm-free gun pictures');
+setGM('f');mapId=0;sel=0;S.dlf=1;start();wave=3;zs=[];toSp=0;P.cash=1000;shop();ok((mode=='shop'||!!BRK)&&has('SUPPLY STOP')&&has('START WAVE 4')&&has('data-gn=')&&!has('data-gun='),'store: tabs, list and arm-free gun pictures');
 ok(shKey('e')&&SHX.t=='gear'&&has('Armor'),'E opens the next store tab');ok(shKey('q')&&SHX.t=='guns','Q goes back');
-SHX.g=1;shop();ok(has('BUY · $120')&&has('Goes into slot 2 of 4'),'picked gun: price and the slot it goes into');shKey('enter');ok(P.own.includes(1)&&P.cash==880,'Enter buys the picked gun');
+SHX.g=1;shop();ok(has('BUY · <span class=scr>120')&&has('Goes into slot 2 of 4'),'picked gun: price and the slot it goes into');shKey('enter');ok(P.own.includes(1)&&P.cash==880,'Enter buys the picked gun');
 shKey('arrowdown');ok(SHX.g===2,'arrow down picks the next gun in the list');
 SHX.t='hp';shop();ok(has('HEAL +1')&&has('Max HP'),'health tab');SHX.t='guns';shop();
 ok(has('+1 ♥')&&has('heal()'),'quick heal in the store header');

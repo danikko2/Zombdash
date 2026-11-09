@@ -12,10 +12,10 @@ const node=()=>{nodes++;return{connect(){},disconnect(){},start(){global.started
 global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.sampleRate=8000;this.destination={}}get currentTime(){return global.AT_}createGain(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBufferSource(){return node()}createStereoPanner(){return node()}createDynamicsCompressor(){return node()}createPeriodicWave(){return{}}createBuffer(c,n){return{getChannelData:()=>new Float32Array(n)}}resume(){}};
 const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+ms/1000,f])};
 const out=code+`;S.ac.cp=8;
-docL.pointerdown[0]();endIntro();if(!AU.c)throw new Error('audio not init');
+S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();if(!AU.c)throw new Error('audio not init');
 
 const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
-for(const m of[0,7]){mapId=m;S.sw=1;start();P.mx=10;P.hp=10;wave=4;nextWave();let near=0,minD=1e9,maxZ=0;for(let f=0;f<3200&&mode=='play';f++){P.inv=9;P.hp=10;if(f%400==0)console.log(m,f,Date.now()%100000,zs.length,toSp);tick(1);maxZ=Math.max(maxZ,zs.length);for(const z of zs){const d=Math.hypot(z.x-P.x,z.y-P.y);if(d<minD)minD=d}if(f==3199)near=zs.filter(z=>Math.hypot(z.x-P.x,z.y-P.y)<250).length}
+for(const m of[0,7]){mapId=m;S.sw=1;start();P.mx=10;P.hp=10;wave=4;nextWave();let near=0,minD=1e9,maxZ=0;for(let f=0;f<3200&&(mode=='play'&&!BRK);f++){P.inv=9;P.hp=10;if(f%400==0)console.log(m,f,Date.now()%100000,zs.length,toSp);tick(1);maxZ=Math.max(maxZ,zs.length);for(const z of zs){const d=Math.hypot(z.x-P.x,z.y-P.y);if(d<minD)minD=d}if(f==3199)near=zs.filter(z=>Math.hypot(z.x-P.x,z.y-P.y)<250).length}
 console.log(zs.filter(z=>Math.hypot(z.x-P.x,z.y-P.y)>=250).map(z=>z.t+'@'+(z.x|0)+','+(z.y|0)+' fd='+fd[cl(z.y/gs|0,0,gh-1)*gw+cl(z.x/gs|0,0,gw-1)]).join(' | '));const stuck=zs.filter(z=>z.x<0||z.y<0||z.x>WW||z.y>WH).length;console.log(MP[m].n,'zombies alive',zs.length,'near player',near,'closest',minD.toFixed(0),'outside map',stuck,'to spawn',toSp)}
 console.log('TOTAL errors',errs.length,errs.slice(0,5));
 `;

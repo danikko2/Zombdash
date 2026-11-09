@@ -1,5 +1,5 @@
 //# extras/headlamp.js — The Headlamp: a light worn on the head that shines where the player aims; switching it, drawing it, its light and sounds
-// Bought in the store ($100, one extras slot: extras/extras.js). F (keyboard), B (controller) or the LIGHT button (touch, store)
+// Bought at a workbench (100 Scrap, one extras slot: extras/extras.js). F (keyboard), B (controller) or the LIGHT button (touch, store)
 // turns it on and off (p.hlo). It is drawn on the survivor's head (strap and lamp: XS and HLA in render/sprites.js).
 // On a map with lighting (world/kit-lighting.js) its beam is one of the dynamic lights (hlLights), so walls stop it and it is
 // as strong as the dark is deep; on a daylight map it shows as a faint beam (hlDraw, walls stop that too).

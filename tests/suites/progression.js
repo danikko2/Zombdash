@@ -12,7 +12,7 @@ const node=()=>{nodes++;return{connect(){},disconnect(){},start(){global.started
 global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.sampleRate=8000;this.destination={}}get currentTime(){return global.AT_}createGain(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBufferSource(){return node()}createStereoPanner(){return node()}createDynamicsCompressor(){return node()}createPeriodicWave(){return{}}createBuffer(c,n){return{getChannelData:()=>new Float32Array(n)}}resume(){}};
 const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+ms/1000,f])};
 const out=code+`;S.ac.cp=8;
-docL.pointerdown[0]();endIntro();
+S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();
 const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
 const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)errs.push(m)};
 S.ac.name='Tester';menu();ok(ui.innerHTML.includes('LOADOUT')&&ui.innerHTML.includes('PROGRESS')&&ui.innerHTML.includes('all challenges'),'menu has Loadout and Progress tabs + challenges link');
@@ -35,7 +35,7 @@ eqCam(1,8);ok(A.cm[1]==8&&cmOf(A,1)==8,'equip diamond');ok(camoC(0,0,1,8,3)!=nul
 const c=A.ch;c.D[0]={k:'kill',n:5,a:0,p:0,f:0};c.D[1]={k:'drop',n:1,a:0,p:0,f:0};c.D[2]={k:'wave',n:3,a:0,p:0,f:0};c.db=0;// a fresh set (today's own dailies may already be done by the steps above)
 const p0=A.pts,s0=A.sp,lv0=A.lv,xp0=A.xp;
 for(let i=0;i<5;i++){const z=mk(0,P.x+10,P.y);zs.push(z);hurt(z,1e9,0,0)}ok(c.D[0].f==1,'kill challenge done');chEv(P,'drop',1);wave=2;nextWave();ok(c.D[1].f&&c.D[2].f&&c.db==1,'all dailies + bonus');ok(A.pts-p0==300+150,'pts reward '+(A.pts-p0));
-c.W=[{k:'boss',n:1,a:0,p:0,f:0},{k:'spend',n:100,a:0,p:0,f:0},{k:'clear',n:1,a:0,p:0,f:0}];c.wb=0;const z=mk(7,P.x,P.y);zs.push(z);hurt(z,1e9,0,0);ok(c.W[0].f,'boss weekly');P.cash=500;shop();console.log('sc0',P.sc0,mode,P.own);buy(3);console.log('after buy',P.cash,JSON.stringify(c.W));ok(c.W[2].f,'clear weekly');const sp1=A.sp,lv1=A.lv;nextWave();ok(c.W[1].f&&c.wb&&A.sp-sp1==1+(A.lv-lv1),'spend weekly + skill point bonus');
+c.W=[{k:'boss',n:1,a:0,p:0,f:0},{k:'spend',n:100,a:0,p:0,f:0},{k:'clear',n:1,a:0,p:0,f:0}];c.wb=0;const z=mk(7,P.x,P.y);zs.push(z);hurt(z,1e9,0,0);ok(c.W[0].f,'boss weekly');P.cash=500;brkStart(0);shop();console.log('sc0',P.sc0,mode,P.own);buy(3);console.log('after buy',P.cash,JSON.stringify(c.W));ok(c.W[2].f,'clear weekly');const sp1=A.sp,lv1=A.lv;nextWave();ok(c.W[1].f&&c.wb&&A.sp-sp1==1+(A.lv-lv1),'spend weekly + skill point bonus');
 // rollover
 c.d='old';c.w='old';chkC(A);ok(c.d==dKey()&&c.D.every(q=>!q.f)&&!c.db&&!c.rr,'daily rollover');reroll(0);ok(c.rr==1,'reroll once');const kk=c.D[0].k;reroll(0);ok(c.D[0].k==kk,'second reroll blocked');
 // screens

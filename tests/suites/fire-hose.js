@@ -13,7 +13,7 @@ global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.s
 const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+ms/1000,f])};
 // Fire Hose: tables, sprites, store, 100 rounds of flame lasting 15 s, 4 rockets a magazine (spare rounds kept), 5 damage a
 // second in the flame, 2-3 s of afterburn at 2 a second, walls, kill credit (split screen too), GAME BALANCE rows, older saves
-const out=code+`;S.ac.cp=8;S.tut=1;S.ac.name='Tester';docL.pointerdown[0]();endIntro();
+const out=code+`;S.ac.cp=8;S.tut=1;S.ac.name='Tester';S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();
 {// (a block, so test names never clash with the game's globals)
 const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)errs.push(m)};
 const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
@@ -21,7 +21,7 @@ const secs=s=>tick(Math.round(s/.016));
 const FH=WP.findIndex(w=>w.n=='Fire Hose'),near=(a,b,e)=>Math.abs(a-b)<(e||1e-6);
 // ---------- tables ----------
 ok(FH==18&&WP.length>=19,'the Fire Hose is gun 19 (the older guns keep their numbers)');
-ok(WP[FH].cost==1600&&AMT[FH]=='rk'&&MAG[FH]==100&&near(MAG[FH]*WP[FH].r,15),'\\$1600, rockets, 100 rounds of flame a magazine = 15 s of fire');
+ok(WP[FH].cost==1600&&AMT[FH]=='rk'&&MAG[FH]==100&&near(MAG[FH]*WP[FH].r,15),'<span class=scr>1600, rockets, 100 rounds of flame a magazine = 15 s of fire');
 ok(MAG[FH]/WP[FH].rpu==4,'a magazine is 4 rockets ('+WP[FH].rpu+' rounds each)');
 ok(WP[FH].d==5&&WP[FH].fb0==2&&WP[FH].fb1==3&&WP[FH].fbd==2,'5 damage a second in the flame, then 2-3 s of fire at 2 a second');
 ok([RLS,RLT,MAG,AMT,MZ,FS,FSN].every(a=>a.length==WP.length),'every per-gun table has an entry for every gun');
@@ -33,8 +33,8 @@ ok(JSON.stringify(PS[0].gun[17])=='[0,1929,80,32,6,14]'&&JSON.stringify(PS[0].gu
 ok(ZS.flame&&JSON.stringify(ZS.flame.fly)=='[[637,1641,16,16],[654,1641,16,16],[671,1641,16,16]]'&&JSON.stringify(ZS.bubble.fly[1])=='[618,1641,18,18]','flame frames sit next to the old frames');
 // ---------- store ----------
 setGM('f');mapId=0;sel=0;S.dlf=1;start();P.cash=100000;P.am.rk=0;shop();
-ok(/data-gn=18[^>]*><\\/canvas><\\/span><span class=shn>Fire Hose<\\/span><span class="shpr[^"]*">\\$1,600</.test(ui.innerHTML),'the store sells the Fire Hose with its picture');
-let c0=P.cash;buy(FH);ok(c0-P.cash==1600&&P.mg[FH]==100&&P.am.rk==8&&amTxt(P,FH)=='100 / 200','bought for \\$1600: 100 rounds loaded + 8 rockets (200 more rounds)');
+ok(/data-gn=18[^>]*><\\/canvas><\\/span><span class=shn>Fire Hose<\\/span><span class="shpr[^"]*"><span class=scr>1,600</.test(ui.innerHTML),'the store sells the Fire Hose with its picture');
+let c0=P.cash;buy(FH);ok(c0-P.cash==1600&&P.mg[FH]==100&&P.am.rk==8&&amTxt(P,FH)=='100 / 200','bought for <span class=scr>1600: 100 rounds loaded + 8 rockets (200 more rounds)');
 // ---------- an open spot ----------
 nextWave();toSp=0;P.mx=P.hp=999;P.inv=1e9;
 let best=null;for(let y=200;y<WH-200;y+=20)for(let x=300;x<WW-300;x+=20){if(WL.some(w=>w[4]!=2&&w[0]<x+320&&w[0]+w[2]>x-260&&w[1]<y+160&&w[1]+w[3]>y-160))continue;const d=Math.hypot(x-HS.px,y-HS.py);if(!best||d<best.d)best={x,y,d}}
@@ -82,7 +82,7 @@ ok(!ERRS.length&&L.length>=2,'drawing the flame, burning zombies and the pilot l
  Q.x=best.x;Q.y=best.y;Q.cur=FH;Q.mg[FH]=100;Q.cds[FH]=0;Q.a=0;PL[0].x=best.x;PL[0].y=best.y+220;const P0=P;P=Q;const qm=muzzle();P=P0;for(let i=0;i<3;i++)at(0,qm.x+70+i*30,qm.y,4);
  inp=p=>({mx:0,my:0,fire:p===Q});secs(1.2);inp=()=>({mx:0,my:0,fire:false});secs(3);
  ok((Q.k||0)-k[1]==3&&(PL[0].k||0)==k[0],'player 2\\'s flame kills count for player 2');
- inp=inp0;mode='shop';shop();ok(ui.innerHTML.split('Fire Hose').length>=3,'the split-screen shop sells it to each player');ok(!ERRS.length,'no errors in split screen: '+ERRS.join(' | '))}
+ inp=inp0;mode='play';for(const q of PL)q.bo={i:0};shop();ok(BX.innerHTML.split('Fire Hose').length>=3,'the split-screen shop sells it to each player');ok(!ERRS.length,'no errors in split screen: '+ERRS.join(' | '))}
 // ---------- GAME BALANCE ----------
 devSet();balOpen('guns');const sec=ui.innerHTML.slice(ui.innerHTML.indexOf('Fire Hose'));
 ok(/Damage.*Magazine.*Store price.*Reload seconds.*Seconds of flame per round.*Rounds of flame from each rocket.*Flame reach.*Flame half-width.*Afterburn: fewest seconds.*Afterburn: most seconds.*Afterburn damage per second/s.test(sec),'Guns tab: Fire Hose rows');

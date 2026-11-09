@@ -12,7 +12,7 @@ global.started=0;let errs=[];const P_=()=>({value:0,setValueAtTime(){},linearRam
 const node=()=>({connect(){},disconnect(){},start(){},stop(){},frequency:P_(),gain:P_(),detune:P_(),Q:P_(),pan:P_(),threshold:P_(),ratio:P_(),type:'',setPeriodicWave(){},buffer:null,loop:false});
 global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.sampleRate=8000;this.destination={}}get currentTime(){return global.AT_}createGain(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBufferSource(){return node()}createStereoPanner(){return node()}createDynamicsCompressor(){return node()}createPeriodicWave(){return{}}createBuffer(c,n){return{getChannelData:()=>new Float32Array(n)}}resume(){}};
 const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+ms/1000,f])};
-const out=code+`;S.ac.cp=8;docL.pointerdown[0]();endIntro();{let F=0,NP=0;const OK=(c,m)=>{if(c)NP++;else{F++;LOG('FAIL '+m)}};const SAY=m=>LOG('  '+m);
+const out=code+`;S.ac.cp=8;S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();{let F=0,NP=0;const OK=(c,m)=>{if(c)NP++;else{F++;LOG('FAIL '+m)}};const SAY=m=>LOG('  '+m);
 S.ac.name='T';setGM('f');mapId=0;sel=0;
 const T11={0:[1,'Standard',0],9:[3,'Ranged',0],11:[2,'Ranged',0],3:[2,'Fast',1],1:[1,'Fast',1],14:[3,'Fast',1],2:[1,'Strong',0],4:[2,'Strong',1],10:[1,'Explosive',0],18:[2,'Explosive',1],19:[2,'Healer',1]};
 const NM={0:'Walker',9:'Bones',11:'Toxic the Spitter',3:'Dasher',1:'Runner',14:'People Eater',2:'Brute',4:'Splitter',10:'Toxic',18:'Exploder',19:'Healer'};

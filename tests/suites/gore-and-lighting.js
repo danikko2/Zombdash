@@ -15,7 +15,7 @@ global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.s
 const ivs=[];global.setInterval=f=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+(ms||0)/1000,f]);return TQ.length};global.clearTimeout=()=>{};
 global.REQ=require;
 const test=`;S.ac.name='Tester';S.ac.cp=8;
-docL.pointerdown[0]();endIntro();
+S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();
 { // in a block, so these names never clash with the game's
 const tick=n=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
 let fails=0,n=0;const ok=(c,m)=>{n++;if(c)console.log('PASS '+m);else{fails++;console.log('FAIL '+m)}};
@@ -100,8 +100,8 @@ ok(!cmLightData(d)&&(d.lt={t:'night',a:0},!cmLightData(d))&&(d.lt={t:'night',a:.
 ok(cmLtNow({f:'siren',sd:0,ph:0},0)!==cmLtNow({f:'siren',sd:1,ph:0},0)&&cmLtNow({f:'blink',ph:0},0)!==cmLtNow({f:'blink',ph:0},.5),'Lights: police lights take turns, hazard lights blink');
 // in a run
 {const d=cmRead(JSON.stringify(CMSAMPLES[0])).doc;d.lt={t:'night',a:.75};openEd(d);ptStart({ci:0,w:1,dif:0});
-ok(mode=='play'&&HS.LT&&HS.LT.t=='night'&&HS.LT.L.length>=20&&cmLtOn(),'In the game: the night demo map has its lighting and '+(HS.LT?HS.LT.L.length:0)+' light sources');
-LOG.length=0;let er='';try{for(let f=0;f<120&&mode=='play';f++){P.hp=P.mx=99;tick(1)}}catch(e){er=e.message}
+ok((mode=='play'&&!BRK)&&HS.LT&&HS.LT.t=='night'&&HS.LT.L.length>=20&&cmLtOn(),'In the game: the night demo map has its lighting and '+(HS.LT?HS.LT.L.length:0)+' light sources');
+LOG.length=0;let er='';try{for(let f=0;f<120&&(mode=='play'&&!BRK);f++){P.hp=P.mx=99;tick(1)}}catch(e){er=e.message}
 ok(!er&&LOG.some(l=>l[0]=='drawImage'&&l[1]=='multiply'),'In the game: the world is darkened every frame (a multiplied light map) '+er);
 ptEnd();edClose(1)}
 {mapId=0;build();ok(!HS.LT&&!cmLtOn(),'Built-in maps have no lighting (unchanged)');const d=cmRead(JSON.stringify(CMSAMPLES[0])).doc;ok(!d.lt,'The demo map is in daylight')}

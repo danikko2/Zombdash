@@ -12,7 +12,7 @@ const node=()=>{nodes++;return{connect(){},disconnect(){},start(){global.started
 global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.sampleRate=8000;this.destination={}}get currentTime(){return global.AT_}createGain(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBufferSource(){return node()}createStereoPanner(){return node()}createDynamicsCompressor(){return node()}createPeriodicWave(){return{}}createBuffer(c,n){return{getChannelData:()=>new Float32Array(n)}}resume(){}};
 const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+ms/1000,f])};
 const out=code+`;S.ac.cp=8;
-docL.pointerdown[0]();endIntro();if(!AU.c)throw new Error('audio not init');
+S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();if(!AU.c)throw new Error('audio not init');
 const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
 
 const mkPad=i=>({index:i,connected:true,buttons:Array.from({length:17},()=>({pressed:false,value:0})),axes:[0,0,0,0]});
@@ -36,9 +36,9 @@ console.log('started mode',mode,'MPn',MPn,'players',PL.map(p=>pnm(p)+'/'+CH[p.ci
 console.log('zcap',ZCAP(),'zombie hp x',ZMP().toFixed(2),'boss hp x',BMP().toFixed(2),'wave1 to spawn',toSp);
 // play several waves on each map with pads moving/aiming/firing
 let downs=0,revs=0,outs=0;
-for(const m of[0,3,5]){if(mode!='play'){mapId=m;startMP()}else{mapId=m;build();}
+for(const m of[0,3,5]){if((mode!='play'||!!BRK)){mapId=m;startMP()}else{mapId=m;build();}
 for(const w of[1,5,20]){console.log('map',m,'wave',w,Date.now()%100000);wave=w-1;nextWave();for(const p of PL){p.mx=p.hp=6}
-for(let f=0;f<300&&mode=='play';f++){PADS.forEach((pd,i)=>{const a=f*.05+i;pd.axes=[Math.cos(a)*.9,Math.sin(a)*.9,Math.cos(a*1.3),Math.sin(a*1.3)]});mouse.d=1;mouse.x=W/4;mouse.y=H/4;
+for(let f=0;f<300&&(mode=='play'&&!BRK);f++){PADS.forEach((pd,i)=>{const a=f*.05+i;pd.axes=[Math.cos(a)*.9,Math.sin(a)*.9,Math.cos(a*1.3),Math.sin(a*1.3)]});mouse.d=1;mouse.x=W/4;mouse.y=H/4;
 if(f==40){PL[1].hp=1;PL[1].inv=0;const P0=P;P=PL[1];P.hp-=1;if(P.hp<=0)ded();P=P0;downs+=PL[1].dn}
 if(f>=60&&f<240&&PL[1].dn){PL[0].x=PL[1].x+10;PL[0].y=PL[1].y}
 if(f==240&&!PL[1].dn&&!PL[1].dead)revs++;
@@ -49,10 +49,10 @@ tick(1)}
 }}
 let t1=Date.now();tick(100);console.log('mp ms/tick',(Date.now()-t1)/100,'zombies',zs.length,'mode',mode);console.log('downs',downs,'revives',revs,'bled out',outs,'mode',mode,'zombies',zs.length);
 // respawn on next wave
-if(mode!='play'){startMP()}PL[2].dead=1;PL[2].dn=0;nextWave();console.log('dead player back next wave',!PL[2].dead,'hp',PL[2].hp,'/',PL[2].mx);
+if((mode!='play'||!!BRK)){startMP()}PL[2].dead=1;PL[2].dn=0;nextWave();console.log('dead player back next wave',!PL[2].dead,'hp',PL[2].hp,'/',PL[2].mx);
 // shop with pads
 toSp=0;zs=[];tick(2);ET=0.01;tick(3);console.log('wave clear -> mode',mode);
-if(mode=='shop'){PL[1].cash=5000;PL[1].own=[0];PL[1].sx=null;shop();press(0,13);press(0,0);console.log('pad0 bought SMG',PL[1].own.includes(1),'cash',PL[1].cash);
+if((mode=='shop'||!!BRK)){PL[1].cash=5000;PL[1].own=[0];PL[1].sx=null;shop();press(0,13);press(0,0);console.log('pad0 bought SMG',PL[1].own.includes(1),'cash',PL[1].cash);
 press(0,9);console.log('P2 ready',PL[1].rdy);msReady(0,1);press(1,9);press(2,9);console.log('after all ready mode',mode,'wave',wave)}
 // everyone down -> game over
 for(const p of PL){P=p;p.hp=0;ded()}P=PL[0];tick(2);zs=[mk(0,PL[0].x+300,PL[0].y)];tick(2);console.log('all down ->',mode);
@@ -60,7 +60,7 @@ over(0);console.log('over has players',ui.innerHTML.includes('THE HORDE WON'),'p
 // pad menu navigation
 menu();NAV.on=0;press(0,13);press(0,13);console.log('nav focus index',NAV.i,'on',NAV.on);
 // single player after MP still fine
-keys={};mouse.d=0;L=R=null;start();console.log('inp',JSON.stringify(inp(P)),JSON.stringify(keys));console.log('sp after mp: MPn',MPn,'PL',PL.length,'inp',P.inp);for(let f=0;f<200&&mode=='play';f++){PADS[0].axes=[1,0,1,0];tick(1)}console.log('sp pad moved',P.x>HS.px,mode,P.x,HS.px);let t0=Date.now();for(let f=0;f<100;f++){tick(1)}for(let i=0;i<60;i++)zs.push(mk(i%2,P.x+rnd(-300,300),P.y+rnd(-300,300)));P.mx=P.hp=999;t0=Date.now();for(let f=0;f<100;f++){tick(1)}console.log('sp60 ms/tick',(Date.now()-t0)/100,zs.length);console.log('sp ms/tick',(Date.now()-t0)/100,'zombies',zs.length);
+keys={};mouse.d=0;L=R=null;start();console.log('inp',JSON.stringify(inp(P)),JSON.stringify(keys));console.log('sp after mp: MPn',MPn,'PL',PL.length,'inp',P.inp);for(let f=0;f<200&&(mode=='play'&&!BRK);f++){PADS[0].axes=[1,0,1,0];tick(1)}console.log('sp pad moved',P.x>HS.px,mode,P.x,HS.px);let t0=Date.now();for(let f=0;f<100;f++){tick(1)}for(let i=0;i<60;i++)zs.push(mk(i%2,P.x+rnd(-300,300),P.y+rnd(-300,300)));P.mx=P.hp=999;t0=Date.now();for(let f=0;f<100;f++){tick(1)}console.log('sp60 ms/tick',(Date.now()-t0)/100,zs.length);console.log('sp ms/tick',(Date.now()-t0)/100,'zombies',zs.length);
 console.log('TOTAL errors',errs.length,errs.slice(0,5));
 `;
 new Function("docL","ivs","errs","started_",out)(docL,ivs,errs);

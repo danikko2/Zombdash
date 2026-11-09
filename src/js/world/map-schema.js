@@ -334,6 +334,9 @@ for(const z of zn){let any=0,reach=0;for(let y=z.y+8;y<z.y+z.h;y+=16)for(let x=z
 if(outM(z.x,z.y,z.x+z.w,z.y+z.h))R.push({lv:'warn',m:'A spawn zone is outside the map.',x:z.x+z.w/2,y:z.y+z.h/2,ref});
 else if(!any)R.push({lv:'warn',m:'A spawn zone is completely blocked: no zombie can appear in it.',x:z.x+z.w/2,y:z.y+z.h/2,ref});else if(!reach&&stOK)R.push({lv:'warn',m:'Zombies from a spawn zone can\'t walk to the player.',x:z.x+z.w/2,y:z.y+z.h/2,ref})}
 if(!sp.length&&!zn.length)R.push({lv:'info',m:(d.spawns.length||d.zones.length?'Every zombie spawn is turned off':'No zombie spawns yet')+': zombies come from off-screen around the player, like on the built-in maps.'});
+// crafting benches (Zombdash Blueprints): where players buy between waves and make ammo during a wave
+const BNC=d.obj.filter(o=>o.k=='craftbench');if(!BNC.length)R.push({lv:'warn',m:'No crafting bench: the game puts one next to the player start. Add a Crafting Bench (Supplies & tools) to choose where players buy between waves.',x:st.x,y:st.y});
+for(const o of BNC){if(outM(o.x,o.y,o.x,o.y))continue;const c=M.at(o.x,o.y+14),ref={t:'o',o};if(M.b[c])R.push({lv:'warn',m:'A crafting bench has something solid in front of it: players may not reach it.',x:o.x,y:o.y,ref});else if(M.F[c]<0&&stOK)R.push({lv:'warn',m:'Players can\'t walk to a crafting bench from the player start.',x:o.x,y:o.y,ref})}
 // outside the map (one line each, up to 12)
 const OUT=[];for(const o of d.obj)if(outM(o.x,o.y,o.x,o.y))OUT.push({m:(o.veh?'A vehicle':'A prop')+' is outside the map.',ref:{t:'o',o},x:o.x,y:o.y});
 for(const w of d.walls)if(outM(w.x,w.y,w.x+w.w,w.y+w.h))OUT.push({m:'A wall is outside the map.',ref:{t:'w',o:w},x:w.x+w.w/2,y:w.y+w.h/2});

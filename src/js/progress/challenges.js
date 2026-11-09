@@ -12,7 +12,7 @@ boss:{d:[1,2],w:[6,10],t:n=>`Defeat ${n} boss${n>1?'es':''}`},
 wave:{d:[10,14],w:[22,28],t:n=>`Reach wave ${n} in one run`,mx:1},
 clear:{d:[15,25],w:[120,160],t:n=>`Clear ${fmt(n)} waves`},
 drop:{d:[8,14],w:[60,90],t:n=>`Pick up ${fmt(n)} power-ups`},
-spend:{d:[2500,4000],w:[25000,35000],t:n=>`Spend $${fmt(n)} in the shop`},
+spend:{d:[2500,4000],w:[25000,35000],t:n=>`Spend ${fmt(n)} Scrap at workbenches`},
 hard:{w:[12,16],t:n=>`Reach wave ${n} on Hard`,mx:1}};
 const CHR={d:{x:150,z:100,bz:150},w:{x:600,z:400,bz:500,bs:1}};
 function rng(s){let h=1779033703^s.length;for(let i=0;i<s.length;i++){h=Math.imul(h^s.charCodeAt(i),3432918353);h=h<<13|h>>>19}return()=>{h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);return((h^=h>>>16)>>>0)/4294967296}}

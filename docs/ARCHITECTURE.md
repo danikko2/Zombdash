@@ -1,5 +1,7 @@
 # Zombdash code map
 
+> **This is the `blueprints` branch: Zombdash Blueprints**, a separate build that tries the Workbench & Blueprints design (shops move into workbenches on the map, Scrap, a break between waves, blueprints bought with Zombie Pts). The original game is on `main`. This build keeps its own save (`localStorage.zombdash_bp`, checkpoint `zdbp_cp`, custom maps in the `zombdash-bp-maps` database) and never uploads a cloud save or posts a score, so it can't change the original's progress. See "Workbench & Blueprints" below.
+
 The game ships as **one self-contained file**, `index.html` (what GitHub Pages serves, what the Claude artifact shows, and what a future desktop/Steam build will wrap). That file is **generated**: the real source lives in `src/` and `tools/build.js` joins it back together.
 
 > **Don't edit `index.html` by hand.** Edit the files in `src/`, then build. On GitHub, editing a file in `src/` is enough: the *Build index.html* action rebuilds and commits `index.html` for you.
@@ -12,7 +14,7 @@ The game ships as **one self-contained file**, `index.html` (what GitHub Pages s
 | `src/css/game.css` | All the styles for menus and the HUD. |
 | `src/js/early-error-screen.js` | Tiny script that shows a "Startup error" box if the game fails to load. |
 | `src/js/modules.txt` | **Load order** of the game modules. |
-| `src/js/**` | The game, split into 131 modules (listed below). The Map Workshop is in `src/js/editor/`, the custom map format, loader and building kit in `src/js/world/`. |
+| `src/js/**` | The game, split into 135 modules (listed below). The Map Workshop is in `src/js/editor/`, the custom map format, loader and building kit in `src/js/world/`. |
 | `src/maps/` | Map files that ship with the game, embedded by the build with `{{json:maps/<file>}}`: `suburb.json`, `warehouse.json`, `graveyard.json`, `school.json`, `highway.json`, `mansion.json`, `market.json`, `mainst.json`, `foundry.json`, `forest.json` and `downtown.json` are the Suburb, the Warehouse, the Graveyard, the School, Deadway Highway, the Haunted Mansion, Hometown Market, Main Street and the Black Iron Foundry (maps 0, 1, 2, 3, 8, 9, 14, 15 and 16, built-in maps made from files, see "Built-in maps from map files"); `samples/town-block.zombdash-map.json` is the Workshop's sample map. |
 | `src/assets/sprites/` | `zombies.png` (zombie atlas, plus the Chicken Gun's rubber chicken and the bolts of the Crossbow, Blastbow and Firebow: `ZS.chicken`, `ZS.bolt`, `ZS.bbolt`, `ZS.fbolt`, the Life Saver's heart, `ZS.heart`, the Bubble Cannon's bubble, `ZS.bubble`, and the Fire Hose's flame, `ZS.flame`) and `survivors.png` (player atlas, with every gun in each survivor's hand, plus Ken's MIG welding gun, `PS[17].mig`, which only his boss holds, and Buck's football in his hand, `PS[18].ball`, his boss minigun carried hanging at his side, `PS[18].mini`, and that gun on its own, `PS[18].minid`; and the Headlamp: its store icon and its lamp lit and dark, `XS.hl`, with where it sits on every survivor's head in each walk and idle frame, `HLA`). Frame positions are in `ZS` / `PS` / `XS` / `HLA` in `render/sprites.js`. New frames go below the old ones so nothing moves. |
 | `src/assets/thumbs/map-NN.jpg` | Map preview pictures; `NN` is the map's number in `MP`. |
@@ -354,7 +356,18 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 | `dev/test-switches.js` | Test mode on/off switches and infinite health |
 | `dev/balance-editor.js` | GAME BALANCE editor and settings codes |
 
-### Campaign (`src/js/campaign/`)
+### Workbench & Blueprints (`src/js/crafting/`, blueprints branch)
+
+| File | What's in it |
+|---|---|
+| `crafting/blueprints.js` | `BPG`, every tunable number (blueprint price per tier, bench upgrade costs, section multipliers, replay %, Hard bonus, break length, craft times; Game Balance → Blueprints edits them). Weapon tiers (`WP[i].tr`: 0 Start, 1–5 = campaign sections), each account's blueprints `A.bp`, bench level `A.bl` and `A.bpv` (accounts from before get the tiers of sections they had cleared, `bpGrant`), account-code field (`bpEnc` / `bpDec`), Zombie Pts earning (`zpRun` marks first clears at the start of a run, `zpEarn`, `zpNote` for the end screen), Scrap helpers (`scr()` HTML, `scrNut()` canvas) |
+| `crafting/benches.js` | `BN`, the benches of the map: `bnPlace` (Workshop pieces `HS.BNP`; else 1 bench by the player start and, on maps over 6.5 / 9.5 M px², 2 / 3 benches in the middle of the other regions of reachable ground), the bench art for levels 1–5 (`bnArt`, made from the Workbench prop plus pegboard, chest, cabinet, lamps and a better sign each level), drawing (`bnDraw`, `bnTop` prompts and progress rings, `bnArrow`), walking up (`bnNear`, `bnUse`, `bnOpen`, `bnLeave`), mid-wave ammo crafting (`bnCraft`, jobs in `p.bj[bench]`, `bnUpd`), the minimap (`bnMini`) and the Map Workshop's Crafting Bench piece (`OB.craftbench`, drawn by the game, not painted into the map) |
+| `crafting/break.js` | The break between waves (`BRK`; `brkStart` does the old wave-cleared bookkeeping, `brkTick`, `brkEnd`, `brkRdy`), the countdown (`brkHud`), the buttons over the game in `#bx` (`bnDom`: READY, the touch bench button) and keys / controllers while playing (`bnKey`, `bnPads`) |
+| `crafting/blueprints-tab.js` | Progress → Blueprints: the workbench and its upgrade, every tier's blueprints, buying (`bpTab`, `bpBuy`, `bpUp`) |
+
+How it fits: a cleared wave calls `brkStart` (game/update.js) instead of opening the store. The game keeps running; at a bench `bnUse` opens the store (`shop()`: one player gets the full store in mode `'shop'`, where the countdown keeps going; in split screen each player gets their small store over their part of the screen, in `#bx`). The Guns tab only lists guns with a blueprint (`shVis`); `buy()` refuses the others. During a wave a bench only makes ammo for the gun in hand (or the next carried gun that takes ammo), 10 s minus 1.5 s per bench level; finished ammo waits on the bench and is collected when its player comes back. The store's money is still `p.cash` in the code; everything the player sees calls it Scrap.
+
+
 
 | File | What's in it |
 |---|---|

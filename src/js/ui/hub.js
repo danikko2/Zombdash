@@ -3,7 +3,7 @@
 // HUBX is the tab whose (older) screen is showing under the tab bar; show() adds the bar while it is set.
 var HUBX=null,HUBT='play';
 const HUBTABS=[['play','PLAY'],['loadout','LOADOUT'],['surv','SURVIVORS'],['prog','PROGRESS'],['ws','WORKSHOP']];
-const HUBSUB=[['skills','SKILLS',"UIS='';SKS=null;skills()"],['chals','CHALLENGES','chals()'],['lb','LEADERBOARDS','lbOpen()'],['titles','TITLES & BADGES','titles()']];
+const HUBSUB=[['skills','SKILLS',"UIS='';SKS=null;skills()"],['bp','BLUEPRINTS','bpTab()'],['chals','CHALLENGES','chals()'],['lb','LEADERBOARDS','lbOpen()'],['titles','TITLES & BADGES','titles()']];
 function hubBar(t){const A=S.ac,np=chDue(A);
 return `<div class=hubbar><div class=hublogo><b>ZOMB</b><i>DASH</i></div><nav class=hubtabs aria-label="Main menu">${kc('Q')}${HUBTABS.map(([k,n])=>`<button data-q=1 class="${k==t?'on':''}" onclick="hubTab('${k}')">${n}${k=='prog'&&np?`<span class=nbadge>${np}</span>`:''}</button>`).join('')}${kc('E')}</nav>
 <div class=hubr><span class=hubpts><b>${nxN(A.pts)}</b>ZOMBIE PTS</span><button data-q=1 class=hubme onclick="HUBX=null;accounts(0)" aria-label="Accounts"><span class=hublv>${A.lv}</span><span class=hubnm><b>${edEsc(A.name||'Survivor')}${bdH(A)}</b>${ttH(A)}<i><em style="width:${Math.min(100,A.xp/xpNeed(A.lv)*100)}%"></em></i></span></button><button data-q=1 class="nb nbi" onclick="HUBX=null;olMenu()" aria-label="Online">${nxi('trophy')}</button><button data-q=1 class="nb nbi" onclick="HUBX=null;options(0)" aria-label="Settings">${nxi('gear')}</button></div></div>`}
@@ -18,7 +18,7 @@ return `<div class="nx hubf${z.pt?' pt':''}${z.w<1180?' nar':''}${PCM()?'':' tou
 // ---------- the Play tab ----------
 function hub(){HUBX=null;HUBT='play';UIS='hub';const A=S.ac,d=DIF(),c=cpOK();
 const ca=cAcc(),dc=S.dlc==null?1:S.dlc,fr=cFront(ca,dc),si=Math.max(0,secOf(fr)),Sx=SEC[si],sm=Sx.m.filter(m=>m>=0),sb=sm.filter(m=>bBt(ca,dc,m)).length,all=cBeat(A)>=SORD.length;
-const run=g=>c&&c.gm==g?`<span class=hcr>Unfinished run · ${edEsc(CH[c.ci].n)} · wave ${c.w} cleared · $${nxN(c.p.cash)} <button data-q=1 class=lnk onclick="cpClear();menu()">discard</button></span>`:'';
+const run=g=>c&&c.gm==g?`<span class=hcr>Unfinished run · ${edEsc(CH[c.ci].n)} · wave ${c.w} cleared · ${scr(c.p.cash)} <button data-q=1 class=lnk onclick="cpClear();menu()">discard</button></span>`:'';
 const cbar=c&&c.gm=='c'?[`CONTINUE · ${edEsc(mpName(cpMap(c)).toUpperCase())} WAVE ${c.w+1}`,'cpResume()']:all?['CAMPAIGN COMPLETE · OPEN THE MAP',"hubCamp()"]:[`PLAY · ${MP[fr].n.toUpperCase()}`,'hubCampGo()'];
 const fbar=c&&c.gm=='f'?[`CONTINUE · ${edEsc(mpName(cpMap(c)).toUpperCase())} WAVE ${c.w+1}`,'cpResume()']:['CHOOSE MAP & SURVIVOR',"setGM('f');play()"];
 const fm=mapOKA(A,S.mp)?S.mp:0,nf=MP.filter((_,m)=>mapOKA(A,m)).length,sp=PCM();

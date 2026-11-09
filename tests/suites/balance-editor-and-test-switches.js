@@ -12,14 +12,14 @@ global.started=0;let errs=[];const P_=()=>({value:0,setValueAtTime(){},linearRam
 const node=()=>({connect(){},disconnect(){},start(){},stop(){},frequency:P_(),gain:P_(),detune:P_(),Q:P_(),pan:P_(),threshold:P_(),ratio:P_(),type:'',setPeriodicWave(){},buffer:null,loop:false});
 global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.sampleRate=8000;this.destination={}}get currentTime(){return global.AT_}createGain(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBufferSource(){return node()}createStereoPanner(){return node()}createDynamicsCompressor(){return node()}createPeriodicWave(){return{}}createBuffer(c,n){return{getChannelData:()=>new Float32Array(n)}}resume(){}};
 const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+ms/1000,f])};
-const out=code+`;S.ac.cp=8;docL.pointerdown[0]();endIntro();{let F=0,NP=0;const OK=(c,m)=>{if(c)NP++;else{F++;LOG('FAIL '+m)}};const SAY=m=>LOG('  '+m);
+const out=code+`;S.ac.cp=8;S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();{let F=0,NP=0;const OK=(c,m)=>{if(c)NP++;else{F++;LOG('FAIL '+m)}};const SAY=m=>LOG('  '+m);
 S.ac.name='T';setGM('f');mapId=0;sel=0;
 options();OK(!ui.innerHTML.includes('GAME BALANCE'),'no balance menu without the test code');balOpen();OK(!ui.innerHTML.includes('npg bal'),'balance screen refuses to open without the test code');
 const un0=S.ac.un.length,sp0=S.ac.sp;devSet();options();OK(ui.innerHTML.includes('balOpen()'),'Options shows GAME BALANCE with the test code');
 // ---- test switches start OFF ----
 OK(S.ac.un.length==un0&&S.ac.sp==sp0&&!DT('money')&&!DT('god')&&!DT('wave'),'entering the code changes nothing by itself');
-OK(ui.innerHTML.includes('Unlock everything')&&ui.innerHTML.includes('Infinite health')&&ui.innerHTML.includes('Unlimited money')&&ui.innerHTML.includes('Unlimited skill points')&&ui.innerHTML.includes('Start on any wave'),'Options lists the 5 switches');
-setGM('f');start();OK(P.cash<999999,'money is normal until switched on ($'+P.cash+')');dtSet('money',1);OK(P.cash==999999,'money switch gives $999,999 now');start();OK(P.cash==999999,'and at the next run start');dtSet('money',0);start();OK(P.cash<999999,'money switch off');
+OK(ui.innerHTML.includes('Unlock everything')&&ui.innerHTML.includes('Infinite health')&&ui.innerHTML.includes('Unlimited Scrap')&&ui.innerHTML.includes('Unlimited skill points')&&ui.innerHTML.includes('Start on any wave'),'Options lists the 5 switches');
+setGM('f');start();OK(P.cash<999999,'money is normal until switched on ($'+P.cash+')');dtSet('money',1);OK(P.cash==999999,'money switch gives <span class=scr>999,999 now');start();OK(P.cash==999999,'and at the next run start');dtSet('money',0);start();OK(P.cash<999999,'money switch off');
 dtSet('unl',1);OK(S.ac.un.length==CH.length&&cpD(S.ac,2)>=CORD.length-1,'unlock switch opens everything');dtSet('unl',0);OK(S.ac.un.length==un0,'unlock switch off restores real progress');
 dtSet('sp',1);OK(S.ac.sp==9999,'skill points switch');dtSet('sp',0);OK(S.ac.sp==sp0,'skill points back to '+sp0);
 S.sw=50;options();OK(S.sw==Math.max(1,S.best),'start wave limited to your best while the wave switch is off');dtSet('wave',1);S.sw=50;options();OK(S.sw==50,'wave switch allows wave 50');dtSet('wave',0);

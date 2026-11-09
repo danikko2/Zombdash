@@ -119,6 +119,10 @@ dev/spawn-diagnostics.js
 zombies/wave-size.js
 multiplayer/campaign-map-pick.js
 campaign/custom-campaign.js
+crafting/blueprints.js
+crafting/benches.js
+crafting/break.js
+crafting/blueprints-tab.js
 dev/test-switches.js
 game/drop-table.js
 dev/balance-editor.js

@@ -11,13 +11,13 @@ global.started=0;let nodes=0,errs=[];const P_=()=>({value:0,setValueAtTime(v,t){
 const node=()=>{nodes++;return{connect(){},disconnect(){},start(){global.started++},stop(){},frequency:P_(),gain:P_(),detune:P_(),Q:P_(),pan:P_(),threshold:P_(),ratio:P_(),type:'',setPeriodicWave(){},buffer:null,loop:false}};
 global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.sampleRate=8000;this.destination={}}get currentTime(){return global.AT_}createGain(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBufferSource(){return node()}createStereoPanner(){return node()}createDynamicsCompressor(){return node()}createPeriodicWave(){return{}}createBuffer(c,n){return{getChannelData:()=>new Float32Array(n)}}resume(){}};
 const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+ms/1000,f])};
-const out=code+`;S.ac.cp=8;S.tut=1;docL.pointerdown[0]();endIntro();
+const out=code+`;S.ac.cp=8;S.tut=1;S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();
 const ok=(c,m)=>{LOG((c?'PASS ':'FAIL ')+m);if(!c)errs.push(m)};
 const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
 setGM('f');mapId=0;sel=0;start();P.mx=P.hp=999;P.cash=100000;shop();
 ok(P.own.length==1&&P.own[0]==CH[0].w,'start: 1 weapon (starter)');
 buy(1);buy(2);buy(3);ok(P.own.length==4,'bought 3 more -> 4/4');const c0=P.cash;buy(5);ok(P.own.length==4&&P.cash==c0,'5th weapon refused when full');
-SHX.g=5;shop();const h1=ui.innerHTML;SHX.g=3;shop();ok(h1.includes('SLOTS FULL')&&!/Slot \\d · empty/.test(h1)&&ui.innerHTML.includes('SELL · $'),'shop shows inventory, sell buttons, slots full');
+SHX.g=5;shop();const h1=ui.innerHTML;SHX.g=3;shop();ok(h1.includes('SLOTS FULL')&&!/Slot \\d · empty/.test(h1)&&ui.innerHTML.includes('SELL · <span class=scr>'),'shop shows inventory, sell buttons, slots full');
 const paid=P.paid[3];wSell(3);ok(!P.own.includes(3)&&P.cash==c0+Math.round(paid*.6),'sold rifle for 60% ('+Math.round(paid*.6)+' of '+paid+')');
 const c1=P.cash;wSell(CH[0].w);ok(P.own.includes(CH[0].w)&&P.cash==c1,'starter cannot be sold');
 buy(5);ok(P.own.length==4&&P.own.includes(5),'free slot -> can buy again');

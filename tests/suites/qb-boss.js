@@ -14,7 +14,7 @@ global.started=0;let nodes=0,errs=[];const P_=()=>({value:0,setValueAtTime(v,t){
 const node=()=>{nodes++;return{connect(){},disconnect(){},start(){global.started++},stop(){},frequency:P_(),gain:P_(),detune:P_(),Q:P_(),pan:P_(),threshold:P_(),ratio:P_(),type:'',setPeriodicWave(){},buffer:null,loop:false}};
 global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.sampleRate=8000;this.destination={}}get currentTime(){return global.AT_}createGain(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBufferSource(){return node()}createStereoPanner(){return node()}createDynamicsCompressor(){return node()}createPeriodicWave(){return{}}createBuffer(c,n){return{getChannelData:()=>new Float32Array(n)}}resume(){}};
 const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+ms/1000,f])};
-const test=`;S.tut=1;docL.pointerdown[0]();endIntro();
+const test=`;S.tut=1;S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();
 const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
 let n=0,fails=0;const ok=(c,m)=>{n++;if(!c)fails++;LOG((c?'PASS ':'FAIL ')+m)};
 const SND=[];{const f=sfx;sfx=function(k){SND.push(k);return f.apply(this,arguments)}}
@@ -93,7 +93,7 @@ const charge=(dy)=>{fresh();at(300,0);z.ab=0;z.nx='c';z.cd=99;tick(1);const run=
  fresh();at(300,0);z.ab=0;z.nx='c';tick(1);ok(QBG.length==8,'now the charge brings 8 ghosts ('+QBG.length+')');for(let f=0;f<120&&(z.qs||QBG.length);f++)tick(1);
  fresh();at(250,0);z.ab=0;z.nx='m';tick(1);let t=0;for(let f=0;f<400&&z.mg;f++){if(z.mg==2)t++;P.x=z.x+250;P.y=z.y;P.hp=50;tick(1)}ok(Math.abs(t*.016-2.6)<.1&&z.ab<=SVS[18].ca*.7*1.2+.02,'the minigun fires longer (2.6 s) and the breaks are shorter ('+(t*.016).toFixed(2)+' s)')}
 // it all draws
-{let err='';try{fresh();at(300,0);z.ab=0;z.nx='c';for(let f=0;f<60;f++)tick(1);z.ab=0;z.nx='m';for(let f=0;f<120;f++)tick(1);qbDrawS();svExtra7();svDraw(z);qbGhostImg();qbLit();z.mg=2;const L=[];qbLights(L);if(!L.length)err='no muzzle light';svDraw(z);z.mg=0;const K0=KN;KN={ci:18,x:z.x,y:z.y,t:1,fl:1};svExtra();KN=K0}catch(e){err=e.stack}ok(!err&&mode=='play','the fight runs and draws (after the light too, on dark maps like the stadium) '+err)}
+{let err='';try{fresh();at(300,0);z.ab=0;z.nx='c';for(let f=0;f<60;f++)tick(1);z.ab=0;z.nx='m';for(let f=0;f<120;f++)tick(1);qbDrawS();svExtra7();svDraw(z);qbGhostImg();qbLit();z.mg=2;const L=[];qbLights(L);if(!L.length)err='no muzzle light';svDraw(z);z.mg=0;const K0=KN;KN={ci:18,x:z.x,y:z.y,t:1,fl:1};svExtra();KN=K0}catch(e){err=e.stack}ok(!err&&(mode=='play'&&!BRK),'the fight runs and draws (after the light too, on dark maps like the stadium) '+err)}
 // beaten: he kneels, gives up and joins
 {fresh();z.ab=0;z.nx='c';tick(1);hurt(z,z.hp+1,0,0);tick(2);ok(KN&&KN.ci==18&&!zs.includes(z)&&!QBG.length,'beaten, Buck kneels instead of popping (his ghost team vanishes)');
  ok(A.un.includes(18)&&bBt(A,DIF(),17),'he joins the survivors and the stadium counts as beaten');tick(Math.ceil(5.7/.016));

@@ -1,5 +1,5 @@
 //# game/player.js — Player input (keyboard, mouse, touch, controller) and player update
-function inp(p){let mx=0,my=0,fire=false;
+function inp(p){let mx=0,my=0,fire=false;if(p.bo)return{mx,my,fire};
 if(p.inp=='km'||p.inp=='any'){if(L){mx=L.x-L.ox;my=L.y-L.oy}if(keys.a)mx-=50;if(keys.d)mx+=50;if(keys.w)my-=50;if(keys.s)my+=50;
 if(R){const dx=R.x-R.ox,dy=R.y-R.oy;if(Math.hypot(dx,dy)>10){p.a=Math.atan2(dy,dx);fire=true}}
 else if(mouse.d||MSE.on){const v=MPn&&p.vp||{x:0,y:0,z:tutZ()},c=MPn&&p.cam||cam;p.a=Math.atan2((mouse.y-v.y)/v.z+c.y-p.y,(mouse.x-v.x)/v.z+c.x-p.x);if(mouse.d)fire=true}}

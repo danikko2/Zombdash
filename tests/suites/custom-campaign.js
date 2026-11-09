@@ -15,7 +15,7 @@ const node=()=>({connect(){},disconnect(){},start(){},stop(){},frequency:P_(),ga
 global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.sampleRate=8000;this.destination={}}get currentTime(){return global.AT_}createGain(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBufferSource(){return node()}createStereoPanner(){return node()}createDynamicsCompressor(){return node()}createPeriodicWave(){return{}}createBuffer(c,n){return{getChannelData:()=>new Float32Array(n)}}resume(){}};
 const ivs=[];global.setInterval=f=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+(ms||0)/1000,f]);return TQ.length};global.clearTimeout=()=>{};
 const test=`;S.ac.name='Tester';delete S.ac.cp;S.dlc=1;
-docL.pointerdown[0]();endIntro();
+S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();
 const tick=n=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
 let fails=0,n=0;const ok=(c,m)=>{n++;if(c)console.log('PASS '+m);else{fails++;console.log('FAIL '+m)}};
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
@@ -43,7 +43,7 @@ ok(ccAssign(dA.id,2,4,9)&&ccSlot(2,4).key===kA&&ccSlot(2,4).b===9,'put Junkyard 
 ok(!ccAssign(dC.id,2,4,9),'a slot holds one map: another map is refused there');
 ok(ccAssign(dA.id,3,4,10)&&!ccSlot(2,4)&&ccSlot(3,4).key===kA,'assigning again moves it (one place at a time)');ccAssign(dA.id,2,4,9);
 {const r=await msGet('kv','campaign');ok(r&&r.slots['2:4'].id===dA.id&&r.slots['2:4'].b===9,'slots are stored on the device next to the maps (IndexedDB)');
-sv();ok(!String(localStorage.deadyard).includes(dA.id)&&!('cmslots' in S),'and not in the save data')}
+sv();ok(!String(localStorage[SAVK]).includes(dA.id)&&!('cmslots' in S),'and not in the save data')}
 // ---------- campaign rules ----------
 ok(secOf(kA)===2&&secOf(kC)===-1,'section: the slot decides it; a map that is not in a slot has none');
 ok(mOpen(A,1,kA),'the slot is open: its section is open and the section start (Urban Outskirts) is beaten');
@@ -63,13 +63,13 @@ LBY={s:[{inp:'km',ac:S.ac,ci:0,v:0,rdy:1},{inp:0,ac:'G',ci:1,v:0,rdy:1}]};CMLB=1
 clbGo();ok(CMLB===0&&mapId===kA&&S.mp!==kA,'choosing it in the lobby keeps it picked');ok(mapOK(kA,lobAcs()),'and it is playable for the lobby');
 // ---------- a run on the custom slot ----------
 LBY=null;mapId=kA;sel=0;S.sw=1;start();
-ok(mode=='play'&&mapId===kA&&HS.CM===dA.id,'a campaign run on the custom map');
+ok((mode=='play'&&!BRK)&&mapId===kA&&HS.CM===dA.id,'a campaign run on the custom map');
 ok(zCamp()===ZCFG.camp[2],'it uses its section\\'s zombie line-up and caps (Zombville)');
 ok(LIVES===3,'campaign lives (3 on Medium)');
 ok(cmpI()===Math.max(...[11,12,13,17].map(m=>CORD.indexOf(m))),'difficulty scaling: as the toughest map of its section');
 ok(cBossNow()===9,'the wave-20 boss is the one picked');
 wave=19;nextWave();const svb=zs.find(z=>z.t==15);ok(svb&&svb.ci===9&&toSp===0,'wave 20: Officer Ray comes out, no other zombies');
-for(let i=0;i<60;i++){P.hp=P.mx=99;tick(1)}ok(svb.hp>0&&mode=='play','the boss fight runs on a custom map');
+for(let i=0;i<60;i++){P.hp=P.mx=99;tick(1)}ok(svb.hp>0&&(mode=='play'&&!BRK),'the boss fight runs on a custom map');
 {const un0=JSON.stringify(A.un);svDown(svb);ok(JSON.stringify(A.bm)===BM0,'beating the boss never touches the built-in beaten-map masks');
 ok(ccBt(A,1,dA.id)&&ccBt(A,0,dA.id)&&!ccBt(A,2,dA.id)&&A.cmc[dA.id]===2,'it is recorded by the map\\'s id in A.cmc (Medium, which counts for Easy)');
 ok(JSON.stringify(A.un)===un0,'the survivor does not join here (they join from their own map)');
@@ -92,7 +92,7 @@ setGM('c');mapId=kA;start();RUN0=Date.now()-60000;RUNW=1;wave=5;ok(olRow()===nul
 // ---------- checkpoints ----------
 cpClear();wave=4;kills=20;nextWave();{const c=JSON.parse(localStorage[CPK]||'null');ok(c&&c.gm=='c'&&c.cm===dA.id&&c.m===-1&&c.w==4,'checkpoint on a custom campaign map (by the map\\'s id)')}
 ok(cpOK()&&cpMap(cpOK())===kA,'it is offered');over(1);localStorage[CPK]=JSON.stringify(Object.assign(JSON.parse('{"v":1,"an":"Tester","gm":"c","m":-1,"ci":0,"d":1,"w":6,"k":30,"L":2,"IW":{},"BB":[],"LB":0,"p":{"cash":120,"hp":5,"mx":5,"ar":0,"own":[0],"cur":0,"mg":{},"am":{},"paid":{},"v":0}}'),{t:Date.now(),cm:dA.id}));
-cpResume();ok(mode=='shop'&&mapId===kA&&wave==6&&LIVES==2&&zCamp()===ZCFG.camp[2],'resume: back on the custom campaign map, same wave and lives');
+cpResume();ok((mode=='shop'||!!BRK)&&mapId===kA&&wave==6&&LIVES==2&&zCamp()===ZCFG.camp[2],'resume: back on the custom campaign map, same wave and lives');
 ccUnassign(dA.id);ok(!cpOK(),'once the map is out of its slot the campaign checkpoint is not offered');ccAssign(dA.id,2,4,9);cpClear();over(1);
 // ---------- replacing a campaign map ----------
 ok(ccRepOK(0)&&ccRepOK(8)&&!ccRepOK(12)&&!ccRepOK(13)&&!ccRepOK(14)&&!ccRepOK(15),'maps can be replaced when their own boss works anywhere (not City Park, Downtown, Market, Main Street)');
@@ -141,7 +141,7 @@ const dE=mkMap('Broken Later');await msWrite([['put','maps',{id:dE.id,json:cmWri
 ccAssign(dE.id,4,3,6);const kE=cmKeyById(dE.id);await msWrite([['put','maps',{id:dE.id,json:{format:'zombdash-map',version:99}}]]);await cmLoadAll();
 ok(CCS.slots['4:3']&&!ccSlot(4,3)&&ccSlotBad(4,3)&&CCW.some(w=>/Broken Later/.test(w)&&/Coming Soon/.test(w)),'a map that can\\'t be opened keeps its slot but shows Coming Soon, with a warning');
 crash='';try{CMV=4;cSlotPick(4,3)}catch(e){crash=e.message}ok(!crash&&ui.innerHTML.includes('can\\'t be opened'),'its slot explains why '+crash);A.bm[1]=BMK;
-crash='';try{mapId=kE;setGM('c');start()}catch(e){crash=e.message}ok(!crash&&!cmIs(mapId)&&mode=='play','starting it anyway falls back to a campaign map, no crash '+crash);over(1);
+crash='';try{mapId=kE;setGM('c');start()}catch(e){crash=e.message}ok(!crash&&!cmIs(mapId)&&(mode=='play'&&!BRK),'starting it anyway falls back to a campaign map, no crash '+crash);over(1);
 await workshop();ok(ui.innerHTML.includes('remove from campaign'),'the Workshop can take a broken map out of the campaign');{const i=CML.findIndex(e=>e.id===dE.id);wsCampOut(i)}ok(!CCS.slots['4:3'],'done');
 // a replacement whose map is gone: the original plays
 ccSetRep(dA.id,1);await msWrite([['put','maps',{id:dA.id,json:{format:'zombdash-map',version:99}}]]);await cmLoadAll();setGM('c');mapId=1;start();ok(mapId===1&&!CREP&&HS.CM==='builtin-warehouse','a replacement that can\\'t be opened: the original map plays (its own map file)');over(1);

@@ -12,7 +12,7 @@ const node=()=>{nodes++;return{connect(){},disconnect(){},start(){global.started
 global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.sampleRate=8000;this.destination={}}get currentTime(){return global.AT_}createGain(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBufferSource(){return node()}createStereoPanner(){return node()}createDynamicsCompressor(){return node()}createPeriodicWave(){return{}}createBuffer(c,n){return{getChannelData:()=>new Float32Array(n)}}resume(){}};
 const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+ms/1000,f])};
 const out=code+`;
-LOG('start body');S.tut=1;docL.pointerdown[0]();endIntro();LOG('intro done');
+LOG('start body');S.tut=1;S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();LOG('intro done');
 const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
 const ok=(c,m)=>{LOG((c?'PASS ':'FAIL ')+m);if(!c)errs.push(m)};
 S.ac.name='T';S.ac.un=[0];const A=S.ac;delete A.cp;
@@ -48,7 +48,7 @@ lobby();rL();ok(ui.innerHTML.includes('lbMode'),'lobby has mode toggle');lbMode(
 // test mode extras
 S.prof=[];A.cp=0;options(0);document.getElementById('dvc').value='2059';devTry();for(const k of['unl','sp','money','wave'])dtSet(k,1);ok(cpOf(A)==CORD.length,'test code opens every map');for(let i=0;i<60;i++)stepW(1);ok(S.sw>S.best&&S.sw>=40,'test mode start wave beyond best: '+S.sw);
 setGM('f');mapId=6;sel=0;start();ok(P.cash>=999999,'unlimited money at start');buy(7);ok(P.own.includes(7)&&P.cash>=999999,'still unlimited after buying a Laser');
-S.sw=20;setGM('c');mapId=6;start();ok(mode=='shop'&&wave==19,'campaign test start at wave 20 (shop first)');nextWave();ok(zs.some(q=>ZT[q.t].sv&&q.ci==6),'Steve fight right away');
+S.sw=20;setGM('c');mapId=6;start();ok((mode=='shop'||!!BRK)&&wave==19,'campaign test start at wave 20 (shop first)');nextWave();ok(zs.some(q=>ZT[q.t].sv&&q.ci==6),'Steve fight right away');
 devOff();ok(cpOf(A)==1||A.cp!=8,'turning test mode off restores campaign progress (cp '+A.cp+')');
 // codes keep campaign progress
 A.cp=5;const c=enc(A),D2=dec(c);ok(D2&&D2.cp==5,'account code keeps campaign progress');

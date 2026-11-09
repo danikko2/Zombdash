@@ -7,7 +7,7 @@ b[100]=ay<-.6;b[101]=ay>.6;b[102]=ax<-.6;b[103]=ax>.6;a.push({i:g.index,g,b,jp:k
 const PCM=()=>seenPad||(typeof matchMedia!='undefined'&&matchMedia('(any-pointer:fine)').matches);
 function padUI(){if(!GP.length)return;const md=mode;
 if(md=='splash'||md=='intro'){if(GP.some(q=>q.jp(0)||q.jp(9)))introTap();return}
-if(md=='play'){if(GP.some(q=>q.jp(9)))pauseMenu();return}
+if(md=='play'){if(bnPads())return;if(GP.some(q=>q.jp(9)))pauseMenu();return}
 if(md=='lobby')return lobbyPads();
 if(md=='shop'&&MPn)return shopPads();
 if(md=='pause'&&GP.some(q=>q.jp(9)))return resume();

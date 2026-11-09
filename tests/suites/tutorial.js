@@ -11,12 +11,12 @@ global.started=0;let nodes=0,errs=[];const P_=()=>({value:0,setValueAtTime(v,t){
 const node=()=>{nodes++;return{connect(){},disconnect(){},start(){global.started++},stop(){},frequency:P_(),gain:P_(),detune:P_(),Q:P_(),pan:P_(),threshold:P_(),ratio:P_(),type:'',setPeriodicWave(){},buffer:null,loop:false}};
 global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.sampleRate=8000;this.destination={}}get currentTime(){return global.AT_}createGain(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBufferSource(){return node()}createStereoPanner(){return node()}createDynamicsCompressor(){return node()}createPeriodicWave(){return{}}createBuffer(c,n){return{getChannelData:()=>new Float32Array(n)}}resume(){}};
 const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+ms/1000,f])};
-const out=code+`;docL.pointerdown[0]();endIntro();
+const out=code+`;S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();
 const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
 const ok=(c,m)=>{LOG((c?'PASS ':'FAIL ')+m);if(!c)errs.push(m)};
 S.ac.name='T';S.ac.un=[0];delete S.ac.cp;S.ac.lv=1;
 // ---- tutorial ----
-setGM('c');mapId=0;sel=0;start();ok(TUT&&TUT.ph==0&&wave==0&&mode=='play','new player: campaign on Suburb starts in the tutorial');
+setGM('c');mapId=0;sel=0;start();ok(TUT&&TUT.ph==0&&wave==0&&(mode=='play'&&!BRK),'new player: campaign on Suburb starts in the tutorial');
 const GG=TUT.G;ok(P.x>GG.x0&&P.x<GG.x1&&P.y>GG.y0&&P.y<GG.y1,'player starts inside the house');// the tutorial zooms in only as far as the whole house fits; on a phone (landscape, about 390 px tall) it already fills the view
 const FITZ=Math.min(W/(GG.gx-GG.x0+90),(H-(H<520?80:200))/(GG.y1-GG.y0+60));if(FITZ>1)ok(tutZ()>1,'camera zoomed in ('+tutZ().toFixed(2)+'x)');else ok(tutZ()==1,'small screen: the house already fills the view, so no zoom ('+W+'×'+H+')');
 // try to walk out of the front door straight away: blocked
@@ -27,7 +27,7 @@ const z=zs[0];ok(z.x>GG.x0&&z.x<GG.x1&&z.y>GG.y0&&z.y<GG.y1,'zombie is inside th
 let ff=0;for(;ff<900&&zs.length;ff++){mouse.d=1;const zz=zs[0];if(zz){const c=cam,v=tutZ();mouse.x=(zz.x-c.x)*v;mouse.y=(zz.y-c.y)*v}tick(1)}mouse.d=0;ok(!zs.length,'player kills the zombie by aiming at it ('+ff+' frames)');
 tick(60);ok(TUT.ph==3,'ready message: walk through the front door');ok(P.hp==P.mx,'can not get hurt in the tutorial');
 P.x=GG.cx;P.y=GG.y1-30;for(let i=0;i<120&&TUT&&TUT.ph<4;i++){keys.s=1;tick(1)}keys.s=0;ok(TUT&&TUT.ph==4,'walking out the front door starts the zoom out');
-const z1=tutZ();tick(40);if(z1>1)ok(TUT&&tutZ()<z1,'camera zooming out');else ok(TUT&&tutZ()==1,'small screen: the camera stays at normal zoom while the tutorial ends');tick(120);ok(!TUT&&wave==1&&mode=='play'&&tutZ()==1,'wave 1 starts at normal zoom');ok(S.ac.tut==1,'tutorial marked done');
+const z1=tutZ();tick(40);if(z1>1)ok(TUT&&tutZ()<z1,'camera zooming out');else ok(TUT&&tutZ()==1,'small screen: the camera stays at normal zoom while the tutorial ends');tick(120);ok(!TUT&&wave==1&&(mode=='play'&&!BRK)&&tutZ()==1,'wave 1 starts at normal zoom');ok(S.ac.tut==1,'tutorial marked done');
 setGM('c');mapId=0;start();ok(!TUT&&wave==1,'second time: no tutorial');
 TUTF=1;start();ok(TUT&&TUT.ph==0,'replay tutorial option works');
 S.ac.cp=8;setGM('f');mapId=0;start();ok(!TUT,'free play: no tutorial');

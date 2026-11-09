@@ -13,7 +13,7 @@ global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.s
 const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+ms/1000,f])};
 // Life Saver: tables, sprites, store, 3 rockets a heart, 3 s reload, hearts bouncing off a wall back to the shooter,
 // healing a friend (and reviving one who is down) in split screen, GAME BALANCE rows, older saves, codes and checkpoints
-const out=code+`;S.ac.cp=8;S.tut=1;S.ac.name='Tester';docL.pointerdown[0]();endIntro();
+const out=code+`;S.ac.cp=8;S.tut=1;S.ac.name='Tester';S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();
 {// (a block, so test names never clash with the game's globals)
 const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)errs.push(m)};
 const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
@@ -22,7 +22,7 @@ const LS=WP.findIndex(w=>w.n=='Life Saver');
 // ---------- tables ----------
 ok(LS==16&&WP.length>=17,'the Life Saver is gun 17 (the older guns keep their numbers)');
 ok(AMT[LS]=='rk'&&WP[LS].apr==3&&MAG[LS]==1&&RLT[LS]==3,'it uses rockets, 3 for every heart, one heart a magazine and a 3 s reload');
-ok(WP[LS].cost==1200&&WP[LS].hl==2&&WP[LS].d==0,'\\$1200; each heart heals 2 and never hurts zombies');
+ok(WP[LS].cost==1200&&WP[LS].hl==2&&WP[LS].d==0,'<span class=scr>1200; each heart heals 2 and never hurts zombies');
 ok([RLS,RLT,MAG,AMT,MZ,FS,FSN].every(a=>a.length==WP.length),'every per-gun table has an entry for every gun');
 ok(['lifesaver','rlls','lsbounce','lsheal'].every(n=>typeof SF[n]=='function'),'fire, reload, bounce and heal sounds exist');
 ok(MAG.slice(0,16).join()=='18,45,6,30,1,8,30,40,200,8,120,10,3,6,1,10'&&WP[14].cost==2500&&WP[15].d==8&&AMI.rk.max==48,'older guns and ammo keep their values');
@@ -32,8 +32,8 @@ ok(JSON.stringify(PS[0].gun[13])=='[0,1698,80,32,6,14]'&&JSON.stringify(PS[0].gu
 ok(ZS.heart&&JSON.stringify(ZS.heart.fly[0])=='[580,1641,18,16]'&&JSON.stringify(ZS.fbolt.fly[1])=='[549,1641,30,14]','the heart frame sits next to the old frames');
 // ---------- store ----------
 setGM('f');mapId=0;sel=0;S.dlf=1;start();P.cash=100000;P.am.rk=0;shop();
-ok(/data-gn=16[^>]*><\\/canvas><\\/span><span class=shn>Life Saver<\\/span><span class="shpr[^"]*">\\$1,200</.test(ui.innerHTML),'the store sells the Life Saver with its picture');
-let c0=P.cash;buy(LS);ok(c0-P.cash==1200&&P.mg[LS]==1&&P.am.rk==6&&amTxt(P,LS)=='1 / 2','bought for \\$1200: 1 heart loaded + 6 rockets (2 more hearts)');
+ok(/data-gn=16[^>]*><\\/canvas><\\/span><span class=shn>Life Saver<\\/span><span class="shpr[^"]*"><span class=scr>1,200</.test(ui.innerHTML),'the store sells the Life Saver with its picture');
+let c0=P.cash;buy(LS);ok(c0-P.cash==1200&&P.mg[LS]==1&&P.am.rk==6&&amTxt(P,LS)=='1 / 2','bought for <span class=scr>1200: 1 heart loaded + 6 rockets (2 more hearts)');
 // ---------- a wall in front: the heart bounces back and heals the shooter ----------
 nextWave();toSp=0;P.mx=10;P.inv=1e9;
 let KP=mk(0,30,30);KP.hp=1e9;KP.spm=1e-6;
@@ -72,7 +72,7 @@ clr();face();shoot();tick(3);drawW();hud();ok(!ERRS.length&&LSH.length,'drawing 
  ok(!B.dn&&B.hp>=2&&B.inv<=2,'a heart revives a friend who is down ('+B.hp+' health)');
  line();B.dead=1;const bh=B.hp;go(A);for(let i=0;i<10;i++)tick(1);ok(LSH.length==1||A.hp>2,'a heart flies past a player who is out');B.dead=0;secs(3);
  line();A.a=Math.PI;B.x=A.x-100;B.hp=1;A.hp=2;go(A);for(let i=0;i<60&&LSH.length;i++)tick(1);ok(B.hp==3,'it heals whichever friend it reaches');
- inp=inp0;mode='shop';shop();ok(ui.innerHTML.split('Life Saver').length>=3,'the split-screen shop sells the Life Saver to each player');
+ inp=inp0;mode='play';for(const q of PL)q.bo={i:0};shop();ok(BX.innerHTML.split('Life Saver').length>=3,'the split-screen shop sells the Life Saver to each player');
  ok(!ERRS.length,'no errors in split screen: '+ERRS.join(' | '))}
 // ---------- GAME BALANCE ----------
 devSet();balOpen('guns');const sec=ui.innerHTML.slice(ui.innerHTML.indexOf('Life Saver'));

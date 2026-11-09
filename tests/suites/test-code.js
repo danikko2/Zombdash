@@ -12,7 +12,7 @@ const node=()=>{nodes++;return{connect(){},disconnect(){},start(){global.started
 global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.sampleRate=8000;this.destination={}}get currentTime(){return global.AT_}createGain(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBufferSource(){return node()}createStereoPanner(){return node()}createDynamicsCompressor(){return node()}createPeriodicWave(){return{}}createBuffer(c,n){return{getChannelData:()=>new Float32Array(n)}}resume(){}};
 const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+ms/1000,f])};
 const out=code+`;S.ac.cp=8;
-docL.pointerdown[0]();endIntro();
+S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();
 const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)errs.push(m)};
 S.ac.name='Nick';S.ac.un=[0,2];S.ac.sp=3;S.ac.sk={spd:1};wpA(S.ac);S.ac.wp[1].k=120;S.ac.wp[1].l=6;S.ac.cm[1]=1;msA(S.ac);S.ac.ms[2].l=4;S.ac.tt='2-0';S.prof=[{name:'Two',xp:0,lv:1,sp:0,sk:{},pts:0,un:[0]}];
 const before=JSON.stringify(S.ac),b2=JSON.stringify(S.prof[0]);

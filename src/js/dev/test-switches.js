@@ -1,6 +1,6 @@
 //# dev/test-switches.js — Test mode on/off switches and infinite health
 // ---------- test mode switches: entering the code turns test mode on with everything OFF; each cheat is its own switch ----------
-const DTL=[['unl','Unlock everything','every map, survivor, camo, weapon level, mastery perk, title, badge and look'],['money','Unlimited money','$999,999 at the start of a run and in every shop'],['sp','Unlimited skill points','buy any skill; turning it off puts your real skills and points back'],['wave','Start on any wave','up to wave 99 in free play, 20 in the campaign'],['god','Infinite health','zombies, bosses and hazards can\'t hurt you']];
+const DTL=[['unl','Unlock everything','every map, survivor, camo, weapon level, mastery perk, title, badge, look, blueprint and bench level'],['money','Unlimited Scrap','999,999 Scrap at the start of a run and at every bench'],['sp','Unlimited skill points','buy any skill; turning it off puts your real skills and points back'],['wave','Start on any wave','up to wave 99 in free play, 20 in the campaign'],['god','Infinite health','zombies, bosses and hazards can\'t hurt you']];
 function DT(k){return!!(S.dev&&S.dt&&S.dt[k])}
 // saves from before the switches existed: keep what that test mode was already doing
 if(S.dev&&!S.dt){S.dt={unl:1,money:S.balNM?0:1,sp:1,wave:1};delete S.balNM}

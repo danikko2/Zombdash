@@ -13,7 +13,7 @@ global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.s
 const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+ms/1000,f])};
 // Blastbow, Death Row and Firebow: tables, sprites, store, sticky blinking bolts and their blast, chain lightning,
 // burning zombies, kill credit (split screen too), GAME BALANCE rows, and that older saves, codes and checkpoints keep working
-const out=code+`;S.ac.cp=8;S.tut=1;S.ac.name='Tester';docL.pointerdown[0]();endIntro();
+const out=code+`;S.ac.cp=8;S.tut=1;S.ac.name='Tester';S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();
 {// (a block, so test names never clash with the game's globals)
 const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)errs.push(m)};
 const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
@@ -22,7 +22,7 @@ const ix=n=>WP.findIndex(w=>w.n==n),XB=ix('Crossbow'),BB=ix('Blastbow'),DW=ix('D
 const near=(a,b,e)=>Math.abs(a-b)<(e||1e-6);
 // ---------- tables ----------
 ok(BB==13&&DW==14&&FB==15&&WP.length>=16,'Blastbow, Death Row and Firebow are guns 14, 15 and 16 (the older guns keep their numbers)');
-ok(WP[BB].cost==1800&&WP[DW].cost==2500&&WP[FB].cost==850,'prices: Blastbow $1800, Death Row $2500, Firebow $850');
+ok(WP[BB].cost==1800&&WP[DW].cost==2500&&WP[FB].cost==850,'prices: Blastbow <span class=scr>1800, Death Row <span class=scr>2500, Firebow <span class=scr>850');
 ok(AMT[BB]=='ar'&&AMT[FB]=='ar'&&AMT[DW]=='rk','the Blastbow and the Firebow shoot arrows, Death Row uses rockets');
 ok(MAG[DW]==1&&RLT[DW]==2.5&&WP[DW].d==11&&WP[DW].dx==3&&WP[DW].zn==15,'Death Row: one shot a magazine, 2.5 s reload, 11-14 damage, up to 15 zombies');
 ok(WP[FB].d>WP[XB].d&&WP[FB].bt>0&&WP[FB].bd>0,'the Firebow hits a little harder than the Crossbow ('+WP[FB].d+' vs '+WP[XB].d+') and sets zombies on fire');
@@ -36,10 +36,10 @@ ok(JSON.stringify(PS[0].gun[0])=='[490,0,80,32,6,14]'&&JSON.stringify(PS[0].gun[
 ok(ZS.bbolt&&ZS.bbolt.fly.length==1&&ZS.fbolt&&ZS.fbolt.fly.length==2&&ZS.bbolt.fly[0][0]>=487&&JSON.stringify(ZS.bolt.fly[0])=='[456,1641,30,10]'&&JSON.stringify(ZS.chicken.fly[0])=='[0,1641,56,48]','blast bolt and burning bolt frames added next to the old ones');
 // ---------- store ----------
 setGM('f');mapId=0;sel=0;S.dlf=1;start();P.mx=P.hp=999;P.cash=100000;shop();
-ok(/data-gn=13[^>]*><\\/canvas><\\/span><span class=shn>Blastbow<\\/span><span class="shpr[^"]*">\\$1,800</.test(ui.innerHTML)&&/data-gn=14[^>]*><\\/canvas><\\/span><span class=shn>Death Row<\\/span><span class="shpr[^"]*">\\$2,500</.test(ui.innerHTML)&&/data-gn=15[^>]*><\\/canvas><\\/span><span class=shn>Firebow<\\/span><span class="shpr[^"]*">\\$850</.test(ui.innerHTML),'the store sells all three, each with its picture');
-P.am.ar=0;P.am.rk=0;let c0=P.cash;buy(BB);ok(P.own.includes(BB)&&c0-P.cash==1800&&P.mg[BB]==6&&P.am.ar==12,'Blastbow: $1800, 6 bolts loaded + 12 arrows');
-c0=P.cash;buy(DW);ok(c0-P.cash==2500&&P.mg[DW]==1&&P.am.rk==2,'Death Row: $2500, 1 shot loaded + 2 rockets');
-c0=P.cash;buy(FB);ok(c0-P.cash==850&&P.mg[FB]==10&&P.am.ar==32,'Firebow: $850, 10 bolts loaded + 20 arrows');
+ok(/data-gn=13[^>]*><\\/canvas><\\/span><span class=shn>Blastbow<\\/span><span class="shpr[^"]*"><span class=scr>1,800</.test(ui.innerHTML)&&/data-gn=14[^>]*><\\/canvas><\\/span><span class=shn>Death Row<\\/span><span class="shpr[^"]*"><span class=scr>2,500</.test(ui.innerHTML)&&/data-gn=15[^>]*><\\/canvas><\\/span><span class=shn>Firebow<\\/span><span class="shpr[^"]*"><span class=scr>850</.test(ui.innerHTML),'the store sells all three, each with its picture');
+P.am.ar=0;P.am.rk=0;let c0=P.cash;buy(BB);ok(P.own.includes(BB)&&c0-P.cash==1800&&P.mg[BB]==6&&P.am.ar==12,'Blastbow: <span class=scr>1800, 6 bolts loaded + 12 arrows');
+c0=P.cash;buy(DW);ok(c0-P.cash==2500&&P.mg[DW]==1&&P.am.rk==2,'Death Row: <span class=scr>2500, 1 shot loaded + 2 rockets');
+c0=P.cash;buy(FB);ok(c0-P.cash==850&&P.mg[FB]==10&&P.am.ar==32,'Firebow: <span class=scr>850, 10 bolts loaded + 20 arrows');
 ok(ui.innerHTML.includes('6 / 32')&&ui.innerHTML.includes('1 / 2')&&ui.innerHTML.includes('10 / 32'),'the inventory shows their ammo');
 // ---------- an open spot to test in ----------
 nextWave();toSp=0;P.mx=P.hp=999;P.inv=1e9;
@@ -120,7 +120,7 @@ drawW();hud();ok(!ERRS.length&&BBC.length&&LZ.length&&zs.some(z=>z.brn>0),'drawi
  ok(Z.hp<=0&&(Q.k||0)-k[1]==1&&(PL[0].k||0)==k[0],'player 2\\'s burning zombie counts for player 2');
  Q.cur=DW;Q.cds[DW]=0;Q.mg[DW]=1;Q.rl=0;P=Q;const qm2=muzzle();P=P0;const ZZ=[0,1,2].map(i=>at(0,qm2.x+100+i*40,qm2.y,3));inp=p=>({mx:0,my:0,fire:p===Q});tick(1);inp=inp0;
  ok(ZZ.every(z=>z.hp<=0)&&(Q.k||0)-k[1]==4,'player 2\\'s lightning kills count for player 2');
- mode='shop';shop();ok(['Blastbow','Death Row','Firebow'].every(n=>ui.innerHTML.split(n).length>=3),'the split-screen shop sells the three new guns to each player');
+ mode='play';for(const q of PL)q.bo={i:0};shop();ok(['Blastbow','Death Row','Firebow'].every(n=>BX.innerHTML.split(n).length>=3),'the split-screen shop sells the three new guns to each player');
  ok(!ERRS.length,'no errors in split screen: '+ERRS.join(' | '))}
 // ---------- GAME BALANCE ----------
 devSet();balOpen('guns');ok(/Blastbow.*Blast damage to the zombie it sticks in.*Blast damage to the zombies around.*Blast radius.*Seconds before it blows up.*Death Row.*Reload seconds.*Extra random damage.*Most zombies in one chain.*How far the lightning jumps.*Firebow.*Seconds a zombie burns.*Fire damage per second/s.test(ui.innerHTML),'Guns tab: the new guns with their own rows');

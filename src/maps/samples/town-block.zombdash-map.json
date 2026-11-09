@@ -127,6 +127,12 @@
  ],
  "props": [
   {
+   "id": "p_bench",
+   "kind": "craftbench",
+   "x": 992,
+   "y": 592
+  },
+  {
    "id": "p42",
    "kind": "bed",
    "x": 290,

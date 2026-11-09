@@ -18,20 +18,21 @@ if(!make)return null;return olKeep(await sbRaw('/auth/v1/signup',{method:'POST',
 async function sbReq(path,o){o=o||{};const s=await olSess(o.make);return sbRaw(path,Object.assign({},o,{tok:s?s.at:SBK}))}
 // ----- cloud save: the whole main account -----
 function olData(){const A=Object.assign({},S.ac);delete A.ol;delete A.dvb;return A}
-async function olUpload(force){if(!OLX||S.dev)return;const s=await olSess(true);if(!s)return;const d=olData(),h=JSON.stringify(d).length;
+// Zombdash Blueprints (ZBX): never uploads a save or posts a score, so it can't change the original game's account or leaderboards
+async function olUpload(force){if(!OLX||S.dev||ZBX)return;const s=await olSess(true);if(!s)return;const d=olData(),h=JSON.stringify(d).length;
 await sbRaw('/rest/v1/saves?on_conflict=user_id',{method:'POST',tok:s.at,prefer:'resolution=merge-duplicates,return=minimal',body:{user_id:s.uid,name:olName(S.ac.name),data:d,updated_at:new Date().toISOString()}});S.ol.up=Date.now();S.ol.lv=S.ac.lv;sv()}
 async function olFetchSave(){const s=await olSess(false);if(!s)return null;const r=await sbRaw('/rest/v1/saves?select=name,data,updated_at&user_id=eq.'+s.uid,{tok:s.at});return r&&r[0]||null}
 function olNewer(c){return c&&c.data&&Date.parse(c.updated_at)>(S.ol&&S.ol.up||0)+5000&&JSON.stringify(c.data)!==JSON.stringify(olData())}
-function olUseCloud(){const c=OL.cloud;if(!c||!c.data||!c.data.name){sfx('deny');return}const ol=S.ol;Object.assign(S.ac,c.data);S.ol=ol;S.ol.up=Date.now();OL.cloud=null;sv();sfx('buy');olMenu('Loaded your cloud save.')}
-function olKeepLocal(){OL.cloud=null;olSync(1).then(()=>olMenu('Uploaded this device\'s progress.'),e=>olMenu(e&&e.msg||String(e)))}
+function olUseCloud(){const c=OL.cloud;if(!c||!c.data||!c.data.name){sfx('deny');return}const ol=S.ol;Object.assign(S.ac,c.data);if(c.data.bpv==null)S.ac.bpv=0;S.ol=ol;S.ol.up=Date.now();OL.cloud=null;sv();sfx('buy');olMenu('Loaded your cloud save.')}
+function olKeepLocal(){OL.cloud=null;olSync(1).then(r=>olMenu(r=='off'?'Kept this device\'s progress (nothing is uploaded from this build).':'Uploaded this device\'s progress.'),e=>olMenu(e&&e.msg||String(e)))}
 // sync: if the cloud has newer progress from another device, ask; otherwise upload
-async function olSync(force){if(!OLX||S.dev||!S.ol)return;const c=await olFetchSave();if(c&&!force&&olNewer(c)){OL.cloud=c;return 'ask'}await olUpload();OL.msg='Saved to the cloud';return 'up'}
+async function olSync(force){if(!OLX||S.dev||!S.ol)return;const c=await olFetchSave();if(c&&!force&&olNewer(c)){OL.cloud=c;return 'ask'}if(ZBX){OL.msg='Cloud backups are off in Zombdash Blueprints';return 'off'}await olUpload();OL.msg='Saved to the cloud';return 'up'}
 let OLT=0;function olAuto(){if(!OLX||!S.ol||S.olOff||OL.busy||Date.now()-OLT<60000)return;OLT=Date.now();OL.busy=1;olSync().then(r=>{if(r=='ask'&&mode=='menu'&&UIS=='')menu()},()=>{}).then(()=>{OL.busy=0})}
 // ----- leaderboards -----
 function olRun(){RUN0=Date.now();RUNW=wave+1}
 // the score row this run would post, or null when it doesn't count (custom maps: map 63 + the map's id in cmap; playtests never count)
 function olRow(){if(S.dev||MPn||TUT||cmPT(mapId)||PTX||GMD!='f'||!P||P.ac!==S.ac||wave<2)return null;const cu=cmIs(mapId);if(cu&&!cmIdOf(mapId))return null;const sc={name:olName(S.ac.name),map:cu?CMLBM:mapId,mode:'f',diff:DIF(),wave,kills,survivor:P.ci||0,start:Math.min(RUNW,wave),secs:Math.round((Date.now()-RUN0)/1000)};if(cu)sc.cmap=cmIdOf(mapId);return sc}
-function olScore(){if(!OLX||S.olOff)return;const sc=olRow();if(!sc)return;
+function olScore(){if(!OLX||S.olOff||ZBX)return;const sc=olRow();if(!sc)return;
 S.olq=(S.olq||[]).concat([sc]).slice(-10);sv();olFlush()}
 async function olFlush(){if(!OLX||!S.olq||!S.olq.length)return;try{const s=await olSess(true);if(!s)return;while(S.olq.length){const sc=S.olq[0];try{await sbRaw('/rest/v1/scores',{method:'POST',tok:s.at,prefer:'return=minimal',body:Object.assign({user_id:s.uid},sc)})}catch(e){if(!(e.status&&e.status<500))throw e}S.olq.shift();sv()}}catch(e){}}
 // m: -1 = every built-in map, a map number, or a custom map's key (its board is map 63 + its id)
@@ -47,18 +48,18 @@ lbNX(m,d,cu,body)}
 // ----- the online screen -----
 function olTag(){return!OLX?'offline':S.ol?(S.ol.anon?'guest account':S.ol.email):'not signed in'}
 function olMenu(msg){HUBX=null;UIS='ol';mode='menu';const s=S.ol,c=OL.cloud;
-show(nxPage('olp','ONLINE',{back:"UIS='';menu()",crumbs:[['Online']]},`${msg?`<p class="npmsg ok">${msg}</p>`:''}
+show(nxPage('olp','ONLINE',{back:"UIS='';menu()",crumbs:[['Online']]},`${ZBX?'<p class=npmsg>This is the <b>Zombdash Blueprints</b> test build. Cloud backups and score posting are off here, so nothing you do in it changes your main Zombdash account or the leaderboards. You can still load your online save into this build, or bring your account over with an account code (Accounts).</p>':''}${msg?`<p class="npmsg ok">${msg}</p>`:''}
 ${OL.last?`<p class="npmsg bad">Last problem: ${String(OL.last).replace(/[<>&]/g,'')}</p>`:''}${!OLX?'<p class=npmsg>Online features are not available here.</p>':OL.ok===0?'<p class="npmsg bad">Can\'t reach the online server right now. The game still saves on this device.</p>':''}
 ${c?`<div class=cpb><b>Newer progress found online</b><small>${String(c.name).replace(/[<>&]/g,'')} · LV ${c.data.lv} · saved ${new Date(c.updated_at).toLocaleString()}</small><div class=row><button class=go onclick="olUseCloud()">USE ONLINE SAVE</button><button onclick="olKeepLocal()">KEEP THIS DEVICE</button></div></div>`:''}
 <div class=opt><div><h3>Account</h3><p class=note>${!s?'Not signed in. Go online to back up your progress and post scores.':s.anon?'Signed in as a <b>guest</b> on this device. Add an email to use the same account on other devices.':'Signed in as <b>'+s.email+'</b>.'}${s&&s.up?'<br>Last backup: '+new Date(s.up).toLocaleString():''}</p>
 ${!s?'<button class=go onclick="olGo()">GO ONLINE (GUEST)</button>':'<button class=go onclick="olBackup()">BACK UP NOW</button>'}
 ${!s||s.anon?`<label class=wnf><span class=cwk>EMAIL</span><span class=wnin><input id=ole type=email placeholder="you@example.com" autocomplete=email autocapitalize=off></span></label><label class=wnf><span class=cwk>PASSWORD</span><span class=wnin><input id=olp type=password placeholder="6 or more characters" autocomplete=current-password></span></label><div class=row>${s?'<button data-q=1 onclick="olLink()">ADD EMAIL</button>':''}<button data-q=1 onclick="olLogin()">SIGN IN</button>${s?'':'<button data-q=1 onclick="olSignup()">CREATE</button>'}</div><p class=note id=olm></p>`:''}
 ${s?'<button data-q=1 onclick="olOut()">SIGN OUT<small>this device only</small></button>':''}</div>
-<div><h3>Leaderboards</h3><div class=seg><button class="${S.olOff?'':'on'}" onclick="S.olOff=0;sv();olMenu()">Post my scores</button><button class="${S.olOff?'on':''}" onclick="S.olOff=1;sv();olMenu()">Don't post</button></div><p class=note>Your best free-play wave on each map shows under your name: <b>${olName(S.ac.name)}</b>.</p><button data-q=1 onclick="lbOpen()">VIEW LEADERBOARDS</button></div></div>`))}
+<div><h3>Leaderboards</h3>${ZBX?'<p class=note>Scores from this build are not posted.</p>':`<div class=seg><button class="${S.olOff?'':'on'}" onclick="S.olOff=0;sv();olMenu()">Post my scores</button><button class="${S.olOff?'on':''}" onclick="S.olOff=1;sv();olMenu()">Don't post</button></div>`}<p class=note>Your best free-play wave on each map shows under your name: <b>${olName(S.ac.name)}</b>.</p><button data-q=1 onclick="lbOpen()">VIEW LEADERBOARDS</button></div></div>`))}
 function olMsg(t){const e=document.getElementById('olm');if(e)e.textContent=t}
 function olBusy(p,ok){OL.busy=1;olMsg('Working…');return p.then(ok,e=>{const m=(e&&(e.msg||e.message))||String(e);OL.last=m;try{olMenu()}catch(_){}olMsg(m);sfx('deny')}).catch(e=>{olMsg(String(e&&e.message||e))}).then(()=>{OL.busy=0})}
-function olGo(){olBusy(olSess(true).then(()=>olSync()),r=>olMenu(r=='ask'?'':'You\'re online. Progress backed up.'))}
-function olBackup(){olBusy(olSync(),r=>olMenu(r=='ask'?'':'Backed up.'))}
+function olGo(){olBusy(olSess(true).then(()=>olSync()),r=>olMenu(r=='ask'?'':r=='off'?'You\'re online. (Backups are off in this build.)':'You\'re online. Progress backed up.'))}
+function olBackup(){olBusy(olSync(),r=>olMenu(r=='ask'?'':r=='off'?'Cloud backups are off in Zombdash Blueprints.':'Backed up.'))}
 function olCred(){const e=(document.getElementById('ole')||{}).value||'',p=(document.getElementById('olp')||{}).value||'';if(!/^\S+@\S+\.\S+$/.test(e)){olMsg('Enter a valid email.');return null}if(p.length<6){olMsg('Password needs 6+ characters.');return null}return{email:e.trim(),password:p}}
 function olLogin(){const c=olCred();if(!c)return;olBusy(sbRaw('/auth/v1/token?grant_type=password',{method:'POST',body:c}).then(j=>{olKeep(j);S.ol.up=0;return olFetchSave()}),sv_=>{OL.cloud=sv_&&sv_.data?sv_:null;if(!OL.cloud)olSync(1).catch(()=>{});olMenu(OL.cloud?'Signed in.':'Signed in. This device\'s progress is now backed up.')})}
 function olSignup(){const c=olCred();if(!c)return;olBusy(sbRaw('/auth/v1/signup',{method:'POST',body:c}).then(j=>{if(!j.access_token)throw{msg:'Check your email to confirm, then sign in'};olKeep(j);return olSync(1)}),()=>olMenu('Account created and backed up.'))}

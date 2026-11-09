@@ -960,3 +960,46 @@ background:var(--n0);color:var(--nt);font:14px/1.3 'Barlow',system-ui,sans-serif
 .nx.npg.bal .brs:not(.nb){min-height:30px;width:32px;padding:0;font-size:15px}
 .nx.bal .bft{display:flex;flex-wrap:wrap;gap:8px}.nx.bal .bcode{display:flex;flex-direction:column;gap:8px;padding:16px 20px;background:rgba(13,19,16,.9);border:1px solid rgba(236,243,230,.08);border-radius:8px}.nx.bal .bcode h4{margin:0;font:600 12px 'Barlow',sans-serif;letter-spacing:.2em;color:var(--nm)}.nx.bal textarea{min-height:70px;font:12px ui-monospace,monospace}
 .pt .npi,.short .npi{padding:14px 16px 24px}
+/* ---------- Zombdash Blueprints: Scrap, the break, benches, the Blueprints page ---------- */
+.scr{display:inline-flex;align-items:center;gap:.16em;white-space:nowrap}.scr::before{content:"";flex:none;width:.82em;height:.82em;background:currentColor;opacity:.9;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M7.5 3.2h9l4.5 8.8-4.5 8.8h-9L3 12zM15.3 12a3.3 3.3 0 1 0-6.6 0a3.3 3.3 0 1 0 6.6 0z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M7.5 3.2h9l4.5 8.8-4.5 8.8h-9L3 12zM15.3 12a3.3 3.3 0 1 0-6.6 0a3.3 3.3 0 1 0 6.6 0z'/%3E%3C/svg%3E") center/contain no-repeat}
+/* over the game: the READY button in the break, the bench button on touch screens, split-screen bench stores */
+#bx{position:absolute;inset:0;z-index:5;pointer-events:none;font-family:'Barlow Condensed',system-ui,sans-serif}
+#bx>button{pointer-events:auto;position:absolute;left:50%;transform:translateX(-50%);margin:0;width:auto;border:0;border-radius:6px;cursor:pointer;color:#0E1A08;font-family:'Barlow Condensed',sans-serif;font-weight:800;letter-spacing:.08em;box-shadow:0 10px 26px rgba(0,0,0,.5);text-shadow:none}
+#bx .bxr{top:274px;height:44px;padding:0 20px;font-size:19px;white-space:nowrap;background:#9BE860}
+#bx .bxu{bottom:96px;min-width:170px;height:62px;padding:0 22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;font-size:22px;background:#FFCF40}#bx .bxu small{font-family:'Barlow',sans-serif;font-weight:600;font-size:13px;letter-spacing:0;opacity:.8}
+#bx .msx{background:none;pointer-events:none}#bx .msp{pointer-events:auto;background:#0b100d;box-shadow:0 0 0 2px rgba(0,0,0,.4),0 18px 40px rgba(0,0,0,.55)}
+/* the store's countdown and bench buttons */
+.shbt{flex:none;display:flex;flex-direction:column;align-items:center;padding:6px 14px;border-radius:6px;background:rgba(255,207,64,.1)}.shbt small{font-size:11px;font-weight:600;letter-spacing:.16em;color:var(--nm)}
+.brkt{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:34px;line-height:1;color:var(--ng);font-variant-numeric:tabular-nums}.brkt.hot{color:var(--nr)}
+.nx .shbk{flex:none;height:40px;gap:6px}.shti .brkt{font-size:36px}.shti b small{font-family:'Barlow',sans-serif;font-weight:600;font-size:14px;color:var(--nm)}.nar .shti b small{display:none}
+.shbpl{display:flex;align-items:flex-start;gap:10px;margin:10px 4px 4px;padding:12px 14px;border-radius:6px;border:1px dashed rgba(236,243,230,.18);color:var(--nm);font-size:13px;line-height:1.35}.shbpl svg{flex:none;margin-top:2px}.shbpl b{display:block;color:var(--nt);font-size:15px}
+.short .shti .brkt{font-size:30px}
+.msbt{margin-left:auto;font-size:22px}.msbt+.mshp{margin-left:10px}.msph .msbt~.msc{margin-left:10px}
+.nx .mslv{margin-left:auto;height:28px;padding:0 10px;border-radius:5px;border:1px solid rgba(236,243,230,.2)!important;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.06em;color:var(--nb)}.nx .mslv+.msrd{margin-left:6px}
+.msbpl{display:flex;align-items:center;gap:6px;margin:6px 2px 2px;font-size:11px;color:var(--nm)}
+/* end screens: where the Zombie Pts came from */
+.zpn{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:8px 12px;border-radius:6px;background:var(--nf);font-size:14px;color:var(--nm)}.zpn b{color:var(--nt);font-weight:700}
+.zpfc{display:inline-flex;align-items:center;gap:6px;margin-left:auto;padding:3px 10px;border-radius:5px;background:rgba(255,207,64,.14);color:var(--ng);font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;letter-spacing:.06em}.zpfc b{color:var(--ng)}
+.zpnx{margin-left:auto;color:var(--ng);font-size:13px}
+/* Progress → Blueprints */
+.bpl{flex:0 0 360px}.bpr{flex:1}
+.bpbig{flex:none;display:flex;align-items:flex-end;justify-content:center;height:220px;border-radius:8px;background:radial-gradient(ellipse at 50% 85%,rgba(155,232,96,.12),transparent 70%),rgba(236,243,230,.03)}
+.nx .bpbig canvas{width:auto;height:auto;max-width:94%;transform:scale(2.3);transform-origin:50% 100%;margin-bottom:22px;image-rendering:pixelated}
+.bplv{flex:none;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.bplv .hdt small{font-size:22px;color:var(--nm);margin-left:4px}
+.bppp{display:flex;gap:4px;margin-left:auto}.bppp i{width:22px;height:8px;border-radius:2px;background:var(--nl)}.bppp i.on{background:var(--na)}
+.bpnote{font-size:13px;color:var(--nm);line-height:1.45}
+.bpup{flex:none;display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:8px;background:rgba(236,243,230,.05);border:1px solid rgba(236,243,230,.08)}.bpup>b{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px}.bpup>span:not(.cwk){font-size:13px;color:var(--nm)}.bpup small{font-size:13px;color:var(--ng)}
+.nx .bpup .np{min-height:54px;font-size:21px;margin-top:4px}
+.bprh{flex:none;display:flex;align-items:flex-end;gap:16px}.bprh>div{display:flex;flex-direction:column}.bpct{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:38px;line-height:1}.bpct small{font-size:18px;color:var(--nm)}
+.bppt{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;padding:6px 14px;border-radius:6px;background:rgba(255,207,64,.1);font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--ng)}.bppt b{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:28px;letter-spacing:0;line-height:1}
+.bpts{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-right:4px;scrollbar-width:thin;scrollbar-color:#2a3a2e transparent}
+.bptr{flex:none;display:flex;flex-direction:column;gap:6px}.bpth{display:flex;align-items:baseline;gap:10px;padding-bottom:4px;border-bottom:2px solid var(--tc)}.bpth b{font-size:13px;font-weight:700;letter-spacing:.18em;color:var(--tc)}.bpth span{font-size:12px;color:var(--nm)}.bpth em{margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-style:normal;font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--na)}.bptr.lk .bpth em{color:var(--nm)}
+.bpgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.nx .bpg{flex-direction:column;align-items:flex-start;gap:4px;padding:8px 10px 9px;border-radius:6px;background:var(--nf);border:1px solid transparent!important;min-width:0}.bpg:hover{background:rgba(236,243,230,.09)}.nx .bpg.on{border-color:var(--na)!important;background:rgba(155,232,96,.1)}
+.nx .bpg canvas{width:96px!important;height:34px!important}.bpg b{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}.bpg small{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--ng)}.bpg.ow small{color:var(--na)}.bpg.lk{opacity:.5}.bpg.lk small{color:var(--nm)}
+.bpd{flex:none;display:flex;align-items:center;gap:16px;padding:12px 14px;border-radius:8px;background:rgba(10,14,12,.96);border:1px solid rgba(236,243,230,.1)}.bpdp{flex:none;width:230px;display:flex;justify-content:center}.nx .bpdp canvas{width:230px!important;height:70px!important}
+.bpdi{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.bpdt{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:30px;line-height:1}.bpds{font-size:13px;color:var(--nm)}
+.bpda{flex:0 0 280px;display:flex;flex-direction:column;gap:6px}.nx .bpda .np{min-height:54px;font-size:20px}.bpda small{font-size:12px;color:var(--nm)}.bpok{display:inline-flex;align-items:center;gap:8px;min-height:54px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:19px;letter-spacing:.06em;color:var(--na)}
+.nar .bpl{flex-basis:300px}.nar .bpbig{height:170px}.nar .bpbig canvas{transform:scale(1.8)}.nar .bpdp{display:none}.nar .bpda{flex-basis:230px}
+.short .bpbig{height:120px}.short .bpbig canvas{transform:scale(1.4);margin-bottom:12px}.short .bpnote{display:none}.short .bpd{padding:8px 12px}.short .bpdt{font-size:24px}
+.pt .bpl,.pt .bpr{flex:none}.pt .bpts{overflow:visible}.pt .bpd{flex-wrap:wrap}.pt .bpda{flex:1 1 100%}.pt .bpgs{grid-template-columns:repeat(2,minmax(0,1fr))}

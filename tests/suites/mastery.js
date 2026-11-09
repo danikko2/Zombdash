@@ -12,7 +12,7 @@ const node=()=>{nodes++;return{connect(){},disconnect(){},start(){global.started
 global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.sampleRate=8000;this.destination={}}get currentTime(){return global.AT_}createGain(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBufferSource(){return node()}createStereoPanner(){return node()}createDynamicsCompressor(){return node()}createPeriodicWave(){return{}}createBuffer(c,n){return{getChannelData:()=>new Float32Array(n)}}resume(){}};
 const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+ms/1000,f])};
 const out=code+`;S.ac.cp=8;
-docL.pointerdown[0]();endIntro();
+S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();
 const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
 const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)errs.push(m)};
 S.ac.name='Tester';S.ac.un=[0,1,2,3,4,5,6,7];const A=S.ac;msA(A);mapId=0;S.sw=1;
@@ -22,7 +22,7 @@ const kill=(t=0,d=10)=>{const z=mk(t,P.x+d,P.y);zs.push(z);KG=P.cur;hurt(z,1e9,0
 run(2);P.cds[2]=0;mouse.d=1;mouse.x=P.x+100;mouse.y=P.y;tick(1);const cd0=P.cds[2];A.ms[2].l=3;P.cds[2]=0;tick(1);const cd1=P.cds[2];ok(Math.abs(cd0/cd1-1.5)<.05,'Bill shotgun 1.5x fire rate '+cd0.toFixed(3)+' -> '+cd1.toFixed(3));mouse.d=0;
 const s2=A.ms[2],k0=s2.k,x0=s2.x;kill();ok(s2.k==k0+1&&s2.sk>=1&&s2.x>x0,'Bill mastery kill + starting-gun kill tracked');
 // Dave
-A.ms[0].l=1;run(0);P.cash=1000;shop();ok(ui.innerHTML.includes('$250'),'Dave base shotgun price $250');A.ms[0].l=3;shop();ok(ui.innerHTML.includes('$225')&&ui.innerHTML.includes('$23'),'Dave perk: $225 shotgun, $23 heal');buy(2);ok(P.cash==775,'Dave paid 225, cash '+P.cash);nextWave();
+A.ms[0].l=1;run(0);P.cash=1000;shop();ok(ui.innerHTML.includes('<span class=scr>250'),'Dave base shotgun price <span class=scr>250');A.ms[0].l=3;shop();ok(ui.innerHTML.includes('<span class=scr>225')&&ui.innerHTML.includes('<span class=scr>23'),'Dave perk: <span class=scr>225 shotgun, <span class=scr>23 heal');buy(2);ok(P.cash==775,'Dave paid 225, cash '+P.cash);nextWave();
 // Robot
 A.ms[1].l=3;run(1);ok(P.shd==1,'Robot plating ready at wave start');ok(arm(2)==0&&!P.shd&&arm(2)==2,'Robot blocks first hit only');
 // Susie

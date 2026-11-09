@@ -12,6 +12,6 @@ function cpD(A,d){if(!A)return 0;const m=cpOf(A),e=A.cpE||0,h=A.cpH||0;return d=
 function cpUp(A,d,n){const c0=cpD(A,d);if(d==2)A.cpH=Math.max(A.cpH||0,n);else if(d==1){cpOf(A);A.cp=Math.max(A.cp,n)}else A.cpE=Math.max(A.cpE||0,n);return cpD(A,d)>c0}
 function setDif(d){if(GMD=='c')S.dlc=d;else S.dlf=d;SVD=1;try{sv()}catch(e){}sfx('click')}
 function difSel(){const c=GMD=='c';return `<div class="seg dsel">${[0,1,2].map(d=>`<button data-q=1 class="${DIF()==d?'on':''}" onclick="setDif(${d});${c?'mapId=campFront();S.mp=mapId;':''}play()">${DNm(d,c)}</button>`).join('')}</div><p class=dnote>${dTxt()}</p>`}
-function dTxt(){const c=GMD=='c',d=DIF();const t=['Zombies are a little slower and weaker','The standard challenge','+50% zombie speed, +80% health, 2× damage, 2× cash'][d];
+function dTxt(){const c=GMD=='c',d=DIF();const t=['Zombies are a little slower and weaker','The standard challenge','+50% zombie speed, +80% health, 2× damage, 2× Scrap'][d];
 return c?t+' · '+[4,3,1][d]+(d==2?' life':' lives')+' · '+SORD.filter(m=>bBt(S.ac,d,m)).length+'/'+SORD.length+' beaten on '+DNm(d,1)+'<br><small>Each map in the campaign is a little tougher than the last.</small>':t}
 

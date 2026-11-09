@@ -14,7 +14,7 @@ const node=()=>({connect(){},disconnect(){},start(){},stop(){},frequency:P_(),ga
 global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.sampleRate=8000;this.destination={}}get currentTime(){return global.AT_}createGain(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBufferSource(){return node()}createStereoPanner(){return node()}createDynamicsCompressor(){return node()}createPeriodicWave(){return{}}createBuffer(c,n){return{getChannelData:()=>new Float32Array(n)}}resume(){}};
 const ivs=[];global.setInterval=f=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+(ms||0)/1000,f]);return TQ.length};global.clearTimeout=()=>{};
 const test=`;S.ac.name='Tester';delete S.ac.cp;S.dlc=1;
-docL.pointerdown[0]();endIntro();
+S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();
 const tick=n=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
 let fails=0,n=0;const ok=(c,m)=>{n++;if(c)console.log('PASS '+m);else{fails++;console.log('FAIL '+m)}};
 const has=s=>ui.innerHTML.includes(s),settle=async()=>{for(let q=0;q<30;q++)await 0};
@@ -22,23 +22,24 @@ const mkPad=i=>({index:i,connected:true,buttons:Array.from({length:17},()=>({pre
 const PADS=[mkPad(0),mkPad(1)];Object.defineProperty(globalThis,'navigator',{value:{getGamepads:()=>PADS},configurable:true});
 const press=(p,b)=>{PADS[p].buttons[b].pressed=true;tick(1);PADS[p].buttons[b].pressed=false;tick(1)};
 S.ac.un=[0,1,2,3];sv();tick(5);
-// ---------- split-screen store: a small store in each player's part of the screen ----------
+// ---------- split-screen store: a small store over the part of the screen of each player at a bench (Zombdash Blueprints) ----------
 setGM('f');mapId=0;lobby();joinL(0);joinL(1);ok(LBY.s.length==3&&LBY.s[0].inp=='km','three players: keyboard & mouse and two controllers');
 startMP();ok(MPn==3&&PL.length==3,'split-screen game with three players');
-wave=1;shop();ok(mode=='shop'&&has('class="nx msx"')&&(ui.innerHTML.match(/<section class="msp/g)||[]).length==4,'a store panel per player, plus one for the empty quarter');
-ok(['GUNS','GEAR','AMMO','HEALTH'].every(t=>has('>'+t+'</button>')),'each store has the GUNS / GEAR / AMMO / HEALTH tabs');
-ok(has('data-gn=')&&!has('data-gun='),'gun pictures without the arm');
-ok(has('SUPPLY STOP')&&has('shopping'),'the empty quarter says what is next and who is still shopping');
-ok(has('>Q</span>')&&has('>LB</span>'),'key hints match each player: Q / E on the keyboard, LB / RB on a controller');
+zs=[];toSp=0;tick(3);ok(mode=='play'&&BRK,'a cleared wave starts the break');
+const bxh=()=>BX.innerHTML;for(const p of PL)bnOpen(p,0);ok(bxh().includes('class="nx msx"')&&(bxh().match(/<section class="msp/g)||[]).length==3,'a store panel per player at a bench (over the game)');
+ok(['GUNS','GEAR','AMMO','HEALTH'].every(t=>bxh().includes('>'+t+'</button>')),'each store has the GUNS / GEAR / AMMO / HEALTH tabs');
+ok(bxh().includes('data-gn=')&&!bxh().includes('data-gun='),'gun pictures without the arm');
+ok(bxh().includes('class="brkt msbt'),'each panel shows the break countdown');
+ok(bxh().includes('>Q</span>')&&bxh().includes('>LB</span>'),'key hints match each player: Q / E on the keyboard, LB / RB on a controller');
 msTab(1,'ammo');ok(PL[1].sx.t=='ammo'&&PL[0].sx.t=='guns'&&PL[2].sx.t=='guns','every player has their own tab');msTab(1,'guns');
-PL[1].cash=1000;const c1=pc(120,PL[1]);msSel(1,'g',1);msAct(1);ok(PL[1].own.includes(1)&&PL[1].cash==1000-c1&&!PL[0].own.includes(1),'player 2 buys an SMG with their own money');
+PL[1].cash=1000;const c1=pc(120,PL[1]);msSel(1,'g',1);msAct(1);ok(PL[1].own.includes(1)&&PL[1].cash==1000-c1&&!PL[0].own.includes(1),'player 2 buys an SMG with their own Scrap');
 msSell(1);ok(!PL[1].own.includes(1)&&PL[1].cash==1000-c1+Math.round(c1*.6),'and sells it back for 60%');
 const t0=PL[1].sx.t;press(0,5);ok(PL[1].sx.t!==t0&&PL[0].sx.t=='guns','RB on pad 1: player 2 goes to the next tab');press(0,4);ok(PL[1].sx.t==t0,'LB goes back');
 msSel(1,'g',0);press(0,13);ok(PL[1].sx.g==1,'down picks the next gun');press(0,0);ok(PL[1].own.includes(1),'A buys it');press(0,2);ok(!PL[1].own.includes(1),'X sells it');
 msKey('e');ok(PL[0].sx.t=='gear','E: the keyboard player goes to the next tab');msKey('s');ok(PL[0].sx.gr==EXL[0],'S: next item');msKey('q');
-press(0,9);ok(PL[1].rdy&&has('Waiting for P1 and P3'),'START: ready, and the panel says who it waits for');
-press(0,1);ok(!PL[1].rdy,'B: back to shopping');
-msReady(1,1);ok(mode=='shop','the wave waits for everyone');const w0=wave;msKey(' ');ok(PL[0].rdy==1&&mode=='shop','Space: ready (keyboard)');msReady(2,1);ok(mode=='play'&&wave==w0+1,'the next wave starts when the last player is ready');
+press(0,1);ok(!PL[1].bo&&(bxh().match(/<section class="msp/g)||[]).length==2,'B: player 2 leaves the bench, the others keep theirs');
+bnOpen(PL[1],0);press(0,9);ok(PL[1].rdy&&!PL[1].bo&&BRK,'START: ready (the store closes); the wave waits for the others');
+msReady(2,1);ok(BRK&&mode=='play','still waiting for P1');const w0=wave;msKey(' ');ok(!BRK&&mode=='play'&&wave==w0+1,'Space: the keyboard player is ready too, and the next wave starts');
 menu();
 // ---------- Workshop: new map card, dialogs ----------
 await workshop();wsNew();ok(has('NEW MAP')&&has('BLANK MAP')&&has('A COPY OF A MAP')&&has('MEDIUM')&&has("WHAT YOU'LL GET")&&has('class="nx wmo'),'New map: one card over the Workshop with a preview');

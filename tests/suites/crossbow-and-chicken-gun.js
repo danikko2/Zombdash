@@ -13,7 +13,7 @@ global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.s
 const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+ms/1000,f])};
 // Crossbow and Chicken Gun: tables, sprites, store, ammo, one-shot rule, fire rate, chickens eating / ballooning / popping,
 // GAME BALANCE rows, and that older saves, codes and checkpoints keep working
-const out=code+`;S.ac.cp=8;S.tut=1;S.ac.name='Tester';docL.pointerdown[0]();endIntro();
+const out=code+`;S.ac.cp=8;S.tut=1;S.ac.name='Tester';S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();
 {// (a block, so test names never clash with the game's globals)
 const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)errs.push(m)};
 const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
@@ -21,9 +21,9 @@ const secs=s=>tick(Math.round(s/.016));
 const XB=WP.findIndex(w=>w.n=='Crossbow'),CG=WP.findIndex(w=>w.n=='Chicken Gun');
 // ---------- tables ----------
 ok(XB==11&&CG==12&&WP.length>=13,'Crossbow and Chicken Gun are guns 12 and 13 (the 11 older guns keep their numbers)');
-ok(WP[XB].cost==280&&WP[XB].r==.75&&WP[XB].d==6&&WP[XB].p==1,'Crossbow: $280, one shot every 0.75 s, 6 damage');
-ok(AMT[XB]=='ar'&&AMI.ar&&AMI.ar.buy==100&&AMI.ar.cost==40&&AMI.ar.max==500&&MAG[XB]==10,'Crossbow uses arrows: 100 for $40, carry up to 500, 10-bolt magazine');
-ok(WP[CG].cost==2000&&WP[CG].ck&&AMT[CG]=='rk'&&WP[CG].apr==2&&MAG[CG]==3,'Chicken Gun: $2000, 3 chickens a magazine, each chicken uses 2 rockets');
+ok(WP[XB].cost==280&&WP[XB].r==.75&&WP[XB].d==6&&WP[XB].p==1,'Crossbow: <span class=scr>280, one shot every 0.75 s, 6 damage');
+ok(AMT[XB]=='ar'&&AMI.ar&&AMI.ar.buy==100&&AMI.ar.cost==40&&AMI.ar.max==500&&MAG[XB]==10,'Crossbow uses arrows: 100 for <span class=scr>40, carry up to 500, 10-bolt magazine');
+ok(WP[CG].cost==2000&&WP[CG].ck&&AMT[CG]=='rk'&&WP[CG].apr==2&&MAG[CG]==3,'Chicken Gun: <span class=scr>2000, 3 chickens a magazine, each chicken uses 2 rockets');
 ok(CKG.max==3&&CKG.n0==8&&CKG.n1==10&&CKG.big==8,'chickens: 3 out at once, eat 8-10, health 8 or more counts as two');
 ok([RLS,RLT,MAG,AMT,MZ,FS,FSN].every(a=>a.length==WP.length),'every per-gun table has an entry for every gun');
 ok(FSN.every(n=>typeof SF[n]=='function')&&RLS.every(n=>typeof SF[n]=='function')&&SF.ckinflate&&SF.ckpop,'fire, reload and chicken sounds exist');
@@ -35,10 +35,10 @@ ok(ZS.chicken&&ZS.chicken.fly.length==4&&ZS.chicken.eat.length==2&&ZS.chicken.pu
 ok(JSON.stringify(ZS[0].walk[0])=='[0,0,58,62]'&&JSON.stringify(ZS[20].walk[0])=='[0,1423,102,108]'&&JSON.stringify(ZS[14].bite[3])=='[837,1190,92,82]','older zombie frames did not move');
 // ---------- store ----------
 setGM('f');mapId=0;sel=0;S.dlf=1;start();P.mx=P.hp=999;P.cash=100000;shop();
-ok(/data-gn=11[^>]*><\\/canvas><\\/span><span class=shn>Crossbow<\\/span><span class="shpr">\\$280</.test(ui.innerHTML)&&/data-gn=12[^>]*><\\/canvas><\\/span><span class=shn>Chicken Gun<\\/span><span class="shpr">\\$2,000</.test(ui.innerHTML),'store sells the Crossbow ($280) and the Chicken Gun ($2000), each with its picture');
-SHX.t='ammo';SHX.am='ar';shop();ok(ui.innerHTML.includes("amBuy('ar')")&&/Arrows<small>0 \\/ 500/.test(ui.innerHTML)&&ui.innerHTML.includes('BUY +100 · $40'),'store sells arrows: +100 for $40, 500 max');
-let c0=P.cash;buy(XB);ok(P.own.includes(XB)&&c0-P.cash==280&&P.cur==XB&&P.mg[XB]==10&&P.am.ar==20,'bought the Crossbow for $280: 10 bolts loaded + 20 arrows');
-c0=P.cash;let a0=P.am.ar;amBuy('ar');ok(P.am.ar==a0+100&&c0-P.cash==40,'100 arrows for $40');for(let i=0;i<9;i++)amBuy('ar');c0=P.cash;amBuy('ar');ok(P.am.ar==500&&P.cash==c0,'arrows stop at 500');
+ok(/data-gn=11[^>]*><\\/canvas><\\/span><span class=shn>Crossbow<\\/span><span class="shpr"><span class=scr>280</.test(ui.innerHTML)&&/data-gn=12[^>]*><\\/canvas><\\/span><span class=shn>Chicken Gun<\\/span><span class="shpr"><span class=scr>2,000</.test(ui.innerHTML),'store sells the Crossbow (<span class=scr>280) and the Chicken Gun (<span class=scr>2000), each with its picture');
+SHX.t='ammo';SHX.am='ar';shop();ok(ui.innerHTML.includes("amBuy('ar')")&&/Arrows<small>0 \\/ 500/.test(ui.innerHTML)&&ui.innerHTML.includes('BUY +100 · <span class=scr>40'),'store sells arrows: +100 for <span class=scr>40, 500 max');
+let c0=P.cash;buy(XB);ok(P.own.includes(XB)&&c0-P.cash==280&&P.cur==XB&&P.mg[XB]==10&&P.am.ar==20,'bought the Crossbow for <span class=scr>280: 10 bolts loaded + 20 arrows');
+c0=P.cash;let a0=P.am.ar;amBuy('ar');ok(P.am.ar==a0+100&&c0-P.cash==40,'100 arrows for <span class=scr>40');for(let i=0;i<9;i++)amBuy('ar');c0=P.cash;amBuy('ar');ok(P.am.ar==500&&P.cash==c0,'arrows stop at 500');
 ok(ui.innerHTML.includes('Crossbow')&&ui.innerHTML.includes('10 / 500'),'inventory shows the Crossbow with 10 / 500');
 // ---------- the Crossbow kills a Walker in one shot up to wave 4 ----------
 nextWave();toSp=0;P.mx=P.hp=999;
@@ -52,7 +52,7 @@ wave=2;clr();P.cur=XB;P.mg[XB]=10;P.cds[XB]=0;let fired=0;fireOn();for(let i=0;i
 // reload takes arrows
 P.mg[XB]=1;P.am.ar=37;P.cds[XB]=0;fireOn();tick(1);fireOff();secs(RLT[XB]+.3);ok(P.mg[XB]==10&&P.am.ar==27,'the empty magazine reloads 10 bolts from the arrows ('+P.mg[XB]+' / '+P.am.ar+')');
 // ---------- Chicken Gun ----------
-mode='shop';P.own=[CH[0].w];P.cash=100000;P.am.rk=0;shop();c0=P.cash;buy(CG);ok(P.own.includes(CG)&&c0-P.cash==2000&&P.mg[CG]==3&&P.am.rk==12,'bought the Chicken Gun for $2000: 3 chickens loaded + 12 rockets (6 more chickens)');
+mode='shop';P.own=[CH[0].w];P.cash=100000;P.am.rk=0;shop();c0=P.cash;buy(CG);ok(P.own.includes(CG)&&c0-P.cash==2000&&P.mg[CG]==3&&P.am.rk==12,'bought the Chicken Gun for <span class=scr>2000: 3 chickens loaded + 12 rockets (6 more chickens)');
 ok(amTxt(P,CG)=='3 / 6','its ammo reads in chickens: '+amTxt(P,CG));
 nextWave();toSp=0;keep();clr();P.mx=P.hp=999;P.inv=1e9;
 const herd=(n,t,hp)=>{const L=[];for(let i=0;i<n;i++){const z=mk(t||0,P.x+90+(i%4)*26,P.y-70+(i>>2)*34);if(hp!=null)z.hp=z.m0=hp;L.push(z)}zs.push(...L);return L};
@@ -95,9 +95,9 @@ let share2=0;run(45,()=>{const T=CK.filter(c=>c.z&&(c.s=='seek'||c.s=='eat')).ma
 dead=L.filter(z=>z.hp<=0).length;const got=PL.map((p,i)=>(p.k||0)-k0s[i]);
 ok(share2==0&&!CK.length,'six chickens from two players never went after the same zombie');
 ok(got[0]>=15&&got[1]>=15&&got[0]+got[1]==dead,'each player gets the kills of their own chickens: '+got.join(' + ')+' = '+dead);
-inp=inp0;mode='shop';shop();const it=shopIt(PL[1]),j=it.findIndex(x=>x.h.includes('ARROWS'));
-for(const p of PL)msSt(p).t='ammo';shop();ok(j>=0&&ui.innerHTML.split('Arrows<small>').length==3,'the split-screen shop sells arrows to each player');
-PL[1].cash=1000;const a1=PL[1].am.ar;mb(1,j);ok(PL[1].am.ar==a1+100&&PL[1].cash==960,'player 2 buys 100 arrows for $40');
+inp=inp0;mode='play';for(const q of PL)q.bo={i:0};shop();const it=shopIt(PL[1]),j=it.findIndex(x=>x.h.includes('ARROWS'));
+for(const p of PL)msSt(p).t='ammo';shop();ok(j>=0&&BX.innerHTML.split('Arrows<small>').length==3,'the split-screen shop sells arrows to each player');
+PL[1].cash=1000;const a1=PL[1].am.ar;mb(1,j);ok(PL[1].am.ar==a1+100&&PL[1].cash==960,'player 2 buys 100 arrows for <span class=scr>40');
 const g=it.findIndex(x=>x.h.includes('data-gun=11'));ok(g>=0&&it[g+1].h.includes('data-gun=12'),'and both new guns, with their pictures');
 ok(!ERRS.length,'no errors in split screen: '+ERRS.join(' | '))}
 // ---------- GAME BALANCE ----------

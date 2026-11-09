@@ -14,7 +14,7 @@ global.started=0;let nodes=0,errs=[];const P_=()=>({value:0,setValueAtTime(v,t){
 const node=()=>{nodes++;return{connect(){},disconnect(){},start(){global.started++},stop(){},frequency:P_(),gain:P_(),detune:P_(),Q:P_(),pan:P_(),threshold:P_(),ratio:P_(),type:'',setPeriodicWave(){},buffer:null,loop:false}};
 global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.sampleRate=8000;this.destination={}}get currentTime(){return global.AT_}createGain(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBufferSource(){return node()}createStereoPanner(){return node()}createDynamicsCompressor(){return node()}createPeriodicWave(){return{}}createBuffer(c,n){return{getChannelData:()=>new Float32Array(n)}}resume(){}};
 const ivs=[];global.setInterval=(f)=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+ms/1000,f])};
-const test=`;S.tut=1;docL.pointerdown[0]();endIntro();
+const test=`;S.tut=1;S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();
 const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
 let n=0,fails=0;const ok=(c,m)=>{n++;if(!c)fails++;LOG((c?'PASS ':'FAIL ')+m)};
 const SND=[];{const f=sfx;sfx=function(k){SND.push(k);return f.apply(this,arguments)}}
@@ -85,7 +85,7 @@ const spot=(need)=>{for(let i=0;i<20000;i++){const x=60+Math.random()*(WW-120),y
  ok(Math.abs(z.cd-SVS[17].cd*SVS[17].c3)<1e-9,'with a slightly longer gap between zaps');
  const p=spot((x,y,a)=>clr(x,y,a,420));z.x=p.x;z.y=p.y;P.x=p.x+Math.cos(p.a)*200;P.y=p.y+Math.sin(p.a)*200;ep=[];z.cd=0;let most=0;for(let f=0;f<500;f++){P.hp=1e6;P.inv=0;tick(1);most=Math.max(most,ep.filter(q=>q.lb).length)}ok(most>=3,'in the fight too: '+most+' bolts in the air at once')}
 // the rest of the fight draws (bar, bolts, marks, charge, aura) without trouble
-{let err='';try{for(let f=0;f<120;f++){P.hp=1e6;tick(1)}}catch(e){err=e.message}ok(!err&&mode=='play','the fight runs and draws '+err)}
+{let err='';try{for(let f=0;f<120;f++){P.hp=1e6;tick(1)}}catch(e){err=e.message}ok(!err&&(mode=='play'&&!BRK),'the fight runs and draws '+err)}
 // beaten: he kneels, gives up and joins
 {z.iv=0;hurt(z,z.hp+1,0,0);tick(2);ok(KN&&KN.ci==17&&!zs.includes(z)&&!ep.some(q=>q.lb),'beaten, Ken kneels instead of popping (his bolts go out)');
  ok(A.un.includes(17)&&bBt(A,DIF(),16),'he joins the survivors and the foundry counts as beaten');tick(Math.ceil(5.7/.016));

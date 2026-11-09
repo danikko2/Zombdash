@@ -15,7 +15,7 @@ global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.s
 const ivs=[];global.setInterval=f=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+(ms||0)/1000,f]);return TQ.length};global.clearTimeout=()=>{};
 global.REQ=require;
 const test=`;S.ac.name='Tester';S.ac.cp=8;
-docL.pointerdown[0]();endIntro();
+S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();
 { // everything in a block, so these names never clash with the game's
 const tick=n=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
 let fails=0,n=0;const ok=(c,m)=>{n++;if(c)console.log('PASS '+m);else{fails++;console.log('FAIL '+m)}};
@@ -219,7 +219,7 @@ d.areas.push(LY('a',{id:'fl',a:'floor',x:200,y:800,w:400,h:200,o:{pt:'wood',in:1
 d.feats.push({id:'n1',f:'nospawn',x:1300,y:100,w:200,h:200,ly:'features'},{id:'h1',f:'house',x:1300,y:600,w:150,h:120,ly:'features'},{id:'s1',f:'store',x:150,y:750,w:500,h:300,ly:'features'},{id:'ch',f:'cityhall',x:900,y:1000,w:300,h:200,ly:'features'},
 {id:'rg',f:'roadgraph',x:100,y:1200,pts:[[0,0],[600,0],[600,-400],[1200,0]],e:[[0,1],[1,2],[1,3]],ly:'features'});
 d.spawns.push({id:'sa',x:1400,y:200,on:true,ly:'spawns'},{id:'sb',x:100,y:100,on:true,ly:'spawns'});d.start={x:800,y:700};
-openEd(d);ptStart({ci:0,w:1,dif:0});ok(mode=='play'&&mapId===CMPTK,'a map with every effect and feature plays');
+openEd(d);ptStart({ci:0,w:1,dif:0});ok((mode=='play'&&!BRK)&&mapId===CMPTK,'a map with every effect and feature plays');
 const C=HS.CX,fxA=k=>C&&C.A.some(it=>it.o.fx==k);
 ok(fxA('fountain')&&fxA('fire')&&fxA('flicker')&&fxA('siren')&&!fxA('light'),'animated effects (fountain, fire, flickering light, siren) are animated by the game; still lights are baked in');
 ok(C.T.some(it=>it.o.fx=='wisp')&&C.A.concat(C.T).some(it=>it.a&&it.o.a=='fog'),'fog and wisps are drawn over the players');
@@ -231,7 +231,7 @@ ok(same(HS.ST,[150,750,650,1050])&&HS.SHF.length==2&&HS.CRL.length==1,'Store: Pe
 ok(HS.CH&&HS.CH.x==1050&&HS.CH.y==1040&&HS.CH.rw==300,'City Hall roof: the Mayor watches from the top middle');
 ok(HS.RG&&HS.RG.N.length==4&&HS.RG.A[1].length==3&&same(HS.RG.N[2],[700,800]),'Boss road graph: nodes and roads for the truck bosses');
 ok(HS.TRK&&HS.TRK.length==1,'street trees stop the fire hose, as on Downtown');
-let er='';try{for(let f=0;f<240&&mode=='play';f++){P.hp=P.mx=99;tick(1)}}catch(e){er=e.message}ok(!er&&mode=='play','the effects animate while playing without errors '+er);
+let er='';try{for(let f=0;f<240&&(mode=='play'&&!BRK);f++){P.hp=P.mx=99;tick(1)}}catch(e){er=e.message}ok(!er&&(mode=='play'&&!BRK),'the effects animate while playing without errors '+er);
 ptEnd();edClose(1)}
 
 // ---------- the validator: node tools/check-map.js ----------
@@ -270,7 +270,7 @@ await wsSample(0,0);const de2=CML.find(e=>e.doc&&e.doc.name==DD.name);
 ok(de2&&de2.doc.obj.length==DD.obj.length&&de2.doc.areas.length==DD.areas.length&&de2.doc.id!=DD.id,'demo map: "Add to my maps" stores a copy you can edit and play');
 setGM('f');mapId=de2.key;build();ok(WW==DD.w*32&&WH==DD.h*32&&WL.length>300&&HS.RG&&HS.SHF.length==4&&HS.CX&&SM.length>=1&&HS.HO.length>=5,'demo map: builds in Free Play with collision, the road graph, store shelves, effects and smoke');
 openEd(cmClone(de2.doc));ptStart({ci:0,w:1,dif:1});
-{let er='';try{for(let f=0;f<500&&mode=='play';f++){P.hp=P.mx=99;tick(1)}}catch(e){er=e.message}ok(!er&&zs.length>0,'demo map: playtest runs and zombies arrive '+er)}
+{let er='';try{for(let f=0;f<500&&(mode=='play'&&!BRK);f++){P.hp=P.mx=99;tick(1)}}catch(e){er=e.message}ok(!er&&zs.length>0,'demo map: playtest runs and zombies arrive '+er)}
 {const hw=DD.walls.filter(w=>w.s=='siding'||w.s=='wall');ok(hw.length&&hw.every(w=>WL.some(b=>b[0]<=w.x+1&&b[1]<=w.y+1&&b[0]+b[2]>=w.x+w.w-1&&b[1]+b[3]>=w.y+w.h-1)),'demo map: the house walls are solid in the game')}
 ptEnd();edClose(1);
 

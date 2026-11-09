@@ -29,7 +29,7 @@ L.sort((a,b)=>String(a.meta.name||'').localeCompare(String(b.meta.name||''),unde
 function cmPR(o){if(!o||!o.r)return 0;if(o.veh||o.dc||o.fx)return o.r;const B=cmOB(o.k);return B&&B.nr?0:o.r}
 // props marked eo (editor only: the ceiling light) are drawn in the editor only; in the game just their light shows.
 // Props marked ov (overhead: hanging signs) leave only a shadow on the floor; cmFxTop draws them over people
-function cmProp(g,o){const B=cmOB(o.k);if(!B||B.eo)return;if(B.ov){g.fillStyle='rgba(0,0,0,.07)';g.fillRect(o.x-B.sw/2,o.y-(B.swh||5),B.sw,B.swh||6);return}const v=o.vr!=null?o.vr:cmH(o.x,o.y,3),r=cmPR(o);if(!r){B.f(g,o.x,o.y,v,o.c,o.tx);return}
+function cmProp(g,o){const B=cmOB(o.k);if(!B||B.eo||B.gm)return;if(B.ov){g.fillStyle='rgba(0,0,0,.07)';g.fillRect(o.x-B.sw/2,o.y-(B.swh||5),B.sw,B.swh||6);return}const v=o.vr!=null?o.vr:cmH(o.x,o.y,3),r=cmPR(o);if(!r){B.f(g,o.x,o.y,v,o.c,o.tx);return}
 const L=vRec.L,n=L?L.length:0;g.save();g.translate(o.x,o.y);g.rotate(r*Math.PI/180);try{B.f(g,0,0,v,o.c,o.tx)}finally{g.restore()}
 // a turned sprite has no straight base line, so walk-behind uses its pixels instead
 if(L)for(let i=n;i<L.length;i++)delete L[i].base}
@@ -48,6 +48,8 @@ cmFeatHS(d);grid();BG.width=WW;BG.height=WH;CMGP=1;try{cmPaint(BG.getContext('2d
 // what the map's special features, effects and props tell the game's systems (the same HS fields the built-in maps set)
 function cmFeatHS(d){const F=d.feats||[],R=f=>[f.x,f.y,f.x+f.w,f.y+f.h];
 SM=d.obj.filter(o=>o.fx&&cmFx(o.fx)&&cmFx(o.fx).sm).map(o=>({x:o.x,y:o.y}));
+// crafting benches: the game draws them (at each player's bench level), so they are not painted into the map
+const BNP=d.obj.filter(o=>o.k=='craftbench').map(o=>[o.x,o.y]);if(BNP.length)HS.BNP=BNP;
 // no-spawn zones: the first is the game's no-spawn box for zombies from off-screen; spawn points and zones inside any are skipped
 // options: skip:0 keeps spawn points inside working, nogo:0 lets bosses land inside (the Suburb's box only stops zombies from off-screen)
 const NS=F.filter(f=>f.f=='nospawn'&&f.w>0),on=(f,k)=>!(f.o&&(f.o[k]===0||f.o[k]===false));if(NS.length){const r=R(NS[0]);HS.nx0=r[0];HS.ny0=r[1];HS.nx1=r[2];HS.ny1=r[3];HS.NS=NS.filter(f=>on(f,'skip')).map(R);NOGO=NS.filter(f=>on(f,'nogo')).map(R)}

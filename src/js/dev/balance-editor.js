@@ -3,7 +3,7 @@
 // Every value here is the game's real variable. Changes are saved on this device in S.bal (by short id)
 // and only apply while test mode is on; turning test mode off puts every default back.
 var BALR=[],BALM={},BALD={},BALO={},BALT='guns',BALTO=0;
-const BALG=[['guns','Guns'],['ammo','Ammo'],['ex','Extras'],['caps','Caps'],['zhp','Zombie HP'],['bhp','Boss HP'],['php','Player HP'],['spd','Speed'],['drop','Drops'],['zc','Zombie count']];
+const BALG=[['guns','Guns'],['ammo','Ammo'],['ex','Extras'],['caps','Caps'],['zhp','Zombie HP'],['bhp','Boss HP'],['php','Player HP'],['spd','Speed'],['drop','Drops'],['zc','Zombie count'],['bp','Blueprints']];
 const BAMO=[['pa','Pistol'],['ri','Rifle'],['sh','Shotgun'],['rk','Rockets'],['bl','Belts'],['ar','Arrows'],['rand','Random']];
 function balInit(){if(BALR.length)return;
  // id = short stable name used in S.bal and in settings codes; the label key is kept so older saves still load
@@ -44,15 +44,23 @@ function balInit(){if(BALR.length)return;
  {const D=SVS[18],n=CH[18].n,sub='Survivor bosses: '+n+'\'s charge and minigun (bosses/quarterback.js; at half health: +2 ghosts, bursts ×1.3, breaks ×0.7)';add('qbV','spd',sub,'Charge speed (px a second)',D,'cv',100,1200,10);add('qbL','spd',sub,'Charge length (px)',D,'cl',100,1200,10);add('qbN','spd',sub,'Ghost teammates in the charge',D,'gn',0,8,1);add('qbW','spd',sub,'Crouch before the snap: the warning (s)',D,'cw',0,2,.05);add('qbC','spd',sub,'Seconds between attacks',D,'ca',.3,6,.1);add('qbR','spd',sub,'Minigun: seconds between shots',D,'mr',.02,.5,.01);add('qbT','spd',sub,'Minigun: seconds a burst lasts',D,'mt',.3,6,.1);add('qbA','spd',sub,'Minigun: how fast it turns toward you (radians a second)',D,'mtr',.05,3,.05);add('qbB','spd',sub,'Minigun: bullet speed (px a second)',D,'mv',100,900,10)}
  CH.forEach((c,i)=>add('sP'+i,'spd','Player survivors: speed (1 = normal, applies from the next run)',c.n,c,'sp',.3,2.5,.05));
  // drops
- add('dG','drop','Pickups','Most items on the ground at once',DROPG,'max',1,40,1);add('dCb','drop','Pickups','Cash pickup: base $',DROPG,'cb',0,200,1);add('dCw','drop','Pickups','Cash pickup: + $ per wave',DROPG,'cw',0,40,1);add('dDs','drop','Pickups','2× damage lasts (seconds)',DROPG,'dds',1,30,.5);add('dHp','drop','Pickups','Health pickup heals',DROPG,'hp',1,10,1);
+ add('dG','drop','Pickups','Most items on the ground at once',DROPG,'max',1,40,1);add('dCb','drop','Pickups','Scrap pickup: base',DROPG,'cb',0,200,1);add('dCw','drop','Pickups','Scrap pickup: + per wave',DROPG,'cw',0,40,1);add('dDs','drop','Pickups','2× damage lasts (seconds)',DROPG,'dds',1,30,.5);add('dHp','drop','Pickups','Health pickup heals',DROPG,'hp',1,10,1);
  const dn=t=>ZC[t]?ZC[t].n:ZT[t].n,dt=[...Object.keys(ZC).map(Number),...BOS];
  for(const t of dt){const D=DROPT[t];if(!D)continue;const b=!!ZT[t].boss,sub=(b?'Boss: ':'')+dn(t)+' (chance per kill, %)',mx=b?100:30;
   add('dA'+t,'drop',sub,'Ammo box',D,'am',0,100,.5);add('dT'+t,'drop',sub,'Ammo type',D,'at',0,0,0,BAMO);add('dE'+t,'drop',sub,'Extra random ammo box',D,'am2',0,100,.5);
-  add('dC'+t,'drop',sub,'Cash',D,'cash',0,mx,.1);add('dD'+t,'drop',sub,'2× damage',D,'dd',0,mx,.1);add('dH'+t,'drop',sub,'Health',D,'hp',0,mx,.1)}
+  add('dC'+t,'drop',sub,'Scrap',D,'cash',0,mx,.1);add('dD'+t,'drop',sub,'2× damage',D,'dd',0,mx,.1);add('dH'+t,'drop',sub,'Health',D,'hp',0,mx,.1)}
  // zombie count
  const zs='Every map: normal wave size = base + per wave × wave + growth × wave²';add('nB','zc',zs,'Base',ZWN,'b',0,40,1);add('nW','zc',zs,'Per wave',ZWN,'w',0,12,.25);add('nG','zc',zs,'Growth',ZWN,'g',0,1,.01);
  CORD.forEach((m,i)=>add('nC'+m,'zc','Campaign: % of the normal size on each map',(i+1)+'. '+MP[m].n,ZMAPM.c,m,10,400,5));
- MP.forEach((M,m)=>add('nF'+m,'zc','Free play: % of the normal size on each map',M.n,ZMAPM.f,m,10,400,5))}
+ MP.forEach((M,m)=>add('nF'+m,'zc','Free play: % of the normal size on each map',M.n,ZMAPM.f,m,10,400,5));
+ // Workbench & Blueprints: every number of crafting/blueprints.js (BPG)
+ for(let t=1;t<BPG.price.length;t++)add('bP'+t,'bp','Blueprint price, each blueprint of the tier (Zombie Pts)',bpTn(t),BPG.price,t,0,20000,50);
+ for(let L=2;L<BPG.up.length;L++)add('bU'+L,'bp','Bench upgrade cost (Zombie Pts; it also needs its section opened)','Level '+L+' · '+bpTn(L),BPG.up,L,0,40000,100);
+ SEC.forEach((q,i)=>add('bM'+i,'bp','Zombie Pts multiplier of each campaign section (Free Play: the section the map is in)',q.n,BPG.mul,i,0,5,.05));
+ add('bR','bp','Zombie Pts: (waves × 8 + kills) × section × Hard','Replays and losing runs pay (% of a first clear)',BPG,'rep',0,100,5);
+ add('bH','bp','Zombie Pts: (waves × 8 + kills) × section × Hard','Hard bonus (×)',BPG,'hard',1,4,.05);
+ add('bB','bp','Between waves','Break length (seconds)',BPG,'brk',5,600,5);
+ add('bC','bp','Ammo crafting during a wave','Seconds at bench level 1',BPG,'ct',.5,60,.5);add('bS','bp','Ammo crafting during a wave','Seconds saved per bench level',BPG,'cs',0,10,.1)}
 function balOK(e,v){if(e.opt)return e.opt.some(o=>o[0]===v)?v:null;v=+v;return isFinite(v)?Math.max(0,v):null}
 function balApply(){balInit();if(S.bal)for(const k of Object.keys(S.bal))if(!BALM[k]&&BALO[k]){S.bal[BALO[k]]=S.bal[k];delete S.bal[k]}
  for(const e of BALR)e.o[e.f]=BALD[e.k];if(!S.dev||!S.bal)return;for(const k in S.bal){const e=BALM[k];if(!e)continue;const v=balOK(e,S.bal[k]);if(v!=null)e.o[e.f]=v}}
@@ -78,7 +86,8 @@ function balCss(){dtCss();try{if(document.getElementById('balcss')||!document.he
 function balOpen(t){if(!S.dev)return options();balInit();if(t)BALT=t;UIS='bal';mode='menu';balCss();let h='',sub=null;
  for(const e of BALR){if(e.g!=BALT)continue;if(e.sub!==sub){sub=e.sub;h+=`<h4 class=bsub>${sub}</h4>`;if(BALT=='zc'&&e.lab=='Base')h+=`<p class=note id=balzc style="text-align:left;margin:2px 4px 6px">${balZcTxt()}</p>`}h+=balRow(e)}
  if(BALT=='ex')h=`<p class=note style="text-align:left;margin:4px">The Headlamp's light shows fully on maps with night or dusk lighting; on daylight maps it is a faint beam. Light changes show at once in a run.</p>`+h;
- if(BALT=='drop')h=`<p class=note style="text-align:left;margin:4px">Each kill rolls every chance on its own. The Luck skill raises the chances on regular zombies. Survivor bosses don't drop items.</p>`+h;
+ if(BALT=='bp')h=`<p class=note style="text-align:left;margin:4px">Blueprint tiers follow the campaign sections; a weapon's tier is the tr field of its entry in the weapon table. Bench level ${BPMAX} is the top. Ammo crafting now: ${[1,2,3,4,5].map(L=>'L'+L+' '+bpCraftT(L)+' s').join(' · ')}.</p>`+h;
+  if(BALT=='drop')h=`<p class=note style="text-align:left;margin:4px">Each kill rolls every chance on its own. The Luck skill raises the chances on regular zombies. Survivor bosses don't drop items.</p>`+h;
  const n=Object.keys(S.bal||{}).length;
  show(nxPage('bal','GAME BALANCE',{back:'options()',crumbs:[['Options','options()'],['Game balance · test mode']]},`<div class="seg btab">${BALG.map(([k,nm])=>`<button data-q=1 class="${BALT==k?'on':''}" onclick="balOpen('${k}')">${nm}${BALR.some(e=>e.g==k&&S.bal&&e.k in S.bal)?' •':''}</button>`).join('')}</div>
 <div class=bbody>${h}</div><p class=note>Changes save on this device and apply right away to new spawns, the store and the next run, but only while test mode is on. Highlighted rows differ from the game's defaults (${n} changed).</p>
@@ -103,7 +112,7 @@ function balLoad(){const el=document.getElementById('balin'),m=document.getEleme
  balInit();const nb={};let ok=0,skip=0;for(const k in o){const id=BALM[k]?k:BALO[k];const e=id&&BALM[id];const v=e?balOK(e,o[k]):null;if(v==null){skip++;continue}if(v!==BALD[id]&&!(!e.opt&&+v==+BALD[id])){nb[id]=v;ok++}}
  S.bal=nb;balApply();try{sv()}catch(x){}sfx('buy');balOpen();const m2=document.getElementById('balcmsg');if(m2)m2.textContent='Loaded '+ok+' setting(s)'+(skip?' · '+skip+' unknown value(s) skipped':'')+'.'}
 // entry in Options (test mode only), and keep the values in step with test mode
-const _devBox1=devBox;devBox=function(){return _devBox1()+(S.dev?`<div class=dvb><h3>Game balance</h3><button data-q=1 class=go onclick="balOpen()">GAME BALANCE<small>guns · ammo · extras · caps · health · speed · drops · zombie count</small></button><p class=note>${Object.keys(S.bal||{}).length?Object.keys(S.bal).length+' value(s) changed from the defaults.':'Everything is at the defaults.'}</p></div>`:'')};
+const _devBox1=devBox;devBox=function(){return _devBox1()+(S.dev?`<div class=dvb><h3>Game balance</h3><button data-q=1 class=go onclick="balOpen()">GAME BALANCE<small>guns · ammo · extras · caps · health · speed · drops · zombie count · blueprints</small></button><p class=note>${Object.keys(S.bal||{}).length?Object.keys(S.bal).length+' value(s) changed from the defaults.':'Everything is at the defaults.'}</p></div>`:'')};
 const _devSet1=devSet;devSet=function(){_devSet1();balApply()};
 const _devOff1=devOff;devOff=function(){S.dev=0;balApply();_devOff1()};
 balApply();

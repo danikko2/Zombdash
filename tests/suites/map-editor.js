@@ -14,7 +14,7 @@ const node=()=>({connect(){},disconnect(){},start(){},stop(){},frequency:P_(),ga
 global.AT_=0;global.AudioContext=class{constructor(){this.state='running';this.sampleRate=8000;this.destination={}}get currentTime(){return global.AT_}createGain(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBufferSource(){return node()}createStereoPanner(){return node()}createDynamicsCompressor(){return node()}createPeriodicWave(){return{}}createBuffer(c,n){return{getChannelData:()=>new Float32Array(n)}}resume(){}};
 const ivs=[];global.setInterval=f=>{ivs.push(f)};global.TQ=[];global.setTimeout=(f,ms)=>{TQ.push([global.AT_+(ms||0)/1000,f]);return TQ.length};global.clearTimeout=()=>{};
 const test=`;S.ac.name='Tester';S.ac.cp=8;
-docL.pointerdown[0]();endIntro();
+S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();endIntro();
 const tick=n=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
 const flush=()=>{AT_+=10;for(let q=TQ.length-1;q>=0;q--){const g=TQ[q][1];TQ.splice(q,1);try{g()}catch(e){}}};
 let fails=0,n=0;const ok=(c,m)=>{n++;if(c)console.log('PASS '+m);else{fails++;console.log('FAIL '+m)}};
@@ -264,16 +264,16 @@ await msWrite([['put','maps',{id:'broken1',json:{format:'zombdash-map',version:9
 {const b=CML.find(e=>e.id=='broken1');ok(b&&!b.doc&&/newer version/.test(b.errors[0])&&(await msGet('maps','broken1')).json.version==99,'a map that can\\'t be opened is listed with the reason and kept as it is')}
 ok(!cmFree().includes(cmKeyOf('broken1')),'and it is left out of Free Play');
 // ---------- playtest ----------
-edOpen(CML.find(e=>e.doc&&e.id==d2.id).doc,'saved');const acB=JSON.stringify(S.ac),bestB=S.best,lsB=localStorage.deadyard;
+edOpen(CML.find(e=>e.doc&&e.id==d2.id).doc,'saved');const acB=JSON.stringify(S.ac),bestB=S.best,lsB=localStorage[SAVK];
 localStorage[CPK]=JSON.stringify({v:1,t:1,an:S.ac.name,gm:'f',m:2,ci:0,d:1,w:3,k:0,p:{cash:0}});const cpB=localStorage[CPK];
-ptStart({ci:0,w:1,dif:1});ok(mode=='play'&&mapId===CMPTK&&WW==50*32&&sv.off&&ED.vis===0,'Playtest: the real game on the edited map');
-for(let f=0;f<400&&mode=='play';f++){P.hp=P.mx=99;tick(1)}ok(zs.length>0,'zombies arrive in the playtest');
+ptStart({ci:0,w:1,dif:1});ok((mode=='play'&&!BRK)&&mapId===CMPTK&&WW==50*32&&sv.off&&ED.vis===0,'Playtest: the real game on the edited map');
+for(let f=0;f<400&&(mode=='play'&&!BRK);f++){P.hp=P.mx=99;tick(1)}ok(zs.length>0,'zombies arrive in the playtest');
 ok(WL.some(b=>b[4]==1),'the playtest uses the map\\'s collision');
 nextWave();ok(localStorage[CPK]===cpB,'a playtest never writes or clears the crash checkpoint');ok(olRow()===null,'a playtest never posts a leaderboard score');
-S.ac.xp+=500;S.ac.pts+=999;S.best=77;sv();ok(localStorage.deadyard===lsB,'nothing is saved while a playtest runs');
+S.ac.xp+=500;S.ac.pts+=999;S.best=77;sv();ok(localStorage[SAVK]===lsB,'nothing is saved while a playtest runs');
 pauseMenu();ok(ui.innerHTML.includes('BACK TO EDITOR')&&!ui.innerHTML.includes('QUIT RUN'),'pause in a playtest offers BACK TO EDITOR');
 ptEnd();ok(mode=='edit'&&ED.vis===1&&JSON.stringify(S.ac)===acB&&S.best===bestB&&!sv.off,'back in the editor; the account is exactly as before');
-ptStart({ci:0,w:5,dif:2});ok(wave==4&&mode=='shop'&&DIF()==2,'playtest from wave 5 on Hard starts in the shop');over(1);ok(ui.innerHTML.includes('PLAYTEST ENDED')&&ui.innerHTML.includes('BACK TO EDITOR')&&localStorage[CPK]===cpB,'the playtest end screen (the checkpoint is still there)');ptAgain();ok(mode=='shop'&&mapId===CMPTK,'play again');ptEnd();ok(DIF()==1&&S.sw==1,'difficulty and start wave are put back');
+ptStart({ci:0,w:5,dif:2});ok(wave==4&&(mode=='shop'||!!BRK)&&DIF()==2,'playtest from wave 5 on Hard starts in the shop');over(1);ok(ui.innerHTML.includes('PLAYTEST ENDED')&&ui.innerHTML.includes('BACK TO EDITOR')&&localStorage[CPK]===cpB,'the playtest end screen (the checkpoint is still there)');ptAgain();ok((mode=='shop'||!!BRK)&&mapId===CMPTK,'play again');ptEnd();ok(DIF()==1&&S.sw==1,'difficulty and start wave are put back');
 ok(!(S.ac.cmw&&S.ac.cmw[d2.id]),'a playtest records no best wave');
 edClose();ok(mode=='menu'&&!cmIs(mapId)&&MP[mapId],'closing the editor puts a built-in map back behind the menu');
 // ---------- Free Play ----------
@@ -282,7 +282,7 @@ setGM('c');ok(!ORD().includes(key),'the campaign order is unchanged');setGM('f')
 const mp0=S.mp;mapId=O[O.indexOf(key)-1];mapStep(1);ok(mapId===key&&S.mp===mp0,'stepping onto a custom map does not change the saved map choice');
 ok(mapOK(key)&&mapNm(key)=='Editor test'&&mpDesc(key).length&&/Custom map/.test(munT(key)),'its name, description and info line');
 play();ok(ui.innerHTML.includes('Editor test'),'the map select shows it');
-sel=0;S.sw=1;start();ok(mode=='play'&&mapId===key&&WW==50*32,'a Free Play run on the custom map');ok(!localStorage[CPK],'starting it clears the old checkpoint, like any run');
+sel=0;S.sw=1;start();ok((mode=='play'&&!BRK)&&mapId===key&&WW==50*32,'a Free Play run on the custom map');ok(!localStorage[CPK],'starting it clears the old checkpoint, like any run');
 for(let f=0;f<60;f++){P.hp=P.mx=99;tick(1)}wave=3;kills=40;nextWave();
 {const c=JSON.parse(localStorage[CPK]||'null');ok(c&&c.cm===d2.id&&c.m===-1&&c.w==3,'crash checkpoint: a custom-map run saves one, with the map\\'s id')}
 ok(cpOK()&&cpMap(cpOK())===key,'the checkpoint finds its custom map');ok(/Editor test/.test(cpBanner()),'the menu offers to resume it, by name');
@@ -295,11 +295,11 @@ ok(/&map=eq\\.63&cmap=eq\\./.test(pc)&&pc.includes(encodeURIComponent(d2.id)),'l
 // resume the checkpoint on the custom map
 over(1);ok(!localStorage[CPK],'the end of the run clears the checkpoint');nextWave&&0;
 localStorage[CPK]=JSON.stringify({v:1,t:Date.now(),an:S.ac.name,gm:'f',m:-1,cm:d2.id,ci:0,d:1,w:6,k:30,L:3,IW:{},BB:[],LB:0,p:{cash:120,hp:5,mx:5,ar:0,own:[0],cur:0,mg:{},am:{},paid:{},v:0}});menu();
-cpResume();ok(mode=='shop'&&mapId===key&&wave==6&&P.cash==120&&S.mp===mp0,'resume: the run continues on the custom map (and the saved map choice is untouched)');
+cpResume();ok((mode=='shop'||!!BRK)&&mapId===key&&wave==6&&P.cash==120&&S.mp===mp0,'resume: the run continues on the custom map (and the saved map choice is untouched)');
 // a checkpoint for a map that isn't on this device is not offered
 localStorage[CPK]=JSON.stringify({v:1,t:Date.now(),an:S.ac.name,gm:'f',m:-1,cm:'mGONE',ci:0,d:1,w:6,k:0,p:{cash:0}});ok(!cpOK(),'a checkpoint for a custom map that is gone is not offered');cpClear();
 // split screen on a custom map
-LBY={s:[{inp:'km',ac:S.ac,ci:0,v:0,rdy:1},{inp:0,ac:'G',ci:1,v:0,rdy:1}]};setGM('f');mapId=key;startMP();ok(mode=='shop'||mode=='play'?MPn==2&&mapId===key&&WW==50*32&&PL.length==2:false,'split screen plays a custom map too');
+LBY={s:[{inp:'km',ac:S.ac,ci:0,v:0,rdy:1},{inp:0,ac:'G',ci:1,v:0,rdy:1}]};setGM('f');mapId=key;startMP();ok((mode=='shop'||!!BRK)||(mode=='play'&&!BRK)?MPn==2&&mapId===key&&WW==50*32&&PL.length==2:false,'split screen plays a custom map too');
 for(let f=0;f<60;f++){for(const p of PL){p.hp=p.mx=99}tick(1)}ok(PL.every(p=>p.x>0&&p.y>0&&p.x<WW&&p.y<WH),'both players are on the map');ok(olRow()===null,'split screen posts no leaderboard score (as on every map)');MPn=0;LBY=null;
 // ---------- the rest of the game ----------
 menu();ok(ui.innerHTML.includes("hubTab('ws')")&&ui.innerHTML.includes('>WORKSHOP<'),'main menu: Workshop tab');
