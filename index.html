@@ -970,7 +970,7 @@ background:var(--n0);color:var(--nt);font:14px/1.3 'Barlow',system-ui,sans-serif
 /* over the game: the READY button in the break, the bench button on touch screens, split-screen bench stores */
 #bx{position:absolute;inset:0;z-index:5;pointer-events:none;font-family:'Barlow Condensed',system-ui,sans-serif}
 #bx>button{pointer-events:auto;position:absolute;left:50%;transform:translateX(-50%);margin:0;width:auto;border:0;border-radius:6px;cursor:pointer;color:#0E1A08;font-family:'Barlow Condensed',sans-serif;font-weight:800;letter-spacing:.08em;box-shadow:0 10px 26px rgba(0,0,0,.5);text-shadow:none}
-#bx .bxr{top:274px;height:44px;padding:0 20px;font-size:19px;white-space:nowrap;background:#9BE860}
+#bx .bxr{top:160px;left:auto;right:10px;transform:none;height:38px;padding:0 14px;font-size:17px;white-space:nowrap;background:#9BE860}
 #bx .bxu{bottom:96px;min-width:170px;height:62px;padding:0 22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;font-size:22px;background:#FFCF40}#bx .bxu small{font-family:'Barlow',sans-serif;font-weight:600;font-size:13px;letter-spacing:0;opacity:.8}
 #bx .msx{background:none;pointer-events:none}#bx .msp{pointer-events:auto;background:#0b100d;box-shadow:0 0 0 2px rgba(0,0,0,.4),0 18px 40px rgba(0,0,0,.55)}
 /* the store's countdown and bench buttons */
@@ -4346,9 +4346,9 @@ const A=P.ac||S.ac,nmT=MPn?'P'+(P.pi+1)+' '+(A.g?'Guest':A.name||'Survivor'):(A.
 const PW=Math.max(pw,nmW+80),PH=(r2?74:56)+18;hpanel(10,22,PW,PH);amHud.x=PW;X.save();X.translate(0,18);for(let i=0;i<P.mx;i++)heart(20+i*17,32,i<P.hp);if(P.ar)for(let i=0;i<6;i++)r2?shield(20+i*15,50,i<P.ar):shield(26+P.mx*17+i*15,32,i<P.ar);
 X.restore();X.font='10px '+PX;X.fillStyle='#ffcf40';X.fillText('LV'+A.lv,20,38);X.font='18px '+F;X.fillStyle='#e9f1e2';X.fillText(nmT,64,39);{const bd=bdG(A);if(bd){X.fillStyle=BDC[bd.t];X.fillText('★',70+nmW,39)}}X.fillStyle='#0a0f0b';X.fillRect(10,22+PH-3,PW,3);X.fillStyle='#b48aff';X.fillRect(10,22+PH-3,PW*Math.min(1,A.xp/xpNeed(A.lv)),3);X.font='21px '+F;X.save();X.translate(0,18);X.fillStyle='#ffcf40';X.fillText(s1,20,ty);X.fillStyle='#e9f1e2';X.fillText(s2,34+w1,ty);scrNut(34+w1+7,ty-7,6,'#c8d4c2');X.fillStyle='#9fb3a0';X.fillText(s3,48+w1+w2,ty);X.restore();
 if(P.bn>0){X.fillStyle='#ff9a2e';X.textAlign='left';X.fillText('BURNING',20,22+PH+20)}
-const lt=BRK?'BREAK':'LEFT '+(toSp+zs.length);X.font='21px '+F;const lw=X.measureText(lt).width+20,dn=!MPn&&W-62-lw<PW+18,lx=dn||MPn?W-10-lw:W-62-lw,ly=dn?74:22;hpanel(lx,ly,lw,44);X.fillStyle='#e9f1e2';X.textAlign='center';X.fillText(lt,lx+lw/2,ly+28);bnMini(ly+54);
+const lt=BRK?(W<560&&!MPn?'':'WAVE '+(wave+1)+' IN ')+brkClock(BRK.t):'LEFT '+(toSp+zs.length);X.font='21px '+F;const lw=X.measureText(lt).width+20,dn=!MPn&&W-62-lw<PW+18,lx=dn||MPn?W-10-lw:W-62-lw,ly=dn?74:22;hpanel(lx,ly,lw,44);X.fillStyle=BRK?(BRK.t<=10&&Math.floor(BRK.t*4)%2?'#ff6a5c':'#ffcf40'):'#e9f1e2';X.textAlign='center';X.fillText(lt,lx+lw/2,ly+28);bnMini(ly+54);
 if(P.dd>0){const bw=150,bx=W/2-bw/2,by=130;hpanel(bx,by,bw,30);X.font='11px '+PX;X.textAlign='center';X.fillStyle='#ffd84a';X.fillText('2X DAMAGE',W/2,by+15);X.fillStyle='#3d3414';X.fillRect(bx+10,by+21,bw-20,4);X.fillStyle='#ffd84a';X.fillRect(bx+10,by+21,(bw-20)*P.dd/5,4)}
-brkHud(P.dd>0?166:130);
+brkHud();
 const bz=zs.find(z=>ZT[z.t].boss);if(bz&&mode=='play'){const bw=Math.min(W-60,380),bx=(W-bw)/2,by=H-40;hpanel(bx-8,by-34,bw+16,58);X.textAlign='center';X.font='11px '+PX;X.fillStyle='#ffcf40';X.fillText((bz.bn||ZT[bz.t].n).toUpperCase()+(bz.ci==6||bz.ci==7||bz.ci==8||bz.ci==11||bz.ci==14||bz.ci==16?'  ·  '+(bz.ph||2)+'/2':''),W/2,by-12);X.fillStyle='#070a08';X.fillRect(bx-2,by-2,bw+4,16);X.fillStyle='#3d1414';X.fillRect(bx,by,bw,12);const k=Math.max(0,bz.hp/bz.mh);X.fillStyle='#d8403a';X.fillRect(bx,by,bw*k,12);X.fillStyle='rgba(255,255,255,.25)';X.fillRect(bx,by,bw*k,3);if(bz.ci==17||bz.ci==18){X.fillStyle='#070a08';X.fillRect(bx+bw*.5-2,by-3,4,18);X.fillStyle=bz.oc?'#9fb0ff':'#e9f1e2';X.fillRect(bx+bw*.5-1,by-2,2,16)}}
 if(banner>0&&mode=='play'){const a=Math.min(1,banner*2);X.globalAlpha=a;X.textAlign='center';X.font='22px '+PX;X.lineWidth=6;X.strokeStyle='#070a08';const bt=SVB?'FINAL WAVE '+wave:wave%10?'WAVE '+wave:'BOSS WAVE '+wave;X.strokeText(bt,W/2,H/3);X.fillStyle=wave%10?'#ffcf40':'#ff5a4a';X.fillText(bt,W/2,H/3);if(nzn){X.font='24px '+F;X.lineWidth=5;X.strokeText((SVB?'':'NEW: ')+nzn,W/2,H/3+34);X.fillStyle='#9be860';X.fillText((SVB?'':'NEW: ')+nzn,W/2,H/3+34)}X.globalAlpha=1}
 livesHud();if(MPn&&mode=='play')hudMP();if(mode=='play'&&!MPn){stick(L,'#fff');stick(R,'#ff7a5c')}}
@@ -8273,21 +8273,18 @@ function brkRdy(p,v){p=p||P;if(!p)return;if(!BRK){if(mode=='shop'||mode=='play'&
  if(r==(p.rdy?1:0))return;p.rdy=r;if(r)p.bo=null;sfx(r?'buy':'click');P=PL[0];if(PL.every(q=>q.rdy))return brkEnd();shop()}
 // the store's countdown (one player at a bench)
 function brkDom(){for(const r of[ui,BX])try{const L=r.querySelectorAll?r.querySelectorAll('.brkt'):[];for(const e of L){e.textContent=brkClock(BRK?BRK.t:0);if(e.classList)e.classList.toggle('hot',!!BRK&&BRK.t<=10)}}catch(e){}}
-// ---------- the countdown on the game screen (each player's part in split screen) ----------
-// where the countdown goes: top middle when the screen is wide enough, else under the top-left panel
-function brkPos(y){const k=Math.min(MPn?.9:1.15,cl(Math.min(W/560,H/420),.62,1.15)),bw=Math.round(330*k),bh=Math.round((MPn?112:98)*k);return{k,bw,bh,y:Math.round(W-2*bw>=520?22:MPn?H-bh-14:Math.max(y,BNMB||0))}}
-function brkHud(y){if(!BRK||mode!='play')return;const PX='"Press Start 2P", ui-monospace, monospace',F='VT323, ui-monospace, monospace',Q=brkPos(y),k=Q.k;
- const bw=Q.bw,bh=Q.bh,bx=Math.round(W/2-bw/2),by=Q.y;X.fillStyle='rgba(7,10,8,.55)';X.fillRect(bx,by,bw,bh);hpanel(bx,by,bw,bh);
- const t=BRK.t,hot=t<=10,pulse=hot&&Math.floor(t*4)%2;X.textAlign='center';
- X.font=Math.round(10*k)+'px '+PX;X.fillStyle='#9be860';X.fillText(BRK.k==1?'GET READY':BRK.k==2?'RUN RESUMED':'WAVE '+wave+' CLEARED',W/2,by+18*k);
- X.font=Math.round(34*k)+'px '+PX;X.lineWidth=6;X.strokeStyle='#070a08';const c=brkClock(t);X.strokeText(c,W/2,by+58*k);X.fillStyle=hot?(pulse?'#fff':'#ff6a5c'):'#ffcf40';X.fillText(c,W/2,by+58*k);
- const nb=(wave+1)%10==0;X.font=Math.round(18*k)+'px '+F;X.fillStyle='#e9f1e2';X.fillText('wave '+(wave+1)+(nb?' · BOSS':'')+' starts when the clock runs out',W/2,by+76*k);
- const pad=bnPad(P),near=bnNear(P)>=0;X.fillStyle='#9fb3a0';X.fillText(bnTch()&&!MPn?(near?'tap BENCH to shop':'walk to a bench to shop · tap READY to start now'):(near?(pad?'A':'E')+' open the bench':'walk to a bench to shop')+(pad?' · VIEW ready':' · ENTER ready'),W/2,by+92*k);
- if(MPn){const n=PL.length,sw=Math.min(84*k,(bw-20)/n);PL.forEach((q,i)=>{const sx=W/2-(n*sw)/2+i*sw+sw/2,sy=by+106*k;X.font=Math.round(8*k)+'px '+PX;X.fillStyle=q.rdy?'#9be860':PC[i];X.fillText('P'+(i+1)+(q.rdy?' READY':q.bo?' BENCH':' …'),sx,sy)})}}
+// ---------- the countdown on the game screen ----------
+// The clock sits in the small panel at the top right ("WAVE 4 IN 1:47", where "LEFT 23" is during a wave; world-and-hud.js).
+// Under the minimap: a short hint line, and in split screen who is ready.
+function brkHud(){if(!BRK||mode!='play'||!P)return;const F='VT323, ui-monospace, monospace',x=W-12;let y=(BNMB||74)+12;X.textAlign='right';X.font='17px '+F;
+ const pad=bnPad(P),near=bnNear(P)>=0,t=MPn?(near?(pad?'A':'E')+' open the bench · ':'')+(pad?'VIEW':'ENTER')+' ready':bnTch()?'':(near?'E open the bench · ':'walk to a bench to shop · ')+'ENTER ready';
+ const sh=s=>{X.lineWidth=3;X.strokeStyle='#070a08';X.strokeText(s,x,y);X.fillText(s,x,y)};
+ if(t){X.fillStyle='#c3d0c4';sh(t);y+=18}
+ if(MPn){X.fillStyle='#e9f1e2';sh(PL.map((q,i)=>'P'+(i+1)+(q.rdy?' ready':q.bo?' at bench':' not ready')).join('  '))}}
 // ---------- buttons over the game (one player): READY in the break, the bench button on touch screens ----------
 function bxSet(h){if(h===BXK)return;BXK=h;try{BX.innerHTML=h}catch(e){}}
 function bnDom(){if(MPn)return;if(mode!='play'||!P||TUT){bxSet('');return}const near=alive(P)?bnNear(P):-1;let h='';
- if(BRK){const Q=brkPos(P.dd>0?166:130);h+=`<button data-q=1 class="bxr" style="top:${Q.y+Q.bh+8}px" onclick="brkRdy(P,1)">READY · START WAVE ${wave+1}</button>`}
+ if(BRK)h+=`<button data-q=1 class="bxr" style="top:${(BNMB||74)+(bnTch()?6:28)}px" onclick="brkRdy(P,1)">READY · WAVE ${wave+1}</button>`;
  if(near>=0&&bnTch()){const j=P.bj&&P.bj[near],t=BRK?'OPEN BENCH':j?(j.t>=j.T?'COLLECT':''):bnAmmo(P)?'MAKE AMMO':'';if(t)h+=`<button data-q=1 class="bxu" onclick="bnUse(P)"><b>${t}</b>${BRK?'':`<small>${j?'':pc(AMI[bnAmmo(P)].cost,P)+' Scrap'}</small>`}</button>`}
  bxSet(h)}
 // ---------- keys and controllers while playing ----------
