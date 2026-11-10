@@ -11,7 +11,7 @@ function bnRoom(x,y,w,h){const i0=Math.floor((x-w/2-10)/gs),i1=Math.floor((x+w/2
  if(i0<1||j0<1||i1>=gw-1||j1>=gh-1)return 0;for(let j=j0;j<=j1;j++)for(let i=i0;i<=i1;i++)if(bl[j*gw+i])return 0;return 1}
 function bnClear(x,y){const sp=HS.sp||[];for(const q of sp)if(Math.hypot(q[0]-x,q[1]-y)<130)return 0;const C=HS.CX;if(C&&C.A)for(const it of C.A){const o=it.o;if(o&&o.fx!=null&&Math.hypot(o.x-x,o.y-(y-30))<80)return 0}return 1}
 function bnCell(x,y){return fd[cl(Math.floor(y/gs),0,gh-1)*gw+cl(Math.floor(x/gs),0,gw-1)]}
-function bnPlace(){BN=[];try{const P0=HS.BNP;if(P0&&P0.length){BN=P0.slice(0,8).map(q=>({x:q[0],y:q[1]}));return}
+function bnPlace(){BN=[];BNMC=null;try{const P0=HS.BNP;if(P0&&P0.length){BN=P0.slice(0,8).map(q=>({x:q[0],y:q[1]}));return}
  const px=HS.px,py=HS.py;bfs(fd,px,py);const n=cmIs(mapId)?1:bnCount();
  // spots where the biggest bench fits, its front can be reached, and nothing else is in the way
  const C=[],st=gs;for(let y=st*3;y<WH-st*2;y+=st)for(let x=st*5;x<WW-st*5;x+=st){const d=bnCell(x,y+18);if(d<0)continue;if(!bnRoom(x,y,BNW[5],BNH[5]))continue;if(!bnClear(x,y))continue;C.push({x,y,d})}
@@ -119,9 +119,12 @@ function bnCraft(p,i){const J=p.bj||(p.bj={}),j=J[i],b=BN[i];
 function bnTake(p,i,manual){const j=p.bj&&p.bj[i];if(!j)return;const I=AMI[j.k];if(!manual&&(p.am[j.k]||0)>=I.max)return;p.am[j.k]=Math.min(I.max,(p.am[j.k]||0)+I.buy);delete p.bj[i];sfx('rlsh',null,null,.9);const b=BN[i];FT.push({x:b.x,y:b.y-60,t:'+'+I.buy+' '+bnAN(j.k),c:I.c,l:1.3})}
 // every frame of play: the jobs run (whether or not the player stays), finished ammo waits until its player comes back for it
 function bnUpd(dt){if(!BN.length)return;for(const p of PL){if(!p.dead)bnPush(p);const J=p.bj;if(!J)continue;const near=alive(p)?bnNear(p):-1;for(const i in J){const j=J[i];if(j.t<j.T){j.t+=dt;if(j.t>=j.T){j.t=j.T;const b=BN[i];if(b){FT.push({x:b.x,y:b.y-70,t:'AMMO READY',c:AMI[j.k].c,l:1.4});if(p===P||!MPn)sfx('buy',b.x,b.y,.6)}}}else if(+i===near)bnTake(p,+i,0)}}}
+// the map picture for the minimap, shrunk once per map and size (drawing the full 4096 px map every frame cost ~8 ms)
+let BNMC=null;function bnMiniBG(w,h){const src=BGL||BG;if(BNMC&&BNMC.s===src&&BNMC.width==w&&BNMC.height==h&&BNMC.ww==WW)return BNMC;const c=document.createElement('canvas');c.width=w;c.height=h;
+ try{const q=c.getContext('2d');q.imageSmoothingEnabled=true;q.drawImage(src,0,0,w,h)}catch(e){}c.s=src;c.ww=WW;return BNMC=c}
 // ---------- the minimap (top right): the map, benches with this player's job, players and zombies ----------
 function bnMini(y0){if(!P||!WW||!WH||mode=='menu'||mode=='lobby')return;const mw=Math.round(cl(Math.min(W,H)*.24,96,150)),s=Math.min(mw/WW,mw*.9/WH),w=Math.round(WW*s),h=Math.round(WH*s),x=Math.round(W-10-w),y=Math.round(y0);
- X.save();X.fillStyle='rgba(7,10,8,.78)';X.fillRect(x-4,y-4,w+8,h+8);X.globalAlpha=.75;try{X.drawImage(BGL||BG,x,y,w,h)}catch(e){}X.globalAlpha=1;X.strokeStyle='rgba(155,232,96,.35)';X.lineWidth=1;X.strokeRect(x-3.5,y-3.5,w+7,h+7);
+ X.save();X.fillStyle='rgba(7,10,8,.78)';X.fillRect(x-4,y-4,w+8,h+8);X.globalAlpha=.75;try{X.drawImage(bnMiniBG(w,h),x,y,w,h)}catch(e){}X.globalAlpha=1;X.strokeStyle='rgba(155,232,96,.35)';X.lineWidth=1;X.strokeRect(x-3.5,y-3.5,w+7,h+7);
  X.strokeStyle='rgba(236,243,230,.5)';X.strokeRect(x+cam.x*s,y+cam.y*s,Math.min(w,W*s),Math.min(h,H*s));
  for(const z of zs){const b=ZT[z.t].boss;X.fillStyle=b?'#ffcf40':'#ff4a3a';const r=b?2.5:1;X.fillRect(x+z.x*s-r,y+z.y*s-r,r*2,r*2)}
  const now=performance.now()/1000;BN.forEach((b,i)=>{const bx=x+b.x*s,by=y+(b.y-10)*s,j=P.bj&&P.bj[i];X.fillStyle='#070a08';X.fillRect(bx-5,by-4,10,8);X.fillStyle=BRK&&Math.sin(now*5)>0?'#c8ff8a':'#9be860';X.fillRect(bx-4,by-3,8,6);
