@@ -8401,7 +8401,7 @@ function bpKey(k){if(UIS!==''||!ui.querySelector||!ui.querySelector('.bpr'))retu
 function bpCall(A,cls){if(PTX||!A||A.g)return '';const r=bpReady(A),n=r.n+r.up,t=n?(r.n?r.n+' blueprint'+(r.n>1?'s':'')+(r.up?' and a bench upgrade':'')+' ready to buy':'a bench upgrade ready'):'see what you can unlock next';
  return `<button data-q=1 class="${cls}${n?' rdy':''}" onclick="bpShop('${cls=='cwbp'?'map':'end'}')">${nxi('bp',20)}<span><b>BLUEPRINTS${n?`<i class=nbadge>${n}</i>`:''}</b><small>${nxN(bpInit(bpAcc(A)).pts||0)} Zombie Pts · ${t}</small></span>${cls=='ovbp'?kc('B'):''}</button>`}
 // ---------- test mode switches: entering the code turns test mode on with everything OFF; each cheat is its own switch ----------
-const DTL=[['unl','Unlock everything','every map, survivor, camo, weapon level, mastery perk, title, badge, look, blueprint and bench level'],['money','Unlimited Scrap','999,999 Scrap at the start of a run and at every bench'],['sp','Unlimited skill points','buy any skill; turning it off puts your real skills and points back'],['wave','Start on any wave','up to wave 99 in free play, 20 in the campaign'],['god','Infinite health','zombies, bosses and hazards can\'t hurt you']];
+const DTL=[['unl','Unlock everything','every map, survivor, camo, weapon level, mastery perk, title, badge, look, blueprint and bench level'],['money','Unlimited Scrap','999,999 Scrap at the start of a run and at every bench'],['sp','Unlimited skill points','buy any skill; turning it off puts your real skills and points back'],['wave','Start on any wave','up to wave 99 in free play, 20 in the campaign'],['god','Infinite health','zombies, bosses and hazards can\'t hurt you'],['fps','Frame time readout','a small panel in the bottom right: frames per second, how long frames take, and how much of each frame the game logic and the drawing use']];
 function DT(k){return!!(S.dev&&S.dt&&S.dt[k])}
 // saves from before the switches existed: keep what that test mode was already doing
 if(S.dev&&!S.dt){S.dt={unl:1,money:S.balNM?0:1,sp:1,wave:1};delete S.balNM}
@@ -8417,6 +8417,25 @@ function dtCss(){try{if(document.getElementById('dtcss')||!document.head)return;
 const _arm0=arm;arm=function(d){if(DT('god'))return 0;return _arm0(d)};
 function dtFrame(){if(!DT('god')||mode!='play')return;for(const p of PL||[]){if(p.dead)continue;if(p.dn){p.dn=0;p.rv=0;p.inv=Math.max(p.inv||0,1)}if(p.hp<p.mx)p.hp=p.mx}}
 
+// FM collects, for the last half second: the time between frames as the screen sees it (t), and how long the game update (u)
+// and the drawing (d) took on the main thread (timed in core/main-loop.js). Every half second the panel in the bottom right
+// shows frames per second, average and worst frame, update and drawing time, the share of the 16.7 ms budget (60 fps) they use,
+// and what is on screen. Green: the worst frame stayed under 20 ms; yellow: under 34 ms (a dropped frame now and then); red: slower.
+let FMON=false,fmEl=null,fmT0=0,fmLast=0;const FM={t:[],u:[],d:[]};
+function fmFrame(t){try{FMON=DT('fps')&&mode!='splash'&&mode!='intro';if(!FMON){if(fmEl&&fmEl.style.display!='none')fmEl.style.display='none';fmLast=0;return}
+ if(fmLast)FM.t.push(t-fmLast);fmLast=t;if(!fmT0)fmT0=t;if(t-fmT0<500)return;
+ if(!fmEl){if(!document.body||!document.body.appendChild)return;fmEl=document.createElement('pre');fmEl.id='fmtr';fmEl.style.cssText='position:fixed;right:8px;bottom:8px;z-index:61;margin:0;padding:6px 9px;background:rgba(0,0,0,.78);color:#d8f0c8;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;border:1px solid #3a5a30;border-left-width:4px;border-radius:4px;pointer-events:none;white-space:pre'}
+ if(!fmEl.parentNode)document.body.appendChild(fmEl);fmEl.style.display='block';fmEl.textContent=fmText(t-fmT0);fmEl.style.borderLeftColor=FM.col;
+ fmT0=t;FM.t=[];FM.u=[];FM.d=[]}catch(e){}}
+function fmText(span){const av=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0,mx=a=>a.length?Math.max(...a):0,f=v=>v.toFixed(1).padStart(5);
+ const n=FM.t.length,fps=n?n*1000/span:0,wt=mx(FM.t),ua=av(FM.u),da=av(FM.d),busy=(ua+da)/16.7*100;FM.col=wt<20?'#9be860':wt<34?'#ffcf40':'#ff5a4a';
+ const dpr=typeof devicePixelRatio=='number'?devicePixelRatio:1,cv=X&&X.canvas?X.canvas.width+'×'+X.canvas.height:'?';
+ const L=[`FPS   ${fps.toFixed(0).padStart(5)}    ${FM.col=='#9be860'?'smooth':FM.col=='#ffcf40'?'some dropped frames':'slow'}`,
+  `frame ${f(av(FM.t))} ms  worst ${f(wt)}`,
+  `logic ${f(ua)} ms  worst ${f(mx(FM.u))}`,`draw  ${f(da)} ms  worst ${f(mx(FM.d))}`,
+  `budget used ${busy.toFixed(0).padStart(3)}% of 16.7 ms`];
+ if(mode=='play'||mode=='pause'||mode=='shop')L.push(`zombies ${zs.length}/${ZCAP()} · players ${PL.length} · ${MP[mapId]?MP[mapId].n:'custom map'}`,`paths  ${PFW.ok?'background thread':PFW.ok===false?'main thread':'starting'}`);
+ L.push(`screen ${W}×${H} · canvas ${cv} · ${dpr}x`);return L.join('\n')}
 // ---------- drops: every zombie and boss type has its own chances (in %) for each item ----------
 // am = ammo box of type `at` ('pa','ri','sh','rk','bl' or 'rand'; every type drops a random kind since Nov 2026), am2 = an extra box of a random type,
 // cash / dd (2x damage) / hp = the other pickups. Chances on regular zombies are raised by the Luck skill.
@@ -9815,8 +9834,8 @@ async function wsBuiltin(m,edit){if(!bimIs(m)){sfx('deny');return}const d=cmClon
 try{await wsStore(d)}catch(err){return workshop('Could not copy the map: '+edEsc(err&&err.message||err))}if(edit)return edOpen(cmClone(d),'saved');workshop('Added “'+edEsc(d.name)+'” to your maps: PLAY or EDIT it from the list.')}
 // the first map build: here, after the map file and every kit piece it uses are loaded
 try{build()}catch(e){console.error(e);mapId=0;S.mp=0;build()}
-function loop(t){clFrame(t);aimCursor();dtFrame();zdFrame();requestAnimationFrame(loop);try{if(innerWidth!==LW||innerHeight!==LH){LW=innerWidth;LH=innerHeight;rs()}loopBody(t)}catch(e){showErr(e)}}
-function loopBody(t){const dt=Math.min(.05,(t-last)/1000||0);last=t;padPoll();if(mode=='splash'||mode=='intro'){padUI();CT+=dt;PZ.style.display='none';SB.innerHTML='';sbk='';drawCut(dt);return}padUI();if(mode=='play')upd(dt);else if(mode=='shop'&&BRK)brkTick(dt);if(SVD&&t-SVT>5000&&mode!='play'||SVD&&t-SVT>20000){SVD=0;SVT=t;sv()}for(const p of PL){if(p.hp<(p.php??p.hp)&&mode!='menu'&&mode!='lobby')sfx('hurt');p.php=p.hp}smk(dt);const kk=mode+MPn+(P?P.own+'|'+P.cur+'|'+(P.ex||'')+(P.hlo?1:0):'');if(kk!=sbk){sbk=kk;PZ.style.display=mode=='play'&&!MPn?'flex':'none';SB.innerHTML=mode=='play'&&!MPn?P.own.map((i,k)=>`<button data-q=1 class="${i==P.cur?'on':''}" onclick="eq(${i});sfx('click')">${k+1}<small>${CH[P.ci||0].dw&&i==0?'Duals':WP[i].n}</small></button>`).join('')+`<button data-q=1 onclick="amRel(P)">R<small>Reload</small></button>`+(P.ex&&P.ex.includes('hl')?`<button data-q=1 class="${P.hlo?'on':''}" onclick="hlTog(P)">F<small>Light</small></button>`:''):''}bnDom();draw()}
+function loop(t){clFrame(t);aimCursor();dtFrame();zdFrame();fmFrame(t);requestAnimationFrame(loop);try{if(innerWidth!==LW||innerHeight!==LH){LW=innerWidth;LH=innerHeight;rs()}loopBody(t)}catch(e){showErr(e)}}
+function loopBody(t){const dt=Math.min(.05,(t-last)/1000||0);last=t;padPoll();if(mode=='splash'||mode=='intro'){padUI();CT+=dt;PZ.style.display='none';SB.innerHTML='';sbk='';drawCut(dt);return}padUI();if(mode=='play'){const u0=FMON?performance.now():0;upd(dt);if(FMON)FM.u.push(performance.now()-u0)}else if(mode=='shop'&&BRK)brkTick(dt);if(SVD&&t-SVT>5000&&mode!='play'||SVD&&t-SVT>20000){SVD=0;SVT=t;sv()}for(const p of PL){if(p.hp<(p.php??p.hp)&&mode!='menu'&&mode!='lobby')sfx('hurt');p.php=p.hp}smk(dt);const kk=mode+MPn+(P?P.own+'|'+P.cur+'|'+(P.ex||'')+(P.hlo?1:0):'');if(kk!=sbk){sbk=kk;PZ.style.display=mode=='play'&&!MPn?'flex':'none';SB.innerHTML=mode=='play'&&!MPn?P.own.map((i,k)=>`<button data-q=1 class="${i==P.cur?'on':''}" onclick="eq(${i});sfx('click')">${k+1}<small>${CH[P.ci||0].dw&&i==0?'Duals':WP[i].n}</small></button>`).join('')+`<button data-q=1 onclick="amRel(P)">R<small>Reload</small></button>`+(P.ex&&P.ex.includes('hl')?`<button data-q=1 class="${P.hlo?'on':''}" onclick="hlTog(P)">F<small>Light</small></button>`:''):''}bnDom();const d0=FMON?performance.now():0;draw();if(FMON)FM.d.push(performance.now()-d0)}
 C.addEventListener('pointerdown',e=>{if(mode!='play')return;const q=gp(e);
 if(e.pointerType=='mouse'){mouse.d=1;mouse.x=q.x;mouse.y=q.y;return}
 const s={id:e.pointerId,ox:q.x,oy:q.y,x:q.x,y:q.y};

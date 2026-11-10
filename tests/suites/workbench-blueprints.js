@@ -135,6 +135,9 @@ balSet(BALR.indexOf(BALM.cDz),250);balSet(BALR.indexOf(BALM.cWb),900);ok(CHR.d.z
 mode='menu';chals();ok(has('+250 Zombie Pts')&&has('+900 Zombie Pts'),'the Challenges page shows the new rewards');
 balSet(BALR.indexOf(BALM.bB),60);ok(BPG.brk==60&&brkLen()==60,'the break length is a Game Balance setting');balReset(0);S.dev=0;balApply();ok(BPG.brk==120&&BPG.zw==8&&BPG.zk==1&&BPG.zc==0&&CHR.d.z==100&&CHR.w.bz==500,'and everything goes back to the defaults');
 ok(ZBX===1&&SAVK=='zombdash_bp','this build keeps its own save');
+// ---------- test mode: frame time readout ----------
+ok(DTL.some(d=>d[0]=='fps'),'test mode has a Frame time readout switch');
+{const S0=S.dt;S.dev=1;S.dt={fps:1};mode='play';FM.t=[16,17,40];FM.u=[1,2];FM.d=[3,5];const t=fmText(500);ok(/FPS +6 /.test(t)&&t.includes('worst  40.0')&&/logic +1.5 ms/.test(t)&&/draw +4.0 ms/.test(t)&&/budget used/.test(t)&&FM.col=='#ff5a4a','the readout shows FPS, frame, logic and draw times, and turns red after a 40 ms frame');S.dt=S0;S.dev=0}
 console.log('TOTAL fails '+fails+' of '+n);
 `;
 const AF=Object.getPrototypeOf(async function(){}).constructor;

@@ -125,6 +125,7 @@ crafting/benches.js
 crafting/break.js
 crafting/blueprints-tab.js
 dev/test-switches.js
+dev/frame-meter.js
 game/drop-table.js
 dev/balance-editor.js
 input/aim-reticle.js
