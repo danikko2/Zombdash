@@ -1007,7 +1007,16 @@ background:var(--n0);color:var(--nt);font:14px/1.3 'Barlow',system-ui,sans-serif
 .bpda{flex:0 0 280px;display:flex;flex-direction:column;gap:6px}.nx .bpda .np{min-height:54px;font-size:20px}.bpda small{font-size:12px;color:var(--nm)}.bpok{display:inline-flex;align-items:center;gap:8px;min-height:54px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:19px;letter-spacing:.06em;color:var(--na)}
 .nar .bpl{flex-basis:300px}.nar .bpbig{height:170px}.nar .bpbig canvas{transform:scale(1.8)}.nar .bpdp{display:none}.nar .bpda{flex-basis:230px}
 .short .bpbig{height:120px}.short .bpbig canvas{transform:scale(1.4);margin-bottom:12px}.short .bpnote{display:none}.short .bpd{padding:8px 12px}.short .bpdt{font-size:24px}
-.pt .bpl,.pt .bpr{flex:none}.pt .bpts{overflow:visible}.pt .bpd{flex-wrap:wrap}.pt .bpda{flex:1 1 100%}.pt .bpgs{grid-template-columns:repeat(2,minmax(0,1fr))}</style></head><body>
+.pt .bpl,.pt .bpr{flex:none}.pt .bpts{overflow:visible}.pt .bpd{flex-wrap:wrap}.pt .bpda{flex:1 1 100%}.pt .bpgs{grid-template-columns:repeat(2,minmax(0,1fr))}
+/* Blueprints between levels: the button on end screens and the campaign map, the page opened from there */
+.nx .ovbp,.nx .cwbp{flex:none;display:flex;align-items:center;gap:12px;width:100%;padding:10px 14px;border-radius:8px;background:rgba(155,232,96,.06);border:1px solid rgba(155,232,96,.22)!important;color:var(--nt);text-align:left}
+.nx .ovbp:hover,.nx .cwbp:hover{background:rgba(155,232,96,.12)}.nx .ovbp.rdy,.nx .cwbp.rdy{background:rgba(155,232,96,.14);border-color:var(--na)!important}
+.ovbp>svg,.cwbp>svg{flex:none;color:var(--na)}.ovbp>span,.cwbp>span{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ovbp b,.cwbp b{display:flex;align-items:center;gap:8px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;letter-spacing:.08em}.ovbp b i,.cwbp b i{font-style:normal;background:var(--na);color:#0E1A08}
+.ovbp small,.cwbp small{font-size:13px;color:var(--nm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ovbp>.kc{flex:none}
+.nx .cwbp{padding:8px 12px;margin:2px 0 4px}.cwbp b{font-size:17px}
+.bpx .htm{padding-top:16px}.nx .bpnx{flex:none;align-self:center;height:44px!important;min-height:0;padding:0 16px;gap:6px;font-size:17px;white-space:nowrap}
+.nx .bpup .np,.nx .bpda .np{font-size:17px;white-space:nowrap;gap:8px}.nx .bpda .np .kc{flex:none}</style></head><body>
 <div id="game" style="width:100vw;height:100vh"><canvas id="c"></canvas><div id="ui"><div class="p" id="boot" style="animation:none"><h2>LOADING ZOMBDASH...</h2><p class="note">If this message stays on screen, tell Claude.</p></div></div><div id="sb"></div><div id="bx"></div><button id="pz" aria-label="Pause" data-q="1" onclick="pauseMenu()"></button></div>
 <script>window.__zb=1;addEventListener('error',function(e){try{if(window.__zstarted)return;var d=document.getElementById('zerr0');if(!d){d=document.createElement('div');d.id='zerr0';d.style.cssText='position:fixed;left:8px;right:8px;bottom:8px;z-index:99;background:rgba(120,10,10,.95);color:#fff;font:14px monospace;padding:8px;white-space:pre-wrap;pointer-events:auto';document.body.appendChild(d)}var t=document.createElement('div');t.textContent='Startup error (please tell Claude): '+(e.message||e)+' @'+(e.lineno||'?')+':'+(e.colno||'?');d.appendChild(t);if(!document.getElementById('zrst')){var b=document.createElement('button');b.id='zrst';b.textContent='Try again with a fresh save (your old save is backed up)';b.style.cssText='margin-top:6px;font:14px monospace;padding:6px 10px;width:auto;display:inline-block';b.onclick=function(){try{if(localStorage.zombdash_bp){localStorage.zombdash_bp_backup=localStorage.zombdash_bp;localStorage.removeItem('zombdash_bp')}}catch(_){}location.reload()};d.appendChild(b)}}catch(_){}});</script>
 <script>
@@ -3835,19 +3844,19 @@ function ovXP(p){const A=p.ac;return `<div class=ovxp><span class=hublv>${A.lv}<
 // what the middle button and the main button do after a single-player or split-screen run
 function ovMid(mp){if(mp)return['LOBBY','lobby()','r'];return GMD=='c'?['CAMPAIGN MAP',"setGM('c');CMV=null;play()",'map']:['NEW GAME',"setGM('f');play()",'play']}
 function ovGo(mp){const C=CWIN;if(C){if(C.nx!=null)return[`NEXT: ${MP[C.nx].n.toUpperCase()}`,`campNext(${mp?1:0})`];return['CAMPAIGN MAP',"setGM('c');CMV=null;play()"]}return['TRY AGAIN',mp?'startMP()':'start()']}
-function endNX(q,e){const c=GMD=='c',win=!!CWIN,nl=!q&&c&&!win,mid=win&&CWIN.nx==null?['NEW GAME',"setGM('f');play()",'play']:ovMid(0);
+function endNX(q,e){ENDR=()=>endNX(q,e);const c=GMD=='c',win=!!CWIN,nl=!q&&c&&!win,mid=win&&CWIN.nx==null?['NEW GAME',"setGM('f');play()",'play']:ovMid(0);
 show(ovWrap(win?'MAP COMPLETE':(c?'CAMPAIGN':'FREE PLAY')+' · '+edEsc(mpName(mapId).toUpperCase()),win?cwH():`<h2 class="ovt${q?'':' bad'}">${q?'RUN ENDED':'YOU WERE EATEN'}</h2>`,
-`<div class=ovs><span><b>${wave}</b>WAVE</span><span><b>${nxN(kills)}</b>KILLS</span><span><b>+${nxN(e)}</b>ZOMBIE PTS</span></div>${zpNote(ZPR)}${ovXP(P)}${runLog(P)}${nl?'<p class=ovn>No lives left: next time this map starts again from wave 1.</p>':''}`,ovBtns(mid,ovGo(0))))}
+`<div class=ovs><span><b>${wave}</b>WAVE</span><span><b>${nxN(kills)}</b>KILLS</span><span><b>+${nxN(e)}</b>ZOMBIE PTS</span></div>${zpNote(ZPR)}${bpCall(P.ac,'ovbp')}${ovXP(P)}${runLog(P)}${nl?'<p class=ovn>No lives left: next time this map starts again from wave 1.</p>':''}`,ovBtns(mid,ovGo(0))))}
 function endLife(left){show(ovWrap('CAMPAIGN · '+edEsc(mpName(mapId).toUpperCase()),'<h2 class="ovt bad">YOU WERE EATEN</h2>',
 `<div class=ovs><span><b>${wave}</b>WAVE</span><span><b class=ovh>${'♥'.repeat(Math.max(0,left))}</b>${left==1?'LIFE LEFT':'LIVES LEFT'}</span><span><b>${nxN(kills)}</b>KILLS</span></div><p class=ovn>${left==1?'⚠ This is your last life! ':''}Continue to try wave ${wave} again with your guns and Scrap. Leaving now ends the run.</p>`,
 `<div class=ovb><button data-q=1 class=nb onclick="lifeMenu()">${nxi('home')}MAIN MENU</button><button data-q=1 class=nb onclick="lifeMap()">${nxi('map')}CAMPAIGN MAP</button><button data-q=1 id=ovgo class="np go" onclick="lifeCont()">CONTINUE${kc('ENTER')}</button></div>`))}
 function lifeMap(){if(mode!='lifeo')return;LIVES=0;mode='play';over(1);setGM('c');CMV=null;play()}
-function endMP(q){const win=!!CWIN;
+function endMP(q){ENDR=()=>endMP(q);const win=!!CWIN;
 show(ovWrap(win?'MAP COMPLETE':(GMD=='c'?'CAMPAIGN':'FREE PLAY')+' · SPLIT SCREEN · '+edEsc(mpName(mapId).toUpperCase()),win?cwH():`<h2 class="ovt${q?'':' bad'}">${q?'RUN ENDED':'THE HORDE WON'}</h2>`,
-`<div class=ovs><span><b>${wave}</b>WAVE</span><span><b>${nxN(kills)}</b>TEAM KILLS</span><span><b>${PL.length}</b>PLAYERS</span></div><div class=ovl>`+PL.map((p,i)=>`<div class=ovr style="--pc:${PC[i]}"><b class=px>P${i+1}</b><canvas data-ch=${p.ci} data-v=${p.v||0}></canvas><div class=nm><b>${pnm(p)}${p.ac.g?' · guest':bdH(p.ac)}</b>${ttH(p.ac)}<small>${p.k||0} kills · +${nxN(p.ze)} Zombie Pts${p.zr&&p.zr.fc?' (first clear bonus +'+nxN(p.zr.fc)+')':''} · +${p.xg||0} XP${p.lu?' · LEVEL UP!':''}</small>${p.nt&&p.nt.length?'<small class=unl>'+p.nt.slice(-2).join(' · ')+(p.nt.length>2?' · +'+(p.nt.length-2)+' more':'')+'</small>':''}</div><span class=lv>LV ${p.ac.lv}</span></div>`).join('')+'</div>'+(!q&&GMD=='c'&&!win?'<p class=ovn>No lives left: next time this map starts again from wave 1.</p>':''),
+`<div class=ovs><span><b>${wave}</b>WAVE</span><span><b>${nxN(kills)}</b>TEAM KILLS</span><span><b>${PL.length}</b>PLAYERS</span></div>${bpCall((PL.find(p=>!p.ac.g)||{ac:S.ac}).ac,'ovbp')}<div class=ovl>`+PL.map((p,i)=>`<div class=ovr style="--pc:${PC[i]}"><b class=px>P${i+1}</b><canvas data-ch=${p.ci} data-v=${p.v||0}></canvas><div class=nm><b>${pnm(p)}${p.ac.g?' · guest':bdH(p.ac)}</b>${ttH(p.ac)}<small>${p.k||0} kills · +${nxN(p.ze)} Zombie Pts${p.zr&&p.zr.fc?' (first clear bonus +'+nxN(p.zr.fc)+')':''} · +${p.xg||0} XP${p.lu?' · LEVEL UP!':''}</small>${p.nt&&p.nt.length?'<small class=unl>'+p.nt.slice(-2).join(' · ')+(p.nt.length>2?' · +'+(p.nt.length-2)+' more':'')+'</small>':''}</div><span class=lv>LV ${p.ac.lv}</span></div>`).join('')+'</div>'+(!q&&GMD=='c'&&!win?'<p class=ovn>No lives left: next time this map starts again from wave 1.</p>':''),
 ovBtns(ovMid(1),ovGo(1))))}
 // Enter on an end screen = its main button
-function endKey(k){if(k=='enter'&&ui.querySelector){const b=ui.querySelector('#ovgo');if(b){b.click();return 1}}return 0}
+function endKey(k){if((k=='enter'||k=='b')&&ui.querySelector){const b=ui.querySelector(k=='b'?'.ovbp':'#ovgo');if(b){b.click();return 1}}return 0}
 // ---------- split-screen lobby ----------
 // rL() in multiplayer/lobby.js calls this; every action there (join, leave, survivor, colour, account, ready) runs rL()
 // again. Controllers keep their own buttons in the lobby (lobbyPads), so the hint row lists them.
@@ -6275,7 +6284,7 @@ if(v==='w'){const i=CWV.ws??secOf(front),S_=SEC[i],op=secOpen(A,d,i),ms=S_.m.fil
 return `<div class=cwph><span class=cwk>SECTION ${i+1} OF 5</span><b class=cwpt>${S_.n.toUpperCase()}</b><span class=cwps>${S_.sub}</span></div><div class=cwpb>${cwBar(nb,ms.length)}<span>${nb} / ${ms.length} beaten${cus.length?' · custom '+ncb+'/'+cus.length:''}</span></div>
 <div class=cwml>${S_.m.map((m,k)=>{if(m<0){const e=ccSlot(i,k);return e?`<span class=cwmr><b>${edEsc(mpName(e.key))}</b><small>${bBt(A,d,e.key)?'✓':'✎ custom'}</small></span>`:''}const b=bBt(A,d,m),o=mOpen(A,d,m);return `<span class="cwmr${o?'':' lk'}"><b>${MP[m].n}</b><small>${b?'✓':o?(m===front?'next up':'open'):'locked'}</small></span>`}).join('')}</div>
 ${op?'':`<div class=cwlk>${nxi('lock',15)} Beat every map in ${SEC[i-1].n} on ${DNm(d,1)} first</div>`}
-<div class=cwk>DIFFICULTY</div>${nxDif('cwDif()')}<p class=cwn>Each section opens with one map; beat it and the rest of that section opens in any order. Beat every map in a section to reach the next.</p>
+${CMLB?'':bpCall(cAcc(),'cwbp')}<div class=cwk>DIFFICULTY</div>${nxDif('cwDif()')}<p class=cwn>Each section opens with one map; beat it and the rest of that section opens in any order. Beat every map in a section to reach the next.</p>
 <button data-q=1 id=mgo class="np cwgo${op?' go':' no'}" onclick="${op?`cGo(${i})`:"sfx('deny')"}">${op?'ZOOM IN':'LOCKED'}${kc('ENTER')}</button>`}
 const S_=SEC[v],ms=S_.m.filter(m=>m>=0),nb=ms.filter(m=>bBt(A,d,m)).length,nx=v<4?SEC[v+1].n:null,cus=ccAll().filter(e=>e.s===v),ncb=cus.filter(e=>bBt(A,d,e.key)).length;
 let h=`<div class=cwph><span class=cwk>SECTION ${v+1} OF 5</span><b class=cwpt>${S_.n.toUpperCase()}</b><span class=cwps>${S_.sub} · ${nb}/${ms.length} beaten${cus.length?' · custom '+ncb+'/'+cus.length:''}${nx?' · beat them all to reach '+nx:''}</span></div><div class=cwpb>${cwBar(nb,ms.length)}</div><div class=cwdiv></div>`;
@@ -6284,7 +6293,7 @@ return h+`<span class=cwk>SLOT ${CSEL[1]+1} OF ${S_.m.length}</span><b class=cwm
 const m=mapId,cp0=CMLB?null:cpOK(),cpc=cp0&&cp0.gm=='c'&&cpMap(cp0)===m?cp0:null,o=mOpen(A,d,m),b=bBt(A,d,m),k=S_.m.indexOf(m),cu=cmIs(m),e=cu&&ccOfKey(m),ci=cu?(e?e.b:null):MUN[m],own=ci!=null&&(A.un||[]).includes(ci);
 h+=`<span class=cwk>${k>=0?'MAP '+(k+1)+' OF '+S_.m.length:'CUSTOM MAP'}${m===front&&o&&!b?' · NEXT UP':''}</span><div class=cwmi>${mpImg(m)?`<img class=cwim alt="" src="${mpImg(m)}">`:''}<span><b class=cwmt>${edEsc(mpName(m).toUpperCase())}</b><p class=cwd>${edEsc(mpDesc(m))}</p></span></div>
 ${ci!=null&&CH[ci]?`<div class=cwboss>${nxCh(ci,!own,'cwbc')}<span><small>WAVE 20 BOSS</small><b>${CH[ci].n.toUpperCase()}</b><em>${own?'✓ already one of your survivors':'beat them to recruit them'}</em></span></div>`:''}
-<p class="cwu munl">${munT(m)}</p>${cManage(m)}<div class=cwk>DIFFICULTY</div>${nxDif('cwDif()')}
+<p class="cwu munl">${munT(m)}</p>${cManage(m)}${CMLB?'':bpCall(cAcc(),'cwbp')}<div class=cwk>DIFFICULTY</div>${nxDif('cwDif()')}
 ${CMLB?'':`<button data-q=1 class=cwsv onclick="survs()">${nxCh(sel,0,'cwsc')}<b>${CH[sel].n.toUpperCase()}</b><small>${CH[sel].hp} HP · ${wN(sel,CH[sel].w)}</small><span class=cwch>${kc('Y')}CHANGE</span></button>`}
 ${cpc?`<div class=cwgo><button data-q=1 id=mgo class="np go" onclick="cpResume()">CONTINUE · WAVE ${cpc.w+1}${kc('ENTER')}</button><span class=cwrs>Your run: ${edEsc(CH[cpc.ci].n)} · ${scr(cpc.p.cash)} · <button data-q=1 class=lnk onclick="mapGo()">start over from wave 1</button></span></div>`:`<button data-q=1 id=mgo class="np cwgo${o?' go':' no'}" onclick="mapGo()">${o?(CMLB?'CHOOSE':'PLAY '+edEsc(mpName(m).toUpperCase())):'🔒 LOCKED'}${kc('ENTER')}</button>`}${CCW.length&&!CMLB?`<p class=cwn style="color:#ffb86a">⚠ ${edEsc(CCW[0])}${CCW.length>1?' (+'+(CCW.length-1)+' more in the Map Workshop)':''}</p>`:''}`;
 return h}
@@ -8302,12 +8311,26 @@ function bnPads(){let used=0;for(const q of GP){const pi=PL.findIndex(p=>p.inp==
  if(q.jp(0)&&bnUse(p))used=1;else if(q.jp(8)&&BRK){brkRdy(p,MPn?null:1);used=1}}return used}
 // BPS = the picked blueprint (shown in the box at the bottom with its buy button). The page works on the account picked with
 // the name button at the top (prA, like Titles), so every profile on the device can spend its own Zombie Pts.
-var BPS=null;
-function bpTab(){mode='menu';UIS='';HUBT=HUBX='prog';bpNX()}
-function bpPick(i){BPS=i;sfx('click');bpTab()}
-function bpBuy(i){i=i==null?BPS:i;const A=bpInit(prA());if(DT('unl')||bpBuyWhy(A,i)){sfx('deny');return bpTab()}A.pts-=bpPrice(i);A.bp.push(i);sv();sfx('buy');BPS=i;bpTab()}
-function bpUp(){const A=bpInit(prA());if(DT('unl')||bpUpWhy(A)){sfx('deny');return bpTab()}const L=A.bl+1;A.pts-=bpUpC(L);A.bl=L;sv();sfx('power');bpTab()}
-function bpNX(){const A=bpInit(prA()),un=DT('unl'),L=un?BPMAX:A.bl,pts=A.pts||0,nt=bpNT(),ci=A.lc!=null&&CH[A.lc]?A.lc:sel||0;
+// The same page opens between levels (bpShop): from a run's end screen or the campaign map, without the hub's tabs. Then BPF
+// holds where to go back to, whose Zombie Pts it spends (the player's own account; in split screen each player's in turn)
+// and, after a beaten map, a button straight to the next one.
+var BPS=null,BPF=null,ENDR=null;
+function bpTab(){BPF=null;mode='menu';UIS='';HUBT=HUBX='prog';bpNX()}
+function bpRe(){if(BPF)bpNX();else bpTab()}
+function bpPA(){if(BPF){const L=BPF.L;return L[BPF.i%L.length]}return prA()}
+function bpPick(i){BPS=i;sfx('click');bpRe()}
+function bpBuy(i){i=i==null?BPS:i;const A=bpInit(bpPA());if(DT('unl')||bpBuyWhy(A,i)){sfx('deny');return bpRe()}A.pts-=bpPrice(i);A.bp.push(i);sv();sfx('buy');BPS=i;bpRe()}
+function bpUp(){const A=bpInit(bpPA());if(DT('unl')||bpUpWhy(A)){sfx('deny');return bpRe()}const L=A.bl+1;A.pts-=bpUpC(L);A.bl=L;sv();sfx('power');bpRe()}
+// how many blueprints this account could buy right now, and whether the bench upgrade is ready
+function bpReady(A){A=bpInit(bpAcc(A));if(!A||DT('unl'))return{n:0,up:0};return{n:WP.filter((_,i)=>!bpBuyWhy(A,i)).length,up:bpUpWhy(A)?0:1}}
+// open the Blueprints page between levels: 'end' (a run's end screen) or 'map' (the campaign map)
+function bpShop(from){const L=[];if(from=='end')for(const p of PL){const A=bpAcc(p.ac);if(A&&!L.includes(A))L.push(A)}if(!L.length)L.push(from=='map'?cAcc():S.ac);
+ const win=!!CWIN,mp=from=='end'&&MPn>0;BPF={from,L,i:0,mode,uis:UIS,lab:from=='map'?'Campaign':win?'Map complete':'Run over',back:from=='map'?()=>{UIS='';cwShow(CWV.v==null?'w':CWV.v)}:(ENDR||menu),go:from=='end'&&win?ovGo(mp?1:0):null};
+ BPS=null;sfx('click');mode='menu';UIS='';bpNX()}
+function bpBack(){const f=BPF;if(!f)return bpTab();BPF=null;mode=f.mode;UIS=f.uis;sfx('click');f.back()}
+function bpGo(){const f=BPF;if(!f||!f.go)return;BPF=null;mode=f.mode;UIS=f.uis;const m=/^campNext\((\d)\)$/.exec(f.go[1]);if(m)return campNext(+m[1]);setGM('c');CMV=null;play()}
+function bpWho(){const L=BPF.L;return L.length>1?`<button data-q=1 class="nb hpwho" onclick="BPF.i=(BPF.i+1)%BPF.L.length;BPS=null;sfx('click');bpNX()">${edEsc(bpPA().name||'Survivor')}${nxi('r',14)}</button>`:''}
+function bpNX(){const A=bpInit(bpPA()),un=DT('unl'),L=un?BPMAX:A.bl,pts=A.pts||0,nt=bpNT(),ci=A.lc!=null&&CH[A.lc]?A.lc:sel||0;
  const own=i=>un||bpTier(i)==0||A.bp.includes(i),nOwn=WP.filter((_,i)=>own(i)).length;
  if(BPS==null||!WP[BPS]){const O=WP.map((_,i)=>i).filter(i=>!own(i)).sort((a,b)=>bpTier(a)-bpTier(b));BPS=O.find(i=>bpTL(bpTier(i))<=L)??O[0]??0}
  // the workbench
@@ -8315,7 +8338,7 @@ function bpNX(){const A=bpInit(prA()),un=DT('unl'),L=un?BPMAX:A.bl,pts=A.pts||0,
  let up='';if(why=='max')up=`<div class=bpup><b>Your bench is fully upgraded.</b><span>Every tier is open. Ammo takes ${bpCraftT(L)} s to craft during a wave.</span></div>`;
  else{const c=bpUpC(nx),s=SEC[nx-1],sub=why=='sec'?`Open ${edEsc(s?s.n:'the next section')} in the campaign first`:why=='pts'?`You need ${nxN(c-pts)} more Zombie Pts`:'';
   up=`<div class=bpup><span class=cwk>NEXT · LEVEL ${nx}</span><b>Opens the ${edEsc(bpTn(nx))} blueprints</b><span>Ammo crafting gets faster: ${bpCraftT(L)} s → ${bpCraftT(nx)} s</span><button data-q=1 class="np${why?' no':' go'}" onclick="bpUp()">${why=='sec'?nxi('lock',16):''}UPGRADE · ${nxN(c)} Z${why?'':kc('U')}</button>${sub?`<small>${sub}</small>`:''}</div>`}
- const left=`<section class="hpan bpl"><div class=hph><span class=cwk>YOUR WORKBENCH</span>${hpWho('bpTab')}</div>
+ const left=`<section class="hpan bpl"><div class=hph><span class=cwk>YOUR WORKBENCH</span>${BPF?bpWho():hpWho('bpTab')}</div>
 <div class=bpbig><canvas data-bnl=${L} width=${BNW[L]} height=${BNH[L]}></canvas></div>
 <div class=bplv><span class=cwk>BENCH LEVEL</span><b class=hdt>${L}<small>/ ${BPMAX}</small></b><span class=bppp>${pips}</span></div>
 <p class=bpnote>Benches on every map show your level. Between waves a bench sells everything; during a wave it only makes ammo, ${bpCraftT(L)} s a batch.</p>${up}</section>`;
@@ -8332,11 +8355,17 @@ function bpNX(){const A=bpInit(prA()),un=DT('unl'),L=un?BPMAX:A.bl,pts=A.pts||0,
  const right=`<section class="hpan bpr"><div class=bprh><div><span class=cwk>BLUEPRINTS</span><b class=bpct>${nOwn}<small> / ${WP.length} guns</small></b></div><span class=bppt><b>${nxN(pts)}</b>ZOMBIE PTS</span></div>
 <p class=bpnote>A gun shows at the workbench once you own its blueprint. Each tier is a campaign section: upgrade your bench to open it. Zombie Pts come from every run, and the first clear of a map on each difficulty pays double.</p>
 <div class=bpts>${tiers}</div>${det}</section>`;
- show(hubPage('prog',left+right,hubSub('bp')));
+ if(BPF){const go=BPF.go?`<button data-q=1 class="np go bpnx" onclick="bpGo()">${edEsc(BPF.go[0])}${nxi('r',16)}</button>`:'';
+  show(nxWrap('hub bpx',`${nxTop({back:'bpBack()',crumbs:[[BPF.lab,'bpBack()'],['Blueprints']],home:false,gear:false,right:go})}<div class=htm>${left+right}</div>`))}
+ else show(hubPage('prog',left+right,hubSub('bp')));
  try{for(const cv of ui.querySelectorAll('canvas[data-bnl]')){const a=bnArt(+cv.dataset.bnl),g=cv.getContext('2d');cv.width=a.width;cv.height=a.height;g.imageSmoothingEnabled=false;g.clearRect(0,0,a.width,a.height);g.drawImage(a,0,0)}
   const e=ui.querySelector('.bpg.on');if(e&&e.scrollIntoView)e.scrollIntoView({block:'nearest'})}catch(e){}}
 // keys on the page: U upgrades the bench, Enter buys the picked blueprint (controllers and arrows move between the cards as on any page)
-function bpKey(k){if(UIS!==''||HUBX!='prog'||!ui.querySelector||!ui.querySelector('.bpr'))return 0;if(k=='u'){bpUp();return 1}if(k=='enter'){const A=bpInit(prA());if(DT('unl')||bpBuyWhy(A,BPS))return 0;bpBuy();return 1}return 0}
+function bpKey(k){if(UIS!==''||!ui.querySelector||!ui.querySelector('.bpr'))return 0;if(k=='u'){bpUp();return 1}if(k=='enter'){const A=bpInit(bpPA());if(DT('unl')||bpBuyWhy(A,BPS))return 0;bpBuy();return 1}return 0}
+// ---------- the way in between levels ----------
+// on a run's end screen (B) and in the campaign map's panel: Zombie Pts and what they can buy right now
+function bpCall(A,cls){if(PTX||!A||A.g)return '';const r=bpReady(A),n=r.n+r.up,t=n?(r.n?r.n+' blueprint'+(r.n>1?'s':'')+(r.up?' and a bench upgrade':'')+' ready to buy':'a bench upgrade ready'):'see what you can unlock next';
+ return `<button data-q=1 class="${cls}${n?' rdy':''}" onclick="bpShop('${cls=='cwbp'?'map':'end'}')">${nxi('bp',20)}<span><b>BLUEPRINTS${n?`<i class=nbadge>${n}</i>`:''}</b><small>${nxN(bpInit(bpAcc(A)).pts||0)} Zombie Pts · ${t}</small></span>${cls=='ovbp'?kc('B'):''}</button>`}
 // ---------- test mode switches: entering the code turns test mode on with everything OFF; each cheat is its own switch ----------
 const DTL=[['unl','Unlock everything','every map, survivor, camo, weapon level, mastery perk, title, badge, look, blueprint and bench level'],['money','Unlimited Scrap','999,999 Scrap at the start of a run and at every bench'],['sp','Unlimited skill points','buy any skill; turning it off puts your real skills and points back'],['wave','Start on any wave','up to wave 99 in free play, 20 in the campaign'],['god','Infinite health','zombies, bosses and hazards can\'t hurt you']];
 function DT(k){return!!(S.dev&&S.dt&&S.dt[k])}

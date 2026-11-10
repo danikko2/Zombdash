@@ -101,6 +101,14 @@ mode='menu';{const A=S.ac;A.pts=600;A.bl=1;A.bp=[];A.bpv=1;A.bm=[0,0,0];bpTab();
 {bmSet(S.ac,1,8);zpRun();ok(P.fc0==0,'a map already beaten on this difficulty has no first clear bonus');S.dlc=2;zpRun();ok(P.fc0==1,'first clears count per difficulty');
  const z=zpEarn(P,1,930);ok(z.h==1.5&&z.tot==Math.round((160+930)*1.25*1.5),'Hard adds ×1.5');S.dlc=1}
 {const pts=S.ac.pts;over(1);ok(S.ac.pts>pts&&ZPR&&has('class=zpn'),'the end screen shows where the Zombie Pts came from');menu()}
+// ---------- the Blueprints shop between levels ----------
+{setGM('c');mapId=0;sel=0;start();S.ac.pts=3000;S.ac.bp=[];S.ac.bl=1;wave=20;kills=900;CWIN={nx:9};over(1);ok(mode=='over'&&has('class="ovbp rdy"')&&has('ready to buy'),'after beating a map the end screen offers the Blueprints shop');
+ const p0=S.ac.pts;bpShop('end');ok(mode=='menu'&&has('BLUEPRINTS')&&has('bpBack()')&&has('NEXT: '+MP[9].n.toUpperCase())&&!has('class=hubtabs'),'it opens the Blueprints page with Back and a button straight to the next map');
+ bpBuy(8);ok(S.ac.bp.includes(8)&&S.ac.pts==p0-500,'a blueprint bought there uses the points just earned');
+ bpBack();ok(mode=='over'&&has('MAP COMPLETE')&&!BPF,'Back returns to the end screen');
+ bpShop('end');bpGo();ok(!BPF&&mapId==9&&(mode=='play'||mode=='shop'||!!BRK),'the next-map button starts the next map');menu()}
+{CWIN=null;mode='menu';setGM('c');play();cwShow(0);ok(has('class="cwbp')&&has('Zombie Pts'),'the campaign map panel has a Blueprints button');
+ bpShop('map');ok(has('bpBack()')&&!has('bpGo()')&&has('Campaign'),'from the campaign map: Back, no next-map button');bpBack();ok(UIS=='cmap'&&mode=='menu','Back returns to the campaign map');menu()}
 setGM('f');mapId=0;start();{wave=10;const z=zpEarn(P,0,100);ok(z.tot==Math.round(180*.5)&&!z.fc,'Free Play pays the replay rate');}
 // ---------- split screen: each player's bench store, ready-up, own jobs ----------
 LBY={s:[{inp:'km',ac:S.ac,ci:0,v:0,rdy:1},{inp:0,ac:'G',ci:1,v:0,rdy:1}]};setGM('f');mapId=0;startMP();for(const p of PL){p.mx=p.hp=999}

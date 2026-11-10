@@ -1003,3 +1003,12 @@ background:var(--n0);color:var(--nt);font:14px/1.3 'Barlow',system-ui,sans-serif
 .nar .bpl{flex-basis:300px}.nar .bpbig{height:170px}.nar .bpbig canvas{transform:scale(1.8)}.nar .bpdp{display:none}.nar .bpda{flex-basis:230px}
 .short .bpbig{height:120px}.short .bpbig canvas{transform:scale(1.4);margin-bottom:12px}.short .bpnote{display:none}.short .bpd{padding:8px 12px}.short .bpdt{font-size:24px}
 .pt .bpl,.pt .bpr{flex:none}.pt .bpts{overflow:visible}.pt .bpd{flex-wrap:wrap}.pt .bpda{flex:1 1 100%}.pt .bpgs{grid-template-columns:repeat(2,minmax(0,1fr))}
+/* Blueprints between levels: the button on end screens and the campaign map, the page opened from there */
+.nx .ovbp,.nx .cwbp{flex:none;display:flex;align-items:center;gap:12px;width:100%;padding:10px 14px;border-radius:8px;background:rgba(155,232,96,.06);border:1px solid rgba(155,232,96,.22)!important;color:var(--nt);text-align:left}
+.nx .ovbp:hover,.nx .cwbp:hover{background:rgba(155,232,96,.12)}.nx .ovbp.rdy,.nx .cwbp.rdy{background:rgba(155,232,96,.14);border-color:var(--na)!important}
+.ovbp>svg,.cwbp>svg{flex:none;color:var(--na)}.ovbp>span,.cwbp>span{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ovbp b,.cwbp b{display:flex;align-items:center;gap:8px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;letter-spacing:.08em}.ovbp b i,.cwbp b i{font-style:normal;background:var(--na);color:#0E1A08}
+.ovbp small,.cwbp small{font-size:13px;color:var(--nm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ovbp>.kc{flex:none}
+.nx .cwbp{padding:8px 12px;margin:2px 0 4px}.cwbp b{font-size:17px}
+.bpx .htm{padding-top:16px}.nx .bpnx{flex:none;align-self:center;height:44px!important;min-height:0;padding:0 16px;gap:6px;font-size:17px;white-space:nowrap}
+.nx .bpup .np,.nx .bpda .np{font-size:17px;white-space:nowrap;gap:8px}.nx .bpda .np .kc{flex:none}
