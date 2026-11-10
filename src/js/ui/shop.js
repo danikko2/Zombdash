@@ -26,6 +26,8 @@ function shItems(){const t=SHX.t;if(t=='guns')return SHG.flatMap(g=>g[1]).filter
 const shKey_=()=>({guns:'g',gear:'gr',ammo:'am',hp:'hp'})[SHX.t];
 // picking a row shows it; with a controller, pressing A on the row that is already picked buys it
 function shSel(k,v){if(SHX[k]===v&&NAV.on)return shAct();SHX[k]=v;sfx('click');shop()}
+// ammo rows buy straight away (no need to move to the BUY button); the row stays picked so its details show
+function shAm(k){SHX.am=k;amBuy(k)}
 function shMove(d){const L=shItems(),k=shKey_(),i=L.indexOf(SHX[k]);SHX[k]=L[cl((i<0?0:i)+d,0,L.length-1)];sfx('click');shop()}
 // the main action for what is picked: buy / equip / repair / light / heal
 function shAct(){const t=SHX.t;if(t=='guns')return buy(SHX.g);if(t=='gear')return SHX.gr=='ar'?armor():exBuy(SHX.gr);if(t=='ammo')return amBuy(SHX.am);return SHX.hp=='max'?mhp():heal()}
@@ -55,7 +57,7 @@ else if(t=='gear'){cnt=`GEAR<em>· extras ${exUsed(p)}/${EXG.slots}</em>`;
  else{const id=SHX.gr,I=EXI[id],o=exHas(p,id),c=pc(I.cost,p),fit=exFits(p,id);det=`<div class=shdh><div><span class=cwk>GEAR · USES ${I.sl} EXTRA SLOT${I.sl>1?'S':''}</span><b class=shdt>${I.n.toUpperCase()}</b></div>${o?'':`<b class="shdp${cash>=c?'':' no'}">${scr(c)}</b>`}</div><div class="shbig shbx"><canvas data-ex=${id}></canvas></div><p class=shp>${SHD[id]||''}</p>
  ${o?act(id=='hl'?(p.hlo?'TURN LIGHT OFF':'TURN LIGHT ON'):'OWNED',`exBuy('${id}')`,id=='hl','You own it',`<button data-q=1 class=shsell onclick="exSell('${id}')">SELL · ${scr(exSV(p,id))}</button>`):!fit?act('EXTRAS FULL','',0,'Sell an extra to make room'):act('BUY · '+scr(c),`exBuy('${id}')`,cash>=c,cash>=c?'Goes into an extra slot':'You need '+scr(c-cash)+' more')}`}}
 else if(t=='ammo'){cnt='AMMO<em>· for the guns you carry</em>';
- list=Object.keys(AMI).map(k=>{const I=AMI[k],c=pc(I.cost),full=p.am[k]>=I.max,use=p.own.some(i=>AMT[i]==k&&!amSt(p,i));return row(SHX.am==k,!full&&cash<c,`shSel('am','${k}')`,`<span class=shamc style="--ac:${I.c}"></span>`,`${I.n}<small>${nxN(p.am[k])} / ${nxN(I.max)}${use?' · your guns use it':''}</small>`,full?tag(1,'FULL'):price(c,cash>=c))}).join('');
+ list=Object.keys(AMI).map(k=>{const I=AMI[k],c=pc(I.cost),full=p.am[k]>=I.max,use=p.own.some(i=>AMT[i]==k&&!amSt(p,i));return row(SHX.am==k,!full&&cash<c,`shAm('${k}')`,`<span class=shamc style="--ac:${I.c}"></span>`,`${I.n}<small>${nxN(p.am[k])} / ${nxN(I.max)}${use?' · your guns use it':''}</small>`,full?tag(1,'FULL'):price(c,cash>=c))}).join('');
  const k=SHX.am,I=AMI[k],c=pc(I.cost),full=p.am[k]>=I.max,gs=WP.map((_,i)=>i).filter(i=>AMT[i]==k),mine=gs.filter(i=>p.own.includes(i));
  det=`<div class=shdh><div><span class=cwk>AMMO · ${I.buy} FOR ${scr(c)}</span><b class=shdt>${I.n.toUpperCase()}</b></div><b class="shdp${cash>=c?'':' no'}">${scr(c)}</b></div><div class="shbig shba" style="--ac:${I.c}">${mine.length?mine.slice(0,3).map(i=>gunPic(i,ci,150,56)).join(''):'<i></i>'}</div>
  <div class=shst><span class=shsk>CARRYING</span><span class=shbar><i style="width:${Math.round(p.am[k]/I.max*100)}%;background:${I.c}"></i></span><b>${nxN(p.am[k])} / ${nxN(I.max)}</b><small></small><span class=shsk>USED BY</span><span class=shuse>${gs.map(i=>`<span class="${p.own.includes(i)?'on':''}">${wN(ci,i)}</span>`).join('')}</span></div>

@@ -3743,6 +3743,8 @@ function shItems(){const t=SHX.t;if(t=='guns')return SHG.flatMap(g=>g[1]).filter
 const shKey_=()=>({guns:'g',gear:'gr',ammo:'am',hp:'hp'})[SHX.t];
 // picking a row shows it; with a controller, pressing A on the row that is already picked buys it
 function shSel(k,v){if(SHX[k]===v&&NAV.on)return shAct();SHX[k]=v;sfx('click');shop()}
+// ammo rows buy straight away (no need to move to the BUY button); the row stays picked so its details show
+function shAm(k){SHX.am=k;amBuy(k)}
 function shMove(d){const L=shItems(),k=shKey_(),i=L.indexOf(SHX[k]);SHX[k]=L[cl((i<0?0:i)+d,0,L.length-1)];sfx('click');shop()}
 // the main action for what is picked: buy / equip / repair / light / heal
 function shAct(){const t=SHX.t;if(t=='guns')return buy(SHX.g);if(t=='gear')return SHX.gr=='ar'?armor():exBuy(SHX.gr);if(t=='ammo')return amBuy(SHX.am);return SHX.hp=='max'?mhp():heal()}
@@ -3772,7 +3774,7 @@ else if(t=='gear'){cnt=`GEAR<em>· extras ${exUsed(p)}/${EXG.slots}</em>`;
  else{const id=SHX.gr,I=EXI[id],o=exHas(p,id),c=pc(I.cost,p),fit=exFits(p,id);det=`<div class=shdh><div><span class=cwk>GEAR · USES ${I.sl} EXTRA SLOT${I.sl>1?'S':''}</span><b class=shdt>${I.n.toUpperCase()}</b></div>${o?'':`<b class="shdp${cash>=c?'':' no'}">${scr(c)}</b>`}</div><div class="shbig shbx"><canvas data-ex=${id}></canvas></div><p class=shp>${SHD[id]||''}</p>
  ${o?act(id=='hl'?(p.hlo?'TURN LIGHT OFF':'TURN LIGHT ON'):'OWNED',`exBuy('${id}')`,id=='hl','You own it',`<button data-q=1 class=shsell onclick="exSell('${id}')">SELL · ${scr(exSV(p,id))}</button>`):!fit?act('EXTRAS FULL','',0,'Sell an extra to make room'):act('BUY · '+scr(c),`exBuy('${id}')`,cash>=c,cash>=c?'Goes into an extra slot':'You need '+scr(c-cash)+' more')}`}}
 else if(t=='ammo'){cnt='AMMO<em>· for the guns you carry</em>';
- list=Object.keys(AMI).map(k=>{const I=AMI[k],c=pc(I.cost),full=p.am[k]>=I.max,use=p.own.some(i=>AMT[i]==k&&!amSt(p,i));return row(SHX.am==k,!full&&cash<c,`shSel('am','${k}')`,`<span class=shamc style="--ac:${I.c}"></span>`,`${I.n}<small>${nxN(p.am[k])} / ${nxN(I.max)}${use?' · your guns use it':''}</small>`,full?tag(1,'FULL'):price(c,cash>=c))}).join('');
+ list=Object.keys(AMI).map(k=>{const I=AMI[k],c=pc(I.cost),full=p.am[k]>=I.max,use=p.own.some(i=>AMT[i]==k&&!amSt(p,i));return row(SHX.am==k,!full&&cash<c,`shAm('${k}')`,`<span class=shamc style="--ac:${I.c}"></span>`,`${I.n}<small>${nxN(p.am[k])} / ${nxN(I.max)}${use?' · your guns use it':''}</small>`,full?tag(1,'FULL'):price(c,cash>=c))}).join('');
  const k=SHX.am,I=AMI[k],c=pc(I.cost),full=p.am[k]>=I.max,gs=WP.map((_,i)=>i).filter(i=>AMT[i]==k),mine=gs.filter(i=>p.own.includes(i));
  det=`<div class=shdh><div><span class=cwk>AMMO · ${I.buy} FOR ${scr(c)}</span><b class=shdt>${I.n.toUpperCase()}</b></div><b class="shdp${cash>=c?'':' no'}">${scr(c)}</b></div><div class="shbig shba" style="--ac:${I.c}">${mine.length?mine.slice(0,3).map(i=>gunPic(i,ci,150,56)).join(''):'<i></i>'}</div>
  <div class=shst><span class=shsk>CARRYING</span><span class=shbar><i style="width:${Math.round(p.am[k]/I.max*100)}%;background:${I.c}"></i></span><b>${nxN(p.am[k])} / ${nxN(I.max)}</b><small></small><span class=shsk>USED BY</span><span class=shuse>${gs.map(i=>`<span class="${p.own.includes(i)?'on':''}">${wN(ci,i)}</span>`).join('')}</span></div>
@@ -3971,6 +3973,7 @@ function msTab(pi,t){const p=PL[pi];if(!p||p.rdy||!SHT.some(q=>q[0]==t))return;m
 function msStep(pi,d){const p=PL[pi];if(!p||p.rdy)return;const x=msSt(p),i=SHT.findIndex(q=>q[0]==x.t);x.t=SHT[(i+d+SHT.length)%SHT.length][0];sfx('click');shop()}
 function msMove(pi,d){const p=PL[pi];if(!p||p.rdy)return;const x=msSt(p),L=msItems(p),k=msKy(x.t),i=L.indexOf(x[k]),j=cl((i<0?0:i)+d,0,L.length-1);if(L[j]===x[k])return;x[k]=L[j];sfx('click');shop()}
 function msSel(pi,k,v){const p=PL[pi];if(!p||p.rdy)return;msSt(p)[k]=v;sfx('click');shop()}
+function msAm(pi,k){const p=PL[pi];if(!p||p.rdy)return;msSt(p).am=k;msAct(pi)}
 // the main action for what this player has picked (buy / equip / repair / light / heal), done as that player
 function msAct(pi){const p=PL[pi];if(!p||p.rdy)return;const x=msSt(p),t=x.t;P=p;if(t=='guns')return buy(x.g);if(t=='gear')return x.gr=='ar'?armor():exBuy(x.gr);if(t=='ammo')return amBuy(x.am);return x.hp=='max'?mhp():heal()}
 function msSell(pi){const p=PL[pi];if(!p||p.rdy)return;const x=msSt(p);P=p;if(x.t=='guns'&&p.own.includes(x.g)&&!amSt(p,x.g))return wSell(x.g);if(x.t=='gear'&&x.gr!='ar'&&exHas(p,x.gr))return exSell(x.gr);P=PL[0];sfx('deny')}
@@ -3986,7 +3989,7 @@ const AC=pc(Math.round((S.df?800:500)*(1-.1*rk('arm')))),RC=pc(Math.round(30*(1-
 const gA=pad?'<i class=msg>A</i>':kc('ENTER'),gX=pad?'<i class="msg x">X</i>':kc('X');
 const pic=(i,w,h)=>gunPic(i,ci,w,h,'',cmOf(p.ac,i));
 const price=(c,ok)=>`<b class="mspr${ok?'':' no'}">${scr(c)}</b>`,tag=(on,s)=>`<em class="shb${on?' on':''}">${s}</em>`;
-const row=(on,dim,k,val,q,name,right)=>`<button data-q=1 class="msrw${on?' on':''}${dim?' dim':''}" onclick="msSel(${pi},'${k}',${typeof val=='string'?`'${val}'`:val})"><span class=msq>${q}</span><span class=msn>${name}</span>${right}</button>`;
+const row=(on,dim,k,val,q,name,right)=>`<button data-q=1 class="msrw${on?' on':''}${dim?' dim':''}" onclick="${k=='am'?`msAm(${pi},'${val}')`:`msSel(${pi},'${k}',${typeof val=='string'?`'${val}'`:val})`}"><span class=msq>${q}</span><span class=msn>${name}</span>${right}</button>`;
 const btn=(lab,on)=>`<button data-q=1 class="msb${on?' ya':' no'}" onclick="${on?`msAct(${pi})`:"sfx('deny')"}">${on?gA:''}${lab}</button>`;
 const sellB=v=>`<button data-q=1 class=mssl onclick="msSell(${pi})">${gX}SELL ${scr(v)}</button>`;
 const sr=(k,s,v)=>`<span class=mssk>${k}</span>${shSeg(s)}<b>${v}</b>`;
@@ -8064,7 +8067,8 @@ function ccBossFor(s){const B=CCBOSS.filter(ci=>SEC[s]&&SEC[s].m.includes(UNM[ci
 // rep       % of the full reward a replay or a losing run pays; a first clear pays 100%, shown as a "first clear bonus"
 // hard      extra Zombie Pts multiplier on Hard
 // brk       break between waves, seconds · ct base ammo craft time (bench level 1) · cs seconds saved per bench level
-var BPG={price:[0,500,1000,1500,2000,2500],up:[0,0,2500,4000,5500,7000],mul:[1,1.25,1.5,1.75,2],rep:50,hard:1.5,brk:120,ct:10,cs:1.5};
+// zw / zk  Zombie Pts per wave survived / per kill; zc a flat bonus for beating a level (campaign wave 20), before the multipliers
+var BPG={price:[0,500,1000,1500,2000,2500],up:[0,0,2500,4000,5500,7000],mul:[1,1.25,1.5,1.75,2],rep:50,hard:1.5,zw:8,zk:1,zc:0,brk:120,ct:10,cs:1.5};
 const BPMAX=5;
 // ---------- tiers ----------
 // every campaign section is a tier: tier t (1..5) = section t-1. A weapon's tier is the tr field of its WP entry (data/tables.js);
@@ -8098,14 +8102,14 @@ function bpEnc(A){A=bpInit(A)||{bp:[],bl:1,bpv:1};return[A.bp.reduce((m,i)=>m+2*
 function bpDec(s,R){const q=String(s||'').split('_');if(q.length!=3)return 0;const m=parseInt(q[0],36),L=+q[1],v=+q[2];if(isNaN(m)||!(L>=1&&L<=BPMAX))return 0;
  R.bp=WP.map((_,i)=>i).filter(i=>bpTier(i)>0&&Math.floor(m/2**i)%2);R.bl=L;if(v)R.bpv=v;return 1}
 // ---------- Zombie Pts earned by a run ----------
-// (waves × 8 + kills) × section multiplier × Hard bonus = the full reward. Replays and losing runs pay rep %; a level's first
+// (waves × zw + kills × zk + zc when the level is beaten) × section multiplier × Hard bonus = the full reward (defaults: 8 a wave, 1 a kill, no clear bonus). Replays and losing runs pay rep %; a level's first
 // clear on a difficulty pays the rest as a "first clear bonus". Free Play never clears a level, so it pays the replay share.
 // p.fc0 (set when the run starts) says this map was not yet beaten on this exact difficulty by that player's account.
 function zpMul(){const s=secOf(mapId);return s>=0&&BPG.mul[s]!=null?+BPG.mul[s]:1}
 function zpHard(){return DIF()==2?+BPG.hard||1:1}
 function zpBeat(A,d,m){if(!A||A.g)return 1;if(cmIs(m)){if(CREP&&CREP.key===m)return zpBeat(A,d,CREP.o);const id=cmIdOf(m);return id?ccBits(A,id)>>d&1:1}return m>=0&&m<MP.length?bmOf(A)[d]>>m&1:1}
 function zpRun(){const cm=cCampId();for(const p of PL){p.fc0=GMD=='c'&&!PTX&&!cmPT(mapId)&&!zpBeat(p.ac,DIF(),cm)?1:0}}
-function zpEarn(p,win,k){const base=wave*8+(k||0),m=zpMul(),h=zpHard(),full=base*m*h,run=Math.round(full*cl(BPG.rep,0,100)/100),fc=win&&p.fc0?Math.max(0,Math.round(full)-run):0;
+function zpEarn(p,win,k){const base=wave*(+BPG.zw||0)+(k||0)*(+BPG.zk||0)+(win?+BPG.zc||0:0),m=zpMul(),h=zpHard(),full=base*m*h,run=Math.round(full*cl(BPG.rep,0,100)/100),fc=win&&p.fc0?Math.max(0,Math.round(full)-run):0;
  return{base,m,h,run,fc,tot:run+fc,s:secOf(mapId),win:!!win,nx:GMD=='c'&&!win&&!!p.fc0}}
 // the end screen line under the totals
 function zpNote(z){if(!z)return '';const bits=[];if(z.s>=0&&z.m!=1)bits.push(edEsc(SEC[z.s]?SEC[z.s].n:'Section')+' ×'+z.m);if(z.h!=1)bits.push('Hard ×'+z.h);
@@ -8422,8 +8426,12 @@ function balInit(){if(BALR.length)return;
  for(let t=1;t<BPG.price.length;t++)add('bP'+t,'bp','Blueprint price, each blueprint of the tier (Zombie Pts)',bpTn(t),BPG.price,t,0,20000,50);
  for(let L=2;L<BPG.up.length;L++)add('bU'+L,'bp','Bench upgrade cost (Zombie Pts; it also needs its section opened)','Level '+L+' · '+bpTn(L),BPG.up,L,0,40000,100);
  SEC.forEach((q,i)=>add('bM'+i,'bp','Zombie Pts multiplier of each campaign section (Free Play: the section the map is in)',q.n,BPG.mul,i,0,5,.05));
- add('bR','bp','Zombie Pts: (waves × 8 + kills) × section × Hard','Replays and losing runs pay (% of a first clear)',BPG,'rep',0,100,5);
- add('bH','bp','Zombie Pts: (waves × 8 + kills) × section × Hard','Hard bonus (×)',BPG,'hard',1,4,.05);
+ add('bW','bp','Zombie Pts for a run: (waves × per wave + kills × per kill + clear bonus) × section × Hard','Per wave survived',BPG,'zw',0,100,1);add('bK','bp','Zombie Pts for a run: (waves × per wave + kills × per kill + clear bonus) × section × Hard','Per kill',BPG,'zk',0,20,.25);
+ add('bL','bp','Zombie Pts for a run: (waves × per wave + kills × per kill + clear bonus) × section × Hard','Clear bonus (beating a level: campaign wave 20)',BPG,'zc',0,10000,50);
+ add('bR','bp','Zombie Pts for a run: (waves × per wave + kills × per kill + clear bonus) × section × Hard','Replays and losing runs pay (% of a first clear)',BPG,'rep',0,100,5);
+ add('bH','bp','Zombie Pts for a run: (waves × per wave + kills × per kill + clear bonus) × section × Hard','Hard bonus (×)',BPG,'hard',1,4,.05);
+ add('cDz','bp','Zombie Pts from challenges','Each daily challenge',CHR.d,'z',0,5000,10);add('cDb','bp','Zombie Pts from challenges','All 3 dailies done (bonus)',CHR.d,'bz',0,5000,10);
+ add('cWz','bp','Zombie Pts from challenges','Each weekly challenge',CHR.w,'z',0,10000,25);add('cWb','bp','Zombie Pts from challenges','All 3 weeklies done (bonus)',CHR.w,'bz',0,10000,25);
  add('bB','bp','Between waves','Break length (seconds)',BPG,'brk',5,600,5);
  add('bC','bp','Ammo crafting during a wave','Seconds at bench level 1',BPG,'ct',.5,60,.5);add('bS','bp','Ammo crafting during a wave','Seconds saved per bench level',BPG,'cs',0,10,.1)}
 function balOK(e,v){if(e.opt)return e.opt.some(o=>o[0]===v)?v:null;v=+v;return isFinite(v)?Math.max(0,v):null}

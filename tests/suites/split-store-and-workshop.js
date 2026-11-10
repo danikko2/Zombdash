@@ -36,6 +36,7 @@ PL[1].cash=1000;const c1=pc(120,PL[1]);msSel(1,'g',1);msAct(1);ok(PL[1].own.incl
 msSell(1);ok(!PL[1].own.includes(1)&&PL[1].cash==1000-c1+Math.round(c1*.6),'and sells it back for 60%');
 const t0=PL[1].sx.t;press(0,5);ok(PL[1].sx.t!==t0&&PL[0].sx.t=='guns','RB on pad 1: player 2 goes to the next tab');press(0,4);ok(PL[1].sx.t==t0,'LB goes back');
 msSel(1,'g',0);press(0,13);ok(PL[1].sx.g==1,'down picks the next gun');press(0,0);ok(PL[1].own.includes(1),'A buys it');press(0,2);ok(!PL[1].own.includes(1),'X sells it');
+{const p=PL[1];p.own=[0,3];p.am.ri=0;p.cash=500;msTab(1,'ammo');ok(bxh().includes('msAm(1,\\'ri\\')'),'split store: ammo rows buy when clicked');msAm(1,'ri');ok(p.am.ri==AMI.ri.buy&&p.sx.am=='ri','clicking a rifle ammo row buys it for player 2');msTab(1,'guns')}
 msKey('e');ok(PL[0].sx.t=='gear','E: the keyboard player goes to the next tab');msKey('s');ok(PL[0].sx.gr==EXL[0],'S: next item');msKey('q');
 press(0,1);ok(!PL[1].bo&&(bxh().match(/<section class="msp/g)||[]).length==2,'B: player 2 leaves the bench, the others keep theirs');
 bnOpen(PL[1],0);press(0,9);ok(PL[1].rdy&&!PL[1].bo&&BRK,'START: ready (the store closes); the wave waits for the others');

@@ -75,6 +75,9 @@ mode='shop';P.own=[0];P.cash=99999;SHX.t='guns';shop();ok(has('15 more guns')&&!
 buy(4);ok(!P.own.includes(4),'a gun without its blueprint can\\'t be bought');
 S.ac.bp.push(4);shop();ok(has('>Rocket<')&&has('14 more guns'),'a bought blueprint shows in the store');buy(4);ok(P.own.includes(4),'and the gun can be bought');
 S.ac.bp=[];mode='play';ui.innerHTML='';
+{P.own=[0,3];P.cur=3;P.am.ri=0;P.cash=500;SHX.t='ammo';SHX.am='pa';shop();ok(has('onclick="shAm(\\'ri\\')"'),'ammo rows buy when clicked');
+ const c=pc(AMI.ri.cost);shAm('ri');ok(P.am.ri==AMI.ri.buy&&P.cash==500-c&&SHX.am=='ri'&&mode=='shop','clicking the rifle ammo row buys it right away (and picks it)');
+ shAm('ri');ok(P.am.ri==AMI.ri.buy*2,'each click buys another batch');SHX.t='guns';mode='play';ui.innerHTML=''}
 // ---------- the Blueprints tab ----------
 mode='menu';{const A=S.ac;A.pts=600;A.bl=1;A.bp=[];A.bpv=1;A.bm=[0,0,0];bpTab();ok(has('BLUEPRINTS')&&has('YOUR WORKBENCH')&&has('BENCH LEVEL')&&has('class=hubsub'),'Progress → Blueprints page');
  ok(HUBSUB.findIndex(q=>q[0]=='bp')==HUBSUB.findIndex(q=>q[0]=='skills')+1,'the Blueprints tab sits next to Skills');
@@ -117,7 +120,12 @@ ok(OB.craftbench&&EDPN.craftbench&&OB.craftbench.c===0,'the Workshop has a Craft
  d.obj=d.obj.filter(o=>o.k!='craftbench');cmBuild(d);HS.BNP=null;mapId=-1;bnPlace();ok(BN.length==1&&Math.hypot(BN[0].x-600,BN[0].y-500)<300,'a map with none gets one next to the player start')}else ok(0,'cmNew missing')}
 // ---------- Game Balance and the cloud ----------
 S.dev=1;balInit();ok(BALG.some(g=>g[0]=='bp')&&['bP1','bU2','bM0','bR','bH','bB','bC','bS'].every(k=>BALM[k]),'Game Balance has a Blueprints tab with every number');
-balSet(BALR.indexOf(BALM.bB),60);ok(BPG.brk==60&&brkLen()==60,'the break length is a Game Balance setting');balReset(0);S.dev=0;balApply();ok(BPG.brk==120,'and goes back to 2 minutes');
+ok(['bW','bK','bL','cDz','cDb','cWz','cWb'].every(k=>BALM[k]),'Game Balance also has Zombie Pts per wave, per kill, a clear bonus and the daily / weekly challenge rewards');
+{const W=wave;wave=10;P.fc0=0;const z0=zpEarn(P,0,100).tot;balSet(BALR.indexOf(BALM.bW),20);balSet(BALR.indexOf(BALM.bK),2);const z1=zpEarn(P,0,100);ok(BPG.zw==20&&BPG.zk==2&&z1.base==10*20+100*2&&z1.tot>z0,'per-wave and per-kill Zombie Pts change what a run pays');
+ balSet(BALR.indexOf(BALM.bL),400);ok(zpEarn(P,1,100).base==10*20+100*2+400&&zpEarn(P,0,100).base==10*20+100*2,'the clear bonus is only paid for beating the level');wave=W}
+balSet(BALR.indexOf(BALM.cDz),250);balSet(BALR.indexOf(BALM.cWb),900);ok(CHR.d.z==250&&CHR.w.bz==900,'daily and weekly challenge rewards follow Game Balance');
+mode='menu';chals();ok(has('+250 Zombie Pts')&&has('+900 Zombie Pts'),'the Challenges page shows the new rewards');
+balSet(BALR.indexOf(BALM.bB),60);ok(BPG.brk==60&&brkLen()==60,'the break length is a Game Balance setting');balReset(0);S.dev=0;balApply();ok(BPG.brk==120&&BPG.zw==8&&BPG.zk==1&&BPG.zc==0&&CHR.d.z==100&&CHR.w.bz==500,'and everything goes back to the defaults');
 ok(ZBX===1&&SAVK=='zombdash_bp','this build keeps its own save');
 console.log('TOTAL fails '+fails+' of '+n);
 `;

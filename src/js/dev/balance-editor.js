@@ -57,8 +57,12 @@ function balInit(){if(BALR.length)return;
  for(let t=1;t<BPG.price.length;t++)add('bP'+t,'bp','Blueprint price, each blueprint of the tier (Zombie Pts)',bpTn(t),BPG.price,t,0,20000,50);
  for(let L=2;L<BPG.up.length;L++)add('bU'+L,'bp','Bench upgrade cost (Zombie Pts; it also needs its section opened)','Level '+L+' · '+bpTn(L),BPG.up,L,0,40000,100);
  SEC.forEach((q,i)=>add('bM'+i,'bp','Zombie Pts multiplier of each campaign section (Free Play: the section the map is in)',q.n,BPG.mul,i,0,5,.05));
- add('bR','bp','Zombie Pts: (waves × 8 + kills) × section × Hard','Replays and losing runs pay (% of a first clear)',BPG,'rep',0,100,5);
- add('bH','bp','Zombie Pts: (waves × 8 + kills) × section × Hard','Hard bonus (×)',BPG,'hard',1,4,.05);
+ add('bW','bp','Zombie Pts for a run: (waves × per wave + kills × per kill + clear bonus) × section × Hard','Per wave survived',BPG,'zw',0,100,1);add('bK','bp','Zombie Pts for a run: (waves × per wave + kills × per kill + clear bonus) × section × Hard','Per kill',BPG,'zk',0,20,.25);
+ add('bL','bp','Zombie Pts for a run: (waves × per wave + kills × per kill + clear bonus) × section × Hard','Clear bonus (beating a level: campaign wave 20)',BPG,'zc',0,10000,50);
+ add('bR','bp','Zombie Pts for a run: (waves × per wave + kills × per kill + clear bonus) × section × Hard','Replays and losing runs pay (% of a first clear)',BPG,'rep',0,100,5);
+ add('bH','bp','Zombie Pts for a run: (waves × per wave + kills × per kill + clear bonus) × section × Hard','Hard bonus (×)',BPG,'hard',1,4,.05);
+ add('cDz','bp','Zombie Pts from challenges','Each daily challenge',CHR.d,'z',0,5000,10);add('cDb','bp','Zombie Pts from challenges','All 3 dailies done (bonus)',CHR.d,'bz',0,5000,10);
+ add('cWz','bp','Zombie Pts from challenges','Each weekly challenge',CHR.w,'z',0,10000,25);add('cWb','bp','Zombie Pts from challenges','All 3 weeklies done (bonus)',CHR.w,'bz',0,10000,25);
  add('bB','bp','Between waves','Break length (seconds)',BPG,'brk',5,600,5);
  add('bC','bp','Ammo crafting during a wave','Seconds at bench level 1',BPG,'ct',.5,60,.5);add('bS','bp','Ammo crafting during a wave','Seconds saved per bench level',BPG,'cs',0,10,.1)}
 function balOK(e,v){if(e.opt)return e.opt.some(o=>o[0]===v)?v:null;v=+v;return isFinite(v)?Math.max(0,v):null}

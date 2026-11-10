@@ -16,6 +16,7 @@ function msTab(pi,t){const p=PL[pi];if(!p||p.rdy||!SHT.some(q=>q[0]==t))return;m
 function msStep(pi,d){const p=PL[pi];if(!p||p.rdy)return;const x=msSt(p),i=SHT.findIndex(q=>q[0]==x.t);x.t=SHT[(i+d+SHT.length)%SHT.length][0];sfx('click');shop()}
 function msMove(pi,d){const p=PL[pi];if(!p||p.rdy)return;const x=msSt(p),L=msItems(p),k=msKy(x.t),i=L.indexOf(x[k]),j=cl((i<0?0:i)+d,0,L.length-1);if(L[j]===x[k])return;x[k]=L[j];sfx('click');shop()}
 function msSel(pi,k,v){const p=PL[pi];if(!p||p.rdy)return;msSt(p)[k]=v;sfx('click');shop()}
+function msAm(pi,k){const p=PL[pi];if(!p||p.rdy)return;msSt(p).am=k;msAct(pi)}
 // the main action for what this player has picked (buy / equip / repair / light / heal), done as that player
 function msAct(pi){const p=PL[pi];if(!p||p.rdy)return;const x=msSt(p),t=x.t;P=p;if(t=='guns')return buy(x.g);if(t=='gear')return x.gr=='ar'?armor():exBuy(x.gr);if(t=='ammo')return amBuy(x.am);return x.hp=='max'?mhp():heal()}
 function msSell(pi){const p=PL[pi];if(!p||p.rdy)return;const x=msSt(p);P=p;if(x.t=='guns'&&p.own.includes(x.g)&&!amSt(p,x.g))return wSell(x.g);if(x.t=='gear'&&x.gr!='ar'&&exHas(p,x.gr))return exSell(x.gr);P=PL[0];sfx('deny')}
@@ -31,7 +32,7 @@ const AC=pc(Math.round((S.df?800:500)*(1-.1*rk('arm')))),RC=pc(Math.round(30*(1-
 const gA=pad?'<i class=msg>A</i>':kc('ENTER'),gX=pad?'<i class="msg x">X</i>':kc('X');
 const pic=(i,w,h)=>gunPic(i,ci,w,h,'',cmOf(p.ac,i));
 const price=(c,ok)=>`<b class="mspr${ok?'':' no'}">${scr(c)}</b>`,tag=(on,s)=>`<em class="shb${on?' on':''}">${s}</em>`;
-const row=(on,dim,k,val,q,name,right)=>`<button data-q=1 class="msrw${on?' on':''}${dim?' dim':''}" onclick="msSel(${pi},'${k}',${typeof val=='string'?`'${val}'`:val})"><span class=msq>${q}</span><span class=msn>${name}</span>${right}</button>`;
+const row=(on,dim,k,val,q,name,right)=>`<button data-q=1 class="msrw${on?' on':''}${dim?' dim':''}" onclick="${k=='am'?`msAm(${pi},'${val}')`:`msSel(${pi},'${k}',${typeof val=='string'?`'${val}'`:val})`}"><span class=msq>${q}</span><span class=msn>${name}</span>${right}</button>`;
 const btn=(lab,on)=>`<button data-q=1 class="msb${on?' ya':' no'}" onclick="${on?`msAct(${pi})`:"sfx('deny')"}">${on?gA:''}${lab}</button>`;
 const sellB=v=>`<button data-q=1 class=mssl onclick="msSell(${pi})">${gX}SELL ${scr(v)}</button>`;
 const sr=(k,s,v)=>`<span class=mssk>${k}</span>${shSeg(s)}<b>${v}</b>`;

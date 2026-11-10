@@ -6,7 +6,8 @@
 // rep       % of the full reward a replay or a losing run pays; a first clear pays 100%, shown as a "first clear bonus"
 // hard      extra Zombie Pts multiplier on Hard
 // brk       break between waves, seconds · ct base ammo craft time (bench level 1) · cs seconds saved per bench level
-var BPG={price:[0,500,1000,1500,2000,2500],up:[0,0,2500,4000,5500,7000],mul:[1,1.25,1.5,1.75,2],rep:50,hard:1.5,brk:120,ct:10,cs:1.5};
+// zw / zk  Zombie Pts per wave survived / per kill; zc a flat bonus for beating a level (campaign wave 20), before the multipliers
+var BPG={price:[0,500,1000,1500,2000,2500],up:[0,0,2500,4000,5500,7000],mul:[1,1.25,1.5,1.75,2],rep:50,hard:1.5,zw:8,zk:1,zc:0,brk:120,ct:10,cs:1.5};
 const BPMAX=5;
 // ---------- tiers ----------
 // every campaign section is a tier: tier t (1..5) = section t-1. A weapon's tier is the tr field of its WP entry (data/tables.js);
@@ -40,14 +41,14 @@ function bpEnc(A){A=bpInit(A)||{bp:[],bl:1,bpv:1};return[A.bp.reduce((m,i)=>m+2*
 function bpDec(s,R){const q=String(s||'').split('_');if(q.length!=3)return 0;const m=parseInt(q[0],36),L=+q[1],v=+q[2];if(isNaN(m)||!(L>=1&&L<=BPMAX))return 0;
  R.bp=WP.map((_,i)=>i).filter(i=>bpTier(i)>0&&Math.floor(m/2**i)%2);R.bl=L;if(v)R.bpv=v;return 1}
 // ---------- Zombie Pts earned by a run ----------
-// (waves × 8 + kills) × section multiplier × Hard bonus = the full reward. Replays and losing runs pay rep %; a level's first
+// (waves × zw + kills × zk + zc when the level is beaten) × section multiplier × Hard bonus = the full reward (defaults: 8 a wave, 1 a kill, no clear bonus). Replays and losing runs pay rep %; a level's first
 // clear on a difficulty pays the rest as a "first clear bonus". Free Play never clears a level, so it pays the replay share.
 // p.fc0 (set when the run starts) says this map was not yet beaten on this exact difficulty by that player's account.
 function zpMul(){const s=secOf(mapId);return s>=0&&BPG.mul[s]!=null?+BPG.mul[s]:1}
 function zpHard(){return DIF()==2?+BPG.hard||1:1}
 function zpBeat(A,d,m){if(!A||A.g)return 1;if(cmIs(m)){if(CREP&&CREP.key===m)return zpBeat(A,d,CREP.o);const id=cmIdOf(m);return id?ccBits(A,id)>>d&1:1}return m>=0&&m<MP.length?bmOf(A)[d]>>m&1:1}
 function zpRun(){const cm=cCampId();for(const p of PL){p.fc0=GMD=='c'&&!PTX&&!cmPT(mapId)&&!zpBeat(p.ac,DIF(),cm)?1:0}}
-function zpEarn(p,win,k){const base=wave*8+(k||0),m=zpMul(),h=zpHard(),full=base*m*h,run=Math.round(full*cl(BPG.rep,0,100)/100),fc=win&&p.fc0?Math.max(0,Math.round(full)-run):0;
+function zpEarn(p,win,k){const base=wave*(+BPG.zw||0)+(k||0)*(+BPG.zk||0)+(win?+BPG.zc||0:0),m=zpMul(),h=zpHard(),full=base*m*h,run=Math.round(full*cl(BPG.rep,0,100)/100),fc=win&&p.fc0?Math.max(0,Math.round(full)-run):0;
  return{base,m,h,run,fc,tot:run+fc,s:secOf(mapId),win:!!win,nx:GMD=='c'&&!win&&!!p.fc0}}
 // the end screen line under the totals
 function zpNote(z){if(!z)return '';const bits=[];if(z.s>=0&&z.m!=1)bits.push(edEsc(SEC[z.s]?SEC[z.s].n:'Section')+' ×'+z.m);if(z.h!=1)bits.push('Hard ×'+z.h);
