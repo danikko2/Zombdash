@@ -45,7 +45,7 @@ OK(Object.keys(S.bal).length==12,'12 changes saved: '+Object.keys(S.bal).join(' 
 const tx=balText();SAY(tx.split('\\n').slice(0,4).join(' | '));OK(/Rifle.*Magazine: 30 → 77/.test(tx),'copy text lists default → new');
 
 // back to defaults when test mode is turned off, back again when it is turned on
-devOff();OK(MAG[3]==30&&WP[3].d==5&&AMI.pa.max==1200&&ZCFG.cap.rg[2]==20&&ZT[2].hp==14&&CH[4].hp==9&&SVS[2].hp==540,'test mode off: every default restored');
+devOff();OK(MAG[3]==30&&WP[3].d==5.75&&AMI.pa.max==1200&&ZCFG.cap.rg[2]==20&&ZT[2].hp==14&&CH[4].hp==9&&SVS[2].hp==300,'test mode off: every default restored');
 OK(Object.keys(S.bal).length==12,'changes are kept for next time');devSet();OK(MAG[3]==77&&CH[4].hp==12,'test mode on again: changes return');
 // a reload keeps them
 balReset(1);OK(Object.keys(S.bal).length==11&&CH[4].hp==9,'reset this tab (player hp) only');balOpen('guns');balReset(0);OK(!Object.keys(S.bal).length&&MAG[3]==30,'reset everything');

@@ -29,7 +29,7 @@ ok(WP[FB].d>WP[XB].d&&WP[FB].bt>0&&WP[FB].bd>0,'the Firebow hits a little harder
 ok(WP[BB].bx>=20&&WP[BB].bs>0&&WP[BB].br>0&&WP[BB].bf>0,'the Blastbow blows up: '+WP[BB].bx+' to the zombie it sticks in, '+WP[BB].bs+' around within '+WP[BB].br);
 ok([RLS,RLT,MAG,AMT,MZ,FS,FSN].every(a=>a.length==WP.length),'every per-gun table has an entry for every gun');
 ok(FSN.every(n=>typeof SF[n]=='function')&&RLS.every(n=>typeof SF[n]=='function')&&['bbeep','bbstick','bbpop','fbignite'].every(n=>typeof SF[n]=='function'),'fire, reload, beep, blast and fire sounds exist');
-ok(MAG.slice(0,13).join()=='18,45,6,30,1,8,30,40,200,8,120,10,3'&&WP[XB].d==6&&WP[XB].cost==280&&WP[12].cost==2000&&AMI.ar.max==500&&AMI.rk.max==48,'older guns and ammo keep their values');
+ok(MAG.slice(0,13).join()=='18,45,6,30,1,8,30,40,200,8,120,10,3'&&WP[XB].d==7&&WP[XB].cost==260&&WP[12].cost==2000&&AMI.ar.max==500&&AMI.rk.max==48,'older guns and ammo keep their values');
 // ---------- sprites ----------
 ok(Object.keys(PS).every(k=>PS[k].gun.length==WP.length&&PS[k].gun.slice(13).every(f=>f[2]==80&&f[3]==32&&f[4]==6&&f[5]==14&&f[1]>=1698)),'every survivor holds the three new guns (80x32 frames below the old sheet)');
 ok(JSON.stringify(PS[0].gun[0])=='[490,0,80,32,6,14]'&&JSON.stringify(PS[0].gun[11])=='[0,1599,80,32,6,14]'&&JSON.stringify(PS[16].gun[12])=='[729,1665,80,32,6,14]','older gun frames did not move');

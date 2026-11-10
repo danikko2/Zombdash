@@ -4,7 +4,7 @@ let KN=null,RH=null,SVB=0,CWIN=null,CLR=null,RKS=[];GHH=[];GRN=[];ICB=[];GCI=[];
 // w: pi pistol · sg shotgun · smg · dp dual pistols · mig Ken's MIG welding gun · mini Buck's minigun. pd = preferred distance. h1 = first health bar (ship / horse)
 const SVS={
 1:{hp:720,sp:70,w:'pi',cd:.45,pd:200,lz:'#7ae8ff'},
-2:{hp:540,sp:74,w:'sg',cd:1.45,pd:160},
+2:{hp:300,sp:74,w:'sg',cd:1.45,pd:160},
 3:{hp:440,sp:177,w:'smg',cd:1.35,pd:230},
 4:{hp:520,sp:78,w:'sg',cd:1.13,pd:170},
 5:{hp:560,sp:54,w:'sg',cd:1.6,pd:160},

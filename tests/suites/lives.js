@@ -28,7 +28,7 @@ ok(fl<=12&&jit<10,'horse facing flips in 10s: '+fl+', direction reversals frame-
 // split screen: everyone down costs a life
 const B={name:'B',xp:0,lv:1,sp:0,sk:{},pts:0,un:[0],cp:8};S.prof=[B];LBY={s:[{inp:'km',ac:S.ac,ci:0,v:0,rdy:1},{inp:0,ac:B,ci:0,v:1,rdy:1}]};mapId=0;startMP();ok(LIVES==3,'split screen campaign 3 lives');for(const p of PL){p.dn=0;p.dead=1}tick(2);if(mode=='lifeo')lifeCont();ok((mode=='play'&&!BRK)&&LIVES==2&&PL.every(p=>!p.dead&&p.hp==p.mx),'split screen wipe = life lost, everyone back');
 // tuning
-ok(SVS[1].hp==720&&SVS[1].sp==70&&SVS[1].cd<.5&&SVS[3].sp==177&&SVS[3].hp>300&&SVS[2].hp>380&&SVS[4].sp==78&&Math.abs(SVS[4].cd-1.7/1.5)<.01,'boss tuning');
+ok(SVS[1].hp==720&&SVS[1].sp==70&&SVS[1].cd<.5&&SVS[3].sp==177&&SVS[3].hp>300&&SVS[2].hp==300&&SVS[4].sp==78&&Math.abs(SVS[4].cd-1.7/1.5)<.01,'boss tuning');
 console.log('TOTAL errors',errs.length,errs.slice(0,5));
 `;
 globalThis.LOG=m=>require("fs").writeSync(2,m+"\n");new Function("docL","ivs","errs","started_",out)(docL,ivs,errs);
