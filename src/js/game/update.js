@@ -1,6 +1,6 @@
 //# game/update.js — The main per-frame game update (zombies, bullets, waves)
 function upd(dt){if(bossQ>=0){const P0=P;P=rndAlive();spawnZ(bossQ);if(MPn>=3){const o=[6,7,8,12,13].filter(t=>t!=bossQ);{const e=WRC&&WRC.x!=null?WRC.x:o[Math.random()*o.length|0];if(WRC)WRC.x=e;spawnZ(e)}}P=P0;bossQ=-1;sfx('horn')}
-banner-=dt;ft-=dt;svTick(dt);LLB-=dt;if(ft<=0){flow();ft=.15}
+banner-=dt;ft-=dt;svTick(dt);LLB-=dt;if(ft<=0)ft=flow();
 for(const p of PL){P=p;if(updP(dt)){over();return}}P=PL[0];if(MPn&&!PL.some(alive)){over();return}
 spT-=dt;if(toSp>0&&spT<=0&&zs.length<ZCAP()){const P0=P;P=rndAlive();const ok=spawnZ();P=P0;if(ok){spT=Math.max(.25,1.1-wave*.06)/(MPn?1+.4*(MPn-1):1);toSp--}else{spT=.3;ZD.wt+=.3}}
 for(const q of pd)q.l-=dt;pd=pd.filter(q=>q.l>0);for(const q of fr)q.l-=dt;fr=fr.filter(q=>q.l>0);

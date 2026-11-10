@@ -16,6 +16,7 @@ maps/military-camp-shared.js
 maps/military-base.js
 maps/campground.js
 world/map-list-and-pathfinding.js
+world/pathfinding-worker.js
 world/map-schema.js
 world/terrain-more.js
 world/terrain-kit.js
