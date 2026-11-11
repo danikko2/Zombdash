@@ -22,5 +22,6 @@ do{const a=Math.random()*6.283;x=cl(P.x+Math.cos(a)*R,-20,WW+20);y=cl(P.y+Math.s
 if(spBad(x,y)){if(HS.sp2){const p=HS.sp2[Math.random()*HS.sp2.length|0];x=p[0];y=p[1]}else if(HS.NS)for(let k=0;k<40&&spBad(x,y);k++){const e=Math.random()*4|0,u=Math.random();x=e<2?(e?WW+20:-20):u*WW;y=e<2?u*WH:e==2?WH+20:-20}}if(HS.CZ){const p=cmSpawnAt(R);x=p[0];y=p[1]}else if(HS.sp){const far=HS.sp.filter(p=>Math.hypot(p[0]-P.x,p[1]-P.y)>R*.75),pool=far.length?far:HS.sp,p=pool[Math.random()*pool.length|0];x=p[0]+rnd(-14,14);y=p[1]+rnd(-14,14)}
 const z=mk(t,x,y);if(ZT[t].boss){const tr=Math.floor((wave-1)/20);z.hp=ZT[t].hp*Math.pow(1.8,tr)*(S.df?1.8:1)*BMP();z.mh=z.hp;z.spm=Math.pow(1.2,tr)}zs.push(z);return z}
 function btier(){return Math.floor((wave-1)/5)}
-function mk(t,x,y){const b=btier(),h=ZT[t].hp*(1+wave*.08)*(S.df?1.8:1)*Math.pow(1.2,b)*ZMP();return{x,y,t,hp:h,m0:h,spm:Math.min(2,Math.pow(1.1,b)),k:0,kx:0,ky:0}}
+// health and speed grow with the wave (ZPACE in zombies/wave-size.js: +8% a wave, ×1.2 health and ×1.1 speed every 5 waves, speed at most ×2)
+function mk(t,x,y){const h=ZT[t].hp*zHpK(wave)*(S.df?1.8:1)*ZMP();return{x,y,t,hp:h,m0:h,spm:zSpK(wave),k:0,kx:0,ky:0}}
 function shoot(z,k){sfx(k?'bow':'throw',z.x,z.y);const a=Math.atan2(P.y-z.y,P.x-z.x),n=z.hp<z.mh/2?3:1,v=k?320:200;for(let i=0;i<n;i++){const b=a+(i-(n-1)/2)*.25;ep.push({x:z.x,y:z.y,vx:Math.cos(b)*v,vy:Math.sin(b)*v,l:2.2,k,big:z.t==8})}}

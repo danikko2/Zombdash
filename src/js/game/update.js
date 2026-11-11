@@ -2,7 +2,7 @@
 function upd(dt){if(bossQ>=0){const P0=P;P=rndAlive();spawnZ(bossQ);if(MPn>=3){const o=[6,7,8,12,13].filter(t=>t!=bossQ);{const e=WRC&&WRC.x!=null?WRC.x:o[Math.random()*o.length|0];if(WRC)WRC.x=e;spawnZ(e)}}P=P0;bossQ=-1;sfx('horn')}
 banner-=dt;ft-=dt;svTick(dt);LLB-=dt;if(ft<=0)ft=flow();
 for(const p of PL){P=p;if(updP(dt)){over();return}}P=PL[0];if(MPn&&!PL.some(alive)){over();return}
-spT-=dt;if(toSp>0&&spT<=0&&zs.length<ZCAP()){const P0=P;P=rndAlive();const ok=spawnZ();P=P0;if(ok){spT=Math.max(.25,1.1-wave*.06)/(MPn?1+.4*(MPn-1):1);toSp--}else{spT=.3;ZD.wt+=.3}}
+spT-=dt;if(toSp>0&&spT<=0&&zs.length<ZCAP()){const P0=P;P=rndAlive();const ok=spawnZ();P=P0;if(ok){spT=zSpGap()/(MPn?1+.4*(MPn-1):1);toSp--}else{spT=.3;ZD.wt+=.3}}
 for(const q of pd)q.l-=dt;pd=pd.filter(q=>q.l>0);for(const q of fr)q.l-=dt;fr=fr.filter(q=>q.l>0);
 for(const p of ep){if(p.k==3)pt.push({x:p.x,y:p.y,vx:0,vy:-20,l:.25,c:'#ff9a2e'});for(let k=0;k<2;k++){p.x+=p.vx*dt/2;p.y+=p.vy*dt/2;if(wlAt(p.x,p.y).some(w=>w[4]!=2&&p.x>w[0]&&p.x<w[0]+w[2]&&p.y>w[1]&&p.y<w[1]+w[3]))p.l=0}p.l-=dt;
 if(p.l>0)for(const q of PL){if(!alive(q)||(p.lb?!knOn(p,q):Math.hypot(p.x-q.x,p.y-q.y)>=(p.big?20:10)))continue;P=q;p.l=0;if(P.inv<=0&&Math.random()<.05*rk('rng')){FT.push({x:P.x,y:P.y-30,t:'SHRUGGED OFF',c:'#9be860',l:.9});P.inv=.3}else{if(p.k==3&&!sPk(P,17)){P.bn=3;P.bt=1.5*(1+.1*rk('haz'))}}if(P.inv<=0){P.hp-=arm(S.df?2:1);P.inv=.8;if(P.hp<=0&&ded()){over();return}}break}}
