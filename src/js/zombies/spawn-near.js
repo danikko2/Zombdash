@@ -59,16 +59,22 @@ function zRiseUpd(z,dt){z.ri-=dt;const T=ZT[z.t],c=ZDC[z.sf|0]||ZDC[2],u=1-z.ri/
  if(z.ri<=0){z.ri=0;ZHL.push({x:z.x,y:F[0],w:F[2],c,l:3,L:3});if(ZHL.length>40)ZHL.shift();for(let k=0;k<8;k++)pt.push({x:z.x+rnd(-10,10),y:F[0],vx:rnd(-80,80),vy:-rnd(20,80),l:.35,c:c[1]});sfx(SN[z.sf]||'dirt',z.x,z.y,1.2,.08)}}
 function zHoleUpd(dt){if(!ZHL.length)return;for(const h of ZHL)h.l-=dt;ZHL=ZHL.filter(h=>h.l>0)}
 // the hole: a dark pit with clods round it (k 0..1 how far it has opened); the lip is the front half, drawn over the zombie
-function zHoleDr(x,y,w,k,c){const rx=Math.max(5,w*.4)*k,ry=rx*.38;X.fillStyle=c[0];X.beginPath();X.ellipse(x,y,rx,ry,0,0,7);X.fill();
- X.fillStyle=c[1];for(let i=0;i<9;i++){const a=i/9*6.283+.3,s=2+i*7%3;X.fillRect(Math.round(x+Math.cos(a)*rx*1.08-s/2),Math.round(y+Math.sin(a)*ry*1.3-s/2),s+1,s)}
- X.fillStyle=c[2];for(let i=0;i<4;i++){const a=i/4*6.283+1.1;X.fillRect(Math.round(x+Math.cos(a)*rx*1.35-1),Math.round(y+Math.sin(a)*ry*1.6-1),2,2)}}
-function zHoleLip(x,y,w,k,c){const rx=Math.max(5,w*.4)*k,ry=rx*.38;X.fillStyle=c[1];for(let i=0;i<9;i++){const a=i/9*6.283+.3;if(Math.sin(a)<.15)continue;const s=2+i*7%3;X.fillRect(Math.round(x+Math.cos(a)*rx*1.08-s/2),Math.round(y+Math.sin(a)*ry*1.3-s/2),s+1,s)}
- X.fillRect(Math.round(x-rx*.7),Math.round(y+ry*.55),Math.round(rx*1.4),2)}
-// holes left behind fade out over 3 s (drawn under the zombies)
-function zHoles(){if(!ZHL.length)return;for(const h of ZHL){X.globalAlpha=Math.min(1,h.l/h.L*1.6)*.9;zHoleDr(h.x,h.y,h.w,1,h.c)}X.globalAlpha=1}
+function zHoleDr(g,x,y,w,k,c){const rx=Math.max(5,w*.4)*k,ry=rx*.38;g.fillStyle=c[0];g.beginPath();g.ellipse(x,y,rx,ry,0,0,7);g.fill();
+ g.fillStyle=c[1];for(let i=0;i<9;i++){const a=i/9*6.283+.3,s=2+i*7%3;g.fillRect(Math.round(x+Math.cos(a)*rx*1.08-s/2),Math.round(y+Math.sin(a)*ry*1.3-s/2),s+1,s)}
+ g.fillStyle=c[2];for(let i=0;i<4;i++){const a=i/4*6.283+1.1;g.fillRect(Math.round(x+Math.cos(a)*rx*1.35-1),Math.round(y+Math.sin(a)*ry*1.6-1),2,2)}}
+function zHoleLip(g,x,y,w,k,c){const rx=Math.max(5,w*.4)*k,ry=rx*.38;g.fillStyle=c[1];for(let i=0;i<9;i++){const a=i/9*6.283+.3;if(Math.sin(a)<.15)continue;const s=2+i*7%3;g.fillRect(Math.round(x+Math.cos(a)*rx*1.08-s/2),Math.round(y+Math.sin(a)*ry*1.3-s/2),s+1,s)}
+ g.fillRect(Math.round(x-rx*.7),Math.round(y+ry*.55),Math.round(rx*1.4),2)}
+// each pit and lip is drawn once per ground and zombie size into a small picture (ZHC); every frame copies it (one drawImage a hole)
+const ZHC={};
+function zHoleImg(w,c,lip){const key=(lip?'l':'p')+Math.round(w)+c[1];if(key in ZHC)return ZHC[key];let e=null;
+ try{const rx=Math.max(5,w*.4),cw=Math.ceil(rx*2.9)+6,ch=Math.ceil(rx*.38*3.4)+8,cv=document.createElement('canvas');cv.width=cw;cv.height=ch;const g=cv.getContext('2d');if(g){(lip?zHoleLip:zHoleDr)(g,cw/2,ch/2,w,1,c);e={cv,w:cw,h:ch}}}catch(_){e=null}
+ return ZHC[key]=e}
+function zHoleAt(x,y,w,k,c,lip){const e=zHoleImg(w,c,lip);if(!e||!e.cv.width){(lip?zHoleLip:zHoleDr)(X,x,y,w,k,c);return}const dw=e.w*k,dh=e.h*k;if(dw<1)return;X.drawImage(e.cv,0,0,e.w,e.h,Math.round(x-dw/2),Math.round(y-dh/2),Math.round(dw),Math.round(dh))}
+// holes left behind fade out over 3 s (drawn under the zombies; only the ones on screen)
+function zHoles(){if(!ZHL.length)return;const x0=cam.x-60,y0=cam.y-60,x1=cam.x+W+60,y1=cam.y+H+60;for(const h of ZHL){if(h.x<x0||h.x>x1||h.y<y0||h.y>y1)continue;X.globalAlpha=Math.min(1,h.l/h.L*1.6)*.9;zHoleAt(h.x,h.y,h.w,1,h.c)}X.globalAlpha=1}
 // a zombie crawling out: the pit opens and hands come up first, then it rises out of the ground, rocking, cut off at the pit
 function zRiseDr(z){const F=zFeet(z),fy=F[0],h=F[1],w=F[2],u=cl(1-z.ri/z.rT,0,1),c=ZDC[z.sf|0]||ZDC[2],k=Math.min(1,u*3.5),T=ZT[z.t];
- zHoleDr(z.x,fy,w,k,c);const e=u<.25?0:1-Math.pow(1-(u-.25)/.75,2.2);
+ zHoleAt(z.x,fy,w,k,c);const e=u<.25?0:1-Math.pow(1-(u-.25)/.75,2.2);
  if(u>.06&&u<.4){const hy=fy-1-Math.min(1,(u-.06)/.2)*6,hc=T.c||'#7d9f5a';X.fillStyle=hc;for(const s of[-1,1]){const hx=Math.round(z.x+s*w*.16);X.fillRect(hx-1,Math.round(hy),3,Math.round(fy-hy));X.fillRect(hx-2,Math.round(hy)-2,1,3);X.fillRect(hx,Math.round(hy)-3,1,3);X.fillRect(hx+2,Math.round(hy)-2,1,3)}}
  if(e>0){X.save();X.beginPath();X.rect(z.x-w*1.5-20,fy-h*2-60,w*3+40,h*2+60);X.clip();X.translate(Math.sin(u*38+(z.ph||0))*(1-e)*2.4,(1-e)*h*1.05);z._rd=1;try{zDr(z)}finally{z._rd=0;X.restore()}}
- zHoleLip(z.x,fy,w,k,c)}
+ zHoleAt(z.x,fy,w,k,c,1)}

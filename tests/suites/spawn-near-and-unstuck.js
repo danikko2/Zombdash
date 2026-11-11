@@ -67,6 +67,10 @@ const many=(k,t)=>{const L=[];for(let i=0;i<k;i++){const z=spawnZ(t==null?0:t);i
  const i=BALR.findIndex(e=>e.id=='sN'),j=BALR.findIndex(e=>e.id=='sO');balSet(i,250);ok(ZSPN.near==250&&S.bal.sN==250,'changing the closest distance changes the game');balSet(i,null);ok(ZSPN.near==Z0.near&&!('sN' in S.bal),'reset puts it back');
  balSet(j,'classic');ok(ZSPN.on=='classic','spawning can be switched back to the old way');balSet(j,null);ok(ZSPN.on=='near','and back');
  ok(DTL.some(d=>d[0]=='stk'),'test switch: Show stuck zombies');run(0);const z=mk(0,P.x+100,P.y);z.sk=1;z.un=.5;zs=[z];S.dt={stk:1};draw();S.dt={fps:1};const t=fmText(500);ok(t.includes('spawns ground')&&t.includes('stuck  squeezed'),'the frame readout counts spawns and unsticks');S.dt={};S.dev=0;zs=[]}
+// ---------- drawing cost ----------
+{run(13);const fx=P.x<WW/2?WW-60:60,fy=P.y<WH/2?WH-60:60,a=mk(0,P.x+50,P.y),b=mk(0,fx,fy),c=mk(6,fx,fy);zs=[a,b,c];const D0=zDr,seen=[];zDr=z=>seen.push(z);try{draw()}finally{zDr=D0}
+ ok(seen.includes(a)&&!seen.includes(b)&&seen.includes(c),'zombies off the screen are not drawn (bosses always are)');zs=[]}
+{S.dev=1;S.dt={fps:1};mode='play';FM.t=[16,40,35,16];FM.u=[1];FM.d=[3];FM.f=[[16,1,3],[40,2,14],[35,1,4],[16,1,3]];const t=fmText(500);ok(t.includes('late  2 frames: 1 game work · 1 outside the game'),'the readout says which late frames were the game and which were outside it');FM.f=[];S.dt={};S.dev=0}
 console.log('TOTAL fails '+fails+' of '+n);
 `;
 const AF=Object.getPrototypeOf(async function(){}).constructor;

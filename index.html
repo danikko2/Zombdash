@@ -4382,7 +4382,8 @@ function drawW(){const ZM=tutZ();if(ZM!=1){drawW.W0=W;drawW.H0=H;W=W/ZM;H=H/ZM;X
 if(!P||mode=='menu'||mode=='lobby'){zmEnd();return}X.save();X.translate(-Math.round(cam.x),-Math.round(cam.y));
 for(const q of pd){X.globalAlpha=.55*Math.min(1,q.l);X.fillStyle='#5fbf3a';X.beginPath();X.ellipse(q.x,q.y,24,15,0,0,7);X.fill();X.fillStyle='#9be860';X.beginPath();X.ellipse(q.x-5,q.y-3,9,5,0,0,7);X.fill();X.globalAlpha=1}
 for(const q of fr){const k=Math.min(1,q.l),t=performance.now()/120;X.globalAlpha=.6*k;X.fillStyle='#4a1608';X.beginPath();X.ellipse(q.x,q.y,24,15,0,0,7);X.fill();X.globalAlpha=k;for(let i=0;i<7;i++){const fx=q.x-18+i*6,fh=8+(Math.sin(t+i*1.7)+1)*6,fo=(i*5)%6;X.fillStyle=i%2?'#ff7a1a':'#ffb02e';X.fillRect(fx,q.y-fh+4-fo,5,fh);X.fillStyle='#ffe27a';X.fillRect(fx+1,q.y-fh*.5+4-fo,3,fh*.5)}X.globalAlpha=1}
-bnDraw();pkAnim();cmFxAnim();ckDrawS();spDrawS();bcDrawS();knDrawS();qbDrawS();zHoles();for(const z of zs)zDr(z);zStkDr();
+bnDraw();pkAnim();cmFxAnim();ckDrawS();spDrawS();bcDrawS();knDrawS();qbDrawS();zHoles();{// zombies off the screen aren't drawn (bosses, survivor bosses and ghosts always are)
+const x0=cam.x-140,y0=cam.y-140,x1=cam.x+W+140,y1=cam.y+H+190;for(const z of zs){const T=ZT[z.t];if(T.boss||T.sv||T.gh||(z.x>x0&&z.x<x1&&z.y>y0&&z.y<y1))zDr(z)}}zStkDr();
 svExtra();for(const b of bs){if(b.ab){xbDraw(b);continue}if(b.lz||b.lv){const k=(b.lz?18:13)/Math.hypot(b.vx,b.vy),L=b.lv;X.lineCap='round';X.globalAlpha=.45;X.strokeStyle=L?L.g:'#50dcff';X.lineWidth=b.lz?7:6;X.beginPath();X.moveTo(b.x,b.y);X.lineTo(b.x-b.vx*k,b.y-b.vy*k);X.stroke();X.globalAlpha=1;X.strokeStyle=b.dd?'#ffe9a8':L?L.c:'#dff9ff';X.lineWidth=b.lz?3:2.5;X.stroke();X.lineCap='butt';continue}X.fillStyle=b.rk?'#ff7a2e':'#ffe27a';const q=b.rk?4:b.dd?3:2;if(b.dd&&!b.rk)X.fillStyle='#ffb02e';X.fillRect(b.x-q,b.y-q,q*2,q*2)}
 ckDraw();spDraw();lsDraw();bcDraw();fhDraw();drawDrops();for(const p of pt){X.fillStyle=p.c;X.fillRect(p.x-2,p.y-2,4,4)}
 drawPlayers();vehFg();pkCan();cmFxTop();
@@ -8049,19 +8050,25 @@ function zRiseUpd(z,dt){z.ri-=dt;const T=ZT[z.t],c=ZDC[z.sf|0]||ZDC[2],u=1-z.ri/
  if(z.ri<=0){z.ri=0;ZHL.push({x:z.x,y:F[0],w:F[2],c,l:3,L:3});if(ZHL.length>40)ZHL.shift();for(let k=0;k<8;k++)pt.push({x:z.x+rnd(-10,10),y:F[0],vx:rnd(-80,80),vy:-rnd(20,80),l:.35,c:c[1]});sfx(SN[z.sf]||'dirt',z.x,z.y,1.2,.08)}}
 function zHoleUpd(dt){if(!ZHL.length)return;for(const h of ZHL)h.l-=dt;ZHL=ZHL.filter(h=>h.l>0)}
 // the hole: a dark pit with clods round it (k 0..1 how far it has opened); the lip is the front half, drawn over the zombie
-function zHoleDr(x,y,w,k,c){const rx=Math.max(5,w*.4)*k,ry=rx*.38;X.fillStyle=c[0];X.beginPath();X.ellipse(x,y,rx,ry,0,0,7);X.fill();
- X.fillStyle=c[1];for(let i=0;i<9;i++){const a=i/9*6.283+.3,s=2+i*7%3;X.fillRect(Math.round(x+Math.cos(a)*rx*1.08-s/2),Math.round(y+Math.sin(a)*ry*1.3-s/2),s+1,s)}
- X.fillStyle=c[2];for(let i=0;i<4;i++){const a=i/4*6.283+1.1;X.fillRect(Math.round(x+Math.cos(a)*rx*1.35-1),Math.round(y+Math.sin(a)*ry*1.6-1),2,2)}}
-function zHoleLip(x,y,w,k,c){const rx=Math.max(5,w*.4)*k,ry=rx*.38;X.fillStyle=c[1];for(let i=0;i<9;i++){const a=i/9*6.283+.3;if(Math.sin(a)<.15)continue;const s=2+i*7%3;X.fillRect(Math.round(x+Math.cos(a)*rx*1.08-s/2),Math.round(y+Math.sin(a)*ry*1.3-s/2),s+1,s)}
- X.fillRect(Math.round(x-rx*.7),Math.round(y+ry*.55),Math.round(rx*1.4),2)}
-// holes left behind fade out over 3 s (drawn under the zombies)
-function zHoles(){if(!ZHL.length)return;for(const h of ZHL){X.globalAlpha=Math.min(1,h.l/h.L*1.6)*.9;zHoleDr(h.x,h.y,h.w,1,h.c)}X.globalAlpha=1}
+function zHoleDr(g,x,y,w,k,c){const rx=Math.max(5,w*.4)*k,ry=rx*.38;g.fillStyle=c[0];g.beginPath();g.ellipse(x,y,rx,ry,0,0,7);g.fill();
+ g.fillStyle=c[1];for(let i=0;i<9;i++){const a=i/9*6.283+.3,s=2+i*7%3;g.fillRect(Math.round(x+Math.cos(a)*rx*1.08-s/2),Math.round(y+Math.sin(a)*ry*1.3-s/2),s+1,s)}
+ g.fillStyle=c[2];for(let i=0;i<4;i++){const a=i/4*6.283+1.1;g.fillRect(Math.round(x+Math.cos(a)*rx*1.35-1),Math.round(y+Math.sin(a)*ry*1.6-1),2,2)}}
+function zHoleLip(g,x,y,w,k,c){const rx=Math.max(5,w*.4)*k,ry=rx*.38;g.fillStyle=c[1];for(let i=0;i<9;i++){const a=i/9*6.283+.3;if(Math.sin(a)<.15)continue;const s=2+i*7%3;g.fillRect(Math.round(x+Math.cos(a)*rx*1.08-s/2),Math.round(y+Math.sin(a)*ry*1.3-s/2),s+1,s)}
+ g.fillRect(Math.round(x-rx*.7),Math.round(y+ry*.55),Math.round(rx*1.4),2)}
+// each pit and lip is drawn once per ground and zombie size into a small picture (ZHC); every frame copies it (one drawImage a hole)
+const ZHC={};
+function zHoleImg(w,c,lip){const key=(lip?'l':'p')+Math.round(w)+c[1];if(key in ZHC)return ZHC[key];let e=null;
+ try{const rx=Math.max(5,w*.4),cw=Math.ceil(rx*2.9)+6,ch=Math.ceil(rx*.38*3.4)+8,cv=document.createElement('canvas');cv.width=cw;cv.height=ch;const g=cv.getContext('2d');if(g){(lip?zHoleLip:zHoleDr)(g,cw/2,ch/2,w,1,c);e={cv,w:cw,h:ch}}}catch(_){e=null}
+ return ZHC[key]=e}
+function zHoleAt(x,y,w,k,c,lip){const e=zHoleImg(w,c,lip);if(!e||!e.cv.width){(lip?zHoleLip:zHoleDr)(X,x,y,w,k,c);return}const dw=e.w*k,dh=e.h*k;if(dw<1)return;X.drawImage(e.cv,0,0,e.w,e.h,Math.round(x-dw/2),Math.round(y-dh/2),Math.round(dw),Math.round(dh))}
+// holes left behind fade out over 3 s (drawn under the zombies; only the ones on screen)
+function zHoles(){if(!ZHL.length)return;const x0=cam.x-60,y0=cam.y-60,x1=cam.x+W+60,y1=cam.y+H+60;for(const h of ZHL){if(h.x<x0||h.x>x1||h.y<y0||h.y>y1)continue;X.globalAlpha=Math.min(1,h.l/h.L*1.6)*.9;zHoleAt(h.x,h.y,h.w,1,h.c)}X.globalAlpha=1}
 // a zombie crawling out: the pit opens and hands come up first, then it rises out of the ground, rocking, cut off at the pit
 function zRiseDr(z){const F=zFeet(z),fy=F[0],h=F[1],w=F[2],u=cl(1-z.ri/z.rT,0,1),c=ZDC[z.sf|0]||ZDC[2],k=Math.min(1,u*3.5),T=ZT[z.t];
- zHoleDr(z.x,fy,w,k,c);const e=u<.25?0:1-Math.pow(1-(u-.25)/.75,2.2);
+ zHoleAt(z.x,fy,w,k,c);const e=u<.25?0:1-Math.pow(1-(u-.25)/.75,2.2);
  if(u>.06&&u<.4){const hy=fy-1-Math.min(1,(u-.06)/.2)*6,hc=T.c||'#7d9f5a';X.fillStyle=hc;for(const s of[-1,1]){const hx=Math.round(z.x+s*w*.16);X.fillRect(hx-1,Math.round(hy),3,Math.round(fy-hy));X.fillRect(hx-2,Math.round(hy)-2,1,3);X.fillRect(hx,Math.round(hy)-3,1,3);X.fillRect(hx+2,Math.round(hy)-2,1,3)}}
  if(e>0){X.save();X.beginPath();X.rect(z.x-w*1.5-20,fy-h*2-60,w*3+40,h*2+60);X.clip();X.translate(Math.sin(u*38+(z.ph||0))*(1-e)*2.4,(1-e)*h*1.05);z._rd=1;try{zDr(z)}finally{z._rd=0;X.restore()}}
- zHoleLip(z.x,fy,w,k,c)}
+ zHoleAt(z.x,fy,w,k,c,1)}
 // Every chk seconds a zombie that is trying to walk checks how far it got. It is caught when it covered less than need % of
 // its walk with a wall close by (or next to nothing in open ground) and no other zombie right in front of it is holding it up
 // (one in a queue or at the back of a crowd just waits its turn). Then, until it has
@@ -8548,12 +8555,14 @@ function dtFrame(){if(!DT('god')||mode!='play')return;for(const p of PL||[]){if(
 // and the drawing (d) took on the main thread (timed in core/main-loop.js). Every half second the panel in the bottom right
 // shows frames per second, average and worst frame, update and drawing time, the share of the 16.7 ms budget (60 fps) they use,
 // and what is on screen. Green: the worst frame stayed under 20 ms; yellow: under 34 ms (a dropped frame now and then); red: slower.
-let FMON=false,fmEl=null,fmT0=0,fmLast=0;const FM={t:[],u:[],d:[]};
+// "late" counts the frames over 20 ms and says what made each one late: the game's own work (logic + drawing over 12 ms that
+// frame), or something outside it (the graphics card finishing the picture, the browser, garbage collection, other tabs).
+let FMON=false,fmEl=null,fmT0=0,fmLast=0;const FM={t:[],u:[],d:[],f:[]};
 function fmFrame(t){try{FMON=DT('fps')&&mode!='splash'&&mode!='intro';if(!FMON){if(fmEl&&fmEl.style.display!='none')fmEl.style.display='none';fmLast=0;return}
- if(fmLast)FM.t.push(t-fmLast);fmLast=t;if(!fmT0)fmT0=t;if(t-fmT0<500)return;
+ if(fmLast){FM.t.push(t-fmLast);FM.f.push([t-fmLast,FM.cu||0,FM.cd||0])}FM.cu=FM.cd=0;fmLast=t;if(!fmT0)fmT0=t;if(t-fmT0<500)return;
  if(!fmEl){if(!document.body||!document.body.appendChild)return;fmEl=document.createElement('pre');fmEl.id='fmtr';fmEl.style.cssText='position:fixed;right:8px;bottom:8px;z-index:61;margin:0;padding:6px 9px;background:rgba(0,0,0,.78);color:#d8f0c8;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;border:1px solid #3a5a30;border-left-width:4px;border-radius:4px;pointer-events:none;white-space:pre'}
  if(!fmEl.parentNode)document.body.appendChild(fmEl);fmEl.style.display='block';fmEl.textContent=fmText(t-fmT0);fmEl.style.borderLeftColor=FM.col;
- fmT0=t;FM.t=[];FM.u=[];FM.d=[]}catch(e){}}
+ fmT0=t;FM.t=[];FM.u=[];FM.d=[];FM.f=[]}catch(e){}}
 function fmText(span){const av=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0,mx=a=>a.length?Math.max(...a):0,f=v=>v.toFixed(1).padStart(5);
  const n=FM.t.length,fps=n?n*1000/span:0,wt=mx(FM.t),ua=av(FM.u),da=av(FM.d),busy=(ua+da)/16.7*100;FM.col=wt<20?'#9be860':wt<34?'#ffcf40':'#ff5a4a';
  const dpr=typeof devicePixelRatio=='number'?devicePixelRatio:1,cv=X&&X.canvas?X.canvas.width+'×'+X.canvas.height:'?';
@@ -8561,6 +8570,9 @@ function fmText(span){const av=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0,mx=
   `frame ${f(av(FM.t))} ms  worst ${f(wt)}`,
   `logic ${f(ua)} ms  worst ${f(mx(FM.u))}`,`draw  ${f(da)} ms  worst ${f(mx(FM.d))}`,
   `budget used ${busy.toFixed(0).padStart(3)}% of 16.7 ms`];
+ // late frames (over 20 ms): was it the game's own work that frame (logic + draw over 12 ms), or something outside it
+ const lt=(FM.f||[]).filter(f=>f[0]>20),lg=lt.filter(f=>f[1]+f[2]>12).length;
+ L.push(lt.length?`late  ${lt.length} frame${lt.length>1?'s':''}: ${lg} game work · ${lt.length-lg} outside the game`:'late  none');
  if(mode=='play'||mode=='pause'||mode=='shop')L.push(`zombies ${zs.length}/${ZCAP()} · players ${PL.length} · ${MP[mapId]?MP[mapId].n:'custom map'}`,`paths  ${PFW.ok?'background thread':PFW.ok===false?'main thread':'starting'}`,`spawns ground ${ZSPC.g} · points ${ZSPC.p} · old way ${ZSPC.o}`,`stuck  squeezed ${ZUNC.sq} · side-steps ${ZUNC.sd} · lifted ${ZUNC.hp}`);
  L.push(`screen ${W}×${H} · canvas ${cv} · ${dpr}x`);return L.join('\n')}
 // ---------- drops: every zombie and boss type has its own chances (in %) for each item ----------
@@ -9971,7 +9983,7 @@ try{await wsStore(d)}catch(err){return workshop('Could not copy the map: '+edEsc
 // the first map build: here, after the map file and every kit piece it uses are loaded
 try{build()}catch(e){console.error(e);mapId=0;S.mp=0;build()}
 function loop(t){clFrame(t);aimCursor();dtFrame();zdFrame();fmFrame(t);requestAnimationFrame(loop);try{if(innerWidth!==LW||innerHeight!==LH){LW=innerWidth;LH=innerHeight;rs()}loopBody(t)}catch(e){showErr(e)}}
-function loopBody(t){const dt=Math.min(.05,(t-last)/1000||0);last=t;padPoll();if(mode=='splash'||mode=='intro'){padUI();CT+=dt;PZ.style.display='none';SB.innerHTML='';sbk='';drawCut(dt);return}padUI();if(mode=='play'){const u0=FMON?performance.now():0;upd(dt);if(FMON)FM.u.push(performance.now()-u0)}else if(mode=='shop'&&BRK)brkTick(dt);if(SVD&&t-SVT>5000&&mode!='play'||SVD&&t-SVT>20000){SVD=0;SVT=t;sv()}for(const p of PL){if(p.hp<(p.php??p.hp)&&mode!='menu'&&mode!='lobby')sfx('hurt');p.php=p.hp}smk(dt);const kk=mode+MPn+(P?P.own+'|'+P.cur+'|'+(P.ex||'')+(P.hlo?1:0):'');if(kk!=sbk){sbk=kk;PZ.style.display=mode=='play'&&!MPn?'flex':'none';SB.innerHTML=mode=='play'&&!MPn?P.own.map((i,k)=>`<button data-q=1 class="${i==P.cur?'on':''}" onclick="eq(${i});sfx('click')">${k+1}<small>${CH[P.ci||0].dw&&i==0?'Duals':WP[i].n}</small></button>`).join('')+`<button data-q=1 onclick="amRel(P)">R<small>Reload</small></button>`+(P.ex&&P.ex.includes('hl')?`<button data-q=1 class="${P.hlo?'on':''}" onclick="hlTog(P)">F<small>Light</small></button>`:''):''}bnDom();const d0=FMON?performance.now():0;draw();if(FMON)FM.d.push(performance.now()-d0)}
+function loopBody(t){const dt=Math.min(.05,(t-last)/1000||0);last=t;padPoll();if(mode=='splash'||mode=='intro'){padUI();CT+=dt;PZ.style.display='none';SB.innerHTML='';sbk='';drawCut(dt);return}padUI();if(mode=='play'){const u0=FMON?performance.now():0;upd(dt);if(FMON){const e_=performance.now()-u0;FM.u.push(e_);FM.cu=(FM.cu||0)+e_}}else if(mode=='shop'&&BRK)brkTick(dt);if(SVD&&t-SVT>5000&&mode!='play'||SVD&&t-SVT>20000){SVD=0;SVT=t;sv()}for(const p of PL){if(p.hp<(p.php??p.hp)&&mode!='menu'&&mode!='lobby')sfx('hurt');p.php=p.hp}smk(dt);const kk=mode+MPn+(P?P.own+'|'+P.cur+'|'+(P.ex||'')+(P.hlo?1:0):'');if(kk!=sbk){sbk=kk;PZ.style.display=mode=='play'&&!MPn?'flex':'none';SB.innerHTML=mode=='play'&&!MPn?P.own.map((i,k)=>`<button data-q=1 class="${i==P.cur?'on':''}" onclick="eq(${i});sfx('click')">${k+1}<small>${CH[P.ci||0].dw&&i==0?'Duals':WP[i].n}</small></button>`).join('')+`<button data-q=1 onclick="amRel(P)">R<small>Reload</small></button>`+(P.ex&&P.ex.includes('hl')?`<button data-q=1 class="${P.hlo?'on':''}" onclick="hlTog(P)">F<small>Light</small></button>`:''):''}bnDom();const d0=FMON?performance.now():0;draw();if(FMON){const e_=performance.now()-d0;FM.d.push(e_);FM.cd=(FM.cd||0)+e_}}
 C.addEventListener('pointerdown',e=>{if(mode!='play')return;const q=gp(e);
 if(e.pointerType=='mouse'){mouse.d=1;mouse.x=q.x;mouse.y=q.y;return}
 const s={id:e.pointerId,ox:q.x,oy:q.y,x:q.x,y:q.y};
