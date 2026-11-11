@@ -16,5 +16,5 @@ function fmText(span){const av=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0,mx=
   `frame ${f(av(FM.t))} ms  worst ${f(wt)}`,
   `logic ${f(ua)} ms  worst ${f(mx(FM.u))}`,`draw  ${f(da)} ms  worst ${f(mx(FM.d))}`,
   `budget used ${busy.toFixed(0).padStart(3)}% of 16.7 ms`];
- if(mode=='play'||mode=='pause'||mode=='shop')L.push(`zombies ${zs.length}/${ZCAP()} · players ${PL.length} · ${MP[mapId]?MP[mapId].n:'custom map'}`,`paths  ${PFW.ok?'background thread':PFW.ok===false?'main thread':'starting'}`);
+ if(mode=='play'||mode=='pause'||mode=='shop')L.push(`zombies ${zs.length}/${ZCAP()} · players ${PL.length} · ${MP[mapId]?MP[mapId].n:'custom map'}`,`paths  ${PFW.ok?'background thread':PFW.ok===false?'main thread':'starting'}`,`spawns ground ${ZSPC.g} · points ${ZSPC.p} · old way ${ZSPC.o}`,`stuck  squeezed ${ZUNC.sq} · side-steps ${ZUNC.sd} · lifted ${ZUNC.hp}`);
  L.push(`screen ${W}×${H} · canvas ${cv} · ${dpr}x`);return L.join('\n')}

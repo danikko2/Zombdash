@@ -3,7 +3,7 @@
 // Every value here is the game's real variable. Changes are saved on this device in S.bal (by short id)
 // and only apply while test mode is on; turning test mode off puts every default back.
 var BALR=[],BALM={},BALD={},BALO={},BALT='guns',BALTO=0;
-const BALG=[['guns','Guns'],['ammo','Ammo'],['ex','Extras'],['caps','Caps'],['zhp','Zombie HP'],['bhp','Boss HP'],['php','Player HP'],['spd','Speed'],['drop','Drops'],['zc','Zombie count'],['bp','Blueprints']];
+const BALG=[['guns','Guns'],['ammo','Ammo'],['ex','Extras'],['caps','Caps'],['zhp','Zombie HP'],['bhp','Boss HP'],['php','Player HP'],['spd','Speed'],['drop','Drops'],['zc','Zombie count'],['sn','Spawning'],['bp','Blueprints']];
 const BAMO=[['pa','Pistol'],['ri','Rifle'],['sh','Shotgun'],['rk','Rockets'],['bl','Belts'],['ar','Arrows'],['rand','Random']];
 function balInit(){if(BALR.length)return;
  // id = short stable name used in S.bal and in settings codes; the label key is kept so older saves still load
@@ -64,7 +64,15 @@ function balInit(){if(BALR.length)return;
  add('cDz','bp','Zombie Pts from challenges','Each daily challenge',CHR.d,'z',0,5000,10);add('cDb','bp','Zombie Pts from challenges','All 3 dailies done (bonus)',CHR.d,'bz',0,5000,10);
  add('cWz','bp','Zombie Pts from challenges','Each weekly challenge',CHR.w,'z',0,10000,25);add('cWb','bp','Zombie Pts from challenges','All 3 weeklies done (bonus)',CHR.w,'bz',0,10000,25);
  add('bB','bp','Between waves','Break length (seconds)',BPG,'brk',5,600,5);
- add('bC','bp','Ammo crafting during a wave','Seconds at bench level 1',BPG,'ct',.5,60,.5);add('bS','bp','Ammo crafting during a wave','Seconds saved per bench level',BPG,'cs',0,10,.1)}
+ add('bC','bp','Ammo crafting during a wave','Seconds at bench level 1',BPG,'ct',.5,60,.5);add('bS','bp','Ammo crafting during a wave','Seconds saved per bench level',BPG,'cs',0,10,.1)
+ // zombies/spawn-near.js and zombies/unstuck.js
+ const sw='Where zombies appear (walking distance: along the path zombies take, from the player they are after)';
+ add('sO','sn',sw,'How zombies appear',ZSPN,'on',0,0,0,[['near','Near the player (the band below)'],['classic','Classic (far spawn points, just off the screen)']]);
+ add('sN','sn',sw,'Closest (walking px)',ZSPN,'near',0,3000,10);add('sF','sn',sw,'Farthest (walking px)',ZSPN,'far',50,6000,10);
+ const sg='Crawling out of the ground';add('sG','sn',sg,'Zombies that crawl out of the ground (% of spawns; the rest use the map\'s spawn points)',ZSPN,'gnd',0,100,5);
+ add('sM','sn',sg,'Never closer to any player than (straight-line px)',ZSPN,'min',0,1500,10);add('sR','sn',sg,'Seconds to crawl out (can be shot meanwhile, can\'t move or bite)',ZSPN,'rise',.1,5,.1);
+ const su='Zombies stuck on a corner, tree or wall';add('uC','sn',su,'Seconds between checks of how far it got',ZUN,'chk',.1,3,.05);add('uP','sn',su,'Caught if it covered less than (% of its walk)',ZUN,'need',0,100,5);
+ add('uS','sn',su,'Side-step length (seconds)',ZUN,'side',.05,3,.05);add('uH','sn',su,'Seconds caught before it is lifted onto an open square',ZUN,'hop',.5,30,.5)}
 function balOK(e,v){if(e.opt)return e.opt.some(o=>o[0]===v)?v:null;v=+v;return isFinite(v)?Math.max(0,v):null}
 function balApply(){balInit();if(S.bal)for(const k of Object.keys(S.bal))if(!BALM[k]&&BALO[k]){S.bal[BALO[k]]=S.bal[k];delete S.bal[k]}
  for(const e of BALR)e.o[e.f]=BALD[e.k];if(!S.dev||!S.bal)return;for(const k in S.bal){const e=BALM[k];if(!e)continue;const v=balOK(e,S.bal[k]);if(v!=null)e.o[e.f]=v}}
@@ -91,6 +99,7 @@ function balOpen(t){if(!S.dev)return options();balInit();if(t)BALT=t;UIS='bal';m
  for(const e of BALR){if(e.g!=BALT)continue;if(e.sub!==sub){sub=e.sub;h+=`<h4 class=bsub>${sub}</h4>`;if(BALT=='zc'&&e.lab=='Base')h+=`<p class=note id=balzc style="text-align:left;margin:2px 4px 6px">${balZcTxt()}</p>`}h+=balRow(e)}
  if(BALT=='ex')h=`<p class=note style="text-align:left;margin:4px">The Headlamp's light shows fully on maps with night or dusk lighting; on daylight maps it is a faint beam. Light changes show at once in a run.</p>`+h;
  if(BALT=='bp')h=`<p class=note style="text-align:left;margin:4px">Blueprint tiers follow the campaign sections; a weapon's tier is the tr field of its entry in the weapon table. Bench level ${BPMAX} is the top. Ammo crafting now: ${[1,2,3,4,5].map(L=>'L'+L+' '+bpCraftT(L)+' s').join(' · ')}.</p>`+h;
+ if(BALT=='sn')h=`<p class=note style="text-align:left;margin:4px">Walking distance follows the zombies' path round walls (16 px a square). A walker covers about ${ZT[0].sp} px a second (more on Hard); half your screen is about ${Math.round(W/2)} px. Bosses and ghosts keep the old way. The test switch Show stuck zombies marks zombies working themselves free; the frame time readout counts spawns and unsticks.</p>`+h;
   if(BALT=='drop')h=`<p class=note style="text-align:left;margin:4px">Each kill rolls every chance on its own. The Luck skill raises the chances on regular zombies. Survivor bosses don't drop items.</p>`+h;
  const n=Object.keys(S.bal||{}).length;
  show(nxPage('bal','GAME BALANCE',{back:'options()',crumbs:[['Options','options()'],['Game balance · test mode']]},`<div class="seg btab">${BALG.map(([k,nm])=>`<button data-q=1 class="${BALT==k?'on':''}" onclick="balOpen('${k}')">${nm}${BALR.some(e=>e.g==k&&S.bal&&e.k in S.bal)?' •':''}</button>`).join('')}</div>

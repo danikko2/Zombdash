@@ -16,6 +16,8 @@ function over(q){if(!q&&GMD=='c'&&LIVES>1&&!CWIN&&mode=='play'){lifeDeath();retu
 // also covers the strip just outside it, where off-screen zombies start)
 function spBad(x,y){if(mapId===11&&y<230)return true;if(!HS.NS)return false;const cx=cl(x,0,WW-.5),cy=cl(y,0,WH-.5);return HS.NS.some(r=>cx>=r[0]&&cx<r[2]&&cy>=r[1]&&cy<r[3])}
 function spawnZ(tf){let t=tf,R=Math.hypot(W,H)/2+40,x,y,n=0;if(t==null){t=zPick();if(t==null)return null}
+// near the player first (zombies/spawn-near.js: in walking reach, many crawling out of the ground); the old way below for bosses, ghosts and when nothing fits
+{const q=zsPick(t);if(q){const z=mk(t,q[0],q[1]);if(q[2])zRise(z);zs.push(z);return z}}
 do{const a=Math.random()*6.283;x=cl(P.x+Math.cos(a)*R,-20,WW+20);y=cl(P.y+Math.sin(a)*R,-20,WH+20)}while(n++<(HS.NS&&HS.NS.length?24:12)&&(fdBad(x,y)||spBad(x,y)||(x>HS.nx0&&x<HS.nx1&&y>HS.ny0&&y<HS.ny1)||(x>0&&x<WW&&y>0&&y<WH&&WL.some(w=>x>w[0]-14&&x<w[0]+w[2]+14&&y>w[1]-14&&y<w[1]+w[3]+14))));
 if(spBad(x,y)){if(HS.sp2){const p=HS.sp2[Math.random()*HS.sp2.length|0];x=p[0];y=p[1]}else if(HS.NS)for(let k=0;k<40&&spBad(x,y);k++){const e=Math.random()*4|0,u=Math.random();x=e<2?(e?WW+20:-20):u*WW;y=e<2?u*WH:e==2?WH+20:-20}}if(HS.CZ){const p=cmSpawnAt(R);x=p[0];y=p[1]}else if(HS.sp){const far=HS.sp.filter(p=>Math.hypot(p[0]-P.x,p[1]-P.y)>R*.75),pool=far.length?far:HS.sp,p=pool[Math.random()*pool.length|0];x=p[0]+rnd(-14,14);y=p[1]+rnd(-14,14)}
 const z=mk(t,x,y);if(ZT[t].boss){const tr=Math.floor((wave-1)/20);z.hp=ZT[t].hp*Math.pow(1.8,tr)*(S.df?1.8:1)*BMP();z.mh=z.hp;z.spm=Math.pow(1.2,tr)}zs.push(z);return z}

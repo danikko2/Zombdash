@@ -21,13 +21,13 @@ function zWide(a,b,r){const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1,nx=-dy/
 return los(a,b)&&los({x:a.x+nx,y:a.y+ny},{x:b.x+nx,y:b.y+ny})&&los({x:a.x-nx,y:a.y-ny},{x:b.x-nx,y:b.y-ny})}
 // zombies standing on each other push apart a little (bigger ones move less), so a crowd fills out instead of stacking into one file
 function zSep(dt){const C=40,G=new Map(),L=[];
-for(const z of zs){const T=ZT[z.t];if(z.hp<=0||T.sv||T.gh||z.lp||z.alt>4||z.t==14)continue;const k=((z.x/C|0)+500)*4096+((z.y/C|0)+500);let b=G.get(k);if(!b)G.set(k,b=[]);z.si=L.length;b.push(z);L.push(z)}
+for(const z of zs){const T=ZT[z.t];if(z.hp<=0||T.sv||T.gh||z.lp||z.alt>4||z.t==14||z.ri>0)continue;const k=((z.x/C|0)+500)*4096+((z.y/C|0)+500);let b=G.get(k);if(!b)G.set(k,b=[]);z.si=L.length;b.push(z);L.push(z)}
 const f=Math.min(1,dt*10);
 for(const z of L){const r=Math.min(ZT[z.t].r,22),ci=z.x/C|0,cj=z.y/C|0;
 for(let i=ci-1;i<=ci+1;i++)for(let j=cj-1;j<=cj+1;j++){const b=G.get((i+500)*4096+(j+500));if(!b)continue;
 for(const w of b){if(w.si<=z.si||z.un>0||w.un>0)continue;const r2=Math.min(ZT[w.t].r,22),dx=w.x-z.x,dy=w.y-z.y,dd=dx*dx+dy*dy,R=(r+r2)*.8;if(dd>=R*R)continue;
 const d=Math.sqrt(dd)||.01,ov=(R-d)*f*.5,ux=d>.01?dx/d:Math.random()-.5,uy=d>.01?dy/d:Math.random()-.5,mz=ZT[z.t].boss?0:r2/(r+r2),mw=ZT[w.t].boss?0:r/(r+r2);
 z.x-=ux*ov*mz*2;z.y-=uy*ov*mz*2;w.x+=ux*ov*mw*2;w.y+=uy*ov*mw*2}}}
-for(const z of L){push(z,Math.min(ZT[z.t].r,22))}}
+for(const z of L){push(z,z.un>0?6:Math.min(ZT[z.t].r,22))}}
 // open ground round a zombie: no wall in the path grid within two cells of it (hugging a wall or in a doorway it follows the path)
 function zOpen(z){if(!bl||!gw)return 1;const ci=z.x/gs|0,cj=z.y/gs|0;for(let i=ci-2;i<=ci+2;i++)for(let j=cj-2;j<=cj+2;j++){if(i<0||j<0||i>=gw||j>=gh)continue;if(bl[j*gw+i])return 0}return 1}

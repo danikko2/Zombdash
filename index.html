@@ -1814,7 +1814,7 @@ g.font='10px "Press Start 2P", monospace';g.fillStyle='#2a1a10';g.fillText('CAMP
 for(const x of[AX-150,AX+150]){g.fillStyle='#5a3a22';g.fillRect(x-3,AY-100,6,8)}}
 
 const MP=[{n:'Suburb',d:'House, garage, road, wrecks',f:()=>bimBuild(0)},{n:'Warehouse',d:'Shelves, containers, 4 doors',f:()=>bimBuild(1)},{n:'Graveyard',d:'Chapel, glowing mausoleum, crypt, open graves',f:()=>bimBuild(2)},{n:'School',d:'Halls, classrooms, cafeteria',f:()=>bimBuild(3)},{n:'Old West',d:'Saloon, church, stables, shops',f:mapWest},{n:'Neighborhood',d:'Two houses, cul-de-sac, yards',f:mapNeighborhood},{n:'Military Base',d:'Runway, hangars, barracks, tanks',f:mapBase},{n:'Campground',d:'Cabins, lake, dock, campfire',f:mapCamp},{n:'Deadway Highway',d:'Jammed interstate, wrecks, emergency scene',f:()=>bimBuild(8)},{n:'Haunted Mansion',d:'Old mansion, portraits, statues, candles',f:()=>bimBuild(9)},{n:'Enchanted Forest',d:'Night woods, a trail looping round, the witch\'s log cabin',f:()=>bimBuild(10)},{n:'Urban Outskirts',d:'Run-down houses, wrecks, worn streets',f:mapUrban},{n:'City Park',d:'Trails, fishing ponds, food trucks, a big playground',f:mapPark},{n:'Downtown Zombville',d:'Sunrise, towers, the stadium and the hospital, checkpoints',f:()=>bimBuild(13)},{n:'Hometown Market',d:'Aisles, freezers, loading docks, parking lot',f:()=>bimBuild(14)},{n:'Main Street',d:'Shops, city hall, police + fire stations',f:()=>bimBuild(15)},{n:'Black Iron Foundry',d:'Furnaces, molten metal, cranes, a truck bay',f:()=>bimBuild(16)},{n:'Zombville Stadium',d:'The field turned treatment center, overrun',f:()=>bimBuild(17)}];
-function build(){bgFree();WW=1800;WH=1800;WL=[];TR=[];SM=[];sk=[];NOGO=[];const cd=cmIs(mapId)&&cmDocOf(mapId);if(!cd&&!MP[mapId])mapId=0;vRec.on=1;vRec.L=[];vRec.busy=0;vehWrap();try{if(cd)cmBuild(cd);else MP[mapId].f()}finally{vRec.on=0}HS.VH=vRec.L;mkSurf();bgLow();bnPlace()}
+function build(){bgFree();WW=1800;WH=1800;WL=[];TR=[];SM=[];sk=[];NOGO=[];const cd=cmIs(mapId)&&cmDocOf(mapId);if(!cd&&!MP[mapId])mapId=0;vRec.on=1;vRec.L=[];vRec.busy=0;vehWrap();try{if(cd)cmBuild(cd);else MP[mapId].f()}finally{vRec.on=0}HS.VH=vRec.L;mkSurf();bgLow();bnPlace();zsReset()}
 // the first build runs in world/builtin-maps.js, once the Suburb's map file and the kit are loaded
 // the walking-distance maps zombies follow (fd; in split screen one per player, p.fd), refreshed about 7 times a second.
 // With a background thread (world/pathfinding-worker.js) every map is worked out there. Without one, split screen refreshes
@@ -1829,6 +1829,10 @@ function flow(){const L=MPn?PL.filter(p=>alive(p)):[P];if(!L.length||!P)return .
 function bfs(F,px,py){if(!BFQ||BFQ.length<gw*gh)BFQ=new Int32Array(gw*gh);bfsCore(F,BFQ,bl,gw,gh,cl(px/gs|0,0,gw-1),cl(py/gs|0,0,gh-1))}
 let BFQ=null;
 function bfsCore(F,q,bl,gw,gh,ci,cj){F.fill(-1);let h=0,t=0;const s0=cj*gw+ci;F[s0]=0;q[t++]=s0;
+ // a player squeezed into a gap the path grid counts as wall (the grid keeps 9 px off walls, a player is 9 px wide): the walk
+ // starts from the open squares round them too, so zombies still find the way instead of walking straight into the wall
+ if(bl[s0]&&!(ci>0&&!bl[s0-1])&&!(ci<gw-1&&!bl[s0+1])&&!(cj>0&&!bl[s0-gw])&&!(cj<gh-1&&!bl[s0+gw]))
+  for(let r=1,o=0;r<=2&&!o;r++)for(let j=cj-r;j<=cj+r;j++)for(let i=ci-r;i<=ci+r;i++){if(i<0||j<0||i>=gw||j>=gh||Math.max(Math.abs(i-ci),Math.abs(j-cj))!=r)continue;const k=j*gw+i;if(!bl[k]&&F[k]<0){F[k]=r;q[t++]=k;o=1}}
  while(h<t){const c=q[h++],i=c%gw,j=(c-i)/gw,d=F[c]+1,L=i>0,R=i<gw-1,U=j>0,B=j<gh-1;let k;
   if(R){k=c+1;if(F[k]<0&&!bl[k]){F[k]=d;q[t++]=k}}if(L){k=c-1;if(F[k]<0&&!bl[k]){F[k]=d;q[t++]=k}}
   if(B){k=c+gw;if(F[k]<0&&!bl[k]){F[k]=d;q[t++]=k}}if(U){k=c-gw;if(F[k]<0&&!bl[k]){F[k]=d;q[t++]=k}}
@@ -1837,6 +1841,8 @@ function bfsCore(F,q,bl,gw,gh,ci,cj){F.fill(-1);let h=0,t=0;const s0=cj*gw+ci;F[
 function dirTo(z){let tx=P.x,ty=P.y;
 if(z.x<0||z.x>WW||z.y<0||z.y>WH){tx=cl(z.x,4,WW-4);ty=cl(z.y,4,WH-4)}
 else{const F=MPn&&P.fd&&P.fd.length===fd.length?P.fd:fd,i=cl(z.x/gs|0,0,gw-1),j=cl(z.y/gs|0,0,gh-1),c=F[j*gw+i];
+// a zombie working itself free (zombies/unstuck.js) walks through the middle of each square of the path, which clears every wall
+if(z.un>0&&c>0&&!bl[j*gw+i]&&z.uk!==j*gw+i){const cx=i*gs+gs/2,cy=j*gs+gs/2;if(Math.abs(z.x-cx)>3||Math.abs(z.y-cy)>3)return Math.atan2(cy-z.y,cx-z.x);z.uk=j*gw+i}
 if(c!=0){let bd=c<0?1e9:c,bx=0,by=0,f=0;for(const[di,dj]of D){const a=i+di,b=j+dj;if(a<0||b<0||a>=gw||b>=gh)continue;const n=F[b*gw+a];if(n<0||n>=bd)continue;if(di&&dj&&(bl[j*gw+a]||bl[b*gw+i]))continue;bd=n;bx=a;by=b;f=1}
 if(f){tx=bx*gs+gs/2;ty=by*gs+gs/2}}}
 return Math.atan2(ty-z.y,tx-z.x)}
@@ -4214,6 +4220,8 @@ function over(q){if(!q&&GMD=='c'&&LIVES>1&&!CWIN&&mode=='play'){lifeDeath();retu
 // also covers the strip just outside it, where off-screen zombies start)
 function spBad(x,y){if(mapId===11&&y<230)return true;if(!HS.NS)return false;const cx=cl(x,0,WW-.5),cy=cl(y,0,WH-.5);return HS.NS.some(r=>cx>=r[0]&&cx<r[2]&&cy>=r[1]&&cy<r[3])}
 function spawnZ(tf){let t=tf,R=Math.hypot(W,H)/2+40,x,y,n=0;if(t==null){t=zPick();if(t==null)return null}
+// near the player first (zombies/spawn-near.js: in walking reach, many crawling out of the ground); the old way below for bosses, ghosts and when nothing fits
+{const q=zsPick(t);if(q){const z=mk(t,q[0],q[1]);if(q[2])zRise(z);zs.push(z);return z}}
 do{const a=Math.random()*6.283;x=cl(P.x+Math.cos(a)*R,-20,WW+20);y=cl(P.y+Math.sin(a)*R,-20,WH+20)}while(n++<(HS.NS&&HS.NS.length?24:12)&&(fdBad(x,y)||spBad(x,y)||(x>HS.nx0&&x<HS.nx1&&y>HS.ny0&&y<HS.ny1)||(x>0&&x<WW&&y>0&&y<WH&&WL.some(w=>x>w[0]-14&&x<w[0]+w[2]+14&&y>w[1]-14&&y<w[1]+w[3]+14))));
 if(spBad(x,y)){if(HS.sp2){const p=HS.sp2[Math.random()*HS.sp2.length|0];x=p[0];y=p[1]}else if(HS.NS)for(let k=0;k<40&&spBad(x,y);k++){const e=Math.random()*4|0,u=Math.random();x=e<2?(e?WW+20:-20):u*WW;y=e<2?u*WH:e==2?WH+20:-20}}if(HS.CZ){const p=cmSpawnAt(R);x=p[0];y=p[1]}else if(HS.sp){const far=HS.sp.filter(p=>Math.hypot(p[0]-P.x,p[1]-P.y)>R*.75),pool=far.length?far:HS.sp,p=pool[Math.random()*pool.length|0];x=p[0]+rnd(-14,14);y=p[1]+rnd(-14,14)}
 const z=mk(t,x,y);if(ZT[t].boss){const tr=Math.floor((wave-1)/20);z.hp=ZT[t].hp*Math.pow(1.8,tr)*(S.df?1.8:1)*BMP();z.mh=z.hp;z.spm=Math.pow(1.2,tr)}zs.push(z);return z}
@@ -4323,7 +4331,7 @@ for(const q of pd)q.l-=dt;pd=pd.filter(q=>q.l>0);for(const q of fr)q.l-=dt;fr=fr
 for(const p of ep){if(p.k==3)pt.push({x:p.x,y:p.y,vx:0,vy:-20,l:.25,c:'#ff9a2e'});for(let k=0;k<2;k++){p.x+=p.vx*dt/2;p.y+=p.vy*dt/2;if(wlAt(p.x,p.y).some(w=>w[4]!=2&&p.x>w[0]&&p.x<w[0]+w[2]&&p.y>w[1]&&p.y<w[1]+w[3]))p.l=0}p.l-=dt;
 if(p.l>0)for(const q of PL){if(!alive(q)||(p.lb?!knOn(p,q):Math.hypot(p.x-q.x,p.y-q.y)>=(p.big?20:10)))continue;P=q;p.l=0;if(P.inv<=0&&Math.random()<.05*rk('rng')){FT.push({x:P.x,y:P.y-30,t:'SHRUGGED OFF',c:'#9be860',l:.9});P.inv=.3}else{if(p.k==3&&!sPk(P,17)){P.bn=3;P.bt=1.5*(1+.1*rk('haz'))}}if(P.inv<=0){P.hp-=arm(S.df?2:1);P.inv=.8;if(P.hp<=0&&ded()){over();return}}break}}
 for(const p of ep){if(p.l<=0&&p.k==2)pd.push({x:p.x,y:p.y,l:5,m:5});else if(p.l<=0&&p.k==3)fr.push({x:p.x,y:p.y,l:5,m:5});else if(p.l<=0&&p.lb)knHit(p)}ep=ep.filter(p=>p.l>0);
-for(const z of zs){P=tgt(z);const T=ZT[z.t];if(T.sv){svUpd(z,T,dt);continue}if(z.hg>0){z.hg-=dt;if(Math.random()<dt*5)pt.push({x:z.x+rnd(-8,8),y:z.y-6-rnd(0,14),vx:0,vy:-36,l:.5,c:'#ffe27a'})}let a=T.gh?Math.atan2(P.y-z.y,P.x-z.x):zSpreadA(z,T,dirTo(z),dt),m=1;z.vt=(z.vt??rnd(.5,4))-dt;if(z.vt<=0){z.vt=z.t==14?rnd(.4,.8):rnd(3,8);zvoice(z)}
+for(const z of zs){P=tgt(z);const T=ZT[z.t];if(T.sv){svUpd(z,T,dt);continue}if(z.hg>0){z.hg-=dt;if(Math.random()<dt*5)pt.push({x:z.x+rnd(-8,8),y:z.y-6-rnd(0,14),vx:0,vy:-36,l:.5,c:'#ffe27a'})}if(z.ri>0){zRiseUpd(z,dt);continue}let a=T.gh?Math.atan2(P.y-z.y,P.x-z.x):zSpreadA(z,T,dirTo(z),dt),m=1;z.vt=(z.vt??rnd(.5,4))-dt;if(z.vt<=0){z.vt=z.t==14?rnd(.4,.8):rnd(3,8);zvoice(z)}
 if(z.t==14){z.es=z.es??0;z.ec=(z.ec??0)-dt;z.hv=7+Math.sin(performance.now()/180+(z.ph||0))*2;
 if(z.es==1){m=0;z.kx=z.ky=0;z.x=P.x+Math.cos(P.a+2.4)*9;z.y=P.y-14;z.et-=dt;z.tk-=dt;
 if(z.tk<=0){z.tk+=1;sfx('chomp');P.hp-=arm(S.df?2:1);pt.push({x:P.x,y:P.y-8,vx:(Math.random()-.5)*120,vy:-60,l:.4,c:'#b32f2f'});if(P.hp<=0&&ded())pend=1}
@@ -4358,14 +4366,14 @@ else{z.hf=(z.hf??0)-dt;z.sw=(z.sw??.5)-dt;
 if(d<110){m=0;if(z.sw<=0){z.sw=1;z.hf=.25;sfx('swipe',z.x,z.y);if(d<120&&P.inv<=0){P.hp-=arm(2*(S.df?2:1));P.inv=.8;if(P.hp<=0&&ded()){over();return}}}}
 else if(sg&&d<440){if(d<200){a=Math.atan2(z.y-P.y,z.x-P.x);m=.5}else m=0;if(z.cd<=0){z.cd=z.hp<z.mh/2?.8:1.13;shoot(z,1)}}}}
 if(!alive(P)){m=Math.min(m,.3)}
-if(z.fz>0){z.fz-=dt;m*=.5}z.x+=Math.cos(a)*T.sp*m*dt*(S.df?1.5:1)*DSP()*(z.spm||1)+z.kx*dt;z.y+=Math.sin(a)*T.sp*m*dt*(S.df?1.5:1)*DSP()*(z.spm||1)+z.ky*dt;z.kx*=.85;z.ky*=.85;z.un=Math.max(0,(z.un||0)-dt);z.sc=(z.sc||0)+dt;if(z.sc>.9){if(z.lx!=null&&Math.hypot(z.x-z.lx,z.y-z.ly)<5&&Math.hypot(P.x-z.x,P.y-z.y)>(T.cr||T.r)+40&&!z.lp&&z.ks!=1&&z.ds!=1&&!(z.os>0))z.un=.7;z.sc=0;z.lx=z.x;z.ly=z.y}if(!(z.alt>4)&&z.t!=14&&!T.gh)push(z,z.un>0?6:Math.min(T.r,22));
+if(z.fz>0){z.fz-=dt;m*=.5}a=zUnst(z,T,a,m,dt);z.x+=Math.cos(a)*T.sp*m*dt*(S.df?1.5:1)*DSP()*(z.spm||1)+z.kx*dt;z.y+=Math.sin(a)*T.sp*m*dt*(S.df?1.5:1)*DSP()*(z.spm||1)+z.ky*dt;z.kx*=.85;z.ky*=.85;if(!(z.alt>4)&&z.t!=14&&!T.gh)push(z,z.un>0?6:Math.min(T.r,22));
 if(alive(P)&&Math.hypot(P.x-z.x,P.y-z.y)<(T.cr||T.r)+8&&P.inv<=0&&!(z.alt>4)&&z.t!=14){if(sPk(P,5)&&!T.boss){const a=Math.atan2(z.y-P.y,z.x-P.x);z.kx=Math.cos(a)*420;z.ky=Math.sin(a)*420;sfx('club',z.x,z.y)}P.hp-=arm((T.boss?2:1)*(S.df?2:1));P.inv=.8;if(P.hp<=0&&ded()){over();return}}}
 zSep(dt);for(const b of bs){P=b.o||PL[0];KG=b.g??-1;let hit=0;const ox=b.px??b.x,oy=b.py??b.y;b.px=b.py=undefined;for(let k=0;k<2&&!hit;k++){b.x+=b.vx*dt/2;b.y+=b.vy*dt/2;if(wlAt(b.x,b.y).some(w=>w[4]!=2&&b.x>w[0]&&b.x<w[0]+w[2]&&b.y>w[1]&&b.y<w[1]+w[3]))hit=1}b.l-=dt;
 if(b.rk)pt.push({x:b.x,y:b.y,vx:0,vy:0,l:.3,c:'#999'});
 if(!hit)for(const z of bHitOrd(b,ox,oy))if(z.hp>0&&z!==b.hz&&(z.tk?(tkIn(z,b.x,b.y,3)||tkIn(z,(ox+b.x)/2,(oy+b.y)/2,3)||tkIn(z,ox,oy,3)):svSegD(z.x,z.y,ox,oy,b.x,b.y)<(z.hr||ZT[z.t].hr||ZT[z.t].r)+3)&&!(z.alt>4)){hit=1;b.zh=z;if(!b.rk){hurt(z,b.d,b.vx*.15,b.vy*.15);if(b.cr){FT.push({x:z.x,y:z.y-18,t:'CRIT',c:'#ffcf40',l:.6});for(let q=0;q<5;q++)pt.push({x:z.x,y:z.y,vx:(Math.random()-.5)*160,vy:(Math.random()-.5)*160,l:.3,c:'#ffd84a'})}if(b.pc>0){b.pc--;b.hz=z;hit=0}};break}
 if(hit||(b.l<=0&&(b.rk||b.ab))){if(b.rk)boom(b.x,b.y,b.d);if(b.ab)xbHit(b,hit);b.l=0}}
 ckUpd(dt);spUpd(dt);lsUpd(dt);bcUpd(dt);fhUpd(dt);bnUpd(dt);KG=-1;P=PL[0];pickups(dt);P=PL[0];if(pend){pend=0;over();return}zs.push(...nq);nq=[];bs=bs.filter(b=>b.l>0);zs=zs.filter(z=>z.hp>0);
-for(const p of pt){p.x+=p.vx*dt;p.y+=p.vy*dt;p.l-=dt}pt=pt.filter(p=>p.l>0);if(LMX&&pt.length>260)pt.splice(0,pt.length-260);
+zHoleUpd(dt);for(const p of pt){p.x+=p.vx*dt;p.y+=p.vy*dt;p.l-=dt}pt=pt.filter(p=>p.l>0);if(LMX&&pt.length>260)pt.splice(0,pt.length-260);
 if(TUT)tutUpd(dt);else if(KN){KN.t+=dt;if(KN.t>=5.5&&!KN.done){KN.done=1;campWin()}}else if(CLR){CLR.t+=dt;if(CLR.t>=3.5&&!CLR.done){CLR.done=1;campWin()}}else if(toSp==0&&zs.length==0&&bossQ<0&&wave>=20&&campNoBoss())campClear();else if(BRK)brkTick(dt);else if(toSp==0&&zs.length==0&&bossQ<0)brkStart(0)}
 function stick(s,col){if(!s)return;X.globalAlpha=.35;X.strokeStyle=col;X.lineWidth=3;X.beginPath();X.arc(s.ox,s.oy,50,0,7);X.stroke();
 const d=Math.hypot(s.x-s.ox,s.y-s.oy),k=Math.min(d,50)/(d||1);X.fillStyle=col;X.beginPath();X.arc(s.ox+(s.x-s.ox)*k,s.oy+(s.y-s.oy)*k,22,0,7);X.fill();X.globalAlpha=1}
@@ -4374,7 +4382,7 @@ function drawW(){const ZM=tutZ();if(ZM!=1){drawW.W0=W;drawW.H0=H;W=W/ZM;H=H/ZM;X
 if(!P||mode=='menu'||mode=='lobby'){zmEnd();return}X.save();X.translate(-Math.round(cam.x),-Math.round(cam.y));
 for(const q of pd){X.globalAlpha=.55*Math.min(1,q.l);X.fillStyle='#5fbf3a';X.beginPath();X.ellipse(q.x,q.y,24,15,0,0,7);X.fill();X.fillStyle='#9be860';X.beginPath();X.ellipse(q.x-5,q.y-3,9,5,0,0,7);X.fill();X.globalAlpha=1}
 for(const q of fr){const k=Math.min(1,q.l),t=performance.now()/120;X.globalAlpha=.6*k;X.fillStyle='#4a1608';X.beginPath();X.ellipse(q.x,q.y,24,15,0,0,7);X.fill();X.globalAlpha=k;for(let i=0;i<7;i++){const fx=q.x-18+i*6,fh=8+(Math.sin(t+i*1.7)+1)*6,fo=(i*5)%6;X.fillStyle=i%2?'#ff7a1a':'#ffb02e';X.fillRect(fx,q.y-fh+4-fo,5,fh);X.fillStyle='#ffe27a';X.fillRect(fx+1,q.y-fh*.5+4-fo,3,fh*.5)}X.globalAlpha=1}
-bnDraw();pkAnim();cmFxAnim();ckDrawS();spDrawS();bcDrawS();knDrawS();qbDrawS();for(const z of zs)zDr(z);
+bnDraw();pkAnim();cmFxAnim();ckDrawS();spDrawS();bcDrawS();knDrawS();qbDrawS();zHoles();for(const z of zs)zDr(z);zStkDr();
 svExtra();for(const b of bs){if(b.ab){xbDraw(b);continue}if(b.lz||b.lv){const k=(b.lz?18:13)/Math.hypot(b.vx,b.vy),L=b.lv;X.lineCap='round';X.globalAlpha=.45;X.strokeStyle=L?L.g:'#50dcff';X.lineWidth=b.lz?7:6;X.beginPath();X.moveTo(b.x,b.y);X.lineTo(b.x-b.vx*k,b.y-b.vy*k);X.stroke();X.globalAlpha=1;X.strokeStyle=b.dd?'#ffe9a8':L?L.c:'#dff9ff';X.lineWidth=b.lz?3:2.5;X.stroke();X.lineCap='butt';continue}X.fillStyle=b.rk?'#ff7a2e':'#ffe27a';const q=b.rk?4:b.dd?3:2;if(b.dd&&!b.rk)X.fillStyle='#ffb02e';X.fillRect(b.x-q,b.y-q,q*2,q*2)}
 ckDraw();spDraw();lsDraw();bcDraw();fhDraw();drawDrops();for(const p of pt){X.fillStyle=p.c;X.fillRect(p.x-2,p.y-2,4,4)}
 drawPlayers();vehFg();pkCan();cmFxTop();
@@ -5027,7 +5035,7 @@ function wlAt(x,y){const B=wlAt.B;if(!B||B.src!==WL||B.n!==WL.length)wlBuild();c
 // zombies never spawn somewhere they can't walk out of (e.g. boxed in by trees)
 function fdBad(x,y){if(!fd||!gw||!fd.length)return 0;const i=Math.floor(x/gs),j=Math.floor(y/gs);if(i<0||j<0||i>=gw||j>=gh)return 0;return fd[j*gw+i]<0}
 
-function zDr(z){const T=ZT[z.t],r=T.r;if(T.gh){ghDraw(z);return}if(T.sv){svDraw(z);return}if(T.boss){boss(z,T);return}if(SPR.complete&&SPR.naturalWidth&&ZS[z.t]){zsp(z,T);return}X.fillStyle=T.c;X.fillRect(z.x-r,z.y-r,r*2,r*2);
+function zDr(z){const T=ZT[z.t],r=T.r;if(T.gh){ghDraw(z);return}if(T.sv){svDraw(z);return}if(T.boss){boss(z,T);return}if(z.ri>0&&!z._rd){zRiseDr(z);return}if(SPR.complete&&SPR.naturalWidth&&ZS[z.t]){zsp(z,T);return}X.fillStyle=T.c;X.fillRect(z.x-r,z.y-r,r*2,r*2);
 const a=Math.atan2(P.y-z.y,P.x-z.x);X.fillRect(z.x+Math.cos(a)*r-3+Math.cos(a-1.2)*4,z.y+Math.sin(a)*r-3+Math.sin(a-1.2)*4,6,6);X.fillRect(z.x+Math.cos(a)*r-3+Math.cos(a+1.2)*4,z.y+Math.sin(a)*r-3+Math.sin(a+1.2)*4,6,6);
 X.fillStyle=T.eye||'#e33';X.fillRect(z.x-r*.6,z.y-r*.4,3,3);X.fillRect(z.x+r*.6-3,z.y-r*.4,3,3);
 if(z.ds==1){X.fillStyle='#3a8bff';X.fillRect(z.x-1,z.y-r-12,3,7);X.fillRect(z.x-1,z.y-r-3,3,3)}
@@ -7971,16 +7979,135 @@ function zWide(a,b,r){const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1,nx=-dy/
 return los(a,b)&&los({x:a.x+nx,y:a.y+ny},{x:b.x+nx,y:b.y+ny})&&los({x:a.x-nx,y:a.y-ny},{x:b.x-nx,y:b.y-ny})}
 // zombies standing on each other push apart a little (bigger ones move less), so a crowd fills out instead of stacking into one file
 function zSep(dt){const C=40,G=new Map(),L=[];
-for(const z of zs){const T=ZT[z.t];if(z.hp<=0||T.sv||T.gh||z.lp||z.alt>4||z.t==14)continue;const k=((z.x/C|0)+500)*4096+((z.y/C|0)+500);let b=G.get(k);if(!b)G.set(k,b=[]);z.si=L.length;b.push(z);L.push(z)}
+for(const z of zs){const T=ZT[z.t];if(z.hp<=0||T.sv||T.gh||z.lp||z.alt>4||z.t==14||z.ri>0)continue;const k=((z.x/C|0)+500)*4096+((z.y/C|0)+500);let b=G.get(k);if(!b)G.set(k,b=[]);z.si=L.length;b.push(z);L.push(z)}
 const f=Math.min(1,dt*10);
 for(const z of L){const r=Math.min(ZT[z.t].r,22),ci=z.x/C|0,cj=z.y/C|0;
 for(let i=ci-1;i<=ci+1;i++)for(let j=cj-1;j<=cj+1;j++){const b=G.get((i+500)*4096+(j+500));if(!b)continue;
 for(const w of b){if(w.si<=z.si||z.un>0||w.un>0)continue;const r2=Math.min(ZT[w.t].r,22),dx=w.x-z.x,dy=w.y-z.y,dd=dx*dx+dy*dy,R=(r+r2)*.8;if(dd>=R*R)continue;
 const d=Math.sqrt(dd)||.01,ov=(R-d)*f*.5,ux=d>.01?dx/d:Math.random()-.5,uy=d>.01?dy/d:Math.random()-.5,mz=ZT[z.t].boss?0:r2/(r+r2),mw=ZT[w.t].boss?0:r/(r+r2);
 z.x-=ux*ov*mz*2;z.y-=uy*ov*mz*2;w.x+=ux*ov*mw*2;w.y+=uy*ov*mw*2}}}
-for(const z of L){push(z,Math.min(ZT[z.t].r,22))}}
+for(const z of L){push(z,z.un>0?6:Math.min(ZT[z.t].r,22))}}
 // open ground round a zombie: no wall in the path grid within two cells of it (hugging a wall or in a doorway it follows the path)
 function zOpen(z){if(!bl||!gw)return 1;const ci=z.x/gs|0,cj=z.y/gs|0;for(let i=ci-2;i<=ci+2;i++)for(let j=cj-2;j<=cj+2;j++){if(i<0||j<0||i>=gw||j>=gh)continue;if(bl[j*gw+i])return 0}return 1}
+// ---------- where a zombie appears ----------
+// What counts is the walking distance from the player the zombie is after (along the path zombies take: 16 px a square of
+// the path grid), not the straight line. A zombie appears between near and far of it:
+//  · gnd % crawl out of the ground at a random open spot in that band, never closer than min px (straight line) to any
+//    player, and never in a no-spawn zone, in or against a wall, in water the props keep out of, or where no path leads out
+//  · the rest come from the map's spawn points that lie in the band (the nearest ones beyond it when none do); one a player
+//    can see crawls out there too (when none lie in the band, the zombie crawls out of the ground instead, and only when no
+//    ground spot fits either does it come from the nearest points beyond the band). Maps without spawn points keep their
+//    ring just off the screen for the zombies that don't crawl out.
+// Bosses, survivor bosses and ghosts keep the old way, and so does everything with on = 'classic' (far spawn points, or just
+// off the screen). rise = seconds a crawl-out takes: the zombie can be shot meanwhile, but it can't move or hurt anyone.
+// Game Balance → Spawning edits every number here (test mode).
+var ZSPN={on:'near',near:420,far:950,gnd:55,min:300,rise:1.2},ZHL=[],ZSPC={g:0,p:0,o:0};
+function zsReset(){ZHL=[];ZSPC={g:0,p:0,o:0};ZUNC={sq:0,sd:0,hp:0}}
+// the walking map of the player P (split screen: their own) and the walking distance (px) from P to a spot, -1 = no way there
+function zsF(){return MPn&&P&&P.fd&&P.fd.length===fd.length?P.fd:fd}
+function zsW(F,x,y){const v=F[cl(y/gs|0,0,gh-1)*gw+cl(x/gs|0,0,gw-1)];return v<0?-1:v*gs}
+function zsWall(x,y,r){return wlAt(x,y).some(w=>x>w[0]-r&&x<w[0]+w[2]+r&&y>w[1]-r&&y<w[1]+w[3]+r)}
+// could a player see this spot (inside the map and on someone's screen)
+function zsSeen(x,y){if(x<0||y<0||x>WW||y>WH)return false;return PL.some(p=>alive(p)&&Math.abs(p.x-x)<W/2+50&&Math.abs(p.y-y)<H/2+70)}
+// where the next zombie of type t appears: [x, y, crawls out] or null for the old way
+function zsPick(t){const T=ZT[t];if(ZSPN.on!='near'||!T||T.boss||T.sv||T.gh||!fd||!bl||!gw||!P){ZSPC.o++;return null}
+ const F=zsF(),nr=Math.max(0,+ZSPN.near||0),fr=Math.max(nr+40,+ZSPN.far||0),g=Math.random()*100<(+ZSPN.gnd||0);
+ // a map without spawn points: the ground share crawls out, the rest come in from just off the screen (the old ring)
+ const pts=!!zsPts(),G=()=>zsGround(F,nr,fr,t),Q=k=>pts?zsPoint(F,nr,fr,k):null;
+ let s=g?G()||Q(1):pts?Q(1)||G():zsRing(F,fr);if(!s)s=Q(0);
+ ZSPC[!s||s[3]?'o':s[2]==2?'g':'p']++;return s}
+// the old ring just off the screen, keeping to spots the path reaches within far × 1.4 (a long way round a barrier is skipped)
+function zsRing(F,fr){const R=Math.hypot(W,H)/2+40;for(let n=0;n<12;n++){const a=Math.random()*6.283,x=cl(P.x+Math.cos(a)*R,-20,WW+20),y=cl(P.y+Math.sin(a)*R,-20,WH+20),w=zsW(F,x,y);
+ if(w<0||w>fr*1.4||fdBad(x,y)||spBad(x,y)||(x>HS.nx0&&x<HS.nx1&&y>HS.ny0&&y<HS.ny1)||(x>0&&x<WW&&y>0&&y<WH&&zsWall(x,y,14)))continue;return[x,y,0,1]}return null}
+// the map's spawn points (a custom map's spawn zones count by their middle)
+function zsPts(){if(HS.CZ){const c=[];for(const p of HS.CZ.p)c.push([p[0],p[1],0,0]);for(const q of HS.CZ.z)c.push([q[0],q[1],q[2],q[3]]);return c}return HS.sp?HS.sp.map(p=>[p[0],p[1],0,0]):null}
+// strict: only points in the band; otherwise the nearest ones beyond it (a map whose spawn points are all far away)
+function zsPoint(F,nr,fr,strict){const C=zsPts();if(!C||!C.length)return null;const A=PL.filter(alive),inb=[],out=[];
+ for(const q of C){const x=q[0]+q[2]/2,y=q[1]+q[3]/2;if(spBad(x,y))continue;const w=zsW(F,x,y);if(w<0)continue;if(A.some(p=>p!==P&&Math.hypot(p.x-x,p.y-y)<nr*.6))continue;
+  if(w>=nr&&w<=fr)inb.push(q);else if(w>fr)out.push([w,q])}
+ let q=inb.length?inb[Math.random()*inb.length|0]:null;
+ if(!q&&!strict&&out.length){out.sort((a,b)=>a[0]-b[0]);q=out[Math.random()*Math.min(3,out.length)|0][1]}
+ if(!q)return null;let x,y;
+ if(q[2]){let n=0;do{x=q[0]+Math.random()*q[2];y=q[1]+Math.random()*q[3]}while(n++<10&&(fdBad(x,y)||zsWall(x,y,12)))}else{x=q[0]+rnd(-14,14);y=q[1]+rnd(-14,14)}
+ return[x,y,zsSeen(x,y)?1:0]}
+// a random open spot in the band, 64 px or more inside the map (its edges are where zombies walk in): the straight line from P
+// picks the spot, the path checks it
+function zsGround(F,nr,fr,t){const A=PL.filter(alive),mn=Math.max(0,+ZSPN.min||0),r=Math.min(ZT[t].r,22)+4,M=64,d0=Math.max(mn,nr*.7),dd=Math.max(10,fr-d0);
+ for(let n=0;n<24;n++){const a=Math.random()*6.283,d=d0+Math.random()*dd,x=P.x+Math.cos(a)*d,y=P.y+Math.sin(a)*d;
+  if(x<M||y<M||x>WW-M||y>WH-M)continue;const k=(y/gs|0)*gw+(x/gs|0);if(bl[k]||F[k]<0)continue;const w=F[k]*gs;if(w<nr*.8||w>fr*1.4)continue;
+  if(spBad(x,y)||(x>HS.nx0&&x<HS.nx1&&y>HS.ny0&&y<HS.ny1)||NOGO.some(q=>x>q[0]&&x<q[2]&&y>q[1]&&y<q[3])||zsWall(x,y,r)||A.some(p=>Math.hypot(p.x-x,p.y-y)<mn))continue;
+  return[x,y,2]}return null}
+// ---------- crawling out ----------
+// z.ri = seconds of the crawl-out left (of z.rT); z.sf = the ground it comes through (the footstep surfaces: grass, soft, dirt, wood, hard)
+const ZDC=[['#140e08','#4a3420','#5d7a34'],['#14110d','#5b4a3a','#8a7a66'],['#170f08','#5a3d22','#8a6238'],['#120a05','#6e4826','#a0703e'],['#141416','#55565c','#8c8d94']];
+function zRise(z){z.ri=z.rT=Math.max(.1,+ZSPN.rise||1.2);z.sf=zSurfAt(z.x,zFeet(z)[0]);sfx(SN[z.sf]||'dirt',z.x,z.y,1.2,.08)}
+function zSurfAt(x,y){try{if(!SURF||!SGW)return 2;const i=cl(x/16|0,0,SGW-1),j=cl(y/16|0,0,Math.max(0,(SURF.length/SGW|0)-1));return SURF[j*SGW+i]|0}catch(e){return 2}}
+// the zombie's feet (y), height and width as drawn
+function zFeet(z){const T=ZT[z.t],A=typeof SPR!='undefined'&&SPR.complete&&SPR.naturalWidth&&ZS[z.t];if(A&&A.walk&&A.walk[0]){const f=A.walk[0],s=T.sz||1,h=f[3]/1.6*s;return[z.y+h*.42,h,f[2]/1.6*s]}return[z.y+T.r,T.r*2,T.r*2]}
+function zRiseUpd(z,dt){z.ri-=dt;const T=ZT[z.t],c=ZDC[z.sf|0]||ZDC[2],u=1-z.ri/z.rT,F=zFeet(z);
+ if(Math.random()<dt*(u<.3?10:16))pt.push({x:z.x+rnd(-T.r,T.r)*.8,y:F[0]+rnd(-3,2),vx:(Math.random()<.5?-1:1)*rnd(20,70),vy:-rnd(30,90),l:rnd(.2,.4),c:Math.random()<.65?c[1]:c[2]});
+ if(z.ri<=0){z.ri=0;ZHL.push({x:z.x,y:F[0],w:F[2],c,l:3,L:3});if(ZHL.length>40)ZHL.shift();for(let k=0;k<8;k++)pt.push({x:z.x+rnd(-10,10),y:F[0],vx:rnd(-80,80),vy:-rnd(20,80),l:.35,c:c[1]});sfx(SN[z.sf]||'dirt',z.x,z.y,1.2,.08)}}
+function zHoleUpd(dt){if(!ZHL.length)return;for(const h of ZHL)h.l-=dt;ZHL=ZHL.filter(h=>h.l>0)}
+// the hole: a dark pit with clods round it (k 0..1 how far it has opened); the lip is the front half, drawn over the zombie
+function zHoleDr(x,y,w,k,c){const rx=Math.max(5,w*.4)*k,ry=rx*.38;X.fillStyle=c[0];X.beginPath();X.ellipse(x,y,rx,ry,0,0,7);X.fill();
+ X.fillStyle=c[1];for(let i=0;i<9;i++){const a=i/9*6.283+.3,s=2+i*7%3;X.fillRect(Math.round(x+Math.cos(a)*rx*1.08-s/2),Math.round(y+Math.sin(a)*ry*1.3-s/2),s+1,s)}
+ X.fillStyle=c[2];for(let i=0;i<4;i++){const a=i/4*6.283+1.1;X.fillRect(Math.round(x+Math.cos(a)*rx*1.35-1),Math.round(y+Math.sin(a)*ry*1.6-1),2,2)}}
+function zHoleLip(x,y,w,k,c){const rx=Math.max(5,w*.4)*k,ry=rx*.38;X.fillStyle=c[1];for(let i=0;i<9;i++){const a=i/9*6.283+.3;if(Math.sin(a)<.15)continue;const s=2+i*7%3;X.fillRect(Math.round(x+Math.cos(a)*rx*1.08-s/2),Math.round(y+Math.sin(a)*ry*1.3-s/2),s+1,s)}
+ X.fillRect(Math.round(x-rx*.7),Math.round(y+ry*.55),Math.round(rx*1.4),2)}
+// holes left behind fade out over 3 s (drawn under the zombies)
+function zHoles(){if(!ZHL.length)return;for(const h of ZHL){X.globalAlpha=Math.min(1,h.l/h.L*1.6)*.9;zHoleDr(h.x,h.y,h.w,1,h.c)}X.globalAlpha=1}
+// a zombie crawling out: the pit opens and hands come up first, then it rises out of the ground, rocking, cut off at the pit
+function zRiseDr(z){const F=zFeet(z),fy=F[0],h=F[1],w=F[2],u=cl(1-z.ri/z.rT,0,1),c=ZDC[z.sf|0]||ZDC[2],k=Math.min(1,u*3.5),T=ZT[z.t];
+ zHoleDr(z.x,fy,w,k,c);const e=u<.25?0:1-Math.pow(1-(u-.25)/.75,2.2);
+ if(u>.06&&u<.4){const hy=fy-1-Math.min(1,(u-.06)/.2)*6,hc=T.c||'#7d9f5a';X.fillStyle=hc;for(const s of[-1,1]){const hx=Math.round(z.x+s*w*.16);X.fillRect(hx-1,Math.round(hy),3,Math.round(fy-hy));X.fillRect(hx-2,Math.round(hy)-2,1,3);X.fillRect(hx,Math.round(hy)-3,1,3);X.fillRect(hx+2,Math.round(hy)-2,1,3)}}
+ if(e>0){X.save();X.beginPath();X.rect(z.x-w*1.5-20,fy-h*2-60,w*3+40,h*2+60);X.clip();X.translate(Math.sin(u*38+(z.ph||0))*(1-e)*2.4,(1-e)*h*1.05);z._rd=1;try{zDr(z)}finally{z._rd=0;X.restore()}}
+ zHoleLip(z.x,fy,w,k,c)}
+// Every chk seconds a zombie that is trying to walk checks how far it got. It is caught when it covered less than need % of
+// its walk with a wall close by (or next to nothing in open ground) and no other zombie right in front of it is holding it up
+// (one in a queue or at the back of a crowd just waits its turn). Then, until it has
+// got 40 px away from where it was caught:
+//  · it squeezes: a slimmer body against walls, no pushing off other zombies, no spreading out, and it walks the path square by
+//    square through the middle of each square, which always clears the walls (z.un, read by dirTo, zSep and zSpreadA)
+//  · each check it is still caught next to a wall, it side-steps for side seconds to the more open side (the other side the next time)
+//  · still caught after hop seconds, it is lifted onto the nearest open square it can see, preferring squares further along its
+//    path (with a puff of dust where anyone can see it)
+// Ghosts, survivor bosses, the Leech on a player, leaping bosses and zombies standing still on purpose (aiming, winding up) are left alone.
+// Game Balance → Spawning edits the numbers (test mode); the test switch "Show stuck zombies" marks the ones doing this.
+var ZUN={chk:.5,need:25,side:.6,hop:3},ZUNC={sq:0,sd:0,hp:0};
+function zUnst(z,T,a,m,dt){if(z.un>0)z.un=Math.max(0,z.un-dt);if(z.uf>0)z.uf-=dt;if(T.gh||T.sv||z.t==14||z.lp||z.alt>4)return a;
+ const busy=m<.25||z.ks==1||z.ks==3||z.ds==1||z.os>0||z.ri>0,ck=Math.max(.1,+ZUN.chk||.5);
+ z.uw=(z.uw||0)+(busy?0:dt);z.sc=(z.sc||0)+dt;
+ if(z.sc>=ck){const t0=z.sc,w=z.uw,d=z.lx==null?1e9:Math.hypot(z.x-z.lx,z.y-z.ly),ex=T.sp*(S.df?1.5:1)*DSP()*(z.spm||1)*w,
+   near=Math.hypot(P.x-z.x,P.y-z.y)<(T.cr||T.r)+40,wall=!zOpen(z)||zCellBad(z);let stuck=w>=t0*.7&&!near&&d<(wall?Math.max(3,ex*(+ZUN.need||0)/100):Math.min(4,ex*.2));
+  // held up by other zombies (a queue at a door, the back of a crowd), not by a wall: it waits its turn
+  const crowd=(stuck||z.sk>0)&&zCrowd(z,a);if(crowd)stuck=false;
+  if(z.sk){z.ue+=t0;if(near||crowd||Math.hypot(z.x-z.ax,z.y-z.ay)>40)z.sk=0;
+   else{if(stuck||wall)z.un=Math.max(z.un||0,ck*1.6);if(wall&&z.ue>=(+ZUN.hop||3))zFree(z);else if(stuck&&wall){z.sk++;zSide(z,a)}}}
+  else if(stuck){z.sk=1;z.ue=0;z.ax=z.x;z.ay=z.y;z.un=Math.max(z.un||0,ck*1.6);z.uk=-1;ZUNC.sq++}
+  z.sc=0;z.uw=0;z.lx=z.x;z.ly=z.y}
+ if(z.ust>0){z.ust-=dt;if(!busy)return z.usa}
+ return a}
+// another zombie right in front of it that is not caught itself (zombies caught together at one corner don't hold each other up)
+function zCrowd(z,a){const ca=Math.cos(a),sa=Math.sin(a),r=Math.min(ZT[z.t].r,22);for(const w of zs){if(w===z||w.sk>0||w.ri>0||ZT[w.t].gh||w.hp<=0)continue;const dx=w.x-z.x,dy=w.y-z.y,R=r+Math.min(ZT[w.t].r,22)+6;if(dx*dx+dy*dy>R*R)continue;
+ if((dx*ca+dy*sa)/(Math.hypot(dx,dy)||1)>.35)return 1}return 0}
+// the zombie stands in a square the path can't use (hard against a wall, or boxed in)
+function zCellBad(z){if(!bl||!gw)return 0;const i=z.x/gs|0,j=z.y/gs|0;if(i<0||j<0||i>=gw||j>=gh)return 0;const k=j*gw+i;return bl[k]||zsF()[k]<0?1:0}
+// side-step: square to the way it wants to go, a little back, to whichever side has more open squares (switching sides each time)
+function zSide(z,a){const op=b=>{let n=0;for(let k=1;k<=3;k++){const x=z.x+Math.cos(b)*gs*k,y=z.y+Math.sin(b)*gs*k,i=x/gs|0,j=y/gs|0;if(x<0||y<0||i>=gw||j>=gh||bl[j*gw+i])break;n++}return n};
+ const L=a-Math.PI/2-.35,R=a+Math.PI/2+.35,l=op(L),r=op(R);let s=z.usd?-z.usd:l>r?-1:r>l?1:Math.random()<.5?-1:1;
+ if(!op(s<0?L:R))s=-s;z.usd=s;z.usa=op(s<0?L:R)?(s<0?L:R):a+Math.PI+rnd(-.6,.6);z.ust=Math.max(.05,+ZUN.side||.6);ZUNC.sd++}
+// lift it onto the nearest open square in sight, preferring ones further along its path
+function zFree(z){const F=zsF(),i0=cl(z.x/gs|0,0,gw-1),j0=cl(z.y/gs|0,0,gh-1),c0=F[j0*gw+i0];let best=-1,bs=1e9;
+ for(let r=1;r<=10;r++){if(best>=0&&r>3)break;for(let j=j0-r;j<=j0+r;j++)for(let i=i0-r;i<=i0+r;i++){if(Math.max(Math.abs(i-i0),Math.abs(j-j0))!=r||i<0||j<0||i>=gw||j>=gh)continue;
+  const k=j*gw+i,f=F[k];if(f<0||bl[k])continue;const s=f+r*2+(c0>=0&&f>=c0?40:0)+Math.random();if(s>=bs)continue;
+  const x=i*gs+gs/2,y=j*gs+gs/2;if(!los(z,{x,y}))continue;bs=s;best=k}}
+ z.ue=0;z.ax=z.x;z.ay=z.y;if(best<0)return;const x=(best%gw)*gs+gs/2,y=(best/gw|0)*gs+gs/2;
+ if(zsSeen(z.x,z.y))for(let k=0;k<7;k++)pt.push({x:z.x+rnd(-8,8),y:z.y+rnd(-6,6),vx:rnd(-50,50),vy:rnd(-55,10),l:.3,c:'#b9b1a1'});
+ z.x=x;z.y=y;z.lx=x;z.ly=y;z.ax=x;z.ay=y;z.ust=0;z.un=.6;z.uk=-1;z.uf=.5;ZUNC.hp++}
+// test switch "Show stuck zombies": yellow ring squeezing past, orange side-stepping, red just lifted free
+function zStkDr(){if(!DT('stk'))return;X.lineWidth=2;X.textAlign='center';X.font='11px VT323, ui-monospace, monospace';
+ for(const z of zs){if(!(z.sk>0||z.un>0||z.uf>0))continue;const r=ZT[z.t].r+6,c=z.uf>0?'#ff5a4a':z.ust>0?'#ff9a2e':'#ffcf40';
+  X.strokeStyle=c;X.beginPath();X.arc(z.x,z.y,r,0,7);X.stroke();X.fillStyle=c;X.fillText(z.uf>0?'FREED':z.ust>0?'SIDE-STEP':'SQUEEZE',z.x,z.y-r-4)}}
 // ---- developer diagnostics (test mode + PC only, switched on in Options) ----
 const ZPC=(()=>{try{const ua=navigator.userAgent||'',tp=navigator.maxTouchPoints||0;if(/iPhone|iPad|iPod|Android|Mobile/i.test(ua))return false;if(/Macintosh/.test(ua)&&tp>1)return false;return typeof matchMedia!='function'||matchMedia('(pointer:fine)').matches}catch(e){return false}})();
 function ZDON(){return!!(S.dev&&S.zdbg&&ZPC)}
@@ -8401,7 +8528,7 @@ function bpKey(k){if(UIS!==''||!ui.querySelector||!ui.querySelector('.bpr'))retu
 function bpCall(A,cls){if(PTX||!A||A.g)return '';const r=bpReady(A),n=r.n+r.up,t=n?(r.n?r.n+' blueprint'+(r.n>1?'s':'')+(r.up?' and a bench upgrade':'')+' ready to buy':'a bench upgrade ready'):'see what you can unlock next';
  return `<button data-q=1 class="${cls}${n?' rdy':''}" onclick="bpShop('${cls=='cwbp'?'map':'end'}')">${nxi('bp',20)}<span><b>BLUEPRINTS${n?`<i class=nbadge>${n}</i>`:''}</b><small>${nxN(bpInit(bpAcc(A)).pts||0)} Zombie Pts · ${t}</small></span>${cls=='ovbp'?kc('B'):''}</button>`}
 // ---------- test mode switches: entering the code turns test mode on with everything OFF; each cheat is its own switch ----------
-const DTL=[['unl','Unlock everything','every map, survivor, camo, weapon level, mastery perk, title, badge, look, blueprint and bench level'],['money','Unlimited Scrap','999,999 Scrap at the start of a run and at every bench'],['sp','Unlimited skill points','buy any skill; turning it off puts your real skills and points back'],['wave','Start on any wave','up to wave 99 in free play, 20 in the campaign'],['god','Infinite health','zombies, bosses and hazards can\'t hurt you'],['fps','Frame time readout','a small panel in the bottom right: frames per second, how long frames take, and how much of each frame the game logic and the drawing use']];
+const DTL=[['unl','Unlock everything','every map, survivor, camo, weapon level, mastery perk, title, badge, look, blueprint and bench level'],['money','Unlimited Scrap','999,999 Scrap at the start of a run and at every bench'],['sp','Unlimited skill points','buy any skill; turning it off puts your real skills and points back'],['wave','Start on any wave','up to wave 99 in free play, 20 in the campaign'],['god','Infinite health','zombies, bosses and hazards can\'t hurt you'],['fps','Frame time readout','a small panel in the bottom right: frames per second, how long frames take, and how much of each frame the game logic and the drawing use'],['stk','Show stuck zombies','a ring and a tag on each zombie working itself free of a corner, tree or wall: yellow squeezing past, orange side-stepping, red lifted free']];
 function DT(k){return!!(S.dev&&S.dt&&S.dt[k])}
 // saves from before the switches existed: keep what that test mode was already doing
 if(S.dev&&!S.dt){S.dt={unl:1,money:S.balNM?0:1,sp:1,wave:1};delete S.balNM}
@@ -8434,7 +8561,7 @@ function fmText(span){const av=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0,mx=
   `frame ${f(av(FM.t))} ms  worst ${f(wt)}`,
   `logic ${f(ua)} ms  worst ${f(mx(FM.u))}`,`draw  ${f(da)} ms  worst ${f(mx(FM.d))}`,
   `budget used ${busy.toFixed(0).padStart(3)}% of 16.7 ms`];
- if(mode=='play'||mode=='pause'||mode=='shop')L.push(`zombies ${zs.length}/${ZCAP()} · players ${PL.length} · ${MP[mapId]?MP[mapId].n:'custom map'}`,`paths  ${PFW.ok?'background thread':PFW.ok===false?'main thread':'starting'}`);
+ if(mode=='play'||mode=='pause'||mode=='shop')L.push(`zombies ${zs.length}/${ZCAP()} · players ${PL.length} · ${MP[mapId]?MP[mapId].n:'custom map'}`,`paths  ${PFW.ok?'background thread':PFW.ok===false?'main thread':'starting'}`,`spawns ground ${ZSPC.g} · points ${ZSPC.p} · old way ${ZSPC.o}`,`stuck  squeezed ${ZUNC.sq} · side-steps ${ZUNC.sd} · lifted ${ZUNC.hp}`);
  L.push(`screen ${W}×${H} · canvas ${cv} · ${dpr}x`);return L.join('\n')}
 // ---------- drops: every zombie and boss type has its own chances (in %) for each item ----------
 // am = ammo box of type `at` ('pa','ri','sh','rk','bl' or 'rand'; every type drops a random kind since Nov 2026), am2 = an extra box of a random type,
@@ -8454,7 +8581,7 @@ function drop(z,T){const D=DROPT[z.t];if(!D)return drop0(z,T);if(DR.length>=DROP
 // Every value here is the game's real variable. Changes are saved on this device in S.bal (by short id)
 // and only apply while test mode is on; turning test mode off puts every default back.
 var BALR=[],BALM={},BALD={},BALO={},BALT='guns',BALTO=0;
-const BALG=[['guns','Guns'],['ammo','Ammo'],['ex','Extras'],['caps','Caps'],['zhp','Zombie HP'],['bhp','Boss HP'],['php','Player HP'],['spd','Speed'],['drop','Drops'],['zc','Zombie count'],['bp','Blueprints']];
+const BALG=[['guns','Guns'],['ammo','Ammo'],['ex','Extras'],['caps','Caps'],['zhp','Zombie HP'],['bhp','Boss HP'],['php','Player HP'],['spd','Speed'],['drop','Drops'],['zc','Zombie count'],['sn','Spawning'],['bp','Blueprints']];
 const BAMO=[['pa','Pistol'],['ri','Rifle'],['sh','Shotgun'],['rk','Rockets'],['bl','Belts'],['ar','Arrows'],['rand','Random']];
 function balInit(){if(BALR.length)return;
  // id = short stable name used in S.bal and in settings codes; the label key is kept so older saves still load
@@ -8515,7 +8642,15 @@ function balInit(){if(BALR.length)return;
  add('cDz','bp','Zombie Pts from challenges','Each daily challenge',CHR.d,'z',0,5000,10);add('cDb','bp','Zombie Pts from challenges','All 3 dailies done (bonus)',CHR.d,'bz',0,5000,10);
  add('cWz','bp','Zombie Pts from challenges','Each weekly challenge',CHR.w,'z',0,10000,25);add('cWb','bp','Zombie Pts from challenges','All 3 weeklies done (bonus)',CHR.w,'bz',0,10000,25);
  add('bB','bp','Between waves','Break length (seconds)',BPG,'brk',5,600,5);
- add('bC','bp','Ammo crafting during a wave','Seconds at bench level 1',BPG,'ct',.5,60,.5);add('bS','bp','Ammo crafting during a wave','Seconds saved per bench level',BPG,'cs',0,10,.1)}
+ add('bC','bp','Ammo crafting during a wave','Seconds at bench level 1',BPG,'ct',.5,60,.5);add('bS','bp','Ammo crafting during a wave','Seconds saved per bench level',BPG,'cs',0,10,.1)
+ // zombies/spawn-near.js and zombies/unstuck.js
+ const sw='Where zombies appear (walking distance: along the path zombies take, from the player they are after)';
+ add('sO','sn',sw,'How zombies appear',ZSPN,'on',0,0,0,[['near','Near the player (the band below)'],['classic','Classic (far spawn points, just off the screen)']]);
+ add('sN','sn',sw,'Closest (walking px)',ZSPN,'near',0,3000,10);add('sF','sn',sw,'Farthest (walking px)',ZSPN,'far',50,6000,10);
+ const sg='Crawling out of the ground';add('sG','sn',sg,'Zombies that crawl out of the ground (% of spawns; the rest use the map\'s spawn points)',ZSPN,'gnd',0,100,5);
+ add('sM','sn',sg,'Never closer to any player than (straight-line px)',ZSPN,'min',0,1500,10);add('sR','sn',sg,'Seconds to crawl out (can be shot meanwhile, can\'t move or bite)',ZSPN,'rise',.1,5,.1);
+ const su='Zombies stuck on a corner, tree or wall';add('uC','sn',su,'Seconds between checks of how far it got',ZUN,'chk',.1,3,.05);add('uP','sn',su,'Caught if it covered less than (% of its walk)',ZUN,'need',0,100,5);
+ add('uS','sn',su,'Side-step length (seconds)',ZUN,'side',.05,3,.05);add('uH','sn',su,'Seconds caught before it is lifted onto an open square',ZUN,'hop',.5,30,.5)}
 function balOK(e,v){if(e.opt)return e.opt.some(o=>o[0]===v)?v:null;v=+v;return isFinite(v)?Math.max(0,v):null}
 function balApply(){balInit();if(S.bal)for(const k of Object.keys(S.bal))if(!BALM[k]&&BALO[k]){S.bal[BALO[k]]=S.bal[k];delete S.bal[k]}
  for(const e of BALR)e.o[e.f]=BALD[e.k];if(!S.dev||!S.bal)return;for(const k in S.bal){const e=BALM[k];if(!e)continue;const v=balOK(e,S.bal[k]);if(v!=null)e.o[e.f]=v}}
@@ -8542,6 +8677,7 @@ function balOpen(t){if(!S.dev)return options();balInit();if(t)BALT=t;UIS='bal';m
  for(const e of BALR){if(e.g!=BALT)continue;if(e.sub!==sub){sub=e.sub;h+=`<h4 class=bsub>${sub}</h4>`;if(BALT=='zc'&&e.lab=='Base')h+=`<p class=note id=balzc style="text-align:left;margin:2px 4px 6px">${balZcTxt()}</p>`}h+=balRow(e)}
  if(BALT=='ex')h=`<p class=note style="text-align:left;margin:4px">The Headlamp's light shows fully on maps with night or dusk lighting; on daylight maps it is a faint beam. Light changes show at once in a run.</p>`+h;
  if(BALT=='bp')h=`<p class=note style="text-align:left;margin:4px">Blueprint tiers follow the campaign sections; a weapon's tier is the tr field of its entry in the weapon table. Bench level ${BPMAX} is the top. Ammo crafting now: ${[1,2,3,4,5].map(L=>'L'+L+' '+bpCraftT(L)+' s').join(' · ')}.</p>`+h;
+ if(BALT=='sn')h=`<p class=note style="text-align:left;margin:4px">Walking distance follows the zombies' path round walls (16 px a square). A walker covers about ${ZT[0].sp} px a second (more on Hard); half your screen is about ${Math.round(W/2)} px. Bosses and ghosts keep the old way. The test switch Show stuck zombies marks zombies working themselves free; the frame time readout counts spawns and unsticks.</p>`+h;
   if(BALT=='drop')h=`<p class=note style="text-align:left;margin:4px">Each kill rolls every chance on its own. The Luck skill raises the chances on regular zombies. Survivor bosses don't drop items.</p>`+h;
  const n=Object.keys(S.bal||{}).length;
  show(nxPage('bal','GAME BALANCE',{back:'options()',crumbs:[['Options','options()'],['Game balance · test mode']]},`<div class="seg btab">${BALG.map(([k,nm])=>`<button data-q=1 class="${BALT==k?'on':''}" onclick="balOpen('${k}')">${nm}${BALR.some(e=>e.g==k&&S.bal&&e.k in S.bal)?' •':''}</button>`).join('')}</div>

@@ -58,8 +58,8 @@ ok(HS.CZ&&HS.CZ.p.length==FX.spawns.length&&FX.spawns.every((p,i)=>near(p[0],HS.
 ok(SM.length==2&&FX.smoke.every((s,i)=>near(s[0],SM[i].x)&&near(s[1],SM[i].y)),'the two smoke plumes (car crash, helicopter)');
 {const F=new Int16Array(gw*gh);bfs(F,HS.px,HS.py);const bad=HS.sp.filter(p=>{const i=Math.floor(p[0]/gs),j=Math.floor(p[1]/gs);for(let dj=-1;dj<=1;dj++)for(let di=-1;di<=1;di++)if(F[(j+dj)*gw+i+di]>=0)return 0;return 1});
  ok(!bad.length,'zombies can walk to the player from every spawn point ('+bad.length+' cannot)')}
-// spawnZ uses the spawn points
-start();{const R0=[];for(let i=0;i<40;i++){const z=spawnZ(0);if(z){R0.push(z);zs.splice(zs.indexOf(z),1)}}ok(R0.length==40&&R0.every(z=>HS.sp.some(p=>Math.hypot(p[0]-z.x,p[1]-z.y)<21)),'zombies appear at the spawn points')}
+// spawnZ uses the spawn points (Classic spawning; near the player, part of them crawl out of the ground: spawn-near-and-unstuck.js)
+start();{ZSPN.on='classic';const R0=[];for(let i=0;i<40;i++){const z=spawnZ(0);if(z){R0.push(z);zs.splice(zs.indexOf(z),1)}}ZSPN.on='near';ok(R0.length==40&&R0.every(z=>HS.sp.some(p=>Math.hypot(p[0]-z.x,p[1]-z.y)<21)),'zombies appear at the spawn points')}
 
 // ---------- the tutorial and the opening living room ----------
 {const G=tutGeo(),wallAt=(x,y)=>WL.some(w=>w[4]!=2&&x>=w[0]&&x<=w[0]+w[2]&&y>=w[1]&&y<=w[1]+w[3]);
