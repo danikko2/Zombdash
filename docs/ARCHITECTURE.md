@@ -63,6 +63,7 @@ node tests/run.js spawn ammo # only suites whose name contains a word
 | Zombie tiers, special/ranged caps, new-type schedule, campaign sections | `ZC`, `ZCFG` in `zombies/spawn-system.js` |
 | Exploder, Healer, Rotwood tuning | `ZX`, `ZH`, `ZR` in `zombies/spawn-system.js` |
 | How many zombies per wave (formula and per-map %) | `ZWN`, `ZMAPM` in `zombies/wave-size.js` |
+| Zombies alive at once (one player; added per extra split-screen player; split-screen most) | `ZLIM` (`ZCAP`, `ZCAPn`) in `multiplayer/helpers.js` (Game Balance → Caps) |
 | Where zombies appear (the walking-distance band from the player, the share that crawl out of the ground, how close a crawl-out may come, crawl-out seconds; or Classic spawning) | `ZSPN` in `zombies/spawn-near.js` (Game Balance → Spawning) |
 | Zombies getting unstuck (seconds between progress checks, how little progress counts as caught, side-step length, seconds before a caught zombie is lifted onto an open square) | `ZUN` in `zombies/unstuck.js` (Game Balance → Spawning) |
 | Survivor boss health and speed | `SVS` in `bosses/survivors.js` |

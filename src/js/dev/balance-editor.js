@@ -27,6 +27,8 @@ function balInit(){if(BALR.length)return;
  add('xS','ex','Extras slots (every player; apart from the 4 weapon slots)','Extras slots',EXG,'slots',0,6,1);
  for(const id of EXL){const I=EXI[id];add('xP'+id,'ex',I.n,'Store price',I,'cost',0,up(I.cost*5,500,100),10);
   if(id=='hl'){add('xR'+id,'ex',I.n,'Light reach: how far it goes (px)',I,'r',20,1200,10);add('xI'+id,'ex',I.n,'Brightness (1 = full light at the lamp on a night map)',I,'i',0,3,.05);add('xW'+id,'ex',I.n,'Beam width (degrees, edge to edge)',I,'w',2,180,1);add('xF'+id,'ex',I.n,'Fade going out (0 = none, 1 = steady, 3 = fast)',I,'fd',0,4,.05)}}
+ // the zombie limit (multiplayer/helpers.js)
+ const zl='Zombies alive at once (the rest of the wave waits and comes in as others die)';add('zL1','caps',zl,'One player',ZLIM,'solo',5,400,5);add('zLp','caps',zl,'Each extra split-screen player adds',ZLIM,'per',0,150,5);add('zLm','caps',zl,'Split screen, at most',ZLIM,'max',5,600,5);
  ['Easy','Normal','Hard'].forEach((d,i)=>add('cR'+i,'caps','Ranged cap (free play + campaign)',d+' %',ZCFG.cap.rg,i,0,100,1));
  ['Easy','Normal','Hard'].forEach((d,i)=>add('cS'+i,'caps','Special cap (free play)',d+' %',ZCFG.cap.sp,i,0,100,1));
  ZCFG.camp.forEach((c,i)=>add('cC'+i,'caps','Special cap (campaign, Easy / Medium)',(i+1)+'. '+(SEC[i]?SEC[i].n:'Section '+(i+1))+' %',c,'sp',0,100,1));
@@ -99,6 +101,7 @@ function balOpen(t){if(!S.dev)return options();balInit();if(t)BALT=t;UIS='bal';m
  for(const e of BALR){if(e.g!=BALT)continue;if(e.sub!==sub){sub=e.sub;h+=`<h4 class=bsub>${sub}</h4>`;if(BALT=='zc'&&e.lab=='Base')h+=`<p class=note id=balzc style="text-align:left;margin:2px 4px 6px">${balZcTxt()}</p>`}h+=balRow(e)}
  if(BALT=='ex')h=`<p class=note style="text-align:left;margin:4px">The Headlamp's light shows fully on maps with night or dusk lighting; on daylight maps it is a faint beam. Light changes show at once in a run.</p>`+h;
  if(BALT=='bp')h=`<p class=note style="text-align:left;margin:4px">Blueprint tiers follow the campaign sections; a weapon's tier is the tr field of its entry in the weapon table. Bench level ${BPMAX} is the top. Ammo crafting now: ${[1,2,3,4,5].map(L=>'L'+L+' '+bpCraftT(L)+' s').join(' · ')}.</p>`+h;
+ if(BALT=='caps')h=`<p class=note id=balcap style="text-align:left;margin:4px">${balCapTxt()}</p>`+h;
  if(BALT=='sn')h=`<p class=note style="text-align:left;margin:4px">Walking distance follows the zombies' path round walls (16 px a square). A walker covers about ${ZT[0].sp} px a second (more on Hard); half your screen is about ${Math.round(W/2)} px. Bosses and ghosts keep the old way. The test switch Show stuck zombies marks zombies working themselves free; the frame time readout counts spawns and unsticks.</p>`+h;
   if(BALT=='drop')h=`<p class=note style="text-align:left;margin:4px">Each kill rolls every chance on its own. The Luck skill raises the chances on regular zombies. Survivor bosses don't drop items.</p>`+h;
  const n=Object.keys(S.bal||{}).length;
@@ -108,10 +111,11 @@ function balOpen(t){if(!S.dev)return options();balInit();if(t)BALT=t;UIS='bal';m
 <div class=bcode><h4>SETTINGS CODE</h4><p class=note style="text-align:left;margin:0 0 6px">Copy this code to keep your balance settings. Paste a code below and press LOAD to put those settings back (it replaces the current changes).</p>
 <textarea id=balcode readonly onclick="this.select()">${balCode()}</textarea><div class=row><button data-q=1 onclick="balCodeCopy()">COPY CODE</button></div>
 <textarea id=balin placeholder="Paste a settings code here"></textarea><div class=row><button data-q=1 class=go onclick="balLoad()">LOAD CODE</button></div><p class=note id=balcmsg></p></div>`))}
+function balCapTxt(){return 'Zombies alive at once now: '+[1,2,3,4].map(n=>n+(n>1?' players ':' player ')+ZCAPn(n)).join(' · ')+'. More at once means more to move and draw every frame: the Frame time readout (a test switch) shows what it costs on this device.'}
 function balZcTxt(){return 'At 100%, one player: '+[1,3,5,9,10,15,19,20,30].map(w=>'W'+w+' '+(w%10==0?Math.floor(zWaveBase(w)*.35)+' (boss)':zWaveBase(w))).join(' · ')+'. Split screen adds 60% per extra player. New-type waves use 40–80% of this.'}
 function balSet(i,v){const e=BALR[i];if(!e)return;S.bal=S.bal||{};let x=v==null||v===''?null:balOK(e,v);if(x==null)x=BALD[e.k];if(x===BALD[e.k]||(!e.opt&&+x==+BALD[e.k]))delete S.bal[e.k];else S.bal[e.k]=x;e.o[e.f]=S.dev?x:BALD[e.k];
  try{const r=document.getElementById('bal'+i);if(r){if(e.opt){const s=r.querySelector('select');if(s)s.value=x}else{const[rg,nm]=r.querySelectorAll('input');if(rg){if(+rg.value!==x){if(x>+rg.max)rg.max=x;rg.value=x}rg.style.setProperty('--v',balPct(Object.assign({},e,{mx:+rg.max}),x)+'%')}if(nm&&document.activeElement!==nm)nm.value=balFmt(x)}r.classList.toggle('ch',e.k in S.bal)}
-  if(e.g=='zc'){const z=document.getElementById('balzc');if(z)z.textContent=balZcTxt()}const c=document.getElementById('balcode');if(c)c.value=balCode()}catch(q){}
+  if(e.g=='zc'){const z=document.getElementById('balzc');if(z)z.textContent=balZcTxt()}if(e.g=='caps'){const z=document.getElementById('balcap');if(z)z.textContent=balCapTxt()}const c=document.getElementById('balcode');if(c)c.value=balCode()}catch(q){}
  clearTimeout(BALTO);BALTO=setTimeout(()=>{try{sv()}catch(q){}},300)}
 function balReset(tab){if(!S.bal)S.bal={};for(const e of BALR)if(!tab||e.g==BALT)delete S.bal[e.k];balApply();try{sv()}catch(x){}sfx('click');balOpen()}
 function balText(){const L=[];for(const e of BALR)if(S.bal&&e.k in S.bal)L.push(BALG.find(g=>g[0]==e.g)[1]+' · '+e.sub+' · '+e.lab+': '+balFmt(BALD[e.k])+' → '+balFmt(S.bal[e.k]));return L.length?'Zombdash balance changes:\n'+L.join('\n'):'No changes from the defaults.'}

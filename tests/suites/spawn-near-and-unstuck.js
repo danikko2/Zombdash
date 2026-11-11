@@ -67,6 +67,14 @@ const many=(k,t)=>{const L=[];for(let i=0;i<k;i++){const z=spawnZ(t==null?0:t);i
  const i=BALR.findIndex(e=>e.id=='sN'),j=BALR.findIndex(e=>e.id=='sO');balSet(i,250);ok(ZSPN.near==250&&S.bal.sN==250,'changing the closest distance changes the game');balSet(i,null);ok(ZSPN.near==Z0.near&&!('sN' in S.bal),'reset puts it back');
  balSet(j,'classic');ok(ZSPN.on=='classic','spawning can be switched back to the old way');balSet(j,null);ok(ZSPN.on=='near','and back');
  ok(DTL.some(d=>d[0]=='stk'),'test switch: Show stuck zombies');run(0);const z=mk(0,P.x+100,P.y);z.sk=1;z.un=.5;zs=[z];S.dt={stk:1};draw();S.dt={fps:1};const t=fmText(500);ok(t.includes('spawns ground')&&t.includes('stuck  squeezed'),'the frame readout counts spawns and unsticks');S.dt={};S.dev=0;zs=[]}
+// ---------- the zombie limit (Game Balance → Caps) ----------
+{S.dev=1;balInit();ok(ZCAPn(1)==60&&ZCAPn(2)==85&&ZCAPn(4)==130,'the limit starts at 60 alone, 85 for two players, 130 for four');
+ const iS=BALR.findIndex(e=>e.id=='zL1'),iM=BALR.findIndex(e=>e.id=='zLm'),iP=BALR.findIndex(e=>e.id=='zLp');balOpen('caps');ok(has('Zombies alive at once')&&has('One player')&&has('Split screen, at most'),'Game Balance → Caps has the zombie limit');
+ balSet(iS,90);ok(ZCAPn(1)==90&&ZCAPn(2)==115&&ZCAPn(4)==130,'raising it to 90 lets 90 be alive at once (split screen still stops at its most)');
+ S.dt={god:1};run(13);toSp=200;secs(60);ok(mode=='play'&&zs.length>60&&zs.length<=90,'a run keeps spawning past 60, up to the new limit ('+zs.length+' alive, '+mode+')');
+ balSet(iS,30);toSp=200;secs(3);ok(zs.length>30,'lowering it leaves the zombies already out alone');zs=zs.slice(0,10);toSp=200;secs(25);ok(zs.length<=30&&zs.length>20,'and new ones only come while fewer than 30 are alive ('+zs.length+')');
+ balSet(iM,40);balSet(iP,5);ok(ZCAPn(2)==35&&ZCAPn(4)==40,'each extra player and the split-screen most can be changed too');balSet(iS,500);ok(ZCAPn(3)==500,'split screen never gets fewer than one player');
+ for(const i of[iS,iM,iP])balSet(i,null);ok(ZCAPn(1)==60&&ZCAPn(4)==130&&!('zL1' in S.bal),'reset puts 60 / 130 back');zs=[];toSp=0;S.dt={};S.dev=0}
 // ---------- drawing cost ----------
 {run(13);const fx=P.x<WW/2?WW-60:60,fy=P.y<WH/2?WH-60:60,a=mk(0,P.x+50,P.y),b=mk(0,fx,fy),c=mk(6,fx,fy);zs=[a,b,c];const D0=zDr,seen=[];zDr=z=>seen.push(z);try{draw()}finally{zDr=D0}
  ok(seen.includes(a)&&!seen.includes(b)&&seen.includes(c),'zombies off the screen are not drawn (bosses always are)');zs=[]}

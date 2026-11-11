@@ -952,7 +952,7 @@ background:var(--n0);color:var(--nt);font:14px/1.3 'Barlow',system-ui,sans-serif
 .npd .wmd .wnin input{margin:0;box-shadow:none;width:auto;border:0;background:none;padding:0}
 /* game balance (test mode) */
 .nx.bal .btab{position:sticky;top:-20px;z-index:3;flex-wrap:wrap;margin:-20px -4px 0;padding:10px 4px;background:#0C120E;box-shadow:none;border-radius:0}
-.nx.bal .btab button:not(.nb){flex:1 1 0;min-width:90px;font-size:14px}
+.nx.bal .btab button:not(.nb){flex:1 1 auto;min-width:72px;font-size:14px}
 .nx.bal .bbody{padding:16px 20px;background:rgba(13,19,16,.9);border:1px solid rgba(236,243,230,.08);border-radius:8px}
 .nx.bal .bsub{margin:16px 0 6px;padding:0 0 4px;font:600 12px 'Barlow',sans-serif;letter-spacing:.18em;color:var(--ng);text-transform:uppercase;border-bottom:1px solid rgba(255,207,64,.2)}
 .nx.bal .brow{gap:10px;padding:5px 8px;border-radius:6px}.nx.bal .brow span{font-size:14px;color:var(--nb)}.nx.bal .brow.ch{background:rgba(255,207,64,.1)}.nx.bal .brow.ch span{color:var(--ng)}
