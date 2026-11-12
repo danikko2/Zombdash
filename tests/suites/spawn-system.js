@@ -75,7 +75,7 @@ OK(!cv,'campaign waves stay under their section special cap');
 setGM(g)}
 // ---------- 8. intro populations ----------
 LOG('8. intro wave sizes');
-for(const mp of[1,2]){freshRun(1);MPn=mp>1?mp:0;for(const t of[1,2,10,3,4,11,18,19,14,9]){IW={};IW[t]=12;wave=11;zs=[];nextWave();const nz=Math.round(zWaveBase(12)*(MPn>1?1+.6*(MPn-1):1)),k=ZC[t].sp?.6:ZC[t].rg?.4:.8,want=Math.max(1,Math.round(nz*k));OK(toSp==want,(mp>1?mp+'P ':'')+ZC[t].n+' intro wave '+toSp+' = '+nz+' × '+k*100+'%')}MPn=0}
+for(const mp of[1,2]){freshRun(1);MPn=mp>1?mp:0;for(const t of[1,2,10,3,4,11,18,19,14,9]){IW={};IW[t]=12;wave=11;zs=[];nextWave();const nz=Math.round(zWaveBase(12)*(MPn>1?1+.6*(MPn-1):1)),k=ZC[t].sp?.6:ZC[t].rg?.25:.8,want=Math.max(1,Math.round(nz*k));OK(toSp==want,(mp>1?mp+'P ':'')+ZC[t].n+' intro wave '+toSp+' = '+nz+' × '+k*100+'%')}MPn=0}
 {freshRun(1);IW={9:3};ZCFG.intro.mult.rg=.01;wave=2;nextWave();OK(toSp==1,'minimum of 1 zombie in an intro wave');ZCFG.intro.mult.rg=.4}
 {freshRun(1);IW={1:2};wave=4;zs=[];nextWave();OK(toSp==zWaveBase(5),'non-intro wave keeps the normal count ('+toSp+')')}
 // ---------- 11b. secondary spawns ----------

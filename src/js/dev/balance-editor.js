@@ -53,6 +53,8 @@ function balInit(){if(BALR.length)return;
   add('dC'+t,'drop',sub,'Scrap',D,'cash',0,mx,.1);add('dD'+t,'drop',sub,'2× damage',D,'dd',0,mx,.1);add('dH'+t,'drop',sub,'Health',D,'hp',0,mx,.1)}
  // zombie count
  const zs='Every map: normal wave size = base + per wave × wave + growth × wave²';add('nB','zc',zs,'Base',ZWN,'b',0,40,1);add('nW','zc',zs,'Per wave',ZWN,'w',0,12,.25);add('nG','zc',zs,'Growth',ZWN,'g',0,1,.01);
+ // waves that bring in a new zombie type (zombies/spawn-system.js: ZCFG.intro.mult) are smaller, so the new one stands out
+ const zi='Waves that bring in a new zombie type: size of the wave (× the normal size; 0.25 = a quarter)';add('iRg','zc',zi,'A new ranged zombie (Bones, Toxic the Spitter)',ZCFG.intro.mult,'rg',0,2,.05);add('iSp','zc',zi,'A new special zombie',ZCFG.intro.mult,'sp',0,2,.05);add('iOt','zc',zi,'Any other new zombie',ZCFG.intro.mult,'other',0,2,.05);
  const zp='Pacing: how fast a wave comes in, and how zombies toughen as waves go on';add('pS0','zc',zp,'Seconds between spawns at the start (minus the drop below × the wave)',ZPACE,'s0',.1,5,.05);add('pSd','zc',zp,'Spawns get faster by this many seconds each wave',ZPACE,'sd',0,.3,.005);add('pSm','zc',zp,'Fastest: seconds between spawns',ZPACE,'sMin',.05,3,.05);
  add('pHw','zc',zp,'Zombie health grows this % each wave',ZPACE,'hpW',0,40,.5);add('pH5','zc',zp,'And every 5 waves health × this',ZPACE,'hp5',1,2,.01);add('pV5','zc',zp,'Every 5 waves speed × this',ZPACE,'sp5',1,1.5,.01);add('pVm','zc',zp,'Speed growth stops at ×',ZPACE,'spMax',1,4,.05);
  CORD.forEach((m,i)=>add('nC'+m,'zc','Campaign: % of the normal size on each map',(i+1)+'. '+MP[m].n,ZMAPM.c,m,10,400,5));

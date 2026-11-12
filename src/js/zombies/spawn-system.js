@@ -30,7 +30,7 @@ var ZCFG={
  // (counting the whole wave means kills can never push a wave over its cap)
  cap:{rg:[15,15,20],sp:[35,35,45]},
  // a new type every 3 waves starting at wave 3; a boss wave pushes it to the next wave
- intro:{first:3,every:3,mult:{sp:.6,rg:.4,other:.8},min:1,max:0}, // max 0 = no upper limit
+ intro:{first:3,every:3,mult:{sp:.6,rg:.25,other:.8},min:1,max:0}, // max 0 = no upper limit
  // waves 1-20 introduce only ONE ranged type: this one (11 = Toxic the Spitter, 9 = Bones).
  // The other ranged type stays locked until after wave 20.
  early:{end:20,ranged:11,campaign:[11,9]},
