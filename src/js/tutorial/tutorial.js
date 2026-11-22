@@ -18,7 +18,7 @@ else if(T.ph==4){T.k=Math.min(1,T.t/1.7);if(T.k>=1){const A=S.ac;if(A)A.tut=1;S.
 const z=tutZ(),vw=W/z,vh=H/z,ax=(lo,hi,p,v)=>v>=hi-lo?(lo+hi)/2:cl(p,lo+v/2,hi-v/2),c={x:ax(G.x0-30,G.gx+30,P.x,vw),y:ax(G.y0-30,G.y1+70,P.y,vh)};if(vh>=G.y1-G.y0+100)c.y-=80/z;
 const e=T.ph==4?T.k*T.k*(3-2*T.k):0;T.cam={x:c.x+(P.x-c.x)*e,y:c.y+(P.y-c.y)*e}}
 // how far the camera is zoomed in (1 = normal)
-function tutZ(){const T=TUT;if(!T||mode=='menu'||mode=='lobby'||MPn)return 1;const G=T.G,z0=Math.max(1,Math.min(2.6,Math.min(W/(G.gx-G.x0+90),(H-(H<520?80:200))/(G.y1-G.y0+60))));if(T.ph<4)return z0;const e=T.k*T.k*(3-2*T.k);return z0+(1-z0)*e}
+function tutZ(){if(ESC&&ESC.z&&ESC.z!=1&&!MPn&&mode!='menu'&&mode!='lobby')return ESC.z;const T=TUT;if(!T||mode=='menu'||mode=='lobby'||MPn)return 1;const G=T.G,z0=Math.max(1,Math.min(2.6,Math.min(W/(G.gx-G.x0+90),(H-(H<520?80:200))/(G.y1-G.y0+60))));if(T.ph<4)return z0;const e=T.k*T.k*(3-2*T.k);return z0+(1-z0)*e}
 function zmEnd(){if(drawW.z){drawW.z=0;X.restore();W=drawW.W0;H=drawW.H0}}
 // black out everything but the house (fades away as the camera pulls back)
 function tutDark(){const T=TUT;if(!T||MPn)return;const G=T.G,a=T.ph==4?1-T.k:1;if(a<=0)return;X.save();X.translate(-Math.round(cam.x),-Math.round(cam.y));X.fillStyle='rgba(4,6,5,'+a+')';X.beginPath();X.rect(cam.x-60,cam.y-60,W+120,H+120);

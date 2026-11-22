@@ -130,6 +130,10 @@ thunder:(t,d)=>{noise(t,.35,.5,d,'lowpass',3200,380,.7,.01);noise(t+.04,2.8,.6,d
 owl:(t,d)=>{for(const[u,l,f]of[[0,.2,420],[.32,.2,420],[.72,.62,400]]){osc('sine',f,f*.9,t+u,l,.16,d,.06);osc('sine',f*2.02,f*1.8,t+u,l*.8,.025,d,.06)}noise(t,.05,.02,d,'bandpass',900,0,2);return 1.4},
 howl:(t,d)=>{osc('sine',300,610,t,.9,.16,d,.35,0);osc('sine',302,612,t,.9,.1,d,.35,8);osc('sine',610,430,t+.85,1.9,.17,d,.08);osc('sine',612,428,t+.85,1.9,.1,d,.08,10);osc('triangle',610,440,t+.85,1.6,.03,d,.1);noise(t,2.6,.015,d,'bandpass',700,500,3,.4);return 2.9},
 flap:(t,d)=>{for(let k=0;k<9;k++)noise(t+k*.05+Math.random()*.03,.05,.07+Math.random()*.04,d,'bandpass',900+Math.random()*700,500,1.2);return .6},
+// the roof escape (campaign/escape.js): the elevator's bell and doors, a helicopter's rotor (one beat; played over and over)
+ding:(t,d)=>{osc('sine',1318,1318,t,.9,.22,d,.004);osc('sine',2636,2636,t,.5,.05,d);osc('sine',1046,1046,t+.28,1.1,.2,d,.004);return 1.4},
+edoor:(t,d)=>{noise(t,.55,.12,d,'bandpass',700,380,.7,.08);osc('triangle',90,70,t+.5,.12,.12,d);return .7},
+rotor:(t,d)=>{noise(t,.11,.42,d,'lowpass',320,110,.9,.01);osc('sine',62,38,t,.12,.3,d,.01);return .13},
 caw:(t,d)=>{for(let k=0;k<3;k++){const u=t+k*.16+Math.random()*.04;osc('sawtooth',560+Math.random()*80,380,u,.11,.09,d,.004);noise(u,.1,.12,d,'bandpass',1500,900,3)}return .55},
 blub:(t,d)=>{osc('sine',120,300,t,.1,.3,d);osc('sine',90,60,t+.08,.12,.22,d);noise(t+.07,.08,.14,d,'lowpass',700,180);return .22},
 weld:(t,d)=>{for(let i=0;i<12;i++)noise(t+i*.045+Math.random()*.02,.025,.05+Math.random()*.07,d,'highpass',2600+Math.random()*2400);osc('sawtooth',118,120,t,.55,.025,d,.02);return .6},

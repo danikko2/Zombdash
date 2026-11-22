@@ -71,7 +71,7 @@ const BW=AR('bowl')[0],LB=stBowl(BW);
 // ---------- the game builds it ----------
 mapId=17;S.mp=17;setGM('f');build();
 ok(HS.CM==='builtin-stadium'&&WW==PW&&WH==PH&&BG.width==WW,'map 17 builds from stadium.json through the custom-map loader');
-ok(MP.length==18&&MP[17].n=='Zombville Stadium'&&MUN[17]===18&&MPD[17]&&MPI[17]&&MT[17]&&CLM[17],'map 17: its name, description, picture, tile and campaign landmark; Buck the quarterback holds out here (his fight: qb-boss.js)');
+ok(MP.length>=18&&MP[17].n=='Zombville Stadium'&&MUN[17]===18&&MPD[17]&&MPI[17]&&MT[17]&&CLM[17],'map 17: its name, description, picture, tile and campaign landmark; Buck the quarterback holds out here (his fight: qb-boss.js)');
 ok(HS.LT&&HS.LT.t=='dark','lights only in the game');
 // the stands: nobody can stand in them
 {const cell=(x,y)=>Math.floor(y/gs)*gw+Math.floor(x/gs);let open=0,tot=0;for(let y=8;y<PH;y+=24)for(let x=8;x<PW;x+=24){if(!(x<LB.x0-4||x>LB.x1+4||y<LB.y0-4||y>LB.y1+4))continue;if(Object.values(LB.TB).some(t=>x>=t[0]-4&&x<=t[0]+t[2]+4&&y>=t[1]-4&&y<=t[1]+t[3]+4))continue;tot++;if(!bl[cell(x,y)])open++}
@@ -88,7 +88,7 @@ start();
  ok(a0>.98&&a1<.2&&a2>.4&&a2<.7&&a3>.98&&a4>.4&&a4<.6,'a tent\\'s roof fades while you are inside ('+[a0,a1,a2,a3,a4].map(v=>v.toFixed(2)).join(' → ')+')');
  const cw=OB.canopyw;ok(cw.ov&&cw.ovf&&cw.ova<.3,'the canopies fade while anyone stands under them')}
 // ---------- campaign: Zombville's fourth map ----------
-{ok(SEC[2].n=='Zombville'&&SEC[2].m[3]===17&&SEC[2].m[4]===-1&&CORD.indexOf(17)==CORD.indexOf(13)+1&&SLATE[17].join()=='11,12,13'&&CCWAS.includes('2:3'),'Zombville\\'s fourth slot: after Downtown in the campaign');
+{ok(SEC[2].n=='Zombville'&&SEC[2].m[3]===17&&SEC[2].m[4]===18&&CORD.indexOf(17)==CORD.indexOf(13)+1&&SLATE[17].join()=='11,12,13'&&CCWAS.includes('2:3'),'Zombville\\'s fourth slot: after Downtown in the campaign');
  const A=S.ac;A.un=[0];A.cp=CORD.length;A.tut=1;delete A.slt;A.bm=[0,1,2].map(()=>CORD.reduce((v,m)=>m==17?v:v|1<<m,0));
  ok(secDone(A,0,2)&&A.slt[17]==7&&mOpen(A,0,17),'an account that had finished Zombville before keeps it finished, and the stadium is open');
  const B={name:'New',lv:1,xp:0,sp:0,sk:{},un:[0],cp:0,bm:[0,0,0]};B.bm[0]=[0,3,1,14,15,8,2,9,10,16].reduce((v,m)=>v|1<<m,0);ok(!secDone(B,0,2)&&mOpen(B,0,11)&&!mOpen(B,0,17),'a new player opens it by beating the section\\'s first map');

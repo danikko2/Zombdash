@@ -39,6 +39,7 @@ world/kit-stadium.js
 world/kit-park.js
 world/kit-urban.js
 world/kit-camp.js
+world/kit-hospital.js
 world/map-store.js
 world/custom-maps.js
 ui/core-ui.js
@@ -98,6 +99,7 @@ weapons/fire-hose.js
 extras/extras.js
 extras/headlamp.js
 campaign/sections.js
+campaign/escape.js
 campaign/map-screens.js
 campaign/world-map.js
 maps/props/home-props.js
@@ -111,6 +113,7 @@ maps/props/kit-stadium.js
 maps/props/kit-park.js
 maps/props/kit-urban.js
 maps/props/kit-camp.js
+maps/props/kit-hospital.js
 bosses/penny-and-mayor.js
 bosses/ken.js
 bosses/quarterback.js
