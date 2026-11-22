@@ -1,6 +1,6 @@
 //# world/kit-lighting.js — Time-of-day lighting for custom maps: day, sunrise, morning, dusk, night or lights only (no sun or moon) with an amount (0–100%), drawn over the world every frame, with light cut out around lamps, light effects, fires, sirens, glows, lit windows, and areas and paths that give light (tents, string lights, the stadium's exit lights); the same drawing previews it in the editor and darkens map thumbnails
 // ---------- time of day ----------
-// A map's d.lt = {t: 'day' | 'sunrise' | 'morning' | 'dusk' | 'night' | 'dark', a: 0..1} (file: "lighting": {"time", "amount"}). The world is multiplied
+// A map's d.lt = {t: 'day' | 'sunrise' | 'morning' | 'dusk' | 'night' | 'dark' | 'cold', a: 0..1} (file: "lighting": {"time", "amount"}). The world is multiplied
 // by a light map: the time's colour (mixed with white by the amount), plus light pools added around every light source.
 // lit is how strongly the light sources show through at that time (none by day, fully at night).
 const CMLT=[
@@ -9,7 +9,8 @@ const CMLT=[
 {id:'morning',n:'Morning',d:'Soft, warm early light with a haze.',mul:'#e6c2ae',scr:'255,226,196',sa:.12,lit:.3,def:.6},
 {id:'dusk',n:'Dusk',d:'Orange-pink evening light.',mul:'#b0645a',lit:.8,def:.7},
 {id:'night',n:'Night',d:'Dark blue night.',mul:'#10173c',lit:1,def:.75},
-{id:'dark',n:'Lights only',d:'No sun and no moon: only the lights light anything.',mul:'#0c0c12',lit:1,def:.85}];
+{id:'dark',n:'Lights only',d:'No sun and no moon: only the lights light anything.',mul:'#0c0c12',lit:1,def:.85},
+{id:'cold',n:'Lights only, cold',d:'No sun and no moon, and the dark has a cold blue cast and a faint haze, like a building on emergency power at night.',mul:'#0e1a38',scr:'60,100,170',sa:.06,lit:1,def:.85}];
 const CMLTI=Object.create(null);for(const p of CMLT)CMLTI[p.id]=p;
 function cmLtP(id){return typeof id=='string'&&cmOwn(CMLTI,id)?CMLTI[id]:null}
 function cmLtDef(id){const p=cmLtP(id);return p?p.def:.75}

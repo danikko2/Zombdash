@@ -98,7 +98,25 @@ function hsHangTop(o,t){const ph=cmR(o,0,93)*7,a=Math.sin(t*1.4+ph)*.18+(cmR(o,0
 function hsHangOn(o,t){const ph=cmR(o,0,93)*7,u=(t+ph*3)%4.2;return u<2.6?(cmH(Math.floor(t*14),o.x,5)<.75):(cmH(Math.floor(t*22),o.y,6)<.3)}
 cmAddFx({id:'hanglight',n:'Broken ceiling light (hanging, sparking)',cat:'light',r:90,top:hsHangTop,ed(g,o){g.fillStyle='#16111c';g.fillRect(o.x-30,o.y-14,60,12);g.fillStyle='#d8dce2';g.fillRect(o.x-29,o.y-13,58,10);g.strokeStyle='#2a2c32';g.beginPath();g.moveTo(o.x-10,o.y-60);g.lineTo(o.x,o.y-14);g.stroke()},
  lts(o,s,ph,L){L.push({x:o.x,y:o.y-10,r:130*s,c:'#e8f4ff',i:.9,f:'hang',ph:cmR(o,0,93)*7,o})}});
+// ----- a fluorescent ceiling light, seen from below the ceiling (drawn over people): its frame and two tubes; on, flickering
+// (a failing tube, in step with its light) or dead (dark, cracked); wet 1 adds its reflection in the wet floor under it -----
+const ftOn=(o,t)=>{const k=po(o,'k','on');if(k=='off')return 0;if(k!='flk')return 1;return cmLtNow({f:'fault',ph:cmH(o.x,o.y,9)*6.283},t,0)>.5};
+function hsTubeTop(o,t){const v=!!+po(o,'v',0),on=ftOn(o,t),x=Math.round(o.x),y=Math.round(o.y),L=56,T=16,w=v?T:L,h=v?L:T,x0=x-w/2,y0=y-h/2;
+ if(on){X.fillStyle='rgba(200,225,255,.22)';X.fillRect(x0-8,y0-8,w+16,h+16);X.fillStyle='rgba(220,236,255,.3)';X.fillRect(x0-3,y0-3,w+6,h+6)}
+ X.fillStyle=HSK.o;X.fillRect(x0,y0,w,h);X.fillStyle='#b8bec8';X.fillRect(x0+1,y0+1,w-2,h-2);const tc=on?'#f6fbff':'#5a6068';X.fillStyle=tc;
+ if(v){X.fillRect(x0+3,y0+3,3,h-6);X.fillRect(x0+w-6,y0+3,3,h-6)}else{X.fillRect(x0+3,y0+3,w-6,3);X.fillRect(x0+3,y0+h-6,w-6,3)}
+ if(!on&&po(o,'k','on')=='off'){X.fillStyle='#2a2c32';if(v){X.fillRect(x0+3,y0+18,3,4);X.fillRect(x0+w-6,y0+34,3,6)}else{X.fillRect(x0+20,y0+3,5,3);X.fillRect(x0+36,y0+h-6,7,3)}}}
+function hsTubeRefl(o,t){if(!+po(o,'wet',0)||!ftOn(o,t))return;const v=!!+po(o,'v',0),x=o.x,y=o.y+54,w=v?14:40,h=v?70:46;X.save();X.globalCompositeOperation='lighter';
+ for(const[p,a]of[[14,.05],[8,.07],[3,.09]]){X.fillStyle='rgba(205,225,255,'+a+')';v?X.fillRect(x-8-p,y-30-p,16+p*2,60+p*2):X.fillRect(x-28-p,y-6-p,56+p*2,12+p*2)}X.fillStyle='rgba(240,248,255,.3)';if(v){X.fillRect(x-5,y-26,2,52);X.fillRect(x+3,y-26,2,52)}else{X.fillRect(x-25,y-3,50,2);X.fillRect(x-25,y+2,50,2)}X.restore()}
+cmAddFx({id:'ftube',n:'Fluorescent ceiling light (tubes)',cat:'light',r:60,pal:[['#dbe9ff','Cool white'],['#fff0d0','Warm white'],['#c8f0ff','Icy blue']],def:{c:'#dbe9ff',o:{k:'on',v:0,wet:0}},
+ opts:[['k','Tubes',[['on','On'],['flk','Flickering (failing)'],['off','Dead']]],['v','Runs up and down','chk'],['wet','Reflected in a wet floor','chk']],anim:hsTubeRefl,top:hsTubeTop,
+ ed(g,o){const v=!!+po(o,'v',0),w=v?16:56,h=v?56:16;g.fillStyle='#16111c';g.fillRect(o.x-w/2,o.y-h/2,w,h);g.fillStyle=po(o,'k','on')=='off'?'#5a6068':'#f6fbff';g.fillRect(o.x-w/2+2,o.y-h/2+2,w-4,h-4)},
+ lts(o,s,ph,L){const k=po(o,'k','on');if(k=='off')return;const q={x:o.x,y:o.y,r:135*s,c:cmCol(o.c,'#dbe9ff'),i:.72,gs:1.5};if(k=='flk'){q.f='fault';q.ph=cmH(o.x,o.y,9)*6.283}L.push(q)}});
 // ----- decals -----
+// a wet floor: a sheen of water from the sprinklers, darker and cooler, with streaks where it catches the lights (var: its shape)
+cmAddDec({id:'wetfloor',n:'Wet floor (shiny)',cat:'misc',w:170,h:80,f(g,v){const P=[];for(let i=0;i<4;i++)P.push([(cmH(i,v*13,41)-.5)*90,(cmH(i,v*13,42)-.5)*30,34+cmH(i,v*13,43)*36,14+cmH(i,v*13,44)*12]);
+ g.fillStyle='rgba(60,95,150,.08)';for(const[x,y,a,b]of P){g.beginPath();g.ellipse(x,y,a,b,0,0,7);g.fill()}g.strokeStyle='rgba(215,232,255,.3)';g.lineWidth=1;for(const[x,y,a,b]of P){g.beginPath();g.ellipse(x,y,a,b,0,3.5,5.9);g.stroke()}
+ for(let i=0;i<2;i++){const[x,y,a,b]=P[i];g.fillStyle='rgba(230,242,255,.16)';g.beginPath();g.ellipse(x-a*.15,y-b*.2,a*.55,3.5,0,0,7);g.fill();g.fillStyle='rgba(255,255,255,.45)';g.fillRect(Math.round(x-a*.4),Math.round(y-b*.2),Math.round(a*.5),1)}}});
 const HSPILL=[['#e8e8e4','White'],['#e8a040','Orange'],['#7ab8e8','Blue']];
 cmAddDec({id:'pills',n:'Spilled pills',cat:'misc',w:44,h:26,pal:HSPILL,f(g,v,K){g.fillStyle='#16111c';g.fillRect(-20,-6,14,10);g.fillStyle='#e8a040';g.fillRect(-19,-5,12,8);g.fillStyle='#fff';g.fillRect(-17,-3,6,4);for(let i=0;i<16;i++){const x=-4+cmH(i,v*9,2)*26,y=-10+cmH(i,v*9,3)*20;g.fillStyle='#16111c';g.fillRect(x-1,y-1,4,3);g.fillStyle=i%3?K.b:'#fff';g.fillRect(x,y,2,1)}}});
 cmAddDec({id:'gauze',n:'Bloody gauze',cat:'misc',w:40,h:30,f(g,v){for(let i=0;i<3;i++){const x=(cmH(i,v*7,4)-.5)*22,y=(cmH(i,v*7,5)-.5)*14;g.fillStyle='#16111c';g.fillRect(x-8,y-6,16,12);g.fillStyle='#f0ece4';g.fillRect(x-7,y-5,14,10);g.fillStyle='rgba(150,14,20,.8)';g.beginPath();g.ellipse(x+1,y,4+i,3,0,0,7);g.fill()}}});

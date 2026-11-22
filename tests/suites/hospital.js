@@ -29,7 +29,7 @@ const DR=(()=>{const r=cmRead(JSON.stringify(BIMX[18]));ok(r.doc&&!r.errors.leng
 {const L=cmLint(D).filter(p=>p.lv=='err'||p.lv=='warn');ok(!L.length,'nothing in the Problems list '+L.map(p=>p.m).slice(0,2).join('; '));
  ok(D.w==128&&D.h==88&&D.id=='builtin-hospital'&&D.name=='Zombville General','128×88 tiles (4096×2816 px): as wide as a map can be');
  ok(D.obj.filter(o=>!o.dc&&!o.fx&&!o.veh&&!o.f).every(o=>cmOB(o.k)),'every prop is a real kit prop');ok(!cmDoorBlocks(D).length,'no prop stands in a doorway');
- const out=D.walls.filter(w=>w.s=='hidden'),ins=D.areas.filter(a=>a.a=='floor');ok(out.length>=8&&ins.length>=40&&D.lt.t=='dark','inside only: floors everywhere, the strip outside closed off but for the ways in')}
+ const out=D.walls.filter(w=>w.s=='hidden'),ins=D.areas.filter(a=>a.a=='floor');ok(out.length>=8&&ins.length>=40&&D.lt.t=='cold','inside only: floors everywhere, the strip outside closed off but for the ways in')}
 const K=k=>D.obj.filter(o=>o.k==k),FX=k=>D.obj.filter(o=>o.fx==k),DC=k=>D.obj.filter(o=>o.dc==k),AR=k=>D.areas.filter(a=>a.a==k),PA=k=>D.paths.filter(p=>p.p==k),WS=s=>D.walls.filter(w=>w.s==s);
 const HS_=t=>K('hsign').some(o=>o.tx==t);
 // ---------- the asks ----------
@@ -42,7 +42,9 @@ const HS_=t=>K('hsign').some(o=>o.tx==t);
  ok(K('servline').length==1&&K('ctable').length>=9&&K('giftshelf').length==2&&K('balloons').length==2,'the cafeteria and the gift shop');
  ok(K('mdrawers').length==2&&K('autopsy').length==2&&K('pew').length>=4&&K('altar').length==1,'the morgue and the chapel');
  ok(V_('amb')>=2&&WS('rollup').length>=4&&HS_('EMERGENCY'),'the ER and the ambulance bay');
- ok(FX('alarm').length>=12&&FX('hanglight').length>=6&&K('ceilflk').length>=15&&K('ceillight').length>=20,'backup power: lights, many flickering or out, some hanging down by their wires; fire alarms pulsing red');
+ {const T=FX('ftube'),k=v=>T.filter(o=>(o.o||{}).k==v).length;ok(FX('alarm').length>=12&&FX('hanglight').length>=6&&k('on')>=30&&k('flk')>=12&&k('off')>=12,'backup power: fluorescent tubes, many flickering or dead, some hanging down by their wires; fire alarms pulsing red ('+k('on')+' on, '+k('flk')+' failing, '+k('off')+' dead)');
+ ok(T.filter(o=>+(o.o||{}).wet).length>=10&&DC('wetfloor').length>=15&&FX('light').filter(o=>/^#ff/.test(o.c||'')).length>=8,'the look asked for after the reference pictures: wet floors reflecting the tubes, red emergency light down the halls');
+ ok(D.lt.t=='cold'&&cmLtP('cold').mul=='#0e1a38'&&T.some(o=>o.c=='#fff0d0')&&T.some(o=>!o.c),'cold blue lighting, cool tubes (warm ones in the cafeteria and the chapel)')}
  ok(AR('elev').length==4&&AR('elev').filter(a=>a.o.st=='esc').length==1,'four elevators, one of them the way to the roof');
  ok(D.spawns.length>=12&&WS('winbroke').length>=3,'zombies come down the stairs, in through the doors and the broken-out windows')}
 function V_(k){return D.obj.filter(o=>o.veh==k).length}
@@ -57,7 +59,7 @@ function V_(k){return D.obj.filter(o=>o.veh==k).length}
 // ---------- the game builds it ----------
 const A=S.ac;A.un=[0,1,2,3,4,5,6,7,8,9];A.cp=CORD.length;A.tut=1;A.bm=[0,1,2].map(()=>CORD.reduce((v,m)=>m==18?v:v|1<<m,0));A.slt={};S.lm='off';
 mapId=18;S.mp=18;setGM('f');build();
-ok(HS.CM==='builtin-hospital'&&WW==PW&&WH==PH&&BG.width==WW&&HS.LT&&HS.LT.t=='dark','map 18 builds from hospital.json');
+ok(HS.CM==='builtin-hospital'&&WW==PW&&WH==PH&&BG.width==WW&&HS.LT&&HS.LT.t=='cold','map 18 builds from hospital.json');
 ok(MP[18].n=='Zombville General'&&MPD[18]&&MPI[18]&&MUN[18]===10&&HS.HO&&HS.HO.length>=40,'its name, picture, Abigail standing in as its boss, '+(HS.HO?HS.HO.length:0)+' rooms');
 ok(HS.BNP&&HS.BNP.length==3,'three workbenches');
 const cell=(x,y)=>Math.floor(y/gs)*gw+Math.floor(x/gs);
@@ -94,7 +96,7 @@ setGM('c');mapId=18;S.mp=18;start();wave=20;zs=[];toSp=0;KN={ci:10,x:P.x,y:P.y,t
 setGM('f');mapId=18;S.mp=18;start();{const R=play(1,1,4000);ok(!R.err&&wave>=1&&!ESC,'a Free Play run plays (no escape there) '+R.err)}
 {const h=wsBuiltins();ok(h.includes('wsBuiltin(18,1)')&&h.includes('Zombville General'),'the Workshop lists Zombville General under Built-in maps')}
 {const NK=['infodesk','admdesk','wseat','wseat2','lounge','hctab','planterb','dirboard','hkiosk','wetsign','fext','aed','sanit','htrash','dplate','qsign','ortable','orlight','anesth','mayo','backtab','scrubsink','stershelf','pbed','obtable','recl','nstation','hvent','vitals','linen','mri','ctscan','xbox','labbench','labfrz','fumehood','rxcounter','mdrawers','autopsy','servline','cbar','drinkst','trayrack','giftshelf','balloons','cardrack','ahu','exfan','rpipes','mast','windsock','rsign'];
- const ND=['pills','gauze','xfilm','syringe','ivbag','clipb'];ok(NK.every(k=>OB[k]&&EDPN[k])&&EDCAT.some(c=>c[0]=='hosp')&&EDCAT.some(c=>c[0]=='roof')&&ND.every(k=>CMDI[k])&&['hfount','elev','rdeck','hpad','skyl','below'].every(k=>CMAI[k])&&CMFXI.alarm&&CMFXI.hanglight&&CMWI.hwall&&CMWI.winbroke&&CMWI.parapet,'the new pieces are all in the editor (new groups: Hospital, Rooftop)');
+ const ND=['pills','gauze','xfilm','syringe','ivbag','clipb','wetfloor'];ok(NK.every(k=>OB[k]&&EDPN[k])&&EDCAT.some(c=>c[0]=='hosp')&&EDCAT.some(c=>c[0]=='roof')&&ND.every(k=>CMDI[k])&&['hfount','elev','rdeck','hpad','skyl','below'].every(k=>CMAI[k])&&CMFXI.alarm&&CMFXI.hanglight&&CMFXI.ftube&&CMWI.hwall&&CMWI.winbroke&&CMWI.parapet,'the new pieces are all in the editor (new groups: Hospital, Rooftop)');
  const g=document.createElement('canvas').getContext('2d');let err='';for(const k of NK)try{for(const v of[0,.3,.55,.8,.95])OB[k].f(g,100,100,v,'#2f6fd0','A|B|C')}catch(e){err+=k+': '+e.message+' '}
  try{for(const k of['hfount','elev','rdeck','hpad','skyl','below']){const T=CMAI[k],o={a:k,x:0,y:0,w:300,h:240,o:Object.assign({},T.def&&T.def.o||{}),c:T.def&&T.def.c,c2:T.def&&T.def.c2};T.f(g,o);if(T.anim)T.anim(o,1.3);const L=[];if(T.lts)T.lts(o,L);const out=[];if(T.coll)T.coll(o,out)}
   for(const st of['shut','pried','open','esc'])for(const d of['s','n','e','w']){const o={a:'elev',x:0,y:0,w:96,h:112,o:{d,st}};CMAI.elev.f(g,o);CMAI.elev.anim(o,1)}
