@@ -1,6 +1,6 @@
 # Zombdash code map
 
-> **This is the `blueprints` branch: Zombdash Blueprints**, a separate build that tries the Workbench & Blueprints design (shops move into workbenches on the map, Scrap, a break between waves, blueprints bought with Zombie Pts). The original game is on `main`. This build keeps its own save (`localStorage.zombdash_bp`, checkpoint `zdbp_cp`, custom maps in the `zombdash-bp-maps` database) and never uploads a cloud save or posts a score, so it can't change the original's progress. See "Workbench & Blueprints" below.
+> **Workbench & Blueprints is the main game (since Nov 22, 2026):** shops are workbenches on the map, money is Scrap, there is a break between waves, and guns are unlocked as blueprints bought with Zombie Pts (see "Workbench & Blueprints" below). It was tried first on the `blueprints` branch with a save of its own (`localStorage.zombdash_bp`, custom maps in `zombdash-bp-maps`); `core/boot.js` moves that save into the main one (`deadyard`) once, keeping the replaced save as `deadyard_pre_bp`, and `world/map-store.js` (`cmBpMig`) copies those maps into `zombdash-maps` once. The game from before is kept on the `classic` branch as **Zombdash Classic**: offline only, with its own save (`zombdash_classic`, started from a copy of the main save), checkpoint `zdc_cp` and map database `zombdash-classic-maps`.
 
 The game ships as **one self-contained file**, `index.html` (what GitHub Pages serves, what the Claude artifact shows, and what a future desktop/Steam build will wrap). That file is **generated**: the real source lives in `src/` and `tools/build.js` joins it back together.
 
@@ -362,7 +362,7 @@ The full reference is **`docs/map-format.md`** (version 3, every piece, prefabs,
 | `dev/test-switches.js` | Test mode on/off switches and infinite health |
 | `dev/balance-editor.js` | GAME BALANCE editor and settings codes |
 
-### Workbench & Blueprints (`src/js/crafting/`, blueprints branch)
+### Workbench & Blueprints (`src/js/crafting/`)
 
 | File | What's in it |
 |---|---|

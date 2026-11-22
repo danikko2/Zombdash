@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Zombdash Blueprints</title>
+<title>Zombdash</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Pirata+One&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0d130f;--fg:#e9f1e2;--mut:#9fb3a0;--ac:#ffcf40;--tox:#9be860;--blood:#d8403a;--pn:#1a241c;--pn2:#121a14;--bd:#4d6b4f;--ink:#070a08;box-sizing:border-box}
@@ -1018,12 +1018,13 @@ background:var(--n0);color:var(--nt);font:14px/1.3 'Barlow',system-ui,sans-serif
 .bpx .htm{padding-top:16px}.nx .bpnx{flex:none;align-self:center;height:44px!important;min-height:0;padding:0 16px;gap:6px;font-size:17px;white-space:nowrap}
 .nx .bpup .np,.nx .bpda .np{font-size:17px;white-space:nowrap;gap:8px}.nx .bpda .np .kc{flex:none}</style></head><body>
 <div id="game" style="width:100vw;height:100vh"><canvas id="c"></canvas><div id="ui"><div class="p" id="boot" style="animation:none"><h2>LOADING ZOMBDASH...</h2><p class="note">If this message stays on screen, tell Claude.</p></div></div><div id="sb"></div><div id="bx"></div><button id="pz" aria-label="Pause" data-q="1" onclick="pauseMenu()"></button></div>
-<script>window.__zb=1;addEventListener('error',function(e){try{if(window.__zstarted)return;var d=document.getElementById('zerr0');if(!d){d=document.createElement('div');d.id='zerr0';d.style.cssText='position:fixed;left:8px;right:8px;bottom:8px;z-index:99;background:rgba(120,10,10,.95);color:#fff;font:14px monospace;padding:8px;white-space:pre-wrap;pointer-events:auto';document.body.appendChild(d)}var t=document.createElement('div');t.textContent='Startup error (please tell Claude): '+(e.message||e)+' @'+(e.lineno||'?')+':'+(e.colno||'?');d.appendChild(t);if(!document.getElementById('zrst')){var b=document.createElement('button');b.id='zrst';b.textContent='Try again with a fresh save (your old save is backed up)';b.style.cssText='margin-top:6px;font:14px monospace;padding:6px 10px;width:auto;display:inline-block';b.onclick=function(){try{if(localStorage.zombdash_bp){localStorage.zombdash_bp_backup=localStorage.zombdash_bp;localStorage.removeItem('zombdash_bp')}}catch(_){}location.reload()};d.appendChild(b)}}catch(_){}});</script>
+<script>window.__zb=1;addEventListener('error',function(e){try{if(window.__zstarted)return;var d=document.getElementById('zerr0');if(!d){d=document.createElement('div');d.id='zerr0';d.style.cssText='position:fixed;left:8px;right:8px;bottom:8px;z-index:99;background:rgba(120,10,10,.95);color:#fff;font:14px monospace;padding:8px;white-space:pre-wrap;pointer-events:auto';document.body.appendChild(d)}var t=document.createElement('div');t.textContent='Startup error (please tell Claude): '+(e.message||e)+' @'+(e.lineno||'?')+':'+(e.colno||'?');d.appendChild(t);if(!document.getElementById('zrst')){var b=document.createElement('button');b.id='zrst';b.textContent='Try again with a fresh save (your old save is backed up)';b.style.cssText='margin-top:6px;font:14px monospace;padding:6px 10px;width:auto;display:inline-block';b.onclick=function(){try{if(localStorage.deadyard){localStorage.deadyard_backup=localStorage.deadyard;localStorage.removeItem('deadyard')}}catch(_){}location.reload()};d.appendChild(b)}}catch(_){}});</script>
 <script>
 const PZ=document.getElementById('pz'),SB=document.getElementById('sb'),C=document.getElementById('c'),X=C.getContext('2d'),ui=document.getElementById('ui');
-// Zombdash Blueprints keeps its own save (SAVK). The first time it runs where the original game has a save, it starts from a copy
-// of it (read only: the original's save is never written), without the online sign-in.
-const SAVK='zombdash_bp',ZBX=1;let W,H,S={};try{const o=localStorage[SAVK];S=JSON.parse(o||localStorage.deadyard||'{}');if(!o)delete S.ol}catch(e){}
+// The save (SAVK). Workbench & Blueprints became the main game on Nov 22, 2026. While it was a test build it kept its own save
+// ("zombdash_bp", started from a copy of this one); where that exists it is the newer progress, so it becomes the save once (the
+// save it replaces stays as "deadyard_pre_bp"). Zombdash Classic, the game from before, keeps its own ("zombdash_classic").
+const SAVK='deadyard';let W,H,S={};try{const b=localStorage.zombdash_bp;if(b&&!localStorage.zd_bpmig){if(localStorage.deadyard)localStorage.deadyard_pre_bp=localStorage.deadyard;localStorage.deadyard=b;localStorage.zd_bpmig='1'}S=JSON.parse(localStorage[SAVK]||'{}')}catch(e){}
 S.pts=S.pts||0;S.un=S.un||[0];S.or=S.or||'a';if(S.dlf==null)S.dlf=S.df?2:1;if(S.dlc==null)S.dlc=1;delete S.df;Object.defineProperty(S,'df',{get(){return DIF()==2?1:0},set(v){},enumerable:false,configurable:true});S.best=S.best||1;S.sw=S.sw||1;S.mp=S.mp||0;
 const GM=document.getElementById('game'),rot=()=>S.or=='l'&&innerHeight>innerWidth||S.or=='p'&&innerWidth>innerHeight;
 const gp=e=>rot()?{x:e.clientY,y:innerWidth-e.clientX}:{x:e.clientX,y:e.clientY};
@@ -3611,14 +3612,23 @@ cmAddDec({id:'chalkart',n:'Chalk drawings',cat:'misc',w:70,h:50,f(g,v){const C=[
  g.strokeStyle=C[0];for(let i=0;i<5;i++){const a=i/5*6.283;g.beginPath();g.ellipse(12+Math.cos(a)*5,-4+Math.sin(a)*5,4,4,0,0,7);g.stroke()}g.strokeStyle=C[3];g.beginPath();g.moveTo(12,2);g.lineTo(12,18);g.stroke();
  g.strokeStyle=C[1];g.beginPath();g.moveTo(-28,18);g.quadraticCurveTo(-10,8,8,20);g.quadraticCurveTo(20,26,30,16);g.stroke()}});
 // ---------- custom map storage ----------
-// Custom maps stay out of the save object S and out of the online saves. Database "zombdash-bp-maps" (the Blueprints build keeps its own) holds three stores:
+// Custom maps stay out of the save object S and out of the online saves. Database "zombdash-maps" holds three stores:
 //   maps: {id, json}   the map file exactly as Export writes it (see cmWrite)
 //   meta: {id, name, desc, w, h, created, updated, thumb}   what the Workshop list and Free Play need
 //   kv:   {k, ...}     small records, e.g. the editor's crash-safe draft ("draft")
 let CMDB=null,CMMEM=null;
-function cmDb(){return CMDB||(CMDB=new Promise(res=>{let r;try{if(typeof indexedDB=='undefined'||!indexedDB||!indexedDB.open)return res(null);r=indexedDB.open('zombdash-bp-maps',1)}catch(e){return res(null)}
+function cmDb(){return CMDB||(CMDB=new Promise(res=>{let r;try{if(typeof indexedDB=='undefined'||!indexedDB||!indexedDB.open)return res(null);r=indexedDB.open('zombdash-maps',1)}catch(e){return res(null)}
 r.onupgradeneeded=()=>{const db=r.result;for(const[n,k]of[['maps','id'],['meta','id'],['kv','k']])if(!db.objectStoreNames.contains(n))db.createObjectStore(n,{keyPath:k})};
-r.onsuccess=()=>res(r.result);r.onerror=()=>res(null);r.onblocked=()=>res(null)}).then(db=>{if(!db)CMMEM={maps:{},meta:{},kv:{}};return db}))}
+r.onsuccess=()=>res(r.result);r.onerror=()=>res(null);r.onblocked=()=>res(null)}).then(db=>db?cmBpMig(db).then(()=>db,()=>db):db).then(db=>{if(!db)CMMEM={maps:{},meta:{},kv:{}};return db}))}
+// once: maps made in the Workbench & Blueprints test build (its own database, "zombdash-bp-maps") join this one; a map with the
+// same id already here stays as it is. A device that never had the test build opens nothing (the old database isn't created).
+function cmBpMig(db){return new Promise(done=>{try{if(localStorage.zd_bpmaps)return done();localStorage.zd_bpmaps='1'}catch(e){return done()}
+ let r;try{r=indexedDB.open('zombdash-bp-maps',1)}catch(e){return done()}
+ r.onupgradeneeded=()=>{try{r.transaction.abort()}catch(e){}};r.onerror=()=>done();r.onblocked=()=>done();
+ r.onsuccess=()=>{const o=r.result,N=['maps','meta','kv'].filter(n=>o.objectStoreNames.contains(n)&&db.objectStoreNames.contains(n));if(!N.length){o.close();return done()}
+  try{const t=o.transaction(N,'readonly'),got={};for(const n of N)t.objectStore(n).getAll().onsuccess=e=>{got[n]=e.target.result||[]};
+   t.oncomplete=()=>{o.close();try{const w=db.transaction(N,'readwrite');for(const n of N){const st=w.objectStore(n);for(const v of got[n]||[]){const k=v[st.keyPath];st.get(k).onsuccess=g=>{if(!g.target.result)st.put(v)}}}
+    w.oncomplete=()=>done();w.onerror=()=>done();w.onabort=()=>done()}catch(e){done()}};t.onerror=()=>{o.close();done()}}catch(e){o.close();done()}}})}
 // maps live only in memory (no IndexedDB here): the Workshop says so and suggests exporting
 function msMem(){return !!CMMEM}
 const msReq=r=>new Promise((res,rej)=>{r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
@@ -7769,7 +7779,7 @@ function lmRun(){if(!LMX)return;try{for(const k in MPV){if(MPV[k])MPV[k].src='';
 // rough canvas memory in use, for the crash log
 function memMB(){let b=BGL?BGL.width*BGL.height*4:(BG&&BG.width>1?WW*WH*4:0);for(const v of(HS&&HS.VH)||[])if(v.cv)b+=v.w*v.h*4+(v.al?v.w*v.h:0);try{b+=Object.keys(SKC).length*PIMG.naturalWidth*PIMG.naturalHeight*4}catch(e){}return Math.round(b/1e5)/10}
 // ----- checkpoints: saved every time a wave is cleared (solo runs) -----
-const CPK='zdbp_cp';
+const CPK='zd_cp';
 function cpGet(){try{const c=JSON.parse(localStorage[CPK]||'null');return c&&c.v==1?c:null}catch(e){return null}}
 function cpClear(){try{delete localStorage[CPK]}catch(e){}}
 function cpSave(){if(MPn||TUT||!P||cmPT(mapId)||GMD=='c'&&wave>=20)return;try{const p=P,rp=CREP&&CREP.key===mapId,cu=cmIs(mapId)&&!rp;if(cu&&!cmIdOf(mapId))return;localStorage[CPK]=JSON.stringify({v:1,t:Date.now(),an:S.ac.name,gm:GMD,m:rp?CREP.o:cu?-1:mapId,cm:cu?cmIdOf(mapId):undefined,cr:rp?CREP.id:undefined,ci:p.ci||0,d:DIF(),w:wave,k:kills,L:LIVES,IW,BB,LB,
@@ -7782,7 +7792,7 @@ function cpResume(){const c=cpOK();if(!c){sfx('deny');return menu()}sfx('click')
 function cpApply(){const c=CPR;wave=c.w;kills=c.k||0;if(c.gm=='c')LIVES=c.L||LIVES;if(c.IW)IW=c.IW;if(c.BB)BB=c.BB;LB=c.LB||0;Object.assign(P,c.p);amFix(P);exFix(P);if(!P.own.includes(P.cur))P.cur=P.own[0];P.hp=Math.max(1,Math.min(P.hp,P.mx));lmRun();PRE=0;brkStart(2);FT.push({x:P.x,y:P.y-40,t:'RUN RESUMED',c:'#9be860',l:2})}
 function cpBanner(){const c=cpOK();if(!c)return'';const crash=CRL.length&&CRL[0].t>=c.t&&!CRL[0].seen;return `<div class=cpb><b>${crash?'The game stopped unexpectedly.':'Unfinished run'}</b><small>${edEsc(c.cr&&ccRep(c.m)?mpName(ccRep(c.m).key)+' (instead of '+MP[c.m].n+')':mpName(cpMap(c)))} · ${CH[c.ci].n} · wave ${c.w} cleared · ${scr(c.p.cash)}</small><div class=row><button class=go onclick="cpResume()">RESUME AT WAVE ${c.w+1}</button><button onclick="cpClear();menu()">DISCARD</button></div></div>`}
 // ----- crash log: a heartbeat every few seconds; if the next load finds it wasn't closed cleanly, it's logged -----
-const CLK='zdbp_crash',HBK='zdbp_hb';let CRL=[],HB0=0,FPS={n:0,t:0,v:0},UP0=Date.now();
+const CLK='zd_crash',HBK='zd_hb';let CRL=[],HB0=0,FPS={n:0,t:0,v:0},UP0=Date.now();
 try{CRL=JSON.parse(localStorage[CLK]||'[]')||[]}catch(e){CRL=[]}
 try{const h=JSON.parse(localStorage[HBK]||'null');if(h&&!h.clean){const kind=h.vis===0?'Closed by the phone while in the background':h.run?'Stopped during play':'Stopped in the menus';CRL.unshift(Object.assign({kind},h));CRL=CRL.slice(0,10);localStorage[CLK]=JSON.stringify(CRL)}}catch(e){}
 function clFrame(t){FPS.n++;if(!FPS.t)FPS.t=t;if(t-FPS.t>=2000){FPS.v=Math.round(FPS.n*1000/(t-FPS.t));FPS.n=0;FPS.t=t}const n=Date.now();if(n-HB0>=3000){HB0=n;clBeat(0)}}
@@ -7818,21 +7828,20 @@ if(!make)return null;return olKeep(await sbRaw('/auth/v1/signup',{method:'POST',
 async function sbReq(path,o){o=o||{};const s=await olSess(o.make);return sbRaw(path,Object.assign({},o,{tok:s?s.at:SBK}))}
 // ----- cloud save: the whole main account -----
 function olData(){const A=Object.assign({},S.ac);delete A.ol;delete A.dvb;return A}
-// Zombdash Blueprints (ZBX): never uploads a save or posts a score, so it can't change the original game's account or leaderboards
-async function olUpload(force){if(!OLX||S.dev||ZBX)return;const s=await olSess(true);if(!s)return;const d=olData(),h=JSON.stringify(d).length;
+async function olUpload(force){if(!OLX||S.dev)return;const s=await olSess(true);if(!s)return;const d=olData(),h=JSON.stringify(d).length;
 await sbRaw('/rest/v1/saves?on_conflict=user_id',{method:'POST',tok:s.at,prefer:'resolution=merge-duplicates,return=minimal',body:{user_id:s.uid,name:olName(S.ac.name),data:d,updated_at:new Date().toISOString()}});S.ol.up=Date.now();S.ol.lv=S.ac.lv;sv()}
 async function olFetchSave(){const s=await olSess(false);if(!s)return null;const r=await sbRaw('/rest/v1/saves?select=name,data,updated_at&user_id=eq.'+s.uid,{tok:s.at});return r&&r[0]||null}
 function olNewer(c){return c&&c.data&&Date.parse(c.updated_at)>(S.ol&&S.ol.up||0)+5000&&JSON.stringify(c.data)!==JSON.stringify(olData())}
 function olUseCloud(){const c=OL.cloud;if(!c||!c.data||!c.data.name){sfx('deny');return}const ol=S.ol;Object.assign(S.ac,c.data);if(c.data.bpv==null)S.ac.bpv=0;S.ol=ol;S.ol.up=Date.now();OL.cloud=null;sv();sfx('buy');olMenu('Loaded your cloud save.')}
-function olKeepLocal(){OL.cloud=null;olSync(1).then(r=>olMenu(r=='off'?'Kept this device\'s progress (nothing is uploaded from this build).':'Uploaded this device\'s progress.'),e=>olMenu(e&&e.msg||String(e)))}
+function olKeepLocal(){OL.cloud=null;olSync(1).then(()=>olMenu('Uploaded this device\'s progress.'),e=>olMenu(e&&e.msg||String(e)))}
 // sync: if the cloud has newer progress from another device, ask; otherwise upload
-async function olSync(force){if(!OLX||S.dev||!S.ol)return;const c=await olFetchSave();if(c&&!force&&olNewer(c)){OL.cloud=c;return 'ask'}if(ZBX){OL.msg='Cloud backups are off in Zombdash Blueprints';return 'off'}await olUpload();OL.msg='Saved to the cloud';return 'up'}
+async function olSync(force){if(!OLX||S.dev||!S.ol)return;const c=await olFetchSave();if(c&&!force&&olNewer(c)){OL.cloud=c;return 'ask'}await olUpload();OL.msg='Saved to the cloud';return 'up'}
 let OLT=0;function olAuto(){if(!OLX||!S.ol||S.olOff||OL.busy||Date.now()-OLT<60000)return;OLT=Date.now();OL.busy=1;olSync().then(r=>{if(r=='ask'&&mode=='menu'&&UIS=='')menu()},()=>{}).then(()=>{OL.busy=0})}
 // ----- leaderboards -----
 function olRun(){RUN0=Date.now();RUNW=wave+1}
 // the score row this run would post, or null when it doesn't count (custom maps: map 63 + the map's id in cmap; playtests never count)
 function olRow(){if(S.dev||MPn||TUT||cmPT(mapId)||PTX||GMD!='f'||!P||P.ac!==S.ac||wave<2)return null;const cu=cmIs(mapId);if(cu&&!cmIdOf(mapId))return null;const sc={name:olName(S.ac.name),map:cu?CMLBM:mapId,mode:'f',diff:DIF(),wave,kills,survivor:P.ci||0,start:Math.min(RUNW,wave),secs:Math.round((Date.now()-RUN0)/1000)};if(cu)sc.cmap=cmIdOf(mapId);return sc}
-function olScore(){if(!OLX||S.olOff||ZBX)return;const sc=olRow();if(!sc)return;
+function olScore(){if(!OLX||S.olOff)return;const sc=olRow();if(!sc)return;
 S.olq=(S.olq||[]).concat([sc]).slice(-10);sv();olFlush()}
 async function olFlush(){if(!OLX||!S.olq||!S.olq.length)return;try{const s=await olSess(true);if(!s)return;while(S.olq.length){const sc=S.olq[0];try{await sbRaw('/rest/v1/scores',{method:'POST',tok:s.at,prefer:'return=minimal',body:Object.assign({user_id:s.uid},sc)})}catch(e){if(!(e.status&&e.status<500))throw e}S.olq.shift();sv()}}catch(e){}}
 // m: -1 = every built-in map, a map number, or a custom map's key (its board is map 63 + its id)
@@ -7848,18 +7857,18 @@ lbNX(m,d,cu,body)}
 // ----- the online screen -----
 function olTag(){return!OLX?'offline':S.ol?(S.ol.anon?'guest account':S.ol.email):'not signed in'}
 function olMenu(msg){HUBX=null;UIS='ol';mode='menu';const s=S.ol,c=OL.cloud;
-show(nxPage('olp','ONLINE',{back:"UIS='';menu()",crumbs:[['Online']]},`${ZBX?'<p class=npmsg>This is the <b>Zombdash Blueprints</b> test build. Cloud backups and score posting are off here, so nothing you do in it changes your main Zombdash account or the leaderboards. You can still load your online save into this build, or bring your account over with an account code (Accounts).</p>':''}${msg?`<p class="npmsg ok">${msg}</p>`:''}
+show(nxPage('olp','ONLINE',{back:"UIS='';menu()",crumbs:[['Online']]},`${msg?`<p class="npmsg ok">${msg}</p>`:''}
 ${OL.last?`<p class="npmsg bad">Last problem: ${String(OL.last).replace(/[<>&]/g,'')}</p>`:''}${!OLX?'<p class=npmsg>Online features are not available here.</p>':OL.ok===0?'<p class="npmsg bad">Can\'t reach the online server right now. The game still saves on this device.</p>':''}
 ${c?`<div class=cpb><b>Newer progress found online</b><small>${String(c.name).replace(/[<>&]/g,'')} · LV ${c.data.lv} · saved ${new Date(c.updated_at).toLocaleString()}</small><div class=row><button class=go onclick="olUseCloud()">USE ONLINE SAVE</button><button onclick="olKeepLocal()">KEEP THIS DEVICE</button></div></div>`:''}
 <div class=opt><div><h3>Account</h3><p class=note>${!s?'Not signed in. Go online to back up your progress and post scores.':s.anon?'Signed in as a <b>guest</b> on this device. Add an email to use the same account on other devices.':'Signed in as <b>'+s.email+'</b>.'}${s&&s.up?'<br>Last backup: '+new Date(s.up).toLocaleString():''}</p>
 ${!s?'<button class=go onclick="olGo()">GO ONLINE (GUEST)</button>':'<button class=go onclick="olBackup()">BACK UP NOW</button>'}
 ${!s||s.anon?`<label class=wnf><span class=cwk>EMAIL</span><span class=wnin><input id=ole type=email placeholder="you@example.com" autocomplete=email autocapitalize=off></span></label><label class=wnf><span class=cwk>PASSWORD</span><span class=wnin><input id=olp type=password placeholder="6 or more characters" autocomplete=current-password></span></label><div class=row>${s?'<button data-q=1 onclick="olLink()">ADD EMAIL</button>':''}<button data-q=1 onclick="olLogin()">SIGN IN</button>${s?'':'<button data-q=1 onclick="olSignup()">CREATE</button>'}</div><p class=note id=olm></p>`:''}
 ${s?'<button data-q=1 onclick="olOut()">SIGN OUT<small>this device only</small></button>':''}</div>
-<div><h3>Leaderboards</h3>${ZBX?'<p class=note>Scores from this build are not posted.</p>':`<div class=seg><button class="${S.olOff?'':'on'}" onclick="S.olOff=0;sv();olMenu()">Post my scores</button><button class="${S.olOff?'on':''}" onclick="S.olOff=1;sv();olMenu()">Don't post</button></div>`}<p class=note>Your best free-play wave on each map shows under your name: <b>${olName(S.ac.name)}</b>.</p><button data-q=1 onclick="lbOpen()">VIEW LEADERBOARDS</button></div></div>`))}
+<div><h3>Leaderboards</h3><div class=seg><button class="${S.olOff?'':'on'}" onclick="S.olOff=0;sv();olMenu()">Post my scores</button><button class="${S.olOff?'on':''}" onclick="S.olOff=1;sv();olMenu()">Don't post</button></div><p class=note>Your best free-play wave on each map shows under your name: <b>${olName(S.ac.name)}</b>.</p><button data-q=1 onclick="lbOpen()">VIEW LEADERBOARDS</button></div></div>`))}
 function olMsg(t){const e=document.getElementById('olm');if(e)e.textContent=t}
 function olBusy(p,ok){OL.busy=1;olMsg('Working…');return p.then(ok,e=>{const m=(e&&(e.msg||e.message))||String(e);OL.last=m;try{olMenu()}catch(_){}olMsg(m);sfx('deny')}).catch(e=>{olMsg(String(e&&e.message||e))}).then(()=>{OL.busy=0})}
-function olGo(){olBusy(olSess(true).then(()=>olSync()),r=>olMenu(r=='ask'?'':r=='off'?'You\'re online. (Backups are off in this build.)':'You\'re online. Progress backed up.'))}
-function olBackup(){olBusy(olSync(),r=>olMenu(r=='ask'?'':r=='off'?'Cloud backups are off in Zombdash Blueprints.':'Backed up.'))}
+function olGo(){olBusy(olSess(true).then(()=>olSync()),r=>olMenu(r=='ask'?'':'You\'re online. Progress backed up.'))}
+function olBackup(){olBusy(olSync(),r=>olMenu(r=='ask'?'':'Backed up.'))}
 function olCred(){const e=(document.getElementById('ole')||{}).value||'',p=(document.getElementById('olp')||{}).value||'';if(!/^\S+@\S+\.\S+$/.test(e)){olMsg('Enter a valid email.');return null}if(p.length<6){olMsg('Password needs 6+ characters.');return null}return{email:e.trim(),password:p}}
 function olLogin(){const c=olCred();if(!c)return;olBusy(sbRaw('/auth/v1/token?grant_type=password',{method:'POST',body:c}).then(j=>{olKeep(j);S.ol.up=0;return olFetchSave()}),sv_=>{OL.cloud=sv_&&sv_.data?sv_:null;if(!OL.cloud)olSync(1).catch(()=>{});olMenu(OL.cloud?'Signed in.':'Signed in. This device\'s progress is now backed up.')})}
 function olSignup(){const c=olCred();if(!c)return;olBusy(sbRaw('/auth/v1/signup',{method:'POST',body:c}).then(j=>{if(!j.access_token)throw{msg:'Check your email to confirm, then sign in'};olKeep(j);return olSync(1)}),()=>olMenu('Account created and backed up.'))}
