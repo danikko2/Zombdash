@@ -100,7 +100,7 @@ const c=o&&typeof EDPN!='undefined'&&cmOwn(EDPN,o.k)?EDPN[o.k][1]:'';return{buil
 function cmDefLy(d,kind,o){const id=cmKindLy(kind,o),l=cmLy(d,id);if(l&&l.k=='o')return id;const ol=d.layers.filter(q=>q.k=='o');return ol.length?ol[ol.length-1].id:null}
 
 // ----- collision: everything a custom map adds to WL -----
-function cmVeh(o){const s=cmHW(o.veh);if(!s)return null;return{k:o.veh,x:o.x,y:o.y,a:(o.r||0)*Math.PI/180,L:s[0],W:s[1],c:o.c||undefined,st:o.c2||undefined,dmg:o.dmg?1:0,burn:o.burn?1:0,ov:o.ov?1:0,tx:o.tx||undefined}}
+function cmVeh(o){const s=cmHW(o.veh);if(!s)return null;return{k:o.veh,x:o.x,y:o.y,a:(o.r||0)*Math.PI/180,L:s[0],W:s[1],c:o.c||undefined,st:o.c2||undefined,dmg:o.dmg?1:0,rust:o.rust?1:0,burn:o.burn?1:0,ov:o.ov?1:0,tx:o.tx||undefined}}
 // a solid prop's footprint (OB[k].c) turned with the prop, as a box
 // cf on a prop: its collision flag (2 = see-through, like the forest trees' trunks), else 1
 function cmFoot(o){const B=cmOB(o.k);if(!B||!B.c)return null;const cw=B.c[0],ch=B.c[1],r=B.nr?0:(((o.r||0)%360)+360)%360,cf=B.cf||1;if(!r)return[o.x-cw/2,o.y-ch,cw,ch,cf];
@@ -182,7 +182,7 @@ const rd=cmSparse(d,d.rtr,d.rpal,CMTI);if(rd)out.roads=rd;else delete out.roads;
 const ov=cmSparse(d,d.ovl,d.opal,CMOI);if(ov)out.overlay=ov;else delete out.overlay;
 out.layers=d.layers.map(l=>{const q={id:l.id,name:l.n,kind:l.k=='t'?'tiles':'objects'};if(l.hid)q.editorHidden=true;if(l.lock)q.locked=true;return q});
 out.props=d.obj.filter(o=>!o.veh&&!o.dc&&!o.fx).map(o=>{const p={id:o.id,kind:o.k,x:cmR1(o.x),y:cmR1(o.y)};if(o.r)p.rot=cmR1(o.r);if(o.vr!=null)p.var=Math.round(o.vr*100)/100;if(o.c)p.color=o.c;if(o.tx)p.text=o.tx;return cmWObj(o,p,1)});
-out.vehicles=d.obj.filter(o=>o.veh).map(o=>{const p={id:o.id,kind:o.veh,x:cmR1(o.x),y:cmR1(o.y),rot:cmR1(o.r||0)};if(o.c)p.color=o.c;if(o.c2)p.color2=o.c2;if(o.dmg)p.damaged=true;if(o.burn)p.burnt=true;if(o.ov)p.flipped=true;if(o.tx)p.text=o.tx;return cmWObj(o,p,1)});
+out.vehicles=d.obj.filter(o=>o.veh).map(o=>{const p={id:o.id,kind:o.veh,x:cmR1(o.x),y:cmR1(o.y),rot:cmR1(o.r||0)};if(o.c)p.color=o.c;if(o.c2)p.color2=o.c2;if(o.dmg)p.damaged=true;if(o.rust)p.rusty=true;if(o.burn)p.burnt=true;if(o.ov)p.flipped=true;if(o.tx)p.text=o.tx;return cmWObj(o,p,1)});
 // the building kit (version 3): written only when the map has some
 const kit=(nm,L)=>{if(L.length)out[nm]=L;else delete out[nm]},opt=(o,p)=>{if(o.o&&Object.keys(o.o).length)p.options=Object.assign({},o.o);return p};
 kit('decals',d.obj.filter(o=>o.dc).map(o=>{const p={id:o.id,kind:o.dc,x:cmR1(o.x),y:cmR1(o.y)};if(o.r)p.rot=cmR1(o.r);if(o.sc!=null&&o.sc!==1)p.scale=Math.round(o.sc*100)/100;if(o.c)p.color=o.c;if(o.op!=null&&o.op!==1)p.opacity=Math.round(o.op*100)/100;if(o.tx)p.text=o.tx;if(o.vr!=null)p.var=Math.round(o.vr*100)/100;return cmWObj(o,opt(o,p),0)}));
@@ -262,7 +262,7 @@ if(p.locked)o.lk=true;if(p.editorHidden)o.hd=true;return 1};
 list(j.props,'props').forEach((p,i)=>{if(!p||typeof p.kind!='string'||!num(p.x)||!num(p.y))return bad('props',i,'needs "kind", "x" and "y".');if(p.rot!=null&&!num(p.rot))return bad('props',i,'has a "rot" that is not a number.');
 const o={id:uid(p.id,'p'),k:p.kind,x:p.x,y:p.y,r:p.rot||0};if(num(p.var))o.vr=cl(p.var,0,1);if(typeof p.color=='string'&&/^#[0-9a-f]{6}$/i.test(p.color))o.c=p.color.toLowerCase();if(typeof p.text=='string'&&p.text)o.tx=cmTxt(p.text,Math.max(40,(cmOB(p.kind)||{}).txt||0));if(!obj(p,o,'props',i,'o',1))return;d.obj.push(o);if(!cmOB(p.kind))unk[p.kind]=(unk[p.kind]||0)+1});
 list(j.vehicles,'vehicles').forEach((p,i)=>{if(!p||typeof p.kind!='string'||!num(p.x)||!num(p.y))return bad('vehicles',i,'needs "kind", "x" and "y".');if(p.rot!=null&&!num(p.rot))return bad('vehicles',i,'has a "rot" that is not a number.');
-const o={id:uid(p.id,'v'),veh:p.kind,x:p.x,y:p.y,r:p.rot||0};if(typeof p.color=='string'&&/^#[0-9a-f]{3,8}$/i.test(p.color))o.c=p.color;if(typeof p.color2=='string'&&(/^#[0-9a-f]{3,8}$/i.test(p.color2)||p.color2=='none'))o.c2=p.color2;if(p.damaged)o.dmg=1;if(p.burnt)o.burn=1;if(p.flipped)o.ov=1;if(typeof p.text=='string'&&p.text)o.tx=cmTxt(p.text,40);if(!obj(p,o,'vehicles',i,'o',1))return;d.obj.push(o);if(!cmHW(p.kind))unk[p.kind+' (vehicle)']=(unk[p.kind+' (vehicle)']||0)+1});
+const o={id:uid(p.id,'v'),veh:p.kind,x:p.x,y:p.y,r:p.rot||0};if(typeof p.color=='string'&&/^#[0-9a-f]{3,8}$/i.test(p.color))o.c=p.color;if(typeof p.color2=='string'&&(/^#[0-9a-f]{3,8}$/i.test(p.color2)||p.color2=='none'))o.c2=p.color2;if(p.damaged)o.dmg=1;if(p.rusty===true)o.rust=1;if(p.burnt)o.burn=1;if(p.flipped)o.ov=1;if(typeof p.text=='string'&&p.text)o.tx=cmTxt(p.text,40);if(!obj(p,o,'vehicles',i,'o',1))return;d.obj.push(o);if(!cmHW(p.kind))unk[p.kind+' (vehicle)']=(unk[p.kind+' (vehicle)']||0)+1});
 // ----- the building kit (version 3) -----
 const col=c=>typeof c=='string'&&/^#[0-9a-f]{6}$/i.test(c)?c.toLowerCase():null,pts=a=>Array.isArray(a)&&a.every(q=>Array.isArray(q)&&q.length==2&&num(q[0])&&num(q[1]))?a:null;
 const opts=(p,o,nm,i)=>{if(p.options==null)return 1;const v=p.options;if(!v||typeof v!='object'||Array.isArray(v)){bad(nm,i,'has "options" that are not an object.');return 0}const r={};let n=0;

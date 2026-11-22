@@ -405,6 +405,16 @@ No prop may block a doorway. `cmDoorBlocks` finds props and vehicles within 24 p
 - **New kit pieces:** the props in `maps/props/kit-stadium.js` (the new Medical & relief camp and Stadium & football groups); the `bowl`, `gridiron`, `tent` and `tarp` areas, the `bulbs` path and five decals (`world/kit-stadium.js`); the `dark` lighting; areas and paths can give light (`lts`); overhead props can fade anywhere on their footprint (`ovf`, `ova`).
 - **Checks:** `tests/suites/stadium.js` (64 checks): the asks, the stands solid everywhere, no pockets, every spawn reachable, the lights, tent roofs fading, campaign waves 1–3, 19 and the wave-20 finish with no survivor, old saves, Free Play, the Workshop copy, every piece draws.
 
+### Urban Outskirts (map 11): converted and redesigned, Nov 22, 2026 (owner's request)
+- **The file:** `src/maps/urban.json` (112×84 tiles, up from 2600×2200 px; `sunrise` lighting, 0.6; about 620 props, 880 decals, 720 walls, 210 areas, 170 paths). Made by a generator script (scratchpad) that also works out the game's walk grid and takes out any furniture that would shut off part of a room.
+- **Asked for:** sunrise; a neighborhood that was run down before the outbreak and is worse now; a lot of detail, like a studio-made top-down game. The owner chose a strip of shops, rundown apartments, a freeway overpass with a camp under it, a rail line and a salvage yard, an abandoned gas station, overgrown vacant lots, holdouts that didn't make it, and a bigger map.
+- **What's there:** the skyline at dawn behind a sound wall; the freeway overpass along the top (a jammed deck on pillars that opens up over a player under it) with a camp under it (tarps, tents, cardboard beds, burn barrels, shopping carts) and a dumping ground; the frontage road, the avenue and Elm Street, three cross streets, all worn, cracked and potholed, faded paint, weeds in the cracks, telephone poles and sagging wires, cobra-head lights still burning, some failing, some dead; the Gas & Go (CLOSED: its canopy, two pump islands, the food mart); a strip of five shops (corner mart, laundromat, pawn shop, liquor store, check cashing behind bars) with their lot; the Sunset Motor Inn (eight rooms in an L, a drained pool, the office, the pole sign with its flickering VACANCY); the Lincoln Arms apartments; fourteen houses, each with its own rooms and furniture, mirrored and sized differently, with porches, driveways, junk cars, fences, dead lawns, back yards full of junk; four overgrown vacant lots; Ace Salvage by the tracks; the rail line with two freight cars and a crossing on every street.
+- **Holdouts that didn't make it:** boarded windows and barricaded front doors, plywood with WE'RE ALIVE, 3 INSIDE HELP, NO MORE ROOM, spray paint on the lawns, mattresses on living room floors, candles; blood, bodies and holes in the walls in the overrun ones; one burned to the ground; a barricade across Elm Street (furniture, cars, sandbags) that held three days, with the dead in front of it.
+- **Rusty cars:** vehicles have a new `rusty` flag (map files, the editor's Selected panel, `cmVeh`).
+- **New kit pieces:** the props in `maps/props/kit-urban.js` (new editor groups: Junk & salvage, Yards & camps), the `overpass`, `drypool` and `weeds` areas and six decals (`world/kit-urban.js`); the skyline's `dawn` look. `maps/urban.js` is gone, and so is the old spawn rule for map 11's top band (`spBad`); the skyline's blocked band does that now.
+- **Workbenches:** three placed by hand (the strip's lot, the motel court, the salvage yard).
+- **Checks:** `tests/suites/urban.js` (54 checks): the asks one by one, no pockets, every room reachable, the overpass opening up, spawns reachable, campaign waves 1–3, 19 and the Mechanic, Free Play, the Workshop copy, rusty cars saving and loading, every piece draws.
+
 ### City Park (map 12): converted and redesigned, Nov 22, 2026 (owner's request)
 - **The file:** `src/maps/park.json` (108×80 tiles, up from 2600×2200 px; `day` lighting, 0.5; about 390 props, 100 decals, 39 areas, 60 paths). Made by a generator script (scratchpad).
 - **Asked for:** the middle of the day; more detail in everything; the owner chose a dog park, sports courts (basketball and tennis), a skate park, a light outbreak aftermath and a bigger map (not a band shell, a creek, a carousel or a community garden).
@@ -431,7 +441,7 @@ Everything else on each map can be built with the kit; the conversion still has 
 | Deadway Highway | **Converted (Nov 1, 2026), at dusk.** |
 | Haunted Mansion | **Converted and redesigned (Nov 1, 2026), at night.** |
 | Enchanted Forest | **Converted and redesigned (Nov 4, 2026), at night.** |
-| Urban Outskirts | Nothing new. |
+| Urban Outskirts | **Converted and redesigned (Nov 22, 2026), at sunrise.** |
 | City Park | **Converted and redesigned (Nov 22, 2026), at midday.** |
 | Downtown | **Converted and redesigned (Nov 4, 2026), at sunrise.** |
 | Hometown Market | **Converted and redesigned (Oct 28, 2026).** |

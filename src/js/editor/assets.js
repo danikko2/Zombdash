@@ -2,7 +2,7 @@
 // ---------- editor assets ----------
 // Only real game art is listed: every prop in OB and every highway vehicle kind in HWV. A prop added to OB later shows up
 // by itself under "Other"; give it a name and category by adding a line to EDPN below.
-const EDCAT=[['all','All'],['vehicles','Vehicles'],['buildings','Buildings & walls'],['street','Street'],['lights','Lights'],['nature','Nature'],['spooky','Graveyard & spooky'],['supplies','Supplies & tools'],['kitchen','Kitchen'],['living','Living room'],['bedroom','Bedroom'],['bath','Bathroom'],['garage','Garage'],['industry','Factory & foundry'],['medical','Medical & relief camp'],['furniture','Furniture'],['store','Shops'],['play','Park & playground'],['sport','Sports & skate'],['farm','Farm & crops'],['signs','Signs'],['office','School & office'],['other','Other']];
+const EDCAT=[['all','All'],['vehicles','Vehicles'],['buildings','Buildings & walls'],['street','Street'],['lights','Lights'],['nature','Nature'],['spooky','Graveyard & spooky'],['supplies','Supplies & tools'],['kitchen','Kitchen'],['living','Living room'],['bedroom','Bedroom'],['bath','Bathroom'],['garage','Garage'],['junk','Junk & salvage'],['yard','Yards & camps'],['industry','Factory & foundry'],['medical','Medical & relief camp'],['furniture','Furniture'],['store','Shops'],['play','Park & playground'],['sport','Sports & skate'],['farm','Farm & crops'],['signs','Signs'],['office','School & office'],['other','Other']];
 // the colours a thing can take, as [hex, name] (null: it has one look); vehicles use EDVC
 function edPalOf(o){if(o.veh)return EDVC.map(x=>[x,x]);const B=cmOB(o.k);return B&&B.pc||null}
 function edColOf(o){const P=edPalOf(o);return o.c||(P?P[0][0]:'')}
@@ -44,7 +44,11 @@ bhoop:['Basketball hoop (top-down)','sport'],bleach:['Bleachers','sport'],umpcha
 aframe:['Dog agility A-frame','play'],dtunnel:['Dog agility tunnel','play'],weave:['Dog weave poles','play'],dhurdle:['Dog hurdle','play'],tirejump:['Dog tire jump','play'],dogfount:['Dog water fountain','play'],bagdisp:['Dog bag dispenser','play'],
 springr:['Spring rider (horse, duck, bee or car)','play'],seesaw:['Seesaw','play'],tireswing:['Tire swing','play'],climbdome:['Climbing dome','play'],shadesail:['Shade sail (over people)','play'],
 pbench:['Park bench','play'],ptrash:['Park trash can (some recycling, some full)','play'],kiosk:['Park map board','play'],pstatue:['Bronze statue on a plinth','play'],pavil:['Picnic pavilion (over people)','play'],
-menuboard:['Menu board (your text)','signs'],icart:['Ice cream cart','store'],lifering:['Life ring post','play'],stroller:['Stroller (some tipped over)','play']};
+menuboard:['Menu board (your text)','signs'],icart:['Ice cream cart','store'],lifering:['Life ring post','play'],stroller:['Stroller (some tipped over)','play'],
+mattress:['Stained mattress (some torn)','junk'],fridgex:['Fridge on its back','junk'],washer:['Washer or dryer','junk'],cartjunk:['Shopping cart of belongings (some tipped)','junk'],tiremtn:['Pile of old tires (tall)','junk'],dumpo:['Overflowing dumpster','junk'],
+plywood:['Plywood sheets (spray-painted text)','junk'],furnpile:['Furniture barricade','junk'],yardsign:['Yard sign (your text)','signs'],acwin:['Window AC unit','buildings'],satdish:['Satellite dish','buildings'],kpool:['Kiddie pool (some dried out)','yard'],clothesl:['Clothesline with washing','yard'],
+tarpshel:['Tarp lean-to shelter','yard'],cobra:['Street light (cobra head)','lights'],cobraf:['Street light (failing)','lights'],cobrax:['Street light (dead)','lights'],payphone:['Payphone (some smashed)','street'],utilbox:['Electrical cabinet','street'],
+motelsign:['Motel pole sign (your text, flickering VACANCY)','signs'],gcanopy:['Gas station canopy (over people)','street'],gpump:['Gas pump island','street'],crushcar:['Crushed car','junk'],carstack:['Stack of crushed cars (tall)','junk'],grapple:['Grapple loader (salvage)','junk'],officetrl:['Office trailer (your text)','buildings']};
 // top-down highway vehicles (they turn freely and take a colour)
 const EDVN={hatch:'Hatchback',sedan:'Sedan',suv:'SUV',pickup:'Pickup truck',van:'Van',limo:'Limo',police:'Police car',amb:'Ambulance',fire:'Fire truck',bus:'School bus (top)',semi:'Semi truck',cab:'Semi cab',trailer:'Semi trailer',flatbed:'Flatbed trailer (steel)',hearse:'Hearse',citybus:'City bus',tanker:'Fuel tanker',hearseo:'Hearse, back open (coffin sliding out)',semif:'Semi with flatbed (steel)',hmv:'Humvee (top)',mtruck:'Army truck (top)',taxi:'Taxi',ftruck:'Food truck (your text)'};
 // vehicles that take text (the name on a food truck's roof), up to n characters
@@ -58,9 +62,9 @@ const ci=c=>{const i=EDCAT.findIndex(x=>x[0]==c);return i<0?99:i};L.sort((a,b)=>
 function edAsset(o){const own=(T,k)=>Object.prototype.hasOwnProperty.call(T,k);if(o.dc){const T=cmDec(o.dc);return{t:'d',k:o.dc,n:T?T.n:String(o.dc)}}if(o.fx){const T=cmFx(o.fx);return{t:'x',k:o.fx,n:T?T.n:String(o.fx)}}return o.veh?{t:'v',k:o.veh,n:own(EDVN,o.veh)?EDVN[o.veh]:String(o.veh)}:{t:'p',k:o.k,n:own(EDPN,o.k)?EDPN[o.k][0]:String(o.k)}}
 // sprites drawn once into small canvases: props anchored at their base, vehicles centred and unturned
 const EDSP={};
-function edSprite(o){if(o.dc)return edDecSprite(o);if(o.fx)return edFxSprite(o);const v=o.vr!=null?Math.round(o.vr*10)/10:Math.round(cmH(o.x,o.y,3)*10)/10,key=o.veh?'v|'+o.veh+'|'+(o.c||'')+'|'+(o.dmg?1:0)+(o.burn?1:0)+(o.ov?1:0)+'|'+(o.tx||''):'p|'+o.k+'|'+v+'|'+(o.c||'')+'|'+(o.tx||'');
+function edSprite(o){if(o.dc)return edDecSprite(o);if(o.fx)return edFxSprite(o);const v=o.vr!=null?Math.round(o.vr*10)/10:Math.round(cmH(o.x,o.y,3)*10)/10,key=o.veh?'v|'+o.veh+'|'+(o.c||'')+'|'+(o.dmg?1:0)+(o.rust?1:0)+(o.burn?1:0)+(o.ov?1:0)+'|'+(o.tx||''):'p|'+o.k+'|'+v+'|'+(o.c||'')+'|'+(o.tx||'');
 if(EDSP[key])return EDSP[key];let s=null;
-try{if(o.veh){const q=cmVeh({veh:o.veh,x:0,y:0,r:0,c:o.c,dmg:o.dmg,burn:o.burn,ov:o.ov,tx:o.tx});if(q){const pad=6,c=document.createElement('canvas');c.width=q.L+pad*2;c.height=q.W+pad*2;const g=c.getContext('2d');q.x=c.width/2;q.y=c.height/2;hwDraw(g,q);s={c,ax:c.width/2,ay:c.height/2,w:q.L,h:q.W}}}
+try{if(o.veh){const q=cmVeh({veh:o.veh,x:0,y:0,r:0,c:o.c,dmg:o.dmg,rust:o.rust,burn:o.burn,ov:o.ov,tx:o.tx});if(q){const pad=6,c=document.createElement('canvas');c.width=q.L+pad*2;c.height=q.W+pad*2;const g=c.getContext('2d');q.x=c.width/2;q.y=c.height/2;hwDraw(g,q);s={c,ax:c.width/2,ay:c.height/2,w:q.L,h:q.W}}}
 else{const B=cmOB(o.k);if(B){const c=document.createElement('canvas');c.width=B.w+4;c.height=B.h+4;const g=c.getContext('2d');B.f(g,c.width/2,c.height-2,v,o.c,o.tx);s={c,ax:c.width/2,ay:c.height-2,w:B.w,h:B.h}}}}catch(e){s=null}
 return EDSP[key]=s}
 // a thumbnail image (data URL) for the browser grid
