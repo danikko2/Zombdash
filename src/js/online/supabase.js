@@ -1,7 +1,8 @@
 //# online/supabase.js — Online accounts, cloud saves, leaderboards
 // ---------- online: Supabase accounts (guest or email), cloud saves, free-play leaderboards ----------
 const SBU='https://tjxfnjicgbliqpdkwpus.supabase.co',SBK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqeGZuamljZ2JsaXFwZGt3cHVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxNzQ0NzIsImV4cCI6MjEwNzc1MDQ3Mn0.VdLIEjjhVyGCrbJLZY6LW-In0N9pNEja1P92Y6vVF5k';
-const OLX=typeof window!='undefined'&&typeof document!='undefined'&&!!document.body&&typeof fetch=='function';
+// Zombdash Classic is offline only: no sign-in, cloud backups or score posting, so it can't touch the main game's account or leaderboards
+const OLX=false;
 let OL={ok:null,msg:'',busy:0,cloud:null,lb:null,lbm:null,lbd:1,lbk:'',sp:null},RUN0=0,RUNW=1;
 function olName(n){n=String(n||'Survivor').replace(/[^A-Za-z0-9 _-]/g,'').trim().slice(0,16);const bad=/(fuck|shit|bitch|cunt|nigg|fag|dick|pussy|slut|whore|rape)/i;return!n||bad.test(n.replace(/[ _-]/g,''))?'Survivor':n}
 async function sbRaw(path,o){o=o||{};const h={'apikey':SBK,'Content-Type':'application/json','Authorization':'Bearer '+(o.tok||SBK)};if(o.prefer)h.Prefer=o.prefer;const ac=typeof AbortController!='undefined'?new AbortController():null,tm=setTimeout(()=>{try{ac&&ac.abort()}catch(e){}},9000);

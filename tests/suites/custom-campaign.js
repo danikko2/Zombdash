@@ -43,7 +43,7 @@ ok(ccAssign(dA.id,2,4,9)&&ccSlot(2,4).key===kA&&ccSlot(2,4).b===9,'put Junkyard 
 ok(!ccAssign(dC.id,2,4,9),'a slot holds one map: another map is refused there');
 ok(ccAssign(dA.id,3,4,10)&&!ccSlot(2,4)&&ccSlot(3,4).key===kA,'assigning again moves it (one place at a time)');ccAssign(dA.id,2,4,9);
 {const r=await msGet('kv','campaign');ok(r&&r.slots['2:4'].id===dA.id&&r.slots['2:4'].b===9,'slots are stored on the device next to the maps (IndexedDB)');
-sv();ok(!String(localStorage.deadyard).includes(dA.id)&&!('cmslots' in S),'and not in the save data')}
+sv();ok(!String(localStorage[SAVK]).includes(dA.id)&&!('cmslots' in S),'and not in the save data')}
 // ---------- campaign rules ----------
 ok(secOf(kA)===2&&secOf(kC)===-1,'section: the slot decides it; a map that is not in a slot has none');
 ok(mOpen(A,1,kA),'the slot is open: its section is open and the section start (Urban Outskirts) is beaten');

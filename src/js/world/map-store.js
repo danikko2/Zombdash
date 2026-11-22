@@ -5,7 +5,7 @@
 //   meta: {id, name, desc, w, h, created, updated, thumb}   what the Workshop list and Free Play need
 //   kv:   {k, ...}     small records, e.g. the editor's crash-safe draft ("draft")
 let CMDB=null,CMMEM=null;
-function cmDb(){return CMDB||(CMDB=new Promise(res=>{let r;try{if(typeof indexedDB=='undefined'||!indexedDB||!indexedDB.open)return res(null);r=indexedDB.open('zombdash-maps',1)}catch(e){return res(null)}
+function cmDb(){return CMDB||(CMDB=new Promise(res=>{let r;try{if(typeof indexedDB=='undefined'||!indexedDB||!indexedDB.open)return res(null);r=indexedDB.open('zombdash-classic-maps',1)}catch(e){return res(null)}
 r.onupgradeneeded=()=>{const db=r.result;for(const[n,k]of[['maps','id'],['meta','id'],['kv','k']])if(!db.objectStoreNames.contains(n))db.createObjectStore(n,{keyPath:k})};
 r.onsuccess=()=>res(r.result);r.onerror=()=>res(null);r.onblocked=()=>res(null)}).then(db=>{if(!db)CMMEM={maps:{},meta:{},kv:{}};return db}))}
 // maps live only in memory (no IndexedDB here): the Workshop says so and suggests exporting

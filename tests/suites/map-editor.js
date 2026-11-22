@@ -264,13 +264,13 @@ await msWrite([['put','maps',{id:'broken1',json:{format:'zombdash-map',version:9
 {const b=CML.find(e=>e.id=='broken1');ok(b&&!b.doc&&/newer version/.test(b.errors[0])&&(await msGet('maps','broken1')).json.version==99,'a map that can\\'t be opened is listed with the reason and kept as it is')}
 ok(!cmFree().includes(cmKeyOf('broken1')),'and it is left out of Free Play');
 // ---------- playtest ----------
-edOpen(CML.find(e=>e.doc&&e.id==d2.id).doc,'saved');const acB=JSON.stringify(S.ac),bestB=S.best,lsB=localStorage.deadyard;
+edOpen(CML.find(e=>e.doc&&e.id==d2.id).doc,'saved');const acB=JSON.stringify(S.ac),bestB=S.best,lsB=localStorage[SAVK];
 localStorage[CPK]=JSON.stringify({v:1,t:1,an:S.ac.name,gm:'f',m:2,ci:0,d:1,w:3,k:0,p:{cash:0}});const cpB=localStorage[CPK];
 ptStart({ci:0,w:1,dif:1});ok(mode=='play'&&mapId===CMPTK&&WW==50*32&&sv.off&&ED.vis===0,'Playtest: the real game on the edited map');
 for(let f=0;f<400&&mode=='play';f++){P.hp=P.mx=99;tick(1)}ok(zs.length>0,'zombies arrive in the playtest');
 ok(WL.some(b=>b[4]==1),'the playtest uses the map\\'s collision');
 nextWave();ok(localStorage[CPK]===cpB,'a playtest never writes or clears the crash checkpoint');ok(olRow()===null,'a playtest never posts a leaderboard score');
-S.ac.xp+=500;S.ac.pts+=999;S.best=77;sv();ok(localStorage.deadyard===lsB,'nothing is saved while a playtest runs');
+S.ac.xp+=500;S.ac.pts+=999;S.best=77;sv();ok(localStorage[SAVK]===lsB,'nothing is saved while a playtest runs');
 pauseMenu();ok(ui.innerHTML.includes('BACK TO EDITOR')&&!ui.innerHTML.includes('QUIT RUN'),'pause in a playtest offers BACK TO EDITOR');
 ptEnd();ok(mode=='edit'&&ED.vis===1&&JSON.stringify(S.ac)===acB&&S.best===bestB&&!sv.off,'back in the editor; the account is exactly as before');
 ptStart({ci:0,w:5,dif:2});ok(wave==4&&mode=='shop'&&DIF()==2,'playtest from wave 5 on Hard starts in the shop');over(1);ok(ui.innerHTML.includes('PLAYTEST ENDED')&&ui.innerHTML.includes('BACK TO EDITOR')&&localStorage[CPK]===cpB,'the playtest end screen (the checkpoint is still there)');ptAgain();ok(mode=='shop'&&mapId===CMPTK,'play again');ptEnd();ok(DIF()==1&&S.sw==1,'difficulty and start wave are put back');
