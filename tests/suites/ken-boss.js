@@ -113,7 +113,7 @@ ok(P.ci==17&&P.cur==2&&P.mx==CH[17].hp,'playing as Ken: 8 health and a shotgun')
  try{for(let f=0;f<1500&&!zap;f++){P.hp=1e6;P.inv=0;P.x+=Math.sin(f/40)*1.2;tick(1);if(ep.some(q=>q.lb))zap=1}}catch(e){err=e.message}MUN[0]=m0;
  ok(z2&&z2.ci==17&&zap&&!err,'on the Suburb he finds the player and zaps too '+err);zs=[];ep=[]}
 // a custom campaign slot keeps him as its boss
-{const O=ccClean({slots:{'2:4':{id:'k1',b:17,n:'Welding Shop'}}});ok(O.slots['2:4']&&O.slots['2:4'].b==17,'a custom campaign slot can have Ken as its wave-20 boss')}
+{const O=ccClean({slots:{'3:3':{id:'k1',b:17,n:'Welding Shop'}}});ok(O.slots['3:3']&&O.slots['3:3'].b==17,'a custom campaign slot can have Ken as its wave-20 boss')}
 // ---------- split screen ----------
 {const B2={name:'B',xp:0,lv:1,sp:0,sk:{},pts:0,un:[0],cp:CORD.length,bm:[0,1,2].map(()=>CORD.reduce((v,m)=>v|1<<m,0))};S.prof=[B2];setGM('c');LBY={s:[{inp:'km',ac:S.ac,ci:0,v:0,rdy:1},{inp:0,ac:B2,ci:0,v:1,rdy:1}]};mapId=16;S.mp=16;startMP();
  wave=19;zs=[];toSp=0;for(const p of PL){p.mx=10;p.hp=1e6}nextWave();const z3=zs.find(q=>ZT[q.t].sv);let zap=0,err='';try{for(let f=0;f<1500&&!zap;f++){for(const p of PL){p.hp=1e6;p.inv=0}tick(1);if(ep.some(q=>q.lb))zap=1}}catch(e){err=e.message}

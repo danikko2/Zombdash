@@ -60,7 +60,7 @@ await workshop();WSIF='notamap.json';await wsImportText('{"format":"zombdash-map
 // ---------- adding a map to the campaign ----------
 await workshop();const e=CML.find(x=>x.meta.name=='Sand Trap');wcOpen(e.id,'ws');
 ok(has('PICK AN EMPTY SPOT')&&has("WHO'S THE BOSS AT WAVE 20?")&&(ui.innerHTML.match(/data-ch=/g)||[]).length==14,'campaign page: an empty spot, then the boss');
-ok(has('Hometown and Wrong Turn are full')&&has('Urban Outskirts')&&has('Not offered'),'full sections are named, built-in maps show in their slots');
+ok(has('Hometown, Wrong Turn and Zombville are full')&&has('Campground')&&has('Not offered'),'full sections are named, built-in maps show in their slots');
 wcSlot(4,1);ok(has('PUT IN ISLAND')&&has('Island · slot 2')&&has('id=wcgo'),'picking a spot fills in where it goes');
 await wcSave();ok(ccSlot(4,1)&&ccSlot(4,1).key===cmKeyById(e.id),'PUT IN puts it in that slot');
 wcOpen(e.id,'ws');document.getElementById('wcrep').value='3';wcRepAsk();ok(has('PLAY THIS INSTEAD?')&&has('class="nx wmo'),'playing it instead of a campaign map asks first, over the page');

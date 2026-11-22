@@ -3,13 +3,13 @@
 The full wish list is the "Map Workshop" prompt the owner attaches. This file records how it fits the game and what each step covers (steps 1–3 and the building kit are done; step 4, converting the built-in maps, is under way: the Suburb and the Warehouse are converted). Read `docs/ARCHITECTURE.md` and `docs/map-format.md` too.
 
 ## Working on this repo
-- **Where the code lives:** the source is in `src/`, split into 131 modules whose load order is in `src/js/modules.txt`. Map files that ship with the game are in `src/maps/`.
+- **Where the code lives:** the source is in `src/`, split into 155 modules whose load order is in `src/js/modules.txt`. Map files that ship with the game are in `src/maps/`.
   - `tools/build.js` builds `index.html`, which GitHub Pages serves at https://danikko2.github.io/Zombdash/.
   - A GitHub Action rebuilds `index.html` whenever `src/` changes.
 - **Don't edit `index.html` by hand.** Before starting, run `node tools/build.js --check`. If it fails, someone edited `index.html` directly, and that change has to be moved into `src/` first.
 - **Publishing each change:**
   1. Run `node tools/build.js`.
-  2. Run `node tests/run.js` (47 suites, about 6–7 minutes). Every suite must pass; four checks are random and retried automatically:
+  2. Run `node tests/run.js` (55 suites, about 4–7 minutes). Every suite must pass; four checks are random and retried automatically:
      - The `campaign.js` Rusty and Officer Ray checks (Rusty's shooting check too) are flaky and retried automatically, and so is the `suburb.js` check that every zombie reaches the house (a slow brute now and then).
      - The `balance-editor-and-test-switches.js` ground-limit check fails about 1 run in 20 on the original game too (a kill can add two drops when one slot is left), so it is retried automatically as well.
      - The old `tutorial.js` camera zoom failure is fixed (Oct 25, 2026): the suite plays at phone size, where the tutorial doesn't zoom because the house already fills the screen (by design); the test now expects that on a phone and checks the zoom in and out on a desktop screen.
@@ -33,7 +33,7 @@ The full wish list is the "Map Workshop" prompt the owner attaches. This file re
   - There are about 15 vehicle kinds (`HWV`), drawn via `vDraw` (`world/vehicles.js`, `maps/highway.js`).
 - **Low-memory mode:** on phones it halves the background canvas (`system/phones-checkpoints-crashlog.js`).
 - **Campaign:**
-  - `SEC` (`campaign/sections.js`) has 5 sections. `-1` marks the free "Coming Soon" slots: there were 9 (Wrong Turn 5, Zombville 4–5, Countryside 4–5, Island 2–5); the Black Iron Foundry (map 16) took Wrong Turn 5 and Zombville Stadium (map 17) Zombville 4, so 7 are left.
+  - `SEC` (`campaign/sections.js`) has 5 sections. `-1` marks the free "Coming Soon" slots: there were 9 (Wrong Turn 5, Zombville 4–5, Countryside 4–5, Island 2–5); the Black Iron Foundry (map 16) took Wrong Turn 5, Zombville Stadium (map 17) Zombville 4 and Zombville General (map 18) Zombville 5, so 6 are left.
   - Each campaign map has a survivor boss (`MUN`, `SVS` in `bosses/survivors.js`) and a landmark on the painted world map (`CLM` in `campaign/map-screens.js`).
   - Beating a map in the campaign opens it in Free Play.
 - **Saves:** `localStorage.deadyard` (`S`) plus Supabase online saves of the main account. Custom maps must stay out of both, in IndexedDB.
@@ -436,6 +436,17 @@ No prop may block a doorway. `cmDoorBlocks` finds props and vehicles within 24 p
 - **Workbenches:** three placed by hand (by the mess hall, by the boathouse, by the trading post).
 - **Checks:** `tests/suites/camp.js` (46 checks): the asks one by one, no pockets, the places reachable (over the footbridge, out on the swim dock, up on the stage), every room reachable, spawns reachable, campaign waves 1–3, 19 and Charles, Free Play, the Workshop copy, every piece draws.
 
+### Zombville General (map 18): a new map and Zombville's finale, Nov 22, 2026 (owner's request)
+- **The files:** `src/maps/hospital.json` (128×88 tiles, as wide as a map can be; `dark` lighting, "Lights only", 0.85; about 550 props, 440 decals, 330 walls, 66 areas, 44 rooms) and its roof `src/maps/hospital-roof.json` (64×48 tiles, `night`, 0.8), which the roof escape builds in its place (`BIMX`). Made by generator scripts (scratchpad) that also work out the walk grid and take out anything that would shut a spot off. Slot 5 of Zombville (`SEC`), after the Stadium in `CORD`.
+- **Asked for:** the inside of a major hospital, inside areas only, the halls about twice real width so players can run them; a big lobby in the middle with a water feature, seating, a greeting desk and a reception desk; the surgery center in one wing, patient care in the other; big, with any assets needed for a top-quality level in the game's style; Zombville's last level: elevators to the roof and a helipad, after the wave-20 boss. The owner chose: locked until the rest of Zombville is beaten, the ER and ambulance bay, the cafeteria and gift shop, radiology, the lab and the pharmacy, the morgue and the chapel; backup lights with many broken, some hanging and flickering, red fire-alarm light through the halls; on the roof at night, searchlights, lights on the helicopter and the pad; a door gunner, and the helicopter waits for everyone.
+- **What's there:** the lobby (the fountain with seats round it, the admissions desk and its waiting rows, the information desk facing the entrance, lounge seating, the coffee bar, columns, hanging signs to every wing, painted EVAC TO ROOF arrows); the west wing's surgery center (four operating rooms off the OR hall with scrub sinks, the sterile core, pre-op holding with curtained bays, recovery round its nurse desk); the east wing's patient care (the ICU's eight glass-fronted rooms round their station, six patient rooms with bathrooms, the nurse station, the supply room); radiology (MRI, CT, X-ray), the pharmacy, the lab, the elevator bank (four cars: one pried open on a dark shaft, the lit escape car); the morgue (cold drawers, autopsy tables under their lights), the cafeteria and its kitchen, the gift shop, the chapel; the main entrance with the soldiers' checkpoint, casualty cots and the generator; security and the restrooms; the ER (triage, the station, four trauma bays) and the ambulance bay; stairwells at the north ends of the halls; coloured wayfinding stripes on the floors.
+- **Backup power:** ceiling lights along the halls and in the rooms, about a third broken, some flickering, some hanging by their wires and sparking (`hanglight`); fire alarm strobes pulsing red down the halls (`alarm`); exit lights.
+- **The roof:** the parapet all round with the city far below (`below`), the elevator's penthouse, air handlers, skylights glowing from the lobby, exhaust fans, the antenna's red light, a windsock, the big lit sign, four searchlights sweeping, flares, sandbags and ammo by the lit helipad.
+- **The escape** (`campaign/escape.js`; ARCHITECTURE.md has how it works): after the wave-20 boss (Abigail stands in for now: `MSTAND`, she recruits nobody) the game prompts HEAD TO THE ELEVATOR; everyone in the car, the camera closes in on it with the rest blacked out, the doors shut, the floors count up; the roof is built, the doors open and the camera pulls back on the medevac Black Hawk waiting on the pad with its rotor turning and a door gunner covering it; zombies climb over the parapet all round, a rush at first and then a stream; everyone still standing in its door together and it lifts off and flies away: YOU GOT OUT OF ZOMBVILLE! A life lost on the way restarts at the current elevator; Free Play on the map is a normal endless run.
+- **New kit pieces:** the props in `maps/props/kit-hospital.js` (new editor groups: Hospital, Rooftop; four Kitchen pieces), the areas, walls, effects and decals in `world/kit-hospital.js`, the `alarm` and `hang` light kinds, the sounds `ding`, `edoor` and `rotor`.
+- **Workbenches:** three placed by hand (the lobby's south-west corner, the east hall by the lobby, the south hall by the ER).
+- **Checks:** `tests/suites/hospital.js` (54 checks): the asks one by one, the roof, locked until the rest, no pockets, every room reachable, spawns reachable, campaign waves 1–2, Abigail at wave 20, the escape phase by phase (the close-up, the ride, the roof at night, the climbers, the gunner, the door, the lift-off, the win and its end screen), a death on the roof, Free Play with no escape, the Workshop copy, every piece draws.
+
 ## What each map still needs before converting
 Everything else on each map can be built with the kit; the conversion still has to be laid out, compared side by side and playtested (walls, zombie paths, spawns, its survivor boss).
 
@@ -459,3 +470,4 @@ Everything else on each map can be built with the kit; the conversion still has 
 | Main Street | **Converted and redesigned (Nov 1, 2026).** |
 | Black Iron Foundry | **New (Nov 3, 2026), a map file from the start.** Its survivor is Ken the welder. |
 | Zombville Stadium | **New (Nov 4, 2026), a map file from the start.** Its survivor is Buck the quarterback (Nov 5). |
+| Zombville General | **New (Nov 22, 2026), a map file from the start: Zombville's finale (the roof escape).** Abigail stands in as its boss until the owner picks one. |

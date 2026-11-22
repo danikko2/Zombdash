@@ -77,6 +77,8 @@ if(R){q.moveTo(R[0],R[1]);q.lineTo(R[0]+R[2],R[1]);q.lineTo(R[0]+R[2],R[1]+R[3])
 function cmLtNow(s,t,st){if(st)return s.f=='glow'?.85:1;switch(s.f){// fault: a failing bulb or tube: steady, then every 3.5–9 s (its own rhythm) it stutters off and on for under a second
 case'fault':{const P=3.5+(s.ph/6.283)*5.5,u=(t+s.ph*7)%P;if(u>.85)return 1;return cmH(Math.floor(u*16),s.ph*100,77)<.5?.08:1}
 case'sweep':s.ca=s.ca0+Math.sin(t*.5+s.ph)*s.sa;return 1;
+// alarm: a fire alarm's red pulse (Zombville General); hang: a broken light hanging by its wires, flickering on and off
+case'alarm':{const u=(t*.85+s.ph/6.283)%1;return u<.55?.2+.8*Math.sin(u/.55*Math.PI):.12}case'hang':return typeof hsHangOn=='function'&&s.o&&hsHangOn(s.o,t)?1:.04;
 case'flk':return .8+.2*Math.sin(t*11+s.ph)*Math.sin(t*7.3+s.ph*1.7);case'fire':return .86+.1*Math.sin(t*13+s.ph)+.04*Math.sin(t*31+s.ph);
 case'flare':return .78+.22*Math.random();case'weld':return fdWeld(s.ph,t);case'glow':return .6+.4*Math.sin(t*1.7+s.ph);case'blink':return((t*1.3+s.ph)%1)<.5?1:0;
 case'siren':{const k=Math.floor(t*6+s.ph*6)%4;return(s.sd==0?k<2:s.sd==1?k>=2:s.sd==2?k%2==0:s.sd==3?k%2==1:Math.floor(t*9+s.ph*9)%3==0)?1:0}default:return 1}}
@@ -131,6 +133,6 @@ function cmLtOn(){return!!(HS&&HS.LT&&HS.CM&&cmLtOK())}
 // Burning ground and fireballs light up too, and so do the Fire Hose's flame and burning zombies (fhLights), Ken's lightning (knLights)
 // and the beams of players' Headlamps (hlLights, extras/headlamp.js). (Players without a Headlamp carry no light: the glow round them was taken out.)
 function cmLight(){const T=HS.LT;if(!T||!HS.CM)return;const sx=Math.round(cam.x),sy=Math.round(cam.y),res=LMX?.25:.5,K=cmLtCache(T,res),S=(K?K.dyn:T.L).slice();S.O=T.L.O;
-for(const q of fr)S.push({x:q.x,y:q.y,r:80,c:'#ff9a3a',i:1,f:'fire',ph:q.x});for(const e of ep)if(e.k==3)S.push({x:e.x,y:e.y,r:40,c:'#ff7a2a',i:1});if(typeof fhLights=='function')fhLights(S);if(typeof hlLights=='function')hlLights(S);if(typeof knLights=='function')knLights(S);if(typeof qbLights=='function')qbLights(S);
+for(const q of fr)S.push({x:q.x,y:q.y,r:80,c:'#ff9a3a',i:1,f:'fire',ph:q.x});for(const e of ep)if(e.k==3)S.push({x:e.x,y:e.y,r:40,c:'#ff7a2a',i:1});if(typeof fhLights=='function')fhLights(S);if(typeof hlLights=='function')hlLights(S);if(typeof knLights=='function')knLights(S);if(typeof qbLights=='function')qbLights(S);if(typeof escLights=='function')escLights(S);
 const now=performance.now()/1000;if(T.st){const[,n,s]=cmStorm(now);if(n!==T.sn&&now>=s){T.sn=n;if(cmH(n,8,102)>=.25)T.th=s+.5+cmH(n,9,103)*2}if(T.th&&now>=T.th){T.th=0;if(typeof sfx=='function')sfx('thunder',null,null,.9)}}
 cmLightPaint(X,T,S,sx,sy,W,H,res,now,0,K)}

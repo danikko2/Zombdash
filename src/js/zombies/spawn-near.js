@@ -54,7 +54,7 @@ function zRise(z){z.ri=z.rT=Math.max(.1,+ZSPN.rise||1.2);z.sf=zSurfAt(z.x,zFeet(
 function zSurfAt(x,y){try{if(!SURF||!SGW)return 2;const i=cl(x/16|0,0,SGW-1),j=cl(y/16|0,0,Math.max(0,(SURF.length/SGW|0)-1));return SURF[j*SGW+i]|0}catch(e){return 2}}
 // the zombie's feet (y), height and width as drawn
 function zFeet(z){const T=ZT[z.t],A=typeof SPR!='undefined'&&SPR.complete&&SPR.naturalWidth&&ZS[z.t];if(A&&A.walk&&A.walk[0]){const f=A.walk[0],s=T.sz||1,h=f[3]/1.6*s;return[z.y+h*.42,h,f[2]/1.6*s]}return[z.y+T.r,T.r*2,T.r*2]}
-function zRiseUpd(z,dt){z.ri-=dt;const T=ZT[z.t],c=ZDC[z.sf|0]||ZDC[2],u=1-z.ri/z.rT,F=zFeet(z);
+function zRiseUpd(z,dt){if(z.clb&&typeof escClimbUpd=='function'){escClimbUpd(z,dt);return}z.ri-=dt;const T=ZT[z.t],c=ZDC[z.sf|0]||ZDC[2],u=1-z.ri/z.rT,F=zFeet(z);
  if(Math.random()<dt*(u<.3?10:16))pt.push({x:z.x+rnd(-T.r,T.r)*.8,y:F[0]+rnd(-3,2),vx:(Math.random()<.5?-1:1)*rnd(20,70),vy:-rnd(30,90),l:rnd(.2,.4),c:Math.random()<.65?c[1]:c[2]});
  if(z.ri<=0){z.ri=0;ZHL.push({x:z.x,y:F[0],w:F[2],c,l:3,L:3});if(ZHL.length>40)ZHL.shift();for(let k=0;k<8;k++)pt.push({x:z.x+rnd(-10,10),y:F[0],vx:rnd(-80,80),vy:-rnd(20,80),l:.35,c:c[1]});sfx(SN[z.sf]||'dirt',z.x,z.y,1.2,.08)}}
 function zHoleUpd(dt){if(!ZHL.length)return;for(const h of ZHL)h.l-=dt;ZHL=ZHL.filter(h=>h.l>0)}
@@ -73,7 +73,7 @@ function zHoleAt(x,y,w,k,c,lip){const e=zHoleImg(w,c,lip);if(!e||!e.cv.width){(l
 // holes left behind fade out over 3 s (drawn under the zombies; only the ones on screen)
 function zHoles(){if(!ZHL.length)return;const x0=cam.x-60,y0=cam.y-60,x1=cam.x+W+60,y1=cam.y+H+60;for(const h of ZHL){if(h.x<x0||h.x>x1||h.y<y0||h.y>y1)continue;X.globalAlpha=Math.min(1,h.l/h.L*1.6)*.9;zHoleAt(h.x,h.y,h.w,1,h.c)}X.globalAlpha=1}
 // a zombie crawling out: the pit opens and hands come up first, then it rises out of the ground, rocking, cut off at the pit
-function zRiseDr(z){const F=zFeet(z),fy=F[0],h=F[1],w=F[2],u=cl(1-z.ri/z.rT,0,1),c=ZDC[z.sf|0]||ZDC[2],k=Math.min(1,u*3.5),T=ZT[z.t];
+function zRiseDr(z){if(z.clb&&typeof escClimbDr=='function'){escClimbDr(z);return}const F=zFeet(z),fy=F[0],h=F[1],w=F[2],u=cl(1-z.ri/z.rT,0,1),c=ZDC[z.sf|0]||ZDC[2],k=Math.min(1,u*3.5),T=ZT[z.t];
  zHoleAt(z.x,fy,w,k,c);const e=u<.25?0:1-Math.pow(1-(u-.25)/.75,2.2);
  if(u>.06&&u<.4){const hy=fy-1-Math.min(1,(u-.06)/.2)*6,hc=T.c||'#7d9f5a';X.fillStyle=hc;for(const s of[-1,1]){const hx=Math.round(z.x+s*w*.16);X.fillRect(hx-1,Math.round(hy),3,Math.round(fy-hy));X.fillRect(hx-2,Math.round(hy)-2,1,3);X.fillRect(hx,Math.round(hy)-3,1,3);X.fillRect(hx+2,Math.round(hy)-2,1,3)}}
  if(e>0){X.save();X.beginPath();X.rect(z.x-w*1.5-20,fy-h*2-60,w*3+40,h*2+60);X.clip();X.translate(Math.sin(u*38+(z.ph||0))*(1-e)*2.4,(1-e)*h*1.05);z._rd=1;try{zDr(z)}finally{z._rd=0;X.restore()}}
