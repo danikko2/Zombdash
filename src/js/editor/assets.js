@@ -58,9 +58,9 @@ const ci=c=>{const i=EDCAT.findIndex(x=>x[0]==c);return i<0?99:i};L.sort((a,b)=>
 function edAsset(o){const own=(T,k)=>Object.prototype.hasOwnProperty.call(T,k);if(o.dc){const T=cmDec(o.dc);return{t:'d',k:o.dc,n:T?T.n:String(o.dc)}}if(o.fx){const T=cmFx(o.fx);return{t:'x',k:o.fx,n:T?T.n:String(o.fx)}}return o.veh?{t:'v',k:o.veh,n:own(EDVN,o.veh)?EDVN[o.veh]:String(o.veh)}:{t:'p',k:o.k,n:own(EDPN,o.k)?EDPN[o.k][0]:String(o.k)}}
 // sprites drawn once into small canvases: props anchored at their base, vehicles centred and unturned
 const EDSP={};
-function edSprite(o){if(o.dc)return edDecSprite(o);if(o.fx)return edFxSprite(o);const v=o.vr!=null?Math.round(o.vr*10)/10:Math.round(cmH(o.x,o.y,3)*10)/10,key=o.veh?'v|'+o.veh+'|'+(o.c||'')+'|'+(o.dmg?1:0)+(o.burn?1:0)+(o.ov?1:0)+'|'+(o.tx||''):'p|'+o.k+'|'+v+'|'+(o.c||'')+'|'+(o.tx||'');
+function edSprite(o){if(o.dc)return edDecSprite(o);if(o.fx)return edFxSprite(o);const v=o.vr!=null?Math.round(o.vr*10)/10:Math.round(cmH(o.x,o.y,3)*10)/10,key=o.veh?'v|'+o.veh+'|'+(o.c||'')+'|'+(o.dmg?1:0)+(o.rust?1:0)+(o.burn?1:0)+(o.ov?1:0)+'|'+(o.tx||''):'p|'+o.k+'|'+v+'|'+(o.c||'')+'|'+(o.tx||'');
 if(EDSP[key])return EDSP[key];let s=null;
-try{if(o.veh){const q=cmVeh({veh:o.veh,x:0,y:0,r:0,c:o.c,dmg:o.dmg,burn:o.burn,ov:o.ov,tx:o.tx});if(q){const pad=6,c=document.createElement('canvas');c.width=q.L+pad*2;c.height=q.W+pad*2;const g=c.getContext('2d');q.x=c.width/2;q.y=c.height/2;hwDraw(g,q);s={c,ax:c.width/2,ay:c.height/2,w:q.L,h:q.W}}}
+try{if(o.veh){const q=cmVeh({veh:o.veh,x:0,y:0,r:0,c:o.c,dmg:o.dmg,rust:o.rust,burn:o.burn,ov:o.ov,tx:o.tx});if(q){const pad=6,c=document.createElement('canvas');c.width=q.L+pad*2;c.height=q.W+pad*2;const g=c.getContext('2d');q.x=c.width/2;q.y=c.height/2;hwDraw(g,q);s={c,ax:c.width/2,ay:c.height/2,w:q.L,h:q.W}}}
 else{const B=cmOB(o.k);if(B){const c=document.createElement('canvas');c.width=B.w+4;c.height=B.h+4;const g=c.getContext('2d');B.f(g,c.width/2,c.height-2,v,o.c,o.tx);s={c,ax:c.width/2,ay:c.height-2,w:B.w,h:B.h}}}}catch(e){s=null}
 return EDSP[key]=s}
 // a thumbnail image (data URL) for the browser grid

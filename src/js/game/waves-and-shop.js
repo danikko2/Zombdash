@@ -14,7 +14,7 @@ function mhp(){if(P.mx<MXH(P)&&P.cash>=pc(250)){P.cash-=pc(250);P.mx++;P.hp++;sf
 function over(q){if(!q&&GMD=='c'&&LIVES>1&&!CWIN&&mode=='play'){lifeDeath();return}if(!cmPT(mapId))cpClear();try{olScore()}catch(e){}mode='over';L=R=null;duck(1);sfx('over');music(null);setTimeout(()=>{if(mode=='over')music('menu')},2200);if(PTX)return ptOver(q);if(MPn)return overMP(q);const z=zpEarn(P,!!CWIN,kills);ZPR=z;P.ac.pts=(P.ac.pts||0)+z.tot;sv();endNX(q,z.tot)}
 // no zombie appears where it can't: the Enchanted Forest's woods, a custom map's no-spawn zones (a zone at the map's edge
 // also covers the strip just outside it, where off-screen zombies start)
-function spBad(x,y){if(mapId===11&&y<230)return true;if(!HS.NS)return false;const cx=cl(x,0,WW-.5),cy=cl(y,0,WH-.5);return HS.NS.some(r=>cx>=r[0]&&cx<r[2]&&cy>=r[1]&&cy<r[3])}
+function spBad(x,y){if(!HS.NS)return false;const cx=cl(x,0,WW-.5),cy=cl(y,0,WH-.5);return HS.NS.some(r=>cx>=r[0]&&cx<r[2]&&cy>=r[1]&&cy<r[3])}
 function spawnZ(tf){let t=tf,R=Math.hypot(W,H)/2+40,x,y,n=0;if(t==null){t=zPick();if(t==null)return null}
 // near the player first (zombies/spawn-near.js: in walking reach, many crawling out of the ground); the old way below for bosses, ghosts and when nothing fits
 {const q=zsPick(t);if(q){const z=mk(t,q[0],q[1]);if(q[2])zRise(z);zs.push(z);return z}}
