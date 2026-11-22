@@ -1,5 +1,5 @@
-//# maps/military-camp-shared.js — Shared pieces for Military Base and Campground
-// ---------- shared pieces for the Military Base and Campground maps ----------
+//# maps/military-camp-shared.js — Shared pieces for the Military Base (the Campground used them too before it became a map file; the editor's camp cabin still does)
+// ---------- shared pieces for the Military Base map, and props the editor's prefabs use ----------
 let NOGO=[];
 Object.assign(OB,{
 bunk:ob(44,66,[40,52],(q,v)=>{R_(q,'#3d4230',2,4,40,60);R_(q,'#5a6044',4,6,36,56);R_(q,'#6b7350',6,22,32,38);R_(q,'#7d8660',6,22,32,4);R_(q,'#e8e4d8',8,9,28,11);R_(q,'#c8c4b8',8,18,28,2);R_(q,'#4a5038',6,40,32,3);R_(q,'#2a2e20',2,4,4,60);R_(q,'#2a2e20',38,4,4,60)}),

@@ -425,6 +425,17 @@ No prop may block a doorway. `cmDoorBlocks` finds props and vehicles within 24 p
 - **New kit pieces:** the props in `maps/props/kit-park.js` (the Park & playground and Sports & skate groups), the `tennis` and `skbowl` areas and twelve decals (`world/kit-park.js`); the skyline's `day` look. `maps/city-park.js` is gone.
 - **Checks:** `tests/suites/park.js` (49 checks): the asks one by one, the road graph on the roads, no parked car on them, no pockets, every part walkable into, spawns reachable, campaign waves 1–3, 19 and the Ice Cream Man, Free Play, the Workshop copy, every piece draws.
 
+### Campground (map 7): converted and redesigned, Nov 22, 2026 (owner's request)
+- **The file:** `src/maps/camp.json` (104×80 tiles, up from 2300×1900 px; `dusk` lighting, 0.7; about 600 props, 290 decals, 210 walls, 53 areas, 48 paths). Made by a generator script (scratchpad) that also works out the game's walk grid (walls, the lake, the creek, the woods less the docks and the footbridge, the tent's walls, the fence, vehicles, props) and takes out anything that would shut a spot off.
+- **Asked for:** dusk; more detail everywhere, closer to a commercial 2D game. The owner chose a mess hall lodge, the waterfront (a boathouse with canoes and kayaks, a swim dock with a raft and a buoy line, a lifeguard chair), an amphitheater with a stage, a creek with a footbridge, the story of a summer camp evacuated, and a bigger map.
+- **What's there:** the lake along the west with mist on the water, reeds and lily pads by the shore, ducks; the waterfront (the boathouse and its slip, canoes tied up, a T-shaped swim dock, the buoy line, the raft, the lifeguard chair, canoe racks and kayaks on the beach); the mess hall lodge (a dining room with long tables and a stone fireplace, the kitchen, the store room, a porch with string lights, the kitchen garden in its picket fence, the generator, the propane, a bear-proof dumpster); the green (the camp bell, the flagpole, the notice board, picnic tables still set for supper, tetherball, the arts & crafts tent); six log cabins round a cabin circle with its fire and clotheslines; the health lodge across the creek (cots, a crash cart, an outhouse, the counselors' fire, a hammock); the shower house; the archery range; the amphitheater (a stage set for talent night, rows of log benches, a campfire, string lights on poles); five tent sites with campfires and bear boxes; the trading post; the gravel lot and bus loop; the log arch over the road in; dense woods all round with gaps where the trails and the road come out.
+- **The evacuation:** BUS LEAVES 6 PM on the notice board; the bus is gone, its tracks loop the lot, and the bags, teddies and flashlights the kids dropped running for it lie along the trails with their footprints; BUS LEFT 6PM, STAY PUT at the pickup; the cabins left mid-packing. The counselors stayed: the mess hall windows boarded, tables turned over inside the doors, KIDS ON BUS, WE STAYED on the porch, the shells, the dead inside and in front of it, two under sheets in the kitchen.
+- **Dusk:** fires still burning, lit windows, lantern posts along the trails (some smashed), fireflies, an owl, crows by the mess hall, long shadows east of the buildings.
+- **Small fixes on the way:** the creek is drawn before the lake (its `order` is −5), so it runs in under the lake's edge; the woods' outlines get a point every 40 px, because the game draws and walls them as a smooth curve that bulges past sharp corners (it had closed the trail gaps).
+- **New kit pieces:** the props in `maps/props/kit-camp.js` (a new editor group: Summer camp & waterfront), the `stage` area, the `buoys` path and nine decals (`world/kit-camp.js`). The game's fireflies effect is the Enchanted Forest's. `maps/campground.js` is gone.
+- **Workbenches:** three placed by hand (by the mess hall, by the boathouse, by the trading post).
+- **Checks:** `tests/suites/camp.js` (46 checks): the asks one by one, no pockets, the places reachable (over the footbridge, out on the swim dock, up on the stage), every room reachable, spawns reachable, campaign waves 1–3, 19 and Charles, Free Play, the Workshop copy, every piece draws.
+
 ## What each map still needs before converting
 Everything else on each map can be built with the kit; the conversion still has to be laid out, compared side by side and playtested (walls, zombie paths, spawns, its survivor boss).
 
@@ -437,7 +448,7 @@ Everything else on each map can be built with the kit; the conversion still has 
 | Old West | Nothing new (barn prefab for the stables, `bars` for the sheriff). |
 | Neighborhood | Nothing new (cul-de-sac = road with round end; decorative house roofs only on solid blocks). |
 | Military Base | Nothing new (hangar, barracks, tent camp, checkpoint prefabs). |
-| Campground | Nothing new. |
+| Campground | **Converted and redesigned (Nov 22, 2026), at dusk.** |
 | Deadway Highway | **Converted (Nov 1, 2026), at dusk.** |
 | Haunted Mansion | **Converted and redesigned (Nov 1, 2026), at night.** |
 | Enchanted Forest | **Converted and redesigned (Nov 4, 2026), at night.** |

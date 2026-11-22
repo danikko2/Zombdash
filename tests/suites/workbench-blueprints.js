@@ -33,8 +33,8 @@ ok(brkLen()==120,'the break is 2 minutes');
 // ---------- benches on the built-in maps ----------
 const cnt={};for(let m=0;m<MP.length;m++){mapId=m;build();cnt[m]=BN.length;const L=BN.every(b=>{const c=fd[cl(Math.floor((b.y+18)/gs),0,gh-1)*gw+cl(Math.floor(b.x/gs),0,gw-1)];bfs(fd,HS.px,HS.py);return fd[cl(Math.floor((b.y+18)/gs),0,gh-1)*gw+cl(Math.floor(b.x/gs),0,gw-1)]>=0});
  if(!L)console.log('unreachable bench on',MP[m].n,JSON.stringify(BN))}
-ok([0,1,2,3,4,5,6,7,8,10].every(m=>cnt[m]==1),'small maps have 1 bench '+JSON.stringify(cnt));
-ok([9,12,14,16].every(m=>cnt[m]==2)&&[11,13,15,17].every(m=>cnt[m]==3),'large maps have 2 (Mansion, City Park, Market, Foundry) or 3 (Urban Outskirts, placed by hand; Downtown, Main Street, Stadium)');
+ok([0,1,2,3,4,5,6,8,10].every(m=>cnt[m]==1),'small maps have 1 bench '+JSON.stringify(cnt));
+ok([9,12,14,16].every(m=>cnt[m]==2)&&[7,11,13,15,17].every(m=>cnt[m]==3),'large maps have 2 (Mansion, City Park, Market, Foundry) or 3 (Campground and Urban Outskirts, placed by hand; Downtown, Main Street, Stadium)');
 {let reach=1,far=1;for(let m=0;m<MP.length;m++){mapId=m;build();bfs(fd,HS.px,HS.py);for(const b of BN){if(fd[cl(Math.floor((b.y+18)/gs),0,gh-1)*gw+cl(Math.floor(b.x/gs),0,gw-1)]<0)reach=0}for(let a=0;a<BN.length;a++)for(let c=a+1;c<BN.length;c++)if(Math.hypot(BN[a].x-BN[c].x,BN[a].y-BN[c].y)<400)far=0}
  ok(reach,'every bench can be walked to from the player start');ok(far,'benches on the same map are far apart')}
 {mapId=13;build();const a=JSON.stringify(BN);innerWidth=700;innerHeight=500;rs();build();ok(JSON.stringify(BN)===a,'bench spots don\\'t depend on the screen size');innerWidth=1280;innerHeight=800;rs()}

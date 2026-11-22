@@ -2,7 +2,7 @@
 // ---------- built-in maps from map files ----------
 // BIMF[mapId] is the map file (embedded by tools/build.js). The map keeps its built-in number, so its campaign slot, records,
 // leaderboard board, checkpoints and boss stay those of map 0. The Workshop offers a copy to edit (wsBuiltins).
-const BIMF={0:{{json:maps/suburb.json}},1:{{json:maps/warehouse.json}},2:{{json:maps/graveyard.json}},3:{{json:maps/school.json}},8:{{json:maps/highway.json}},9:{{json:maps/mansion.json}},10:{{json:maps/forest.json}},11:{{json:maps/urban.json}},12:{{json:maps/park.json}},13:{{json:maps/downtown.json}},14:{{json:maps/market.json}},15:{{json:maps/mainst.json}},16:{{json:maps/foundry.json}},17:{{json:maps/stadium.json}}};
+const BIMF={0:{{json:maps/suburb.json}},1:{{json:maps/warehouse.json}},2:{{json:maps/graveyard.json}},3:{{json:maps/school.json}},7:{{json:maps/camp.json}},8:{{json:maps/highway.json}},9:{{json:maps/mansion.json}},10:{{json:maps/forest.json}},11:{{json:maps/urban.json}},12:{{json:maps/park.json}},13:{{json:maps/downtown.json}},14:{{json:maps/market.json}},15:{{json:maps/mainst.json}},16:{{json:maps/foundry.json}},17:{{json:maps/stadium.json}}};
 function bimIs(m){return!!(typeof BIMF!='undefined'&&BIMF[m])}
 // the map's document, read fresh each time (so only the map being played is in memory; cmRead checks it, and a broken file is a build bug, so it throws)
 function bimDoc(m){const r=cmRead(JSON.stringify(BIMF[m]));if(!r.doc)throw new Error('built-in map '+m+': '+(r.errors||[]).join('; '));return r.doc}

@@ -14,7 +14,6 @@ maps/props/furniture.js
 maps/neighborhood.js
 maps/military-camp-shared.js
 maps/military-base.js
-maps/campground.js
 world/map-list-and-pathfinding.js
 world/pathfinding-worker.js
 world/map-schema.js
@@ -39,6 +38,7 @@ world/kit-downtown.js
 world/kit-stadium.js
 world/kit-park.js
 world/kit-urban.js
+world/kit-camp.js
 world/map-store.js
 world/custom-maps.js
 ui/core-ui.js
@@ -110,6 +110,7 @@ maps/props/kit-downtown.js
 maps/props/kit-stadium.js
 maps/props/kit-park.js
 maps/props/kit-urban.js
+maps/props/kit-camp.js
 bosses/penny-and-mayor.js
 bosses/ken.js
 bosses/quarterback.js
