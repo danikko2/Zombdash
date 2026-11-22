@@ -2,15 +2,21 @@
 // ---------- vehicle bosses: the Ice Cream Man's truck and the Fire Chief's engine drive a road graph (HS.RG) ----------
 var ICB=[];
 function rgAng(a){return Math.atan2(Math.sin(a),Math.cos(a))}
+// how far each crossing is from (tx,ty) along the roads: to the point on the roads nearest it (so a truck heads for the road that
+// passes the player, not the one that only looks close across a park or a block)
+function rgDist(G,tx,ty){const N=G.N,n=N.length,D=new Float64Array(n).fill(1e12);let bd=1e12,ba=-1,bb=-1,bu=0,bl=0;
+for(let a=0;a<n;a++)for(const b of G.A[a]){if(b<a)continue;const vx=N[b][0]-N[a][0],vy=N[b][1]-N[a][1],L=Math.hypot(vx,vy)||1,u=cl(((tx-N[a][0])*vx+(ty-N[a][1])*vy)/(L*L),0,1),d=Math.hypot(N[a][0]+vx*u-tx,N[a][1]+vy*u-ty);if(d<bd){bd=d;ba=a;bb=b;bu=u*L;bl=L}}
+if(ba<0){for(let i=0;i<n;i++)D[i]=Math.hypot(N[i][0]-tx,N[i][1]-ty);return D}D[ba]=bu;D[bb]=Math.min(D[bb],bl-bu);const V=new Uint8Array(n);
+for(let k=0;k<n;k++){let i=-1;for(let j=0;j<n;j++)if(!V[j]&&(i<0||D[j]<D[i]))i=j;if(i<0||D[i]>=1e12)break;V[i]=1;for(const j of G.A[i]){const e=D[i]+Math.hypot(N[j][0]-N[i][0],N[j][1]-N[i][1]);if(e<D[j])D[j]=e}}return D}
 function tkInit(z){const G=HS.RG;z.L=z.ci==14?178:z.ci==16?96:132;z.W=z.ci==14?48:z.ci==16?42:52;z.sp=0;z.hd=0;if(!G){z.rd=null;return}
 const Q=rndAlive()||PL[0],D=G.N.map(n=>Math.hypot(n[0]-Q.x,n[1]-Q.y));let c=G.N.map((_,i)=>i).filter(i=>D[i]>450&&D[i]<1000);if(!c.length)c=G.N.map((_,i)=>i).sort((a,b)=>D[b]-D[a]).slice(0,3);
 const a=c[Math.floor(Math.random()*c.length)];let b=G.A[a][0],bd=1e9;for(const n of G.A[a]){const e=Math.hypot(G.N[n][0]-Q.x,G.N[n][1]-Q.y);if(e<bd){bd=e;b=n}}
 z.rd={a,b,u:0};z.x=G.N[a][0];z.y=G.N[a][1];z.hd=Math.atan2(G.N[b][1]-z.y,G.N[b][0]-z.x)}
 function tkDrive(z,dt,tx,ty,spd){const G=HS.RG;if(!G||!z.rd)return;const ac=spd>z.sp?240:360;z.sp+=cl(spd-z.sp,-ac*dt,ac*dt);const R=z.rd;R.u+=z.sp*dt;
 let A=G.N[R.a],B=G.N[R.b],L=Math.hypot(B[0]-A[0],B[1]-A[1]);
-for(let g=0;g<4&&R.u>=L;g++){R.u-=L;const nb=G.A[R.b].filter(n=>n!==R.a);let best=R.a,bs=1e9;
-for(const n of nb){const s=Math.hypot(G.N[n][0]-tx,G.N[n][1]-ty)+Math.random()*140;if(s<bs){bs=s;best=n}}
-if(nb.length&&Math.hypot(G.N[R.a][0]-tx,G.N[R.a][1]-ty)+300<bs)best=R.a;if(!nb.length)best=R.a;R.a=R.b;R.b=best;A=G.N[R.a];B=G.N[R.b];L=Math.hypot(B[0]-A[0],B[1]-A[1])||1}
+for(let g=0;g<4&&R.u>=L;g++){R.u-=L;const nb=G.A[R.b].filter(n=>n!==R.a),RD=rgDist(G,tx,ty);let best=R.a,bs=1e13;
+for(const n of nb){const s=RD[n]+Math.random()*140;if(s<bs){bs=s;best=n}}
+if(nb.length&&RD[R.a]+300<bs)best=R.a;if(!nb.length)best=R.a;R.a=R.b;R.b=best;A=G.N[R.a];B=G.N[R.b];L=Math.hypot(B[0]-A[0],B[1]-A[1])||1}
 const u=Math.min(1,R.u/L);z.x=A[0]+(B[0]-A[0])*u;z.y=A[1]+(B[1]-A[1])*u;const ea=Math.atan2(B[1]-A[1],B[0]-A[0]);z.hd+=cl(rgAng(ea-z.hd),-3.6*dt,3.6*dt);z.ga=z.hd}
 // point (x,y) inside the truck's box (+p)
 function tkIn(z,x,y,p){const dx=x-z.x,dy=y-z.y,c=Math.cos(z.hd),s=Math.sin(z.hd),u=dx*c+dy*s,v=-dx*s+dy*c;return Math.abs(u)<z.L/2+p&&Math.abs(v)<z.W/2+p+4}

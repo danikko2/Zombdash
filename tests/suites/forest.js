@@ -154,8 +154,8 @@ await wsBuiltin(10,0);{const e=CML.find(q=>q.doc&&q.doc.name=='Enchanted Forest 
  for(const k of['fireflies','owl'])try{CMFXI[k].top({x:100,y:100},1);CMFXI[k].ed(g,{x:100,y:100})}catch(e){err+=k+': '+e.message}
  try{CMPAI.road.f(g,[[0,50],[300,60]],{x:0,y:0,w:120,o:{fade:1,edge:1,s:'worn'}})}catch(e){err+='road: '+e.message}ok(!err,'every piece draws '+err);
  ok(typeof mapForest=='undefined'&&typeof fsCan=='undefined'&&typeof fsAnim=='undefined'&&typeof fsSpr=='undefined'&&typeof fsZones=='undefined','the old forest map code is gone')}
-// ---------- the City Park (which shared the old forest code for its trees) still works ----------
-mapId=12;S.mp=12;build();{let err='';try{pkAnim();pkCan()}catch(e){err=e.message}ok(!err&&HS.FS&&HS.FS.cells.some(c=>c&&c.length),'the City Park builds and draws its trees over people '+err)}
+// ---------- the City Park (which used to share the old forest code for its trees) is a map file now (park.js) ----------
+mapId=12;S.mp=12;build();ok(HS.CM==='builtin-park'&&!HS.FS,'the City Park builds from its own map file')
 mapId=10;build();ok(HS.CM==='builtin-forest','map 10 is still the built-in Enchanted Forest');
 console.log('TOTAL fails '+fails+' of '+n);
 }

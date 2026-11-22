@@ -405,6 +405,16 @@ No prop may block a doorway. `cmDoorBlocks` finds props and vehicles within 24 p
 - **New kit pieces:** the props in `maps/props/kit-stadium.js` (the new Medical & relief camp and Stadium & football groups); the `bowl`, `gridiron`, `tent` and `tarp` areas, the `bulbs` path and five decals (`world/kit-stadium.js`); the `dark` lighting; areas and paths can give light (`lts`); overhead props can fade anywhere on their footprint (`ovf`, `ova`).
 - **Checks:** `tests/suites/stadium.js` (64 checks): the asks, the stands solid everywhere, no pockets, every spawn reachable, the lights, tent roofs fading, campaign waves 1–3, 19 and the wave-20 finish with no survivor, old saves, Free Play, the Workshop copy, every piece draws.
 
+### City Park (map 12): converted and redesigned, Nov 22, 2026 (owner's request)
+- **The file:** `src/maps/park.json` (108×80 tiles, up from 2600×2200 px; `day` lighting, 0.5; about 390 props, 100 decals, 39 areas, 60 paths). Made by a generator script (scratchpad).
+- **Asked for:** the middle of the day; more detail in everything; the owner chose a dog park, sports courts (basketball and tennis), a skate park, a light outbreak aftermath and a bigger map (not a band shell, a creek, a carousel or a community garden).
+- **Kept from the old park:** the drive loop with round corners, the cross drive out to both edges and the south road (the Ice Cream Man's road graph), the parking lot, the food trucks (TACO LOCO, BIG BURGER, PIZZA VAN, now with menu boards, umbrella tables and string lights), the fountain plaza and the restrooms, the fenced playground with its splash pad, the picnic grove (now under a pavilion), two fishing ponds with docks, ducks and lily pads, the gazebo, the trails, the skyline (now by day, with a hedge).
+- **New:** a fenced tennis court and a basketball court with bleachers; a skate park (a kidney bowl you walk down into, quarter pipes, a fun box, rails, ledges, a mini ramp, stairs); a dog park with a double gate, small and large dog sides, agility pieces and worn ground; a second lot; the founder's statue and the park map board; crosswalks where the trails meet the roads.
+- **The aftermath:** a park left in a hurry: two police cruisers with their lights still going, police tape round someone under a sheet by the big pond, dropped picnics, tipped strollers, kites and ice creams, a few dead zombies at the edges of the woods, a cardboard sign pointing to the stadium shelter.
+- **The truck bosses** now find their way by road distance (`rgDist`): they head for the point on the roads nearest the player, not the crossing that only looks close across the park (on the new loop the Ice Cream Man would turn back and forth on the top road). Downtown and Main Street benefit too.
+- **New kit pieces:** the props in `maps/props/kit-park.js` (the Park & playground and Sports & skate groups), the `tennis` and `skbowl` areas and twelve decals (`world/kit-park.js`); the skyline's `day` look. `maps/city-park.js` is gone.
+- **Checks:** `tests/suites/park.js` (49 checks): the asks one by one, the road graph on the roads, no parked car on them, no pockets, every part walkable into, spawns reachable, campaign waves 1–3, 19 and the Ice Cream Man, Free Play, the Workshop copy, every piece draws.
+
 ## What each map still needs before converting
 Everything else on each map can be built with the kit; the conversion still has to be laid out, compared side by side and playtested (walls, zombie paths, spawns, its survivor boss).
 
@@ -422,7 +432,7 @@ Everything else on each map can be built with the kit; the conversion still has 
 | Haunted Mansion | **Converted and redesigned (Nov 1, 2026), at night.** |
 | Enchanted Forest | **Converted and redesigned (Nov 4, 2026), at night.** |
 | Urban Outskirts | Nothing new. |
-| City Park | Nothing new (road graph for the Ice Cream Man; splash pad, ponds, ducks). |
+| City Park | **Converted and redesigned (Nov 22, 2026), at midday.** |
 | Downtown | **Converted and redesigned (Nov 4, 2026), at sunrise.** |
 | Hometown Market | **Converted and redesigned (Oct 28, 2026).** |
 | Main Street | **Converted and redesigned (Nov 1, 2026).** |
