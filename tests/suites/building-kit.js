@@ -280,7 +280,8 @@ ok(Object.keys(OB).every(k=>OWN(EDPN,k)&&EDPN[k][0]&&EDCAT.some(c=>c[0]==EDPN[k]
 ok(L_.filter(a=>a.t=='p').length==Object.keys(OB).length&&Object.keys(EDVN).every(k=>HWV(k)&&L_.some(a=>a.id=='v:'+k)),'the asset browser lists every prop and every vehicle');
 const used={},_put=put,_sc=scatter;put=function(A,k){used[k]=1;return _put.apply(this,arguments)};scatter=function(){const r=_sc.apply(this,arguments);for(const o of r||[])used[o.kn||o.k]=1;return r};
 try{for(let m=0;m<MP.length;m++){mapId=m;build()}}finally{put=_put;scatter=_sc}
-const miss=Object.keys(used).filter(k=>OB[k]&&!OWN(EDPN,k));ok(Object.keys(used).length>100&&!miss.length,'every prop placed on the 16 built-in maps is in the asset browser ('+Object.keys(used).length+' kinds) '+miss.join(','));
+for(const m of Object.keys(BIMF))for(const o of bimDoc(+m).obj)if(o.k)used[o.k]=1; // the maps made from map files
+const miss=Object.keys(used).filter(k=>OB[k]&&!OWN(EDPN,k));ok(Object.keys(used).length>100&&!miss.length,'every prop placed on the '+MP.length+' built-in maps is in the asset browser ('+Object.keys(used).length+' kinds) '+miss.join(','));
 const kitP=[...FS.readFileSync(PATH.join(ROOT,'src','js','maps','props','kit-props.js'),'utf8').matchAll(/^([a-z][a-z_0-9]*):(?:Object\\.assign|ob[a-z]*\\(|\\{)/gm)].map(x=>x[1]);ok(kitP.length>=40&&kitP.every(k=>OB[k]&&OWN(EDPN,k)),'props that the built-in maps drew in their own code are now real props ('+kitP.length+')');
 vehWrap();const wb=Object.keys(OB).filter(k=>OB[k].wb);ok(wb.length>=10&&wb.every(k=>OB[k].vw),'tall kit props (street lamps, signs, trees...) draw in front of players walking behind them');
 mapId=0;build()}

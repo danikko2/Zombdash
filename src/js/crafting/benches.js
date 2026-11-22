@@ -9,7 +9,14 @@ var BN=[],BNMB=0;const BNW=[0,64,64,96,128,128],BNH=[0,46,62,66,74,86];
 function bnCount(){const a=WW*WH/1e6;return a>=9.5?3:a>=6.5?2:1}
 function bnRoom(x,y,w,h){const i0=Math.floor((x-w/2-10)/gs),i1=Math.floor((x+w/2+10)/gs),j0=Math.floor((y-h)/gs),j1=Math.floor((y+30)/gs);
  if(i0<1||j0<1||i1>=gw-1||j1>=gh-1)return 0;for(let j=j0;j<=j1;j++)for(let i=i0;i<=i1;i++)if(bl[j*gw+i])return 0;return 1}
-function bnClear(x,y){const sp=HS.sp||[];for(const q of sp)if(Math.hypot(q[0]-x,q[1]-y)<130)return 0;const C=HS.CX;if(C&&C.A)for(const it of C.A){const o=it.o;if(o&&o.fx!=null&&Math.hypot(o.x-x,o.y-(y-30))<80)return 0}return 1}
+// CMOB = the props of the map file being played (set by cmBuild), so benches don't land on a tree or a sign
+var CMOB=null;
+// a spot is clear away from spawn points, effects and the roads a vehicle drives (a map's road graph, HS.RG)
+function bnClear(x,y){const sp=HS.sp||[];for(const q of sp)if(Math.hypot(q[0]-x,q[1]-y)<130)return 0;const G=HS.RG;if(G&&G.N)for(let i=0;i<G.N.length;i++)for(const j of G.A[i]||[]){if(j<i)continue;if(bnSeg(x,y-15,G.N[i],G.N[j])<100)return 0}const C=HS.CX;if(C&&C.A)for(const it of C.A){const o=it.o;if(!o||o.x==null)continue;if(o.fx!=null&&Math.hypot(o.x-x,o.y-(y-30))<80)return 0;
+}
+ // nor on top of a map file's prop (a tree, a picnic blanket, a sign): none stands inside the bench's footprint
+ for(const o of CMOB||[])if(o&&Math.abs(o.x-x)<90&&o.y>y-75&&o.y<y+40)return 0;return 1}
+function bnSeg(x,y,a,b){const dx=b[0]-a[0],dy=b[1]-a[1],L=dx*dx+dy*dy,t=L?cl(((x-a[0])*dx+(y-a[1])*dy)/L,0,1):0;return Math.hypot(x-a[0]-t*dx,y-a[1]-t*dy)}
 function bnCell(x,y){return fd[cl(Math.floor(y/gs),0,gh-1)*gw+cl(Math.floor(x/gs),0,gw-1)]}
 function bnPlace(){BN=[];BNMC=null;try{const P0=HS.BNP;if(P0&&P0.length){BN=P0.slice(0,8).map(q=>({x:q[0],y:q[1]}));return}
  const px=HS.px,py=HS.py;bfs(fd,px,py);const n=cmIs(mapId)?1:bnCount();
