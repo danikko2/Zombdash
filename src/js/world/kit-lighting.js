@@ -79,7 +79,7 @@ function cmLtNow(s,t,st){if(st)return s.f=='glow'?.85:1;switch(s.f){// fault: a 
 case'fault':{const P=3.5+(s.ph/6.283)*5.5,u=(t+s.ph*7)%P;if(u>.85)return 1;return cmH(Math.floor(u*16),s.ph*100,77)<.5?.08:1}
 case'sweep':s.ca=s.ca0+Math.sin(t*.5+s.ph)*s.sa;return 1;
 // alarm: a fire alarm's red pulse (Zombville General); hang: a broken light hanging by its wires, flickering on and off
-case'alarm':{const u=(t*.85+s.ph/6.283)%1;return u<.55?.2+.8*Math.sin(u/.55*Math.PI):.12}case'hang':return typeof hsHangOn=='function'&&s.o&&hsHangOn(s.o,t)?1:.04;
+case'alarm':{const u=(t*.85+s.ph/6.283)%1;return u<.55?.2+.8*Math.sin(u/.55*Math.PI):.12}case'hang':return typeof hsHangOn=='function'&&s.o&&hsHangOn(s.o,t)?1:.04;case'spk':{const u=typeof hsSpkU=='function'&&s.o?hsSpkU(s.o,t):-1;return u<0?0:u<.15?1:Math.max(0,1-(u-.15)*1.6)}
 case'flk':return .8+.2*Math.sin(t*11+s.ph)*Math.sin(t*7.3+s.ph*1.7);case'fire':return .86+.1*Math.sin(t*13+s.ph)+.04*Math.sin(t*31+s.ph);
 case'flare':return .78+.22*Math.random();case'weld':return fdWeld(s.ph,t);case'glow':return .6+.4*Math.sin(t*1.7+s.ph);case'blink':return((t*1.3+s.ph)%1)<.5?1:0;
 case'siren':{const k=Math.floor(t*6+s.ph*6)%4;return(s.sd==0?k<2:s.sd==1?k>=2:s.sd==2?k%2==0:s.sd==3?k%2==1:Math.floor(t*9+s.ph*9)%3==0)?1:0}default:return 1}}

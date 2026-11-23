@@ -112,7 +112,25 @@ cmAddFx({id:'ftube',n:'Fluorescent ceiling light (tubes)',cat:'light',r:60,pal:[
  opts:[['k','Tubes',[['on','On'],['flk','Flickering (failing)'],['off','Dead']]],['v','Runs up and down','chk'],['wet','Reflected in a wet floor','chk']],anim:hsTubeRefl,top:hsTubeTop,
  ed(g,o){const v=!!+po(o,'v',0),w=v?16:56,h=v?56:16;g.fillStyle='#16111c';g.fillRect(o.x-w/2,o.y-h/2,w,h);g.fillStyle=po(o,'k','on')=='off'?'#5a6068':'#f6fbff';g.fillRect(o.x-w/2+2,o.y-h/2+2,w-4,h-4)},
  lts(o,s,ph,L){const k=po(o,'k','on');if(k=='off')return;const q={x:o.x,y:o.y,r:135*s,c:cmCol(o.c,'#dbe9ff'),i:.72,gs:1.5};if(k=='flk'){q.f='fault';q.ph=cmH(o.x,o.y,9)*6.283}L.push(q)}});
+// ----- a soft ceiling light: only its light, a wide soft pool (rows of them wash a hall evenly); on or flickering -----
+cmAddFx({id:'softlight',n:'Soft ceiling light (light only)',cat:'light',r:60,pal:[['#aab8cc','Cool (dim)'],['#d6e0ee','Cool white'],['#c8c0b0','Warm (dim)'],['#ffe0b0','Warm white']],def:{c:'#aab8cc',o:{k:'on'}},
+ opts:[['k','Light',[['on','On'],['flk','Flickering']]]],ed(g,o){g.fillStyle='#16111c';g.beginPath();g.arc(o.x,o.y,7,0,7);g.fill();g.fillStyle=cmCol(o.c,'#aab8cc');g.beginPath();g.arc(o.x,o.y,5,0,7);g.fill()},
+ lts(o,s,ph,L){const q={x:o.x,y:o.y,r:200*s,c:cmCol(o.c,'#aab8cc'),i:.85};if(po(o,'k','on')=='flk'){q.f='fault';q.ph=cmH(o.x,o.y,9)*6.283}L.push(q)}});
+// ----- sparks: a broken light or a cut cable spitting sparks now and then (each to its own beat), an orange flash with each burst;
+// the sparks fall over people -----
+function hsSpkU(o,t){const P=1.5+cmH(o.x,o.y,5)*2.4,tau=(t+cmH(o.x,o.y,6)*P)%P;return tau<.7?tau/.7:-1}
+function hsSparks(o,t){const x=o.x,y=o.y;X.strokeStyle='#16111c';X.lineWidth=1.5;X.beginPath();X.moveTo(x-4,y-10);X.quadraticCurveTo(x-6,y-4,x-2,y);X.moveTo(x+3,y-10);X.quadraticCurveTo(x+6,y-3,x+2,y+1);X.stroke();
+ const u=hsSpkU(o,t);if(u<0)return;const tau=u*.7;if(u<.25){X.fillStyle='rgba(255,242,190,'+(1-u*4)+')';X.beginPath();X.arc(x,y,7-u*12,0,7);X.fill()}
+ for(let i=0;i<16;i++){const vx=(cmH(i,o.x,7)-.5)*240,vy=-30-cmH(i,o.y,8)*90,px=x+vx*tau,py=y+vy*tau+210*tau*tau,a=Math.max(0,1-u*(1+cmH(i,3,9)));if(a<=0)continue;
+  X.fillStyle=i%3?'rgba(255,170,60,'+a+')':'rgba(255,236,170,'+a+')';X.fillRect(Math.round(px),Math.round(py),i%2?3:2,2)}}
+cmAddFx({id:'sparks',n:'Sparks (a broken light or cable)',cat:'light',r:60,def:{o:{}},top:hsSparks,
+ ed(g,o){g.fillStyle='#ffb040';for(let i=0;i<6;i++)g.fillRect(o.x-10+i*4,o.y-4+(i%3)*4,2,2)},
+ lts(o,s,ph,L){L.push({x:o.x,y:o.y,r:110*s,c:'#ffa040',i:.95,f:'spk',o})}});
 // ----- decals -----
+// the biohazard mark painted on the floor of a sealed room (or stuck by its door)
+cmAddDec({id:'biohaz',n:'Biohazard mark',cat:'misc',w:60,h:60,f(g){const R_=c=>{g.fillStyle=c};g.strokeStyle='rgba(192,40,36,.9)';g.lineWidth=3;g.beginPath();g.arc(0,0,26,0,7);g.stroke();R_('rgba(192,40,36,.9)');
+ for(let k=0;k<3;k++){const a=-Math.PI/2+k*2.094;g.beginPath();g.arc(Math.cos(a)*10,Math.sin(a)*10,9,0,7);g.fill()}R_('rgba(22,17,28,.9)');for(let k=0;k<3;k++){const a=-Math.PI/2+k*2.094;g.beginPath();g.arc(Math.cos(a)*13,Math.sin(a)*13,4.5,0,7);g.fill()}
+ g.beginPath();g.arc(0,0,4,0,7);g.fill();g.strokeStyle='rgba(192,40,36,.9)';g.lineWidth=2;g.beginPath();g.arc(0,0,15,0,7);g.stroke()}});
 // a wet floor: a sheen of water from the sprinklers, darker and cooler, with streaks where it catches the lights (var: its shape)
 cmAddDec({id:'wetfloor',n:'Wet floor (shiny)',cat:'misc',w:170,h:80,f(g,v){const P=[];for(let i=0;i<4;i++)P.push([(cmH(i,v*13,41)-.5)*90,(cmH(i,v*13,42)-.5)*30,34+cmH(i,v*13,43)*36,14+cmH(i,v*13,44)*12]);
  g.fillStyle='rgba(60,95,150,.08)';for(const[x,y,a,b]of P){g.beginPath();g.ellipse(x,y,a,b,0,0,7);g.fill()}g.strokeStyle='rgba(215,232,255,.3)';g.lineWidth=1;for(const[x,y,a,b]of P){g.beginPath();g.ellipse(x,y,a,b,0,3.5,5.9);g.stroke()}

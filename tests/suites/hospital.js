@@ -22,29 +22,31 @@ S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();
 { // in a block, so these names never clash with the game's
 const tick=n=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
 let fails=0,n=0;const ok=(c,m)=>{n++;if(c)console.log('PASS '+m);else{fails++;console.log('FAIL '+m)}};
-const PW=4096,PH=2816;
+const PW=4096,PH=3328;
 // ---------- the map files load ----------
 const D=(()=>{const r=cmRead(JSON.stringify(BIMF[18]));ok(r.doc&&!r.errors.length&&!r.warnings.length,'hospital.json loads with no errors or warnings '+(r.errors||[]).concat(r.warnings||[]).slice(0,3).join('; '));return r.doc})();
 const DR=(()=>{const r=cmRead(JSON.stringify(BIMX[18]));ok(r.doc&&!r.errors.length,'the roof (hospital-roof.json) loads '+(r.errors||[]).join('; '));return r.doc})();
 {const L=cmLint(D).filter(p=>p.lv=='err'||p.lv=='warn');ok(!L.length,'nothing in the Problems list '+L.map(p=>p.m).slice(0,2).join('; '));
- ok(D.w==128&&D.h==88&&D.id=='builtin-hospital'&&D.name=='Zombville General','128×88 tiles (4096×2816 px): as wide as a map can be');
+ ok(D.w==128&&D.h==104&&D.id=='builtin-hospital'&&D.name=='Zombville General','128×104 tiles (4096×3328 px): as wide as a map can be');
  ok(D.obj.filter(o=>!o.dc&&!o.fx&&!o.veh&&!o.f).every(o=>cmOB(o.k)),'every prop is a real kit prop');ok(!cmDoorBlocks(D).length,'no prop stands in a doorway');
  const out=D.walls.filter(w=>w.s=='hidden'),ins=D.areas.filter(a=>a.a=='floor');ok(out.length>=8&&ins.length>=40&&D.lt.t=='cold','inside only: floors everywhere, the strip outside closed off but for the ways in')}
 const K=k=>D.obj.filter(o=>o.k==k),FX=k=>D.obj.filter(o=>o.fx==k),DC=k=>D.obj.filter(o=>o.dc==k),AR=k=>D.areas.filter(a=>a.a==k),PA=k=>D.paths.filter(p=>p.p==k),WS=s=>D.walls.filter(w=>w.s==s);
 const HS_=t=>K('hsign').some(o=>o.tx==t);
 // ---------- the asks ----------
-{const halls=D.areas.filter(a=>a.a=='floor'&&(a.w>=3000&&a.h==224||a.h>=2600&&a.w==224));ok(halls.length==4,'four main halls 224 px wide (about twice a real hall, about 7 players side by side)');
+{const halls=D.areas.filter(a=>a.a=='floor'&&(a.w>=3000&&a.h==256||a.h>=2600&&a.w==256));ok(halls.length==4,'four main halls 256 px wide (twice a real hall and a little more, at the owner\\'s word)');
+ const ring=D.areas.filter(a=>a.a=='floor'&&(a.w>=3900&&a.h==224&&(a.y==64||a.y==3040)||a.h>=2700&&a.w==224&&(a.x==64||a.x==3808)));ok(ring.length==4,'a hallway all the way round the building (224 px)');
+ const gap=(w,x,y)=>D.walls.some(q=>q.s=='door'&&Math.abs(q.x+q.w/2-x)<20&&Math.abs(q.y+q.h/2-y)<20);ok([[1376,288],[2720,288],[1376,3040],[2720,3040],[288,1248],[288,2208],[3808,1248],[3808,2208]].every(([x,y])=>gap(0,x,y)),'every main hall runs into the ring at both ends: no dead ends');
  const F=AR('hfount')[0];ok(F&&F.w>=380&&F.o.on==1&&F.x+F.w/2==2048,'the lobby in the middle: a big running fountain');
  ok(K('infodesk').length==1&&K('admdesk').some(o=>o.tx=='ADMISSIONS')&&K('wseat').length>=6&&K('lounge').length>=6&&K('planterb').length>=4,'its information (greeting) desk, the admissions desk, waiting seats, lounge chairs, planters');
  ok(K('ortable').length==4&&K('orlight').length>=4&&K('anesth').length==4&&K('scrubsink').length==2&&HS_('SURGERY'),'the surgery center (west wing): four operating rooms, scrub sinks, pre-op and recovery');
- ok(K('pbed').length>=20&&K('nstation').length>=4&&HS_('PATIENT CARE')&&D.obj.filter(o=>o.k=='dplate'&&/^ICU/.test(o.tx)).length==8,'patient care (east wing): the ICU, patient rooms, nurse stations');
+ ok(K('pbed').length>=14&&K('nstation').length>=4&&HS_('PATIENT CARE')&&D.obj.filter(o=>o.k=='dplate'&&/^ICU/.test(o.tx)).length==6,'patient care (east wing): the ICU, patient rooms, nurse stations');
  ok(K('mri').length==1&&K('ctscan').length==1&&K('labbench').length==2&&K('rxcounter').length==1,'radiology (MRI, CT, X-ray), the lab, the pharmacy');
  ok(K('servline').length==1&&K('ctable').length>=9&&K('giftshelf').length==2&&K('balloons').length==2,'the cafeteria and the gift shop');
  ok(K('mdrawers').length==2&&K('autopsy').length==2&&K('pew').length>=4&&K('altar').length==1,'the morgue and the chapel');
  ok(V_('amb')>=2&&WS('rollup').length>=4&&HS_('EMERGENCY'),'the ER and the ambulance bay');
- {const T=FX('ftube'),k=v=>T.filter(o=>(o.o||{}).k==v).length;ok(FX('alarm').length>=12&&FX('hanglight').length>=6&&k('on')>=30&&k('flk')>=12&&k('off')>=12,'backup power: fluorescent tubes, many flickering or dead, some hanging down by their wires; fire alarms pulsing red ('+k('on')+' on, '+k('flk')+' failing, '+k('off')+' dead)');
- ok(T.filter(o=>+(o.o||{}).wet).length>=10&&DC('wetfloor').length>=15&&FX('light').filter(o=>/^#ff/.test(o.c||'')).length>=8,'the look asked for after the reference pictures: wet floors reflecting the tubes, red emergency light down the halls');
- ok(D.lt.t=='cold'&&cmLtP('cold').mul=='#0e1a38'&&T.some(o=>o.c=='#fff0d0')&&T.some(o=>!o.c),'cold blue lighting, cool tubes (warm ones in the cafeteria and the chapel)')}
+ ok(FX('alarm').length>=12&&FX('hanglight').length>=6&&FX('sparks').length>=5&&FX('softlight').length>=30&&FX('softlight').some(o=>(o.o||{}).k=='flk'),'backup power: halls lit in stretches, some flickering, dark where the lights broke, lights hanging by their wires, sparks; fire alarms pulsing red');
+ ok(DC('wetfloor').length>=15&&FX('light').filter(o=>/^#ff/.test(o.c||'')).length>=12&&D.lt.t=='cold'&&cmLtP('cold').mul=='#0e1a38','the look asked for after the reference pictures: a cold dark, red emergency light where the halls meet the ring, wet floors');
+ {const hid=D.walls.filter(w=>w.s=='hidden'&&w.x>64&&w.y>64&&w.x<4000&&w.y<3260),bio=DC('biohaz'),tape=PA('tape');ok(hid.length>=8&&bio.length>=16&&tape.length>=16,'many small rooms sealed off: no way in, the biohazard mark, the door taped over ('+hid.length+' sealed)')}
  ok(AR('elev').length==4&&AR('elev').filter(a=>a.o.st=='esc').length==1,'four elevators, one of them the way to the roof');
  ok(D.spawns.length>=12&&WS('winbroke').length>=3,'zombies come down the stairs, in through the doors and the broken-out windows')}
 function V_(k){return D.obj.filter(o=>o.veh==k).length}
@@ -64,7 +66,7 @@ ok(MP[18].n=='Zombville General'&&MPD[18]&&MPI[18]&&MUN[18]===10&&HS.HO&&HS.HO.l
 ok(HS.BNP&&HS.BNP.length==3,'three workbenches');
 const cell=(x,y)=>Math.floor(y/gs)*gw+Math.floor(x/gs);
 {const F=new Int16Array(gw*gh);bfs(F,HS.px,HS.py);let pk=0,ex=[];for(let k=0;k<gw*gh;k++)if(!bl[k]&&F[k]<0){pk++;if(ex.length<4)ex.push([(k%gw)*gs,Math.floor(k/gw)*gs])}ok(!pk,'no pockets: every open spot can be reached ('+pk+' cells cannot '+JSON.stringify(ex)+')');
- const at=([x,y])=>!bl[cell(x,y)]&&F[cell(x,y)]>=0;const hs=HS.HO.filter(h=>h.w<1200);let hb=[];for(const h of hs){let any=0;for(let y=h.y+4;y<h.y+h.h&&!any;y+=8)for(let x=h.x+4;x<h.x+h.w&&!any;x+=8)if(at([x,y]))any=1;if(!any)hb.push(h.x+','+h.y)}ok(!hb.length,'every room can be walked into ('+hb.join(' ')+')');
+ const at=([x,y])=>!bl[cell(x,y)]&&F[cell(x,y)]>=0,SL=D.walls.filter(w=>w.s=='hidden'&&w.x>64&&w.y>64&&w.x<4000&&w.y<3260);const hs=HS.HO.filter(h=>h.w<1200&&!SL.some(w=>w.x>=h.x&&w.y>=h.y&&w.x<h.x+h.w&&w.y<h.y+h.h));let hb=[];for(const h of hs){let any=0;for(let y=h.y+4;y<h.y+h.h&&!any;y+=8)for(let x=h.x+4;x<h.x+h.w&&!any;x+=8)if(at([x,y]))any=1;if(!any)hb.push(h.x+','+h.y)}ok(!hb.length,'every room can be walked into ('+hb.join(' ')+')');
  ok(D.spawns.every(p=>at([p.x,p.y])),'every spawn point is on open ground that leads in')}
 // ---------- campaign: Abigail, then the escape ----------
 const RNG=new Set([11,19]);
@@ -96,7 +98,7 @@ setGM('c');mapId=18;S.mp=18;start();wave=20;zs=[];toSp=0;KN={ci:10,x:P.x,y:P.y,t
 setGM('f');mapId=18;S.mp=18;start();{const R=play(1,1,4000);ok(!R.err&&wave>=1&&!ESC,'a Free Play run plays (no escape there) '+R.err)}
 {const h=wsBuiltins();ok(h.includes('wsBuiltin(18,1)')&&h.includes('Zombville General'),'the Workshop lists Zombville General under Built-in maps')}
 {const NK=['infodesk','admdesk','wseat','wseat2','lounge','hctab','planterb','dirboard','hkiosk','wetsign','fext','aed','sanit','htrash','dplate','qsign','ortable','orlight','anesth','mayo','backtab','scrubsink','stershelf','pbed','obtable','recl','nstation','hvent','vitals','linen','mri','ctscan','xbox','labbench','labfrz','fumehood','rxcounter','mdrawers','autopsy','servline','cbar','drinkst','trayrack','giftshelf','balloons','cardrack','ahu','exfan','rpipes','mast','windsock','rsign'];
- const ND=['pills','gauze','xfilm','syringe','ivbag','clipb','wetfloor'];ok(NK.every(k=>OB[k]&&EDPN[k])&&EDCAT.some(c=>c[0]=='hosp')&&EDCAT.some(c=>c[0]=='roof')&&ND.every(k=>CMDI[k])&&['hfount','elev','rdeck','hpad','skyl','below'].every(k=>CMAI[k])&&CMFXI.alarm&&CMFXI.hanglight&&CMFXI.ftube&&CMWI.hwall&&CMWI.winbroke&&CMWI.parapet,'the new pieces are all in the editor (new groups: Hospital, Rooftop)');
+ const ND=['pills','gauze','xfilm','syringe','ivbag','clipb','wetfloor','biohaz'];ok(NK.every(k=>OB[k]&&EDPN[k])&&EDCAT.some(c=>c[0]=='hosp')&&EDCAT.some(c=>c[0]=='roof')&&ND.every(k=>CMDI[k])&&['hfount','elev','rdeck','hpad','skyl','below'].every(k=>CMAI[k])&&CMFXI.alarm&&CMFXI.hanglight&&CMFXI.ftube&&CMFXI.softlight&&CMFXI.sparks&&CMWI.hwall&&CMWI.winbroke&&CMWI.parapet,'the new pieces are all in the editor (new groups: Hospital, Rooftop)');
  const g=document.createElement('canvas').getContext('2d');let err='';for(const k of NK)try{for(const v of[0,.3,.55,.8,.95])OB[k].f(g,100,100,v,'#2f6fd0','A|B|C')}catch(e){err+=k+': '+e.message+' '}
  try{for(const k of['hfount','elev','rdeck','hpad','skyl','below']){const T=CMAI[k],o={a:k,x:0,y:0,w:300,h:240,o:Object.assign({},T.def&&T.def.o||{}),c:T.def&&T.def.c,c2:T.def&&T.def.c2};T.f(g,o);if(T.anim)T.anim(o,1.3);const L=[];if(T.lts)T.lts(o,L);const out=[];if(T.coll)T.coll(o,out)}
   for(const st of['shut','pried','open','esc'])for(const d of['s','n','e','w']){const o={a:'elev',x:0,y:0,w:96,h:112,o:{d,st}};CMAI.elev.f(g,o);CMAI.elev.anim(o,1)}
