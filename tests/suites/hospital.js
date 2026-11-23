@@ -1,8 +1,9 @@
-// Zombville General (map 18), Zombville's finale, at the owner's request: a big hospital, inside only, halls about twice real
-// width; the lobby in the middle (a fountain, seating, the information desk, admissions), surgery in one wing, patient care in the
-// other; the ER and ambulance bay, the cafeteria and gift shop, radiology, the lab, the pharmacy, the morgue and the chapel; backup
-// power (broken, hanging, flickering lights; red fire-alarm light); locked until the rest of Zombville is beaten; Abigail standing in
-// as the wave-20 boss; then the escape: the elevator to the roof at night, the helicopter, the door gunner, zombies over the parapet.
+// Zombville General (map 18), Zombville's finale, at the owner's request: a big hospital played on its upper floor, halls about
+// twice real width. The plan the owner picked (Nov 2026): an old brick wing (surgery, pre-op and recovery, the cafeteria, the
+// morgue, the chapel) and a new tower (the ICU, patient rooms, radiology, the lab, the pharmacy, the ER under it), joined by a glass
+// atrium (the fountain, the elevators) and a skybridge over a courtyard; outside is the level below (lower features: parallax, the
+// walls running down to it). Rooms laid out like real ones; backup power; locked until the rest of Zombville is beaten; Abigail
+// standing in as the wave-20 boss; then the escape: the elevator to the roof at night, the helicopter, the door gunner.
 const ST={};global.LOG=[];const LOG=global.LOG;
 const fs=require('fs');const html=fs.readFileSync(process.argv[2],'utf8');
 const code=html.slice(html.lastIndexOf('<script>')+8,html.lastIndexOf('</script>'));
@@ -22,33 +23,46 @@ S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();
 { // in a block, so these names never clash with the game's
 const tick=n=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
 let fails=0,n=0;const ok=(c,m)=>{n++;if(c)console.log('PASS '+m);else{fails++;console.log('FAIL '+m)}};
-const PW=4096,PH=3328;
+const PW=4096,PH=3840;
 // ---------- the map files load ----------
 const D=(()=>{const r=cmRead(JSON.stringify(BIMF[18]));ok(r.doc&&!r.errors.length&&!r.warnings.length,'hospital.json loads with no errors or warnings '+(r.errors||[]).concat(r.warnings||[]).slice(0,3).join('; '));return r.doc})();
 const DR=(()=>{const r=cmRead(JSON.stringify(BIMX[18]));ok(r.doc&&!r.errors.length,'the roof (hospital-roof.json) loads '+(r.errors||[]).join('; '));return r.doc})();
 {const L=cmLint(D).filter(p=>p.lv=='err'||p.lv=='warn');ok(!L.length,'nothing in the Problems list '+L.map(p=>p.m).slice(0,2).join('; '));
- ok(D.w==128&&D.h==104&&D.id=='builtin-hospital'&&D.name=='Zombville General','128×104 tiles (4096×3328 px): as wide as a map can be');
- ok(D.obj.filter(o=>!o.dc&&!o.fx&&!o.veh&&!o.f).every(o=>cmOB(o.k)),'every prop is a real kit prop');ok(!cmDoorBlocks(D).length,'no prop stands in a doorway');
- const out=D.walls.filter(w=>w.s=='hidden'),ins=D.areas.filter(a=>a.a=='floor');ok(out.length>=8&&ins.length>=40&&D.lt.t=='cold','inside only: floors everywhere, the strip outside closed off but for the ways in')}
+ ok(D.w==128&&D.h==120&&D.id=='builtin-hospital'&&D.name=='Zombville General','128×120 tiles (4096×3840 px): as wide as a map can be');
+ ok(D.obj.filter(o=>!o.dc&&!o.fx&&!o.veh&&!o.f).every(o=>cmOB(o.k)),'every prop is a real kit prop');ok(!cmDoorBlocks(D).length,'no prop stands in a doorway '+cmDoorBlocks(D).slice(0,2).map(b=>JSON.stringify(b).slice(0,80)).join(' '));
+ ok(D.areas.filter(a=>a.a=='floor').length>=50&&D.lt.t=='cold','floors everywhere inside, the cold backup-power dark')}
 const K=k=>D.obj.filter(o=>o.k==k),FX=k=>D.obj.filter(o=>o.fx==k),DC=k=>D.obj.filter(o=>o.dc==k),AR=k=>D.areas.filter(a=>a.a==k),PA=k=>D.paths.filter(p=>p.p==k),WS=s=>D.walls.filter(w=>w.s==s);
-const HS_=t=>K('hsign').some(o=>o.tx==t);
-// ---------- the asks ----------
-{const halls=D.areas.filter(a=>a.a=='floor'&&(a.w>=3000&&a.h==256||a.h>=2600&&a.w==256));ok(halls.length==4,'four main halls 256 px wide (twice a real hall and a little more, at the owner\\'s word)');
- const ring=D.areas.filter(a=>a.a=='floor'&&(a.w>=3900&&a.h==224&&(a.y==64||a.y==3040)||a.h>=2700&&a.w==224&&(a.x==64||a.x==3808)));ok(ring.length==4,'a hallway all the way round the building (224 px)');
- const gap=(w,x,y)=>D.walls.some(q=>q.s=='door'&&Math.abs(q.x+q.w/2-x)<20&&Math.abs(q.y+q.h/2-y)<20);ok([[1376,288],[2720,288],[1376,3040],[2720,3040],[288,1248],[288,2208],[3808,1248],[3808,2208]].every(([x,y])=>gap(0,x,y)),'every main hall runs into the ring at both ends: no dead ends');
- const F=AR('hfount')[0];ok(F&&F.w>=380&&F.o.on==1&&F.x+F.w/2==2048,'the lobby in the middle: a big running fountain');
- ok(K('infodesk').length==1&&K('admdesk').some(o=>o.tx=='ADMISSIONS')&&K('wseat').length>=6&&K('lounge').length>=6&&K('planterb').length>=4,'its information (greeting) desk, the admissions desk, waiting seats, lounge chairs, planters');
- ok(K('ortable').length==4&&K('orlight').length>=4&&K('anesth').length==4&&K('scrubsink').length==2&&HS_('SURGERY'),'the surgery center (west wing): four operating rooms, scrub sinks, pre-op and recovery');
- ok(K('pbed').length>=14&&K('nstation').length>=4&&HS_('PATIENT CARE')&&D.obj.filter(o=>o.k=='dplate'&&/^ICU/.test(o.tx)).length==6,'patient care (east wing): the ICU, patient rooms, nurse stations');
- ok(K('mri').length==1&&K('ctscan').length==1&&K('labbench').length==2&&K('rxcounter').length==1,'radiology (MRI, CT, X-ray), the lab, the pharmacy');
- ok(K('servline').length==1&&K('ctable').length>=9&&K('giftshelf').length==2&&K('balloons').length==2,'the cafeteria and the gift shop');
- ok(K('mdrawers').length==2&&K('autopsy').length==2&&K('pew').length>=4&&K('altar').length==1,'the morgue and the chapel');
- ok(V_('amb')>=2&&WS('rollup').length>=4&&HS_('EMERGENCY'),'the ER and the ambulance bay');
- ok(FX('alarm').length>=12&&FX('hanglight').length>=6&&FX('sparks').length>=5&&FX('softlight').length>=30&&FX('softlight').some(o=>(o.o||{}).k=='flk'),'backup power: halls lit in stretches, some flickering, dark where the lights broke, lights hanging by their wires, sparks; fire alarms pulsing red');
- ok(DC('wetfloor').length>=15&&FX('light').filter(o=>/^#ff/.test(o.c||'')).length>=12&&D.lt.t=='cold'&&cmLtP('cold').mul=='#0e1a38','the look asked for after the reference pictures: a cold dark, red emergency light where the halls meet the ring, wet floors');
- {const hid=D.walls.filter(w=>w.s=='hidden'&&w.x>64&&w.y>64&&w.x<4000&&w.y<3260),bio=DC('biohaz'),tape=PA('tape');ok(hid.length>=8&&bio.length>=16&&tape.length>=16,'many small rooms sealed off: no way in, the biohazard mark, the door taped over ('+hid.length+' sealed)')}
+const HS_=t=>K('hsign').some(o=>o.tx==t),LO=D.feats.filter(f=>f.f=='lower'),inLo=(x,y)=>LO.some(f=>x>=f.x&&x<f.x+f.w&&y>=f.y&&y<f.y+f.h),inR=(o,a)=>o.x>=a.x&&o.x<a.x+a.w&&o.y>=a.y&&o.y<a.y+a.h;
+// ---------- the plan the owner picked: an old wing and a new tower ----------
+{ok(WS('brick').length>=20&&WS('concrete').length>=20,'the old wing in brick, the tower in concrete with long windows');
+ const at=(x,y)=>D.areas.filter(a=>a.a=='floor'&&x>=a.x&&x<a.x+a.w&&y>=a.y&&y<a.y+a.h);ok(at(2016,512).length&&WS('glass').filter(w=>w.y>=370&&w.y<=650&&w.w>=1000).length==2,'a glass skybridge between them');
+ const F=AR('hfount')[0];ok(F&&F.w>=380&&F.o.on==1&&F.x>1088&&F.x+F.w<2560&&WS('glass').some(w=>w.y>1780&&w.y<1800&&w.w>=200)&&WS('glass').some(w=>w.y>=3310&&w.y<3340&&w.w>=1400),'the glass atrium joins them at the south: the big running fountain in the middle');
+ const halls=D.areas.filter(a=>a.a=='floor'&&(a.w>=1000&&a.h==256||a.h>=1000&&a.w==256));ok(halls.length>=7,'halls 256 px wide (twice a real hall and a little more, at the owner\\'s word): '+halls.length);
+ ok(K('infodesk').length==1&&K('admdesk').some(o=>o.tx=='ADMISSIONS')&&K('wseat').length>=6&&K('lounge').length>=6&&K('planterb').length>=2&&K('cbar').length==1,'the atrium: the information desk, admissions with its seats, lounge chairs, the coffee bar')}
+// ---------- outside is the level below ----------
+{ok(LO.length>=4&&LO.every(f=>f.o&&f.o.fl==1),'outside is a floor down: '+LO.length+' lower boxes');
+ ok(inLo(2016,1200)&&inLo(1824,3600)&&inLo(3300,3700)&&inLo(20,2000),'the courtyard, the drop-off plaza, the ambulance drive and the strip round the building are all below');
+ const T=['oak','oak_b','maple','willow','birch'];ok(D.obj.filter(o=>T.includes(o.k)).length>=15&&D.obj.filter(o=>T.includes(o.k)).every(o=>inLo(o.x,o.y))&&D.obj.filter(o=>o.veh).every(o=>inLo(o.x,o.y)),'the old trees, the ambulances and the cars are all down there');
+ ok(AR('roomlight').filter(a=>inLo(a.x+a.w/2,a.y+a.h/2)).length>=3&&FX('light').filter(o=>inLo(o.x,o.y)&&!/^#ff1/.test(o.c||'')).length>=6,'moonlight and the orange of street lamps below');
+ ok(!D.spawns.some(p=>inLo(p.x,p.y)),'no zombie starts down there')}
+// ---------- rooms laid out like real ones (the owner asked) ----------
+{const RL=AR('roomlight').filter(a=>!inLo(a.x+a.w/2,a.y+a.h/2)),B=K('pbed'),bad=[],two=[];for(const a of RL){const r={x:a.x-12,y:a.y-12,w:a.w+24,h:a.h+24},b=B.filter(o=>inR(o,r));if(b.length>2)bad.push(a.x+','+a.y+':'+b.length);if(b.length==2){two.push(a);if(!K('privscr').some(o=>inR(o,r)))bad.push(a.x+','+a.y+': no divider')}}
+ ok(B.length>=20&&!bad.length&&two.length>=5,'every room that treats patients has one bed, or two with a divider between them ('+B.length+' beds; '+two.length+' rooms of two; '+bad.join(' ')+')');
+ // the chapel: lengthways (west to east), the altar at the west end, the pews in rows across it facing the altar, an aisle down the middle
+ const al=K('altar'),pw=K('pew');ok(al.length==1&&al[0].r==270&&pw.length>=16&&pw.every(p=>p.r==270&&p.x>al[0].x+150&&p.y>3328&&p.y<3776)&&new Set(pw.map(p=>p.x)).size>=8,'the chapel: lengthways, the altar at the west end, '+pw.length+' pews in rows facing it');
+ {const ys=[...new Set(pw.map(p=>p.y))].sort((a,b)=>a-b);ok(ys.length==2&&ys[1]-ys[0]>=200,'two blocks of pews with the aisle between them')}
+ // the ER: a waiting room with check-in and triage in front, staff doors, exam and trauma rooms behind
+ ok(K('admdesk').some(o=>o.tx=='CHECK-IN')&&K('dplate').some(o=>o.tx=='TRIAGE')&&K('dplate').filter(o=>/^EXAM/.test(o.tx)).length==3&&HS_('TREATMENT')&&K('qsign').some(o=>o.tx=='STAFF ONLY')&&K('nstation').some(o=>o.tx=='EMERGENCY'),'the ER: the waiting room with check-in and triage, then staff doors to exam rooms and trauma rooms');
+ ok(K('ortable').length==3&&K('anesth').length>=3&&K('scrubsink').length==3&&HS_('SURGERY')&&K('privscr').length>=8,'surgery (old wing): three operating rooms off a sterile hall with scrub sinks; pre-op and recovery');
+ ok(D.obj.filter(o=>o.k=='dplate'&&/^ICU [0-9]/.test(o.tx)).length==4&&K('nstation').some(o=>o.tx=='ICU STATION')&&K('hvent').length>=3,'the ICU: glass-fronted rooms facing the ICU station');
+ ok(K('mri').length==1&&K('ctscan').length==1&&K('xray').length==1&&K('labbench').length==2&&K('fumehood').length==2&&K('rxcounter').length==1,'radiology (X-ray, CT, MRI, each with its control room), the lab, the pharmacy');
+ ok(K('servline').length==1&&K('ctable').length>=8&&K('mdrawers').length==2&&K('autopsy').length==1,'the cafeteria and its kitchen, the morgue');
+ ok(K('giftshelf').length>=3&&K('giftshelf').every(o=>o.x<1088)&&!D.walls.some(w=>w.x>1100&&w.x<2540&&w.y>1800&&w.y<3300&&!['glass','concrete'].includes(w.s)),'the gift shop is in the old wing (its window on the atrium), not a box in the middle of it');
+ ok(FX('alarm').length>=12&&FX('hanglight').length>=4&&FX('sparks').length>=4&&FX('softlight').length>=30&&FX('softlight').some(o=>(o.o||{}).k=='flk'),'backup power: halls lit in stretches, some flickering, dark where the lights broke, lights hanging by their wires, sparks; fire alarms pulsing red');
+ ok(DC('wetfloor').length>=10&&FX('light').filter(o=>/^#ff1/.test(o.c||'')).length>=10&&cmLtP('cold').mul=='#0e1a38','the look after the reference pictures: a cold dark, red emergency light, wet floors');
+ {const hid=WS('hidden'),bio=DC('biohaz'),tape=PA('tape');ok(hid.length>=5&&bio.length>=10&&tape.length>=10,'small rooms sealed off: no way in, the biohazard mark, the door taped over ('+hid.length+' sealed)')}
  ok(AR('elev').length==4&&AR('elev').filter(a=>a.o.st=='esc').length==1,'four elevators, one of them the way to the roof');
- ok(D.spawns.length>=12&&WS('winbroke').length>=3,'zombies come down the stairs, in through the doors and the broken-out windows')}
+ ok(D.spawns.length==5&&AR('steps').length>=10,'zombies come up the stairs: four stairwells and the main stairs from the street')}
 function V_(k){return D.obj.filter(o=>o.veh==k).length}
 // ---------- the roof ----------
 {const ok2=(c,m)=>ok(c,'roof: '+m);ok2(DR.lt&&DR.lt.t=='night'&&DR.areas.some(a=>a.a=='hpad')&&DR.areas.some(a=>a.a=='elev'&&a.o.st=='esc'),'night, the helipad, the elevator up');
@@ -62,16 +76,23 @@ function V_(k){return D.obj.filter(o=>o.veh==k).length}
 const A=S.ac;A.un=[0,1,2,3,4,5,6,7,8,9];A.cp=CORD.length;A.tut=1;A.bm=[0,1,2].map(()=>CORD.reduce((v,m)=>m==18?v:v|1<<m,0));A.slt={};S.lm='off';
 mapId=18;S.mp=18;setGM('f');build();
 ok(HS.CM==='builtin-hospital'&&WW==PW&&WH==PH&&BG.width==WW&&HS.LT&&HS.LT.t=='cold','map 18 builds from hospital.json');
-ok(MP[18].n=='Zombville General'&&MPD[18]&&MPI[18]&&MUN[18]===10&&HS.HO&&HS.HO.length>=40,'its name, picture, Abigail standing in as its boss, '+(HS.HO?HS.HO.length:0)+' rooms');
+ok(MP[18].n=='Zombville General'&&MPD[18]&&MPI[18]&&MUN[18]===10&&HS.HO&&HS.HO.length>=50,'its name, picture, Abigail standing in as its boss, '+(HS.HO?HS.HO.length:0)+' rooms');
 ok(HS.BNP&&HS.BNP.length==3,'three workbenches');
+// ---------- the level below, in the game (world/lower-level.js) ----------
+{const Lo=HS.LOW,R=LO.map(f=>[f.x,f.y,f.w,f.h]);ok(Lo&&Lo.R.length==LO.length&&Lo.s>.85&&Lo.s<.95,'the game keeps the level below: '+(Lo?Lo.R.length:0)+' boxes, drawn '+(Lo?Lo.s.toFixed(2):'?')+'× around the screen\\'s middle');
+ ok(R.every(r=>WL.some(w=>w[0]==r[0]&&w[1]==r[1]&&w[2]==r[2]&&w[3]==r[3]&&w[4]==2))&&R.every(r=>NOGO.some(n=>n[0]==r[0]&&n[1]==r[1])),'nobody walks down there (bullets fly over it) and no boss lands there');
+ const fs=Lo.F.map(f=>lowFacSt(f.st));ok(fs.includes('brick')&&fs.includes('glass')&&fs.includes('concrete')&&Lo.F.length>=40,'the building\\'s walls run down to it: '+Lo.F.length+' facades, brick, concrete and glass after the walls');
+ ok(!HS.LT.L.some(q=>inLo(q.x,q.y))&&Lo.L.length>=6&&(HS.VH||[]).every(v=>!inLo(v.x+v.w/2,v.y+v.h/2)),'its lights are its own and nothing down there is a walk-behind picture');
+ const S0=[];cam.x=2016-W/2;cam.y=1900-H/2;lowLights(S0);const q=S0.find(o=>Math.abs(o.r-Lo.L[0].r*Lo.s)<1e-6);ok(S0.length==Lo.L.length&&S0.every(o=>o.cr===Lo.R&&o.vis===0)&&q,'its lights move with it and light only the level below');
+ const n0=LOG.length;let err='';try{lowDraw()}catch(e){err=e.message}ok(!err&&LOG.slice(n0).some(e=>e[0]=='drawImage'),'it draws '+err)}
 const cell=(x,y)=>Math.floor(y/gs)*gw+Math.floor(x/gs);
 {const F=new Int16Array(gw*gh);bfs(F,HS.px,HS.py);let pk=0,ex=[];for(let k=0;k<gw*gh;k++)if(!bl[k]&&F[k]<0){pk++;if(ex.length<4)ex.push([(k%gw)*gs,Math.floor(k/gw)*gs])}ok(!pk,'no pockets: every open spot can be reached ('+pk+' cells cannot '+JSON.stringify(ex)+')');
- const at=([x,y])=>!bl[cell(x,y)]&&F[cell(x,y)]>=0,SL=D.walls.filter(w=>w.s=='hidden'&&w.x>64&&w.y>64&&w.x<4000&&w.y<3260);const hs=HS.HO.filter(h=>h.w<1200&&!SL.some(w=>w.x>=h.x&&w.y>=h.y&&w.x<h.x+h.w&&w.y<h.y+h.h));let hb=[];for(const h of hs){let any=0;for(let y=h.y+4;y<h.y+h.h&&!any;y+=8)for(let x=h.x+4;x<h.x+h.w&&!any;x+=8)if(at([x,y]))any=1;if(!any)hb.push(h.x+','+h.y)}ok(!hb.length,'every room can be walked into ('+hb.join(' ')+')');
+ const at=([x,y])=>!bl[cell(x,y)]&&F[cell(x,y)]>=0,SL=D.walls.filter(w=>w.s=='hidden');const hs=HS.HO.filter(h=>h.w<1200&&!SL.some(w=>w.x>=h.x&&w.y>=h.y&&w.x<h.x+h.w&&w.y<h.y+h.h));let hb=[];for(const h of hs){let any=0;for(let y=h.y+4;y<h.y+h.h&&!any;y+=8)for(let x=h.x+4;x<h.x+h.w&&!any;x+=8)if(at([x,y]))any=1;if(!any)hb.push(h.x+','+h.y)}ok(!hb.length,'every room can be walked into ('+hb.join(' ')+')');
  ok(D.spawns.every(p=>at([p.x,p.y])),'every spawn point is on open ground that leads in')}
 // few dead ends (the owner asked): every room with its own light has two ways out or more (a way out: a gap at least 24 px along
 // its edge you can walk straight through, 28 px each side); the one exception is the nook in front of the elevators, open to the lobby
 {const free=(x,y)=>x>0&&y>0&&x<WW&&y<WH&&!bl[cell(x,y)],ways=(x0,y0,x1,y1)=>{let n=0;const side=(hz,c,a,b)=>{let r=null;const end=()=>{if(r&&r[1]-r[0]>=24)n++;r=null};for(let u=a+8;u<b-8;u+=8){let ok_=true;for(let d=-28;d<=28;d+=8)if(!(hz?free(u,c+d):free(c+d,u))){ok_=false;break}if(ok_){if(!r)r=[u,u];r[1]=u}else end()}end()};side(1,y0,x0,x1);side(1,y1,x0,x1);side(0,x0,y0,y1);side(0,x1,y0,y1);return n};
- const RL=D.areas.filter(a=>a.a=='roomlight'),E=D.areas.find(a=>a.a=='elev'&&(a.o||{}).st=='esc'),c={x:E.x+E.w/2,y:E.y+E.h},bad=[];for(const a of RL){const x0=a.x-12,y0=a.y-12,x1=a.x+a.w+12,y1=a.y+a.h+12;if(c.x>x0&&c.x<x1&&c.y>y0-140&&c.y<y1)continue;const n=ways(x0,y0,x1,y1);if(n<2)bad.push(x0+','+y0+':'+n)}
+ const RL=D.areas.filter(a=>a.a=='roomlight'&&!inLo(a.x+a.w/2,a.y+a.h/2)),E=D.areas.find(a=>a.a=='elev'&&(a.o||{}).st=='esc'),c={x:E.x+E.w/2,y:E.y+E.h},bad=[];for(const a of RL){const x0=a.x-12,y0=a.y-12,x1=a.x+a.w+12,y1=a.y+a.h+12;if(c.x>x0&&c.x<x1&&c.y>y0-140&&c.y<y1)continue;const n=ways(x0,y0,x1,y1);if(n<2)bad.push(x0+','+y0+':'+n)}
  ok(RL.length>=28&&!bad.length,'few dead ends: every lit room ('+RL.length+') has two ways out or more ('+bad.join(' ')+')')}
 // ---------- campaign: Abigail, then the escape ----------
 const RNG=new Set([11,19]);

@@ -135,7 +135,9 @@ let open={};for(let ty=0;ty<=d.h;ty++){const now={};if(ty<d.h){let run=-1;for(le
 for(const k in open)if(!now[k])out.push(open[k]);open=now}
 for(const o of d.obj)for(const b of cmObjBoxes(o))out.push(b);
 for(const a of d.areas||[])for(const b of cmAreaBoxes(a))out.push(b);
-for(const l of d.paths||[]){const B=cmPathBoxes(l);for(const b of WR.length?cmMinus(B,WR):B)out.push(b)}return out}
+for(const l of d.paths||[]){const B=cmPathBoxes(l);for(const b of WR.length?cmMinus(B,WR):B)out.push(b)}
+// the level below (lower-level.js): nobody walks there, bullets fly over it
+for(const f of d.feats||[])if(f.f=='lower'&&f.w>0&&f.h>0)out.push([f.x,f.y,f.w,f.h,2]);return out}
 
 // ----- draw order -----
 // walls, props and vehicles back to front: by layer, then draw order (z), then how far down the map they stand, then age.

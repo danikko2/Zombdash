@@ -27,6 +27,7 @@ world/kit-walls.js
 world/kit-effects.js
 world/kit-gore.js
 world/kit-lighting.js
+world/lower-level.js
 world/kit-school.js
 world/kit-market.js
 world/kit-mainst.js

@@ -22,7 +22,8 @@ const CMFEAT=[
 {id:'store',n:'Store (Penny)',rect:1,col:'#ffd84a',d:'Penny\'s fight: the store box; grocery shelves inside it get knocked over and cart corrals send carts.'},
 {id:'cityhall',n:'City Hall roof (Mayor)',rect:1,col:'#c8a0ff',d:'The Mayor watches from the top middle of this roof.'},
 {id:'roadgraph',n:'Boss road graph',graph:1,col:'#4ae0ff',d:'Where the ice cream truck, the fire engine and the police cruiser can drive: nodes joined by roads.'},
-{id:'menuview',n:'Menu view',rect:1,col:'#e8e8e0',d:'Where the camera looks while this map is shown behind the menus (the middle of the box).'}];
+{id:'menuview',n:'Menu view',rect:1,col:'#e8e8e0',d:'Where the camera looks while this map is shown behind the menus (the middle of the box).'},
+{id:'lower',n:'Level below',rect:1,col:'#5a8ad0',d:'Ground a floor below the one people play on (a courtyard or the street seen from upstairs): nobody walks there; it slides past slower than the floor, the building\'s walls run down to it, with shadows and a haze. Everything standing in the box is down there.',def:{o:{fl:1}},opts:[['fl','Floors down',[1,3]]]}];
 const CMFEI=Object.create(null);for(const f of CMFEAT)CMFEI[f.id]=f;
 // what a d.obj item is: 'p' prop, 'v' vehicle, 'd' decal, 'x' effect
 function cmOK(o){return o.dc?'d':o.fx?'x':o.veh?'v':'p'}

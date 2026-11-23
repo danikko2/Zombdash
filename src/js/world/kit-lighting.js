@@ -93,7 +93,9 @@ let CMLC=null;
 // res = light-map pixels per world pixel (light is soft, so a quarter to a half is plenty); t = seconds; st = still picture
 // one light source into the light map q (world transform set, adding with 'lighter'); n = how bright it is now. Returns its glow (or null).
 // fd (optional): how the light fades going out, as (1 - distance/reach)^fd (0 = even all the way); without it the usual soft falloff
-function cmLtOne(q,s,k,n,L){const r=s.r*(s.f=='flk'||s.f=='fire'?(.9+.1*n):1),C=cmLtRGB(s.c),m=x=>Math.round(x+(255-x)*.45),al=Math.min(1,k*s.i*n*1.15),gr=q.createRadialGradient(s.x,s.y,0,s.x,s.y,r);
+// a light from the level below (lowLights) lights only the level below: cr, its boxes
+function cmLtOne(q,s,k,n,L){if(!s.cr)return cmLtOne0(q,s,k,n,L);q.save();try{q.beginPath();for(const b of s.cr)q.rect(b[0],b[1],b[2],b[3]);q.clip();return cmLtOne0(q,s,k,n,L)}finally{q.restore()}}
+function cmLtOne0(q,s,k,n,L){const r=s.r*(s.f=='flk'||s.f=='fire'?(.9+.1*n):1),C=cmLtRGB(s.c),m=x=>Math.round(x+(255-x)*.45),al=Math.min(1,k*s.i*n*1.15),gr=q.createRadialGradient(s.x,s.y,0,s.x,s.y,r);
 if(s.fd!=null){const A=k*s.i*n*1.15;for(const u of[0,.15,.3,.45,.6,.75,.9])gr.addColorStop(u,'rgba('+m(C[0])+','+m(C[1])+','+m(C[2])+','+Math.min(1,A*Math.pow(1-u,s.fd)).toFixed(3)+')')}
 else{gr.addColorStop(0,'rgba('+m(C[0])+','+m(C[1])+','+m(C[2])+','+al+')');gr.addColorStop(.45,'rgba('+m(C[0])+','+m(C[1])+','+m(C[2])+','+al*.55+')')}gr.addColorStop(1,'rgba('+C[0]+','+C[1]+','+C[2]+',0)');q.fillStyle=gr;
 // walls: lights that don't move have their outline already; players' lights and fires get theirs now
@@ -102,7 +104,8 @@ if(s.rect){const[rx,ry,rw,rh]=s.rect;q.fillStyle='rgba('+m(C[0])+','+m(C[1])+','
 if(s.cw){for(const[k2,a2]of[[1.45,.4],[1,1]]){q.globalAlpha=a2;q.beginPath();q.moveTo(s.x,s.y);q.arc(s.x,s.y,r,s.ca-s.cw*k2,s.ca+s.cw*k2);q.closePath();q.fill()}q.globalAlpha=1}else q.fillRect(s.x-r,s.y-r,r*2,r*2);if(V)q.restore();return s.pl?null:[s,C,n,s.cw?Math.min(r,60):r,V]}
 // a soft coloured glow round a light (drawn over the world with 'lighter'), stronger the darker it is; only once it is fairly dark
 // (light strength k over 0.5: at dusk it would be too faint to see, and it costs a full-screen blend)
-function cmLtGlow(G,e,k){const[s,C,n,r,V]=e,R=r*.6,gr=G.createRadialGradient(s.x,s.y,0,s.x,s.y,R);gr.addColorStop(0,'rgba('+C[0]+','+C[1]+','+C[2]+','+Math.min(1,.2*k*s.i*n*(s.gs||1)).toFixed(3)+')');gr.addColorStop(1,'rgba('+C[0]+','+C[1]+','+C[2]+',0)');G.fillStyle=gr;if(V){G.save();cmLtClip(G,V)}G.fillRect(s.x-R,s.y-R,R*2,R*2);if(V)G.restore()}
+function cmLtGlow(G,e,k){if(e[0].cr){G.save();try{G.beginPath();for(const b of e[0].cr)G.rect(b[0],b[1],b[2],b[3]);G.clip();cmLtGlow0(G,e,k)}finally{G.restore()}return}cmLtGlow0(G,e,k)}
+function cmLtGlow0(G,e,k){const[s,C,n,r,V]=e,R=r*.6,gr=G.createRadialGradient(s.x,s.y,0,s.x,s.y,R);gr.addColorStop(0,'rgba('+C[0]+','+C[1]+','+C[2]+','+Math.min(1,.2*k*s.i*n*(s.gs||1)).toFixed(3)+')');gr.addColorStop(1,'rgba('+C[0]+','+C[1]+','+C[2]+',0)');G.fillStyle=gr;if(V){G.save();cmLtClip(G,V)}G.fillRect(s.x-R,s.y-R,R*2,R*2);if(V)G.restore()}
 // K (optional, the game's): the lights that never change, already drawn into pictures of the whole map (cmLtCache); L is then only the rest
 function cmLightPaint(G,lt,L,wx,wy,ww,wh,res,t,st,K){const P_=lt&&cmLtP(lt.t),a=lt?cl(+lt.a||0,0,1):0;if(!P_||a<=0||!G||!cmLtOK())return 0;
 const w=Math.max(1,Math.ceil(ww*res)),h=Math.max(1,Math.ceil(wh*res));if(!CMLC)CMLC=document.createElement('canvas');if(CMLC.width!==w)CMLC.width=w;if(CMLC.height!==h)CMLC.height=h;const q=CMLC.getContext('2d');if(!q)return 0;
@@ -134,6 +137,6 @@ function cmLtOn(){return!!(HS&&HS.LT&&HS.CM&&cmLtOK())}
 // Burning ground and fireballs light up too, and so do the Fire Hose's flame and burning zombies (fhLights), Ken's lightning (knLights)
 // and the beams of players' Headlamps (hlLights, extras/headlamp.js). (Players without a Headlamp carry no light: the glow round them was taken out.)
 function cmLight(){const T=HS.LT;if(!T||!HS.CM)return;const sx=Math.round(cam.x),sy=Math.round(cam.y),res=LMX?.25:.5,K=cmLtCache(T,res),S=(K?K.dyn:T.L).slice();S.O=T.L.O;
-for(const q of fr)S.push({x:q.x,y:q.y,r:80,c:'#ff9a3a',i:1,f:'fire',ph:q.x});for(const e of ep)if(e.k==3)S.push({x:e.x,y:e.y,r:40,c:'#ff7a2a',i:1});if(typeof fhLights=='function')fhLights(S);if(typeof hlLights=='function')hlLights(S);if(typeof knLights=='function')knLights(S);if(typeof qbLights=='function')qbLights(S);if(typeof escLights=='function')escLights(S);
+for(const q of fr)S.push({x:q.x,y:q.y,r:80,c:'#ff9a3a',i:1,f:'fire',ph:q.x});for(const e of ep)if(e.k==3)S.push({x:e.x,y:e.y,r:40,c:'#ff7a2a',i:1});if(typeof fhLights=='function')fhLights(S);if(typeof lowLights=='function')lowLights(S);if(typeof hlLights=='function')hlLights(S);if(typeof knLights=='function')knLights(S);if(typeof qbLights=='function')qbLights(S);if(typeof escLights=='function')escLights(S);
 const now=performance.now()/1000;if(T.st){const[,n,s]=cmStorm(now);if(n!==T.sn&&now>=s){T.sn=n;if(cmH(n,8,102)>=.25)T.th=s+.5+cmH(n,9,103)*2}if(T.th&&now>=T.th){T.th=0;if(typeof sfx=='function')sfx('thunder',null,null,.9)}}
 cmLightPaint(X,T,S,sx,sy,W,H,res,now,0,K)}

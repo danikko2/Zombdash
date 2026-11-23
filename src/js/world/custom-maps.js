@@ -44,7 +44,9 @@ function cmPaintIt(g,o,t){if(t=='w')return cmWallDraw(g,o);if(t=='a')return cmAr
 function cmBuild(d){const T=d.tile;WW=d.w*T;WH=d.h*T;WL=cmColl(d);
 const sp=d.spawns.filter(s=>s.on!==false).map(s=>[s.x,s.y]),zn=d.zones.filter(z=>z.on!==false).map(z=>[z.x,z.y,z.w,z.h]);
 const st=cmStart(d);HS={cx:cl(st.x,0,WW),cy:cl(st.y,0,WH),px:cl(st.x,8,WW-8),py:cl(st.y,8,WH-8),nx0:0,nx1:0,ny0:0,ny1:0,CM:d.id};if(sp.length||zn.length)HS.CZ={p:sp,z:zn};if(sp.length)HS.sp=sp;
-cmFeatHS(d);grid();BG.width=WW;BG.height=WH;CMGP=1;try{cmPaint(BG.getContext('2d'),d)}finally{CMGP=0}CMOB=d.obj||[];HS.CX=cmFxData(d);HS.LT=cmLightData(d)}
+cmFeatHS(d);grid();BG.width=WW;BG.height=WH;
+// a map with a level below (lower-level.js): the floor people play on is painted first, then what stands below, inside its boxes
+const LS=lowSplit(d),dB=LS?LS.B:d;CMGP=1;try{const g=BG.getContext('2d');cmPaint(g,dB);if(LS)HS.LOW=lowMake(g,LS)}finally{CMGP=0}CMOB=d.obj||[];HS.CX=cmFxData(dB);HS.LT=cmLightData(dB)}
 // what the map's special features, effects and props tell the game's systems (the same HS fields the built-in maps set)
 function cmFeatHS(d){const F=d.feats||[],R=f=>[f.x,f.y,f.x+f.w,f.y+f.h];
 SM=d.obj.filter(o=>o.fx&&cmFx(o.fx)&&cmFx(o.fx).sm).map(o=>({x:o.x,y:o.y}));
@@ -53,6 +55,8 @@ const BNP=d.obj.filter(o=>o.k=='craftbench').map(o=>[o.x,o.y]);if(BNP.length)HS.
 // no-spawn zones: the first is the game's no-spawn box for zombies from off-screen; spawn points and zones inside any are skipped
 // options: skip:0 keeps spawn points inside working, nogo:0 lets bosses land inside (the Suburb's box only stops zombies from off-screen)
 const NS=F.filter(f=>f.f=='nospawn'&&f.w>0),on=(f,k)=>!(f.o&&(f.o[k]===0||f.o[k]===false));if(NS.length){const r=R(NS[0]);HS.nx0=r[0];HS.ny0=r[1];HS.nx1=r[2];HS.ny1=r[3];HS.NS=NS.filter(f=>on(f,'skip')).map(R);NOGO=NS.filter(f=>on(f,'nogo')).map(R)}
+// bosses never land on the level below
+const LO=F.filter(f=>f.f=='lower'&&f.w>0&&f.h>0).map(R);if(LO.length)NOGO=(NOGO||[]).concat(LO);
 // the menu camera
 const MV=F.find(f=>f.f=='menuview'&&f.w>0);if(MV){HS.cx=MV.x+MV.w/2;HS.cy=MV.y+MV.h/2}
 // building interiors (bosses look for players inside): Building interior features and indoor floors
