@@ -75,7 +75,7 @@ return P}
 function cmLtClip(q,V,R){q.beginPath();q.moveTo(V[0],V[1]);for(let i=2;i<V.length;i+=2)q.lineTo(V[i],V[i+1]);q.closePath();
 if(R){q.moveTo(R[0],R[1]);q.lineTo(R[0]+R[2],R[1]);q.lineTo(R[0]+R[2],R[1]+R[3]);q.lineTo(R[0],R[1]+R[3]);q.closePath()}q.clip()}
 // how bright a source is now (0..1); st=1: a still picture (editor, thumbnails) where everything is on
-function cmLtNow(s,t,st){if(st)return s.f=='glow'?.85:1;switch(s.f){// fault: a failing bulb or tube: steady, then every 3.5–9 s (its own rhythm) it stutters off and on for under a second
+function cmLtNow(s,t,st){if(s.f=='escel')return typeof ESC!='undefined'&&ESC&&ESC.el&&s.o&&ESC.el.x===s.o.x&&ESC.el.y===s.o.y?1:0;if(st)return s.f=='glow'?.85:1;switch(s.f){// fault: a failing bulb or tube: steady, then every 3.5–9 s (its own rhythm) it stutters off and on for under a second
 case'fault':{const P=3.5+(s.ph/6.283)*5.5,u=(t+s.ph*7)%P;if(u>.85)return 1;return cmH(Math.floor(u*16),s.ph*100,77)<.5?.08:1}
 case'sweep':s.ca=s.ca0+Math.sin(t*.5+s.ph)*s.sa;return 1;
 // alarm: a fire alarm's red pulse (Zombville General); hang: a broken light hanging by its wires, flickering on and off

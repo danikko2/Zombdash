@@ -68,6 +68,11 @@ const cell=(x,y)=>Math.floor(y/gs)*gw+Math.floor(x/gs);
 {const F=new Int16Array(gw*gh);bfs(F,HS.px,HS.py);let pk=0,ex=[];for(let k=0;k<gw*gh;k++)if(!bl[k]&&F[k]<0){pk++;if(ex.length<4)ex.push([(k%gw)*gs,Math.floor(k/gw)*gs])}ok(!pk,'no pockets: every open spot can be reached ('+pk+' cells cannot '+JSON.stringify(ex)+')');
  const at=([x,y])=>!bl[cell(x,y)]&&F[cell(x,y)]>=0,SL=D.walls.filter(w=>w.s=='hidden'&&w.x>64&&w.y>64&&w.x<4000&&w.y<3260);const hs=HS.HO.filter(h=>h.w<1200&&!SL.some(w=>w.x>=h.x&&w.y>=h.y&&w.x<h.x+h.w&&w.y<h.y+h.h));let hb=[];for(const h of hs){let any=0;for(let y=h.y+4;y<h.y+h.h&&!any;y+=8)for(let x=h.x+4;x<h.x+h.w&&!any;x+=8)if(at([x,y]))any=1;if(!any)hb.push(h.x+','+h.y)}ok(!hb.length,'every room can be walked into ('+hb.join(' ')+')');
  ok(D.spawns.every(p=>at([p.x,p.y])),'every spawn point is on open ground that leads in')}
+// few dead ends (the owner asked): every room with its own light has two ways out or more (a way out: a gap at least 24 px along
+// its edge you can walk straight through, 28 px each side); the one exception is the nook in front of the elevators, open to the lobby
+{const free=(x,y)=>x>0&&y>0&&x<WW&&y<WH&&!bl[cell(x,y)],ways=(x0,y0,x1,y1)=>{let n=0;const side=(hz,c,a,b)=>{let r=null;const end=()=>{if(r&&r[1]-r[0]>=24)n++;r=null};for(let u=a+8;u<b-8;u+=8){let ok_=true;for(let d=-28;d<=28;d+=8)if(!(hz?free(u,c+d):free(c+d,u))){ok_=false;break}if(ok_){if(!r)r=[u,u];r[1]=u}else end()}end()};side(1,y0,x0,x1);side(1,y1,x0,x1);side(0,x0,y0,y1);side(0,x1,y0,y1);return n};
+ const RL=D.areas.filter(a=>a.a=='roomlight'),E=D.areas.find(a=>a.a=='elev'&&(a.o||{}).st=='esc'),c={x:E.x+E.w/2,y:E.y+E.h},bad=[];for(const a of RL){const x0=a.x-12,y0=a.y-12,x1=a.x+a.w+12,y1=a.y+a.h+12;if(c.x>x0&&c.x<x1&&c.y>y0-140&&c.y<y1)continue;const n=ways(x0,y0,x1,y1);if(n<2)bad.push(x0+','+y0+':'+n)}
+ ok(RL.length>=28&&!bad.length,'few dead ends: every lit room ('+RL.length+') has two ways out or more ('+bad.join(' ')+')')}
 // ---------- campaign: Abigail, then the escape ----------
 const RNG=new Set([11,19]);
 const play=(w0,w1,lim)=>{const R={spawned:0,reached:0,stuck:0,waves:0,err:'',sk:{}};try{for(let w=w0;w<=w1;w++){if((mode!='play'||!!BRK))nextWave();let t=0;const seen=new Map();
@@ -78,8 +83,12 @@ setGM('c');mapId=18;S.mp=18;sel=0;start();ok(mapId===18&&HS.CM==='builtin-hospit
 {const R=play(1,2,5000);ok(!R.err&&R.waves==2,'campaign waves 1–2 play '+R.err);ok(R.spawned>20&&R.stuck<=Math.max(2,R.spawned*.03),'zombies find the player through the halls ('+R.reached+' of '+R.spawned+'; '+R.stuck+' slow '+JSON.stringify(R.sk)+')')}
 wave=19;zs=[];toSp=0;mode='shop';BRK=null;const un0=(A.un||[]).slice();
 {if((mode!='play'||!!BRK))nextWave();let b=null;for(let i=0;i<600&&!b;i++){for(const p of PL){p.hp=p.mx}tick(1);b=zs.find(q=>ZT[q.t].sv)}ok(wave==20&&b&&b.ci==10,'wave 20: Abigail (standing in)');
+ {const o=HS.CX.A.map(q=>q.o).find(o=>o&&o.a=='elev'&&(o.o||{}).st=='esc'),lt=[];arElevLts(o,lt);const solid=WL.filter(w=>w[5]=='elev').length;
+  ok(o&&!ESC&&elOpenK(o)==0&&!elEsc(o)&&escElevCall(o)===false&&cmLtNow(lt[0],1,0)==0&&solid>=2,'wave 20, the boss still up: the escape elevator is shut, dark and solid')
+  globalThis._EO=[o,lt[0]]}
  b.ph=2;b.iv=0;hurt(b,1e9,0,0);for(let i=0;i<Math.ceil(6.2/.016)&&!ESC;i++){for(const p of PL)p.hp=p.mx;tick(1)}
  ok(ESC&&ESC.ph=='go'&&mode=='play'&&!bBt(A,DIF(),18),'she gives up: the escape starts (the map isn\\'t won yet)');
+ {const[o,l]=globalThis._EO;ok(elEsc(o)&&cmLtNow(l,1,0)==1,'once she gives up, its lights come on and its doors open')}
  ok(KN&&KN.sd&&SVL3.join(' ').includes('roof'),'standing in, she doesn\\'t ask to join: she sends the players to the roof');
  for(let i=0;i<80;i++){for(const p of PL)p.hp=p.mx;tick(1)}const e=ESC.el,G=elG(e);ok(ESC.k>=1&&!WL.some(w=>w[5]=='elev'&&w[0]>=e.x-1&&w[0]<e.x+e.w&&w[1]>=e.y-1&&w[1]<e.y+e.h),'the escape elevator\\'s doors open');
  const c=escCarC();P.x=c.x;P.y=c.y;let ph=[];for(let i=0;i<Math.ceil(5/.016)&&!ESC.rf;i++){for(const p of PL)p.hp=p.mx;tick(1);if(ph[ph.length-1]!=ESC.ph)ph.push(ESC.ph)}

@@ -35,8 +35,11 @@ cmAddArea({id:'hfount',n:'Lobby fountain (water feature)',cat:'build',fl:1,pal:[
 // elevator: shut until the roof escape opens it; its call button glows)
 function elG(o){const{x,y,w,h}=o,d=po(o,'d','s'),T=8;let door,walls;if(d=='s'){door=[x+T,y+h-T,w-2*T,T];walls=[[x,y,w,T],[x,y,T,h],[x+w-T,y,T,h]]}else if(d=='n'){door=[x+T,y,w-2*T,T];walls=[[x,y+h-T,w,T],[x,y,T,h],[x+w-T,y,T,h]]}
  else if(d=='e'){door=[x+w-T,y+T,T,h-2*T];walls=[[x,y,T,h],[x,y,w,T],[x,y+h-T,w,T]]}else{door=[x,y+T,T,h-2*T];walls=[[x+w-T,y,T,h],[x,y,w,T],[x,y+h-T,w,T]]}return{d,door,walls,T,inr:[x+T,y+T,w-2*T,h-2*T]}}
+// the roof escape's car: dark and shut like the others until the escape starts (wave 20 beaten), then lit with its doors opening
+const elEsc=o=>po(o,'st','shut')=='esc'&&typeof escElevK=='function'&&escElevK(o)!=null;
 function elOpenK(o){const st=po(o,'st','shut');if(typeof escElevK=='function'){const k=escElevK(o);if(k!=null)return k}return st=='open'?1:st=='pried'?.45:0}
-function arElev(g,o){const{x,y,w,h}=o,G=elG(o),st=po(o,'st','shut'),lit=st=='open'||st=='esc';
+function arElev(g,o){arElevCab(g,o,po(o,'st','shut')=='open')}
+function arElevCab(g,o,lit){const{x,y,w,h}=o,G=elG(o),st=po(o,'st','shut');
  // the cab: steel panels, a handrail, a floor (light from the ceiling when the power's on)
  g.fillStyle=HSK.o;g.fillRect(x,y,w,h);g.fillStyle=lit?'#8a8f98':'#2a2c32';g.fillRect(x+2,y+2,w-4,h-4);const[ix,iy,iw,ih]=G.inr;g.fillStyle=lit?'#b8a888':'#3a3630';g.fillRect(ix,iy,iw,ih);
  g.fillStyle=lit?'rgba(255,255,255,.08)':'rgba(0,0,0,.15)';for(let k=0;k<iw;k+=12)g.fillRect(ix+k,iy,1,ih);
@@ -48,16 +51,16 @@ function arElev(g,o){const{x,y,w,h}=o,G=elG(o),st=po(o,'st','shut'),lit=st=='ope
  const[dx,dy,dw,dh]=G.door;g.fillStyle=HSK.o;if(dw>dh){g.fillRect(dx-6,dy-2,6,dh+4);g.fillRect(dx+dw,dy-2,6,dh+4)}else{g.fillRect(dx-2,dy-6,dw+4,6);g.fillRect(dx-2,dy+dh,dw+4,6)}g.fillStyle=HSK.std;if(dw>dh){g.fillRect(dx-5,dy-1,4,dh+2);g.fillRect(dx+dw+1,dy-1,4,dh+2)}else{g.fillRect(dx-1,dy-5,dw+2,4);g.fillRect(dx-1,dy+dh+1,dw+2,4)}
  if(st=='pried'){g.fillStyle='#0a0a0e';g.fillRect(ix,iy,iw,ih);g.fillStyle='rgba(255,255,255,.04)';for(let k=4;k<ih;k+=10)g.fillRect(ix+4,iy+k,iw-8,1);g.fillStyle='#3a3d46';g.fillRect(ix+iw/2-2,iy,4,ih)}}
 // the doors (they slide into the walls on each side), and outside: the floor display over the doors, the call button
-function arElevAn(o,t){const G=elG(o),k=elOpenK(o),[dx,dy,dw,dh]=G.door,st=po(o,'st','shut'),hz=dw>dh,L=hz?dw:dh,half=L/2,gap=Math.round(half*k);
+function arElevAn(o,t){const G=elG(o),k=elOpenK(o),[dx,dy,dw,dh]=G.door,st=po(o,'st','shut'),on=elEsc(o),hz=dw>dh,L=hz?dw:dh,half=L/2,gap=Math.round(half*k);if(on)arElevCab(X,o,1);
  const leaf=(a,b)=>{if(b<=a)return;if(hz){X.fillStyle=HSK.o;X.fillRect(dx+a,dy,b-a,dh);X.fillStyle='#a8b0ba';X.fillRect(dx+a+1,dy+1,b-a-2,dh-2);X.fillStyle='#d4dae2';X.fillRect(dx+a+1,dy+1,b-a-2,2)}else{X.fillStyle=HSK.o;X.fillRect(dx,dy+a,dw,b-a);X.fillStyle='#a8b0ba';X.fillRect(dx+1,dy+a+1,dw-2,b-a-2);X.fillStyle='#d4dae2';X.fillRect(dx+1,dy+a+1,2,b-a-2)}};
  leaf(0,half-gap);leaf(half+gap,L);if(gap<1){X.fillStyle=HSK.o;hz?X.fillRect(dx+half,dy,1,dh):X.fillRect(dx,dy+half,dw,1)}
  // outside the doors: the floor display (a number, or the escape's count) and the call button
- const out=G.d=='s'?[dx+dw/2,dy+dh+12]:G.d=='n'?[dx+dw/2,dy-12]:G.d=='e'?[dx+dw+12,dy+dh/2]:[dx-12,dy+dh/2];const fl=typeof escElevFloor=='function'?escElevFloor(o):null,f=fl!=null?fl:st=='open'?'1':st=='pried'?'--':st=='esc'?'1':'--';
- X.fillStyle=HSK.o;X.fillRect(out[0]-11,out[1]-6,22,11);X.fillStyle='#160a08';X.fillRect(out[0]-10,out[1]-5,20,9);X.font='bold 8px monospace';X.textAlign='center';X.textBaseline='middle';X.fillStyle=st=='shut'?'#5a2a20':'#ff6a3a';X.fillText(f,out[0],out[1]);X.textAlign='left';X.textBaseline='alphabetic';
- if(st=='esc'){const on=typeof escElevCall=='function'?escElevCall(o):((t*1.2)%1<.5);const bx=G.d=='s'||G.d=='n'?dx+dw+12:out[0],by=G.d=='s'||G.d=='n'?out[1]:dy+dh+12;X.fillStyle=HSK.o;X.fillRect(bx-4,by-6,9,13);X.fillStyle='#8a8f96';X.fillRect(bx-3,by-5,7,11);X.fillStyle=on?'#ffe27a':'#5a4a2a';X.fillRect(bx-1,by-3,3,3);X.fillRect(bx-1,by+1,3,3)}}
+ const out=G.d=='s'?[dx+dw/2,dy+dh+12]:G.d=='n'?[dx+dw/2,dy-12]:G.d=='e'?[dx+dw+12,dy+dh/2]:[dx-12,dy+dh/2];const fl=typeof escElevFloor=='function'?escElevFloor(o):null,f=fl!=null?fl:st=='open'?'1':st=='esc'&&on?'1':'--';
+ X.fillStyle=HSK.o;X.fillRect(out[0]-11,out[1]-6,22,11);X.fillStyle='#160a08';X.fillRect(out[0]-10,out[1]-5,20,9);X.font='bold 8px monospace';X.textAlign='center';X.textBaseline='middle';X.fillStyle=st=='shut'||(st=='esc'&&!on)?'#5a2a20':'#ff6a3a';X.fillText(f,out[0],out[1]);X.textAlign='left';X.textBaseline='alphabetic';
+ if(st=='esc'){const lt=on&&typeof escElevCall=='function'&&escElevCall(o);const bx=G.d=='s'||G.d=='n'?dx+dw+12:out[0],by=G.d=='s'||G.d=='n'?out[1]:dy+dh+12;X.fillStyle=HSK.o;X.fillRect(bx-4,by-6,9,13);X.fillStyle='#8a8f96';X.fillRect(bx-3,by-5,7,11);X.fillStyle=lt?'#ffe27a':'#5a4a2a';X.fillRect(bx-1,by-3,3,3);X.fillRect(bx-1,by+1,3,3)}}
 // shut, the doors and the inside are solid (nobody stands in a closed car); the roof escape takes both away when it opens the doors
 function arElevColl(o,out){const G=elG(o),st=po(o,'st','shut');for(const b of G.walls)out.push([b[0],b[1],b[2],b[3],0]);if(st!='open'){out.push([G.door[0],G.door[1],G.door[2],G.door[3],0,'elev']);out.push([G.inr[0],G.inr[1],G.inr[2],G.inr[3],0,'elev'])}}
-function arElevLts(o,L){const st=po(o,'st','shut');if(st=='open'||st=='esc'){const G=elG(o),[ix,iy,iw,ih]=G.inr;L.push({rect:[ix,iy,iw,ih],x:ix+iw/2,y:iy+ih/2,r:Math.hypot(iw,ih)/2+16,c:'#fff2d8',i:st=='esc'?.55:.8,ph:0})}}
+function arElevLts(o,L){const st=po(o,'st','shut');if(st=='open'||st=='esc'){const G=elG(o),[ix,iy,iw,ih]=G.inr,q={rect:[ix,iy,iw,ih],x:ix+iw/2,y:iy+ih/2,r:Math.hypot(iw,ih)/2+16,c:'#fff2d8',i:st=='esc'?.55:.8,ph:0};if(st=='esc'){q.f='escel';q.o=o}L.push(q)}}
 cmAddArea({id:'elev',n:'Elevator (the cab, doors on one side)',cat:'build',fl:0,def:{o:{d:'s',st:'shut'}},opts:[['d','Doors face',[['s','Down'],['n','Up'],['e','Right'],['w','Left']]],['st','Doors',[['shut','Shut'],['pried','Pried half open (dark shaft)'],['open','Open (walk in)'],['esc','The roof escape elevator']]]],
  min:[64,64],pri:-20,f:arElev,anim:arElevAn,coll(o,out){if(cmSolid(o,'a'))arElevColl(o,out)},lts:arElevLts});
 // ----- the roof deck: the membrane in long sheets, seams, drains, patches of gravel ballast -----

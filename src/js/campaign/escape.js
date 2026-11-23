@@ -16,7 +16,7 @@ function escInCar(p){const r=elG(ESC.el).inr;return p.x>r[0]-2&&p.x<r[0]+r[2]+2&
 // the kit's elevator asks these how far open the escape car's doors are, what its floor display says, whether its call button is lit
 function escElevK(o){return ESC&&ESC.el===o?ESC.k:null}
 function escElevFloor(o){return ESC&&ESC.el===o&&ESC.fl!=null?ESC.fl:null}
-function escElevCall(o){return!ESC||ESC.el!==o?((performance.now()/833)%1<.5&&wave>=20):ESC.ph=='go'?(performance.now()/300)%1<.6:false}
+function escElevCall(o){return!ESC||ESC.el!==o?false:ESC.ph=='go'?(performance.now()/300)%1<.6:false}
 const escEase=u=>{u=cl(u,0,1);return u*u*(3-2*u)};
 // ----- start: the boss has given up -----
 function escStart(){let d=null;try{d=bimDoc(mapId)}catch(e){}const el=d&&escElevIn(d);if(!el){campWin();return}
