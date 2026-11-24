@@ -34,9 +34,9 @@ suSurv(0);S.best=5;S.sw=1;suSW(1);suSW(1);ok(S.sw==3,'start wave stepper');for(l
 ok(nxKey('escape')&&UIS=='hub','Esc on setup goes to the main menu');
 setGM('f');mapId=0;sel=0;SV=0;play();mapGo();ok((mode=='play'&&!BRK)||(mode=='shop'||!!BRK)||mode=='tut','START starts the game');
 // campaign world map
-menu();hubCamp();ok(UIS=='cmap'&&GMD=='c'&&hx_().includes('cwZ')&&hx_().includes('class="cwp')&&hx_().includes('Suburb'),'Campaign card opens the world map zoomed into the current section');
+menu();hubCamp();ok(UIS=='cmap'&&GMD=='c'&&hx_().includes('cwZ')&&hx_().includes('class="cwp')&&hx_().includes('Dave&#39;s House'),'Campaign card opens the world map zoomed into the current section');
 ok((hx_().match(/class="cwl/g)||[]).length==5,'all five sections stay on the map while zoomed');
-ok(hx_().includes('PLAY SUBURB')&&hx_().includes("cGo('w')"),'zoomed panel: play the picked map, back out to the whole world');
+ok(hx_().includes('PLAY DAVE&#39;S HOUSE')&&hx_().includes("cGo('w')"),'zoomed panel: play the picked map, back out to the whole world');
 cGo('w');ok(hx_().includes('cwW')&&hx_().includes('ZOOM IN')&&!hx_().includes('class="cwp'),'whole-world view: sections only, ZOOM IN');
 const w0=CWV.ws;cwNext(1);ok(CWV.ws!==w0&&CWV.v==='w','E/RB picks the next section on the whole world');
 cwSec(4);ok(CWV.v==='w'&&hx_().includes('LOCKED'),'a locked section cannot be zoomed into');
@@ -54,7 +54,7 @@ SHX.t='hp';shop();ok(has('HEAL +1')&&has('Max HP'),'health tab');SHX.t='guns';sh
 ok(has('+1 ♥')&&has('heal()'),'quick heal in the store header');
 runExit();ok(RXC==1&&has('Leave the run?')&&has("rxGo('m')")&&has("rxGo('e')"),'leaving from the store asks first');ok(rxKey('escape')&&RXC==0&&!has('Leave the run?'),'Esc closes the question');
 runExit();rxGo('m');const cp=cpOK();ok(mode=='menu'&&UIS=='hub'&&cp&&cp.w==3&&cp.p.own.includes(1),'Main Menu from the store keeps the run (with what was bought)');
-ok(has('CONTINUE · SUBURB WAVE 4'),'the main menu offers to continue it');
+ok(has('CONTINUE · DAVE&#39;S HOUSE WAVE 4'),'the main menu offers to continue it');
 cpResume();ok(mode!='menu'&&P.own.includes(1)&&wave>=3,'continuing picks the run back up');
 mode='play';pauseMenu();ok(has('PAUSED')&&has('LEAVE THE RUN')&&has("runExit('m')")&&has("runExit('e')")&&!has("runExit('c')"),'pause: resume, options and the ways out (no campaign map in free play)');
 runExit('e');ok(has('End this run?'),'End Run asks first');rxGo('e');ok(mode=='over'&&has('RUN ENDED')&&has('MAIN MENU')&&has('NEW GAME')&&has('TRY AGAIN')&&has('id=ovgo'),'end screen: Main Menu, New Game, Try Again');ok(!cpOK(),'ending the run clears it');

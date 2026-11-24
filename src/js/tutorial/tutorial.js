@@ -1,11 +1,15 @@
 //# tutorial/tutorial.js — Tutorial
-// ---------- tutorial: the middle house on Suburb, zoomed in, the rest of the world blacked out ----------
+// ---------- tutorial: Dave's house on map 0, zoomed in, the rest of the world blacked out ----------
 var TUT=null,TUTF=0;
-function tutGeo(){const hw=340,hh=380,gd=130,x0=(2300-hw-gd)/2,y0=(1800-hh)/2-60,x1=x0+hw,y1=y0+hh;return{x0,y0,x1,y1,yA:y0+hh*.32,kx:x0+hw*.2,cx:x0+hw/2,gx:x1+gd,gd}}
+// The house's long block (380..935 × 780..1058; the garage is its east end, the bedroom wing hangs below its west end): cx the front
+// door, kx the sliding door onto the patio at the back (the first zombie comes in by it), X the other doors kept shut until the
+// lesson ends (the garage's side door, the two bedroom doors into the wing). gx is the right edge of the lit area (once a garage
+// beside the house), yA where that part starts.
+function tutGeo(){const x0=380,y0=780,x1=935,y1=1058;return{x0,y0,x1,y1,yA:y0,kx:668,cx:676,gx:x1,X:[[931,846,8,52,2],[454,1054,44,8,2],[532,1054,48,8,2]]}}
 function tutOK(){if(MPn||GMD!='c'||mapId!==0||swEff()!==1||S.dev)return 0;if(TUTF)return 1;const A=S.ac;if(!A||A.tut||S.tut)return 0;if(!A.g&&(cpOf(A)>0||bmOf(A).some(x=>x)||(A.lv||1)>1))return 0;return 1}
 function tutAgain(){TUTF=1;setGM('c');mapId=0;S.mp=0;survs()}
 function tutStart(){TUTF=0;const G=tutGeo();wave=0;toSp=0;bossQ=-1;mode='play';ui.innerHTML='';banner=0;ep=[];pd=[];fr=[];rg=[];DR=[];FT=[];ET=0;music('game');
-const B=[[G.cx-32,G.y1-4,64,8,2],[G.kx-32,G.y0-4,64,8,2],[G.x1,G.y1-4,G.gd,8,2]];WL.push(...B);
+const B=[[G.cx-32,G.y1-4,64,8,2],[G.kx-32,G.y0-4,64,8,2],...G.X.map(b=>b.slice())];WL.push(...B);
 TUT={ph:0,t:0,mv:0,lx:P.x,ly:P.y,sh:0,fk:0,B,G,k:0,cam:{x:P.x,y:P.y}};tutUpd(0)}
 function tutBar(i){const T=TUT,w=T.B[i];if(!w)return;const j=WL.indexOf(w);if(j>=0)WL.splice(j,1);T.B[i]=null}
 function tutUpd(dt){const T=TUT,G=T.G;T.t+=dt;toSp=0;bossQ=-1;for(const p of PL){p.hp=Math.max(p.hp,p.mx)}
@@ -13,7 +17,7 @@ const hc={x:(G.x0+G.gx)/2,y:(G.y0+G.y1)/2};
 if(T.ph==0){T.mv+=Math.hypot(P.x-T.lx,P.y-T.ly);T.lx=P.x;T.ly=P.y;if(T.mv>180&&T.t>1.2){T.ph=1;T.t=0;sfx('click')}}
 else if(T.ph==1){if((P.fk||0)>0&&!(T.fk>0))T.sh++;T.fk=P.fk||0;if(T.sh>=4&&T.t>1){T.ph=2;T.t=0;const z=mk(0,G.kx+30,G.y0+50);z.hp=Math.min(z.hp,3);zs.push(z);sfx('newz');FT.push({x:z.x,y:z.y-30,t:'ZOMBIE!',c:'#ff5a4a',l:1.4})}}
 else if(T.ph==2){if(!zs.length&&T.t>.6){T.ph=3;T.t=0;tutBar(0);sfx('clear')}}
-else if(T.ph==3){if(P.y>G.y1+10&&Math.abs(P.x-G.cx)<70){T.ph=4;T.t=0;tutBar(1);tutBar(2);sfx('wave')}}
+else if(T.ph==3){if(P.y>G.y1+10&&Math.abs(P.x-G.cx)<70){T.ph=4;T.t=0;for(let i=1;i<T.B.length;i++)tutBar(i);sfx('wave')}}
 else if(T.ph==4){T.k=Math.min(1,T.t/1.7);if(T.k>=1){const A=S.ac;if(A)A.tut=1;S.tut=1;sv();TUT=null;wave=0;nextWave();return}}
 const z=tutZ(),vw=W/z,vh=H/z,ax=(lo,hi,p,v)=>v>=hi-lo?(lo+hi)/2:cl(p,lo+v/2,hi-v/2),c={x:ax(G.x0-30,G.gx+30,P.x,vw),y:ax(G.y0-30,G.y1+70,P.y,vh)};if(vh>=G.y1-G.y0+100)c.y-=80/z;
 const e=T.ph==4?T.k*T.k*(3-2*T.k):0;T.cam={x:c.x+(P.x-c.x)*e,y:c.y+(P.y-c.y)*e}}

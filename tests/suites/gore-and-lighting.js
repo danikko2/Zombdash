@@ -80,7 +80,7 @@ ok(edPropsHTML().includes('data-f="r"'),'Editor: the properties panel shows Turn
 edPropChange('r',{value:'200'});ok(h.r==200,'Editor: type an effect\\'s turn in the properties panel');edClose(1)}
 
 // ---------- time of day ----------
-ok(same(CMLT.map(p=>p.id),['day','sunrise','morning','dusk','night','dark','cold'])&&CMLT.every(p=>p.n&&p.d&&/^#[0-9a-f]{6}$/.test(p.mul)&&p.def>0&&p.def<=1),'Time of day: day, sunrise, morning, dusk, night, lights only and lights only (cold), each with a default amount');
+ok(same(CMLT.map(p=>p.id),['day','sunrise','morning','sunset','dusk','night','dark','cold'])&&CMLT.every(p=>p.n&&p.d&&/^#[0-9a-f]{6}$/.test(p.mul)&&p.def>0&&p.def<=1),'Time of day: day, sunrise, morning, sunset, dusk, night, lights only and lights only (cold), each with a default amount');
 {const d=cmNew({name:'Night',w:30,h:20});d.lt={t:'night',a:.6};const j=cmWrite(d),r=RW(j);
 ok(same(j.lighting,{time:'night',amount:.6})&&r.doc&&same(r.doc.lt,{t:'night',a:.6})&&!r.warnings.length&&same(cmWrite(r.doc),j),'Time of day: saved in the file as "lighting" and loaded back');
 const off=cmWrite(cmNew({name:'Off',w:30,h:20}));ok(!('lighting' in off),'Time of day: maps without it have no "lighting"');
@@ -104,7 +104,7 @@ ok((mode=='play'&&!BRK)&&HS.LT&&HS.LT.t=='night'&&HS.LT.L.length>=20&&cmLtOn(),'
 LOG.length=0;let er='';try{for(let f=0;f<120&&(mode=='play'&&!BRK);f++){P.hp=P.mx=99;tick(1)}}catch(e){er=e.message}
 ok(!er&&LOG.some(l=>l[0]=='drawImage'&&l[1]=='multiply'),'In the game: the world is darkened every frame (a multiplied light map) '+er);
 ptEnd();edClose(1)}
-{mapId=0;build();ok(!HS.LT&&!cmLtOn(),'Built-in maps have no lighting (unchanged)');const d=cmRead(JSON.stringify(CMSAMPLES[0])).doc;ok(!d.lt,'The demo map is in daylight')}
+{mapId=1;build();ok(!HS.LT&&!cmLtOn(),'Built-in maps without a time of day have no lighting (the Warehouse)');mapId=0;build();ok(HS.LT&&HS.LT.t=='sunset','Dave\\'s House (map 0) is at early sunset');mapId=0;const d=cmRead(JSON.stringify(CMSAMPLES[0])).doc;ok(!d.lt,'The demo map is in daylight')}
 // the editor: Map panel, slider, undo, preview
 {const d=cmNew({name:'Lit editor',w:40,h:30});d.obj.push(LY('o',{id:'lp',k:'lamp',x:200,y:200,r:0}));openEd(d);const h0=edMapHTML();
 ok(h0.includes('data-f=ltt')&&['Off (as painted)','Day','Morning','Dusk','Night'].every(s=>h0.includes(s))&&!h0.includes('data-f=lta'),'Editor: the Map panel has a Time of day choice (no slider while it is off)');

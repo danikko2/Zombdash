@@ -34,7 +34,8 @@ ok(JSON.stringify(PS[0].gun[0])=='[490,0,80,32,6,14]'&&JSON.stringify(PS[16].gun
 ok(ZS.chicken&&ZS.chicken.fly.length==4&&ZS.chicken.eat.length==2&&ZS.chicken.puff.length==2&&ZS.bolt&&ZS.bolt.fly.length==1&&ZS.chicken.fly[0][1]>=1641&&ZS.bolt.fly[0][1]>=1641,'rubber chicken (fly, eat, balloon) and bolt frames added below the old zombie sheet');
 ok(JSON.stringify(ZS[0].walk[0])=='[0,0,58,62]'&&JSON.stringify(ZS[20].walk[0])=='[0,1423,102,108]'&&JSON.stringify(ZS[14].bite[3])=='[837,1190,92,82]','older zombie frames did not move');
 // ---------- store ----------
-setGM('f');mapId=0;sel=0;S.dlf=1;start();P.mx=P.hp=999;P.cash=100000;shop();
+setGM('f');mapId=0;sel=0;S.dlf=1;start();P.x=500;P.y=1450;P.mx=P.hp=999;// on the open lawn in front of Dave's house (the living room is too narrow for the long shots)
+P.cash=100000;shop();
 ok(/data-gn=11[^>]*><\\/canvas><\\/span><span class=shn>Crossbow<\\/span><span class="shpr"><span class=scr>260</.test(ui.innerHTML)&&/data-gn=12[^>]*><\\/canvas><\\/span><span class=shn>Chicken Gun<\\/span><span class="shpr"><span class=scr>2,000</.test(ui.innerHTML),'store sells the Crossbow (260 Scrap) and the Chicken Gun (<span class=scr>2000), each with its picture');
 SHX.t='ammo';SHX.am='ar';shop();ok(ui.innerHTML.includes("amBuy('ar')")&&/Arrows<small>0 \\/ 500/.test(ui.innerHTML)&&ui.innerHTML.includes('BUY +100 · <span class=scr>40'),'store sells arrows: +100 for <span class=scr>40, 500 max');
 let c0=P.cash;buy(XB);ok(P.own.includes(XB)&&c0-P.cash==260&&P.cur==XB&&P.mg[XB]==10&&P.am.ar==20,'bought the Crossbow for 260 Scrap: 10 bolts loaded + 20 arrows');

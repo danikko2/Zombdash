@@ -47,7 +47,7 @@ await workshop();wsNew();ok(has('NEW MAP')&&has('BLANK MAP')&&has('A COPY OF A M
 ok(has('inert aria-hidden=true')&&has('hubbar'),'the Workshop stays underneath but can\\'t be reached while the card is open');
 wsNSz('l');ok(WSN.w==100&&WSN.h==80&&has('100 × 80 tiles'),'LARGE sets 100 × 80 and the preview says so');
 WSN.g='sand';wsNewNX();ok(has('sand')&&has('All '+CMTER.length),'ground swatches, with every ground one pick away');
-WSN.from='copy';wsNewNX();ok(has('PICK A MAP TO COPY')&&has('COPY &amp; START BUILDING')&&has('Suburb'),'it can start from a copy of a map instead');WSN.from='blank';
+WSN.from='copy';wsNewNX();ok(has('PICK A MAP TO COPY')&&has('COPY &amp; START BUILDING')&&has('Dave&#39;s House'),'it can start from a copy of a map instead');WSN.from='blank';
 WSN.name='Beach Bash';await wsCreate();ok(mode=='edit'&&ED&&ED.d.name=='Beach Bash'&&ED.d.w==100&&ED.d.h==80&&ED.d.ground=='sand','CREATE makes the map with that name, size and ground, and opens the editor');
 ok(EDTG.flatMap(g=>g[1]).sort().join()==EDT.map(t=>t[0]).sort().join()&&EDT.every(t=>EDTN[t[0]]),'editor top bar: every tool sits in a named group with a short name');
 {const r=edFindAll('car');ok(r.includes('data-a="asset:')&&r.includes('Police car')&&r.indexOf('Props &amp; vehicles')<r.indexOf('>Ground <'),'one search over the whole library, best matches first');ok(edFindAll('zzqx').includes('Nothing matches'),'and it says when nothing matches')}

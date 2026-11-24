@@ -16,7 +16,7 @@ S.ac.bp=WP.map((_,i)=>i).filter(i=>WP[i].tr>0);S.ac.bpv=1;docL.pointerdown[0]();
 const tick=(n)=>{for(let i=0;i<n;i++){AT_+=.016;NOW_+=16;for(const f of ivs)f();for(let q=TQ.length-1;q>=0;q--)if(TQ[q][0]<=AT_){const g=TQ[q][1];TQ.splice(q,1);g()}loop(NOW_)}};
 const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)errs.push(m)};
 S.ac.name='Tester';S.ac.un=[0,1,2,3,4,5,6,7];const A=S.ac;msA(A);mapId=0;S.sw=1;
-const run=ci=>{sel=ci;start();P.mx=P.hp=999;return P};
+const run=ci=>{sel=ci;start();P.x=500;P.y=1450;P.mx=P.hp=999;return P};// on the open lawn in front of Dave's house
 const kill=(t=0,d=10)=>{const z=mk(t,P.x+d,P.y);zs.push(z);KG=P.cur;hurt(z,1e9,0,0)};
 // Bill
 run(2);P.cds[2]=0;mouse.d=1;mouse.x=P.x+100;mouse.y=P.y;tick(1);const cd0=P.cds[2];A.ms[2].l=3;P.cds[2]=0;tick(1);const cd1=P.cds[2];ok(Math.abs(cd0/cd1-1.5)<.05,'Bill shotgun 1.5x fire rate '+cd0.toFixed(3)+' -> '+cd1.toFixed(3));mouse.d=0;

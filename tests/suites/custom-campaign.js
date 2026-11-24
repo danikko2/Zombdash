@@ -109,11 +109,11 @@ cpResume();ok(mapId===kB&&CREP&&CREP.o===0&&wave===3,'resume plays the replaceme
 {const A2=JSON.parse(JSON.stringify(A));A2.bm=[0,0,0];S.prof.push(A2);const keepAc=S.ac;
 wave=19;nextWave();const b=zs.find(z=>z.t==15);ok(b&&b.ci===MUN[0],'wave 20: Suburb\\'s own survivor');
 A.bm[1]&=~1;const un0=A.un.slice();svDown(b);ok(bBt(A,1,0)&&!A.cmc[dB.id],'beating it marks Suburb beaten (progress tied to the original map number), not the custom map');
-ok(A.un.includes(MUN[0]),'and the survivor joins, as on Suburb');campWin();ok(CWIN.m===0&&ui.innerHTML.includes('SUBURB COMPLETE'),'the end screen is Suburb\\'s');S.prof.pop()}
+ok(A.un.includes(MUN[0]),'and the survivor joins, as on Suburb');campWin();ok(CWIN.m===0&&ui.innerHTML.includes('DAVE&#39;S HOUSE COMPLETE'),'the end screen is Dave\\'s House\\'s');S.prof.pop()}
 over(1);menu();ok(mapId===0&&!CREP,'leaving the run puts Suburb back as the picked map');
 ok(olRow()===null,'no leaderboard score from a replaced map');
 // one click restores the original
-cMap();ok(ui.innerHTML.includes('crp')&&ui.innerHTML.includes('restore Suburb'),'the campaign map marks Suburb as replaced, with a restore link');
+cMap();ok(ui.innerHTML.includes('crp')&&ui.innerHTML.includes('restore Dave&#39;s House'),'the campaign map marks Dave\\'s House as replaced, with a restore link');
 ccBack(0);ok(!ccRep(0)&&!CCS.rep[0],'restore: one click');
 mapId=0;start();ok(mapId===0&&!CREP&&HS.CM==='builtin-suburb','Suburb plays the original again (its own map file)');over(1);
 cpClear();localStorage[CPK]=JSON.stringify({v:1,t:Date.now(),an:'Tester',gm:'c',m:0,cr:dB.id,ci:0,d:1,w:6,k:0,p:{cash:0}});ok(!cpOK(),'a checkpoint from the replacement is not offered after a restore');cpClear();

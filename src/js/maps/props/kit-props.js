@@ -94,12 +94,13 @@ garageshelf:ob(96,34,[92,14],q=>{R_(q,'#16111c',2,4,92,26);R_(q,'#6a6f7a',3,5,90
 tpole:Object.assign(ob(46,118,[6,6],q=>{R_(q,'#16111c',20,6,7,112);R_(q,'#6b4a2a',21,7,5,111);R_(q,'#16111c',2,16,42,5);R_(q,'#5a3a22',3,17,40,3);R_(q,'#8a909c',6,13,3,4);R_(q,'#8a909c',37,13,3,4);R_(q,'#3a3d46',30,26,10,12)}),{wb:1}),
 bollard:ob(14,22,[8,6],q=>{R_(q,'#16111c',3,4,8,17);R_(q,'#e0b030',4,5,6,15);R_(q,'#16111c',4,9,6,2);R_(q,'#16111c',4,14,6,2)})});
 // ----- forest trees (the Suburb's woods) -----
-// var picks the size and shade: var = (size step × 3 + shade) / 100 (pine: 13–18 px canopy radius, oak: 16–24). Trunks are
+// var picks the size and shade: var = (size step × 3 + shade) / 100 (pine: 13–18 px canopy radius, oak: 16–24); a colour, when
+// given, is the canopy's colour (Dave's House's dark woods), the shade then a little lighter or darker. Trunks are
 // see-through (cf:2: bullets fly through the woods, as on the Suburb). The canopy joins the walk-behind list as one shared
 // picture per size and shade, so a forest of a thousand trees costs no extra memory (kpWB; sh:1 tells bgFree not to free it).
 function kpWB(g,cv,x,y,base,ch){if(!vRec.on||vRec.busy||vRec.nest||!vRec.L||!g||!g.getTransform||typeof BG=='undefined'||g.canvas!==BG)return;const T=g.getTransform();if(!T||T.a!==1||T.b!==0||T.c!==0||T.d!==1)return;
 vRec.L.push({x:x+T.e,y:y+T.f,w:cv.width,h:cv.height,cv,al:null,base:base+T.f,ch,sh:1})}
-function kpFTree(pine){const b=pine?13:16,n=pine?12:13;return{w:pine?44:56,h:pine?60:62,c:[12,12],cf:2,f(g,x,y,v){const i=Math.round(cl(+v||0,0,1)*100),s=i%3,r=b+Math.floor(i/3)%n,ty=y-6,sp=subSpr(pine,r,(s+.5)/3);
+function kpFTree(pine){const b=pine?13:16,n=pine?12:13;return{w:pine?44:56,h:pine?60:62,c:[12,12],cf:2,pc:pine?[['#1f4f2a','Green'],['#18391f','Dark green']]:[['#2f6d2e','Green'],['#224b22','Dark green']],f(g,x,y,v,c){const i=Math.round(cl(+v||0,0,1)*100),s=i%3,r=b+Math.floor(i/3)%n,ty=y-6,sp=subSpr(pine,r,(s+.5)/3,c);
 g.fillStyle='rgba(0,0,0,.28)';g.beginPath();g.ellipse(x+4,ty+2,r*.9,r*.45,0,0,7);g.fill();g.fillStyle='#16111c';g.fillRect(x-4,ty-6,8,9);g.fillStyle='#5a3a22';g.fillRect(x-3,ty-6,6,8);
 const sx=Math.round(x-sp.width/2),sy=pine?Math.round(ty-10-sp.height+2):Math.round(ty-r*.7-sp.height/2);g.drawImage(sp,sx,sy);kpWB(g,sp,sx,sy,y,12)}}}
 Object.assign(OB,{foak:kpFTree(0),fpine:kpFTree(1)});

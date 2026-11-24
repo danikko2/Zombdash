@@ -18,7 +18,7 @@ const ok=(c,m)=>{LOG((c?'PASS ':'FAIL ')+m);if(!c)errs.push(m)};
 S.ac.name='T';S.ac.un=[0];const A=S.ac;delete A.cp;
 ok(cpOf(A)==0&&mapOK(0)&&!mapOK(3)&&!mapOK(1),'fresh account: only Suburb open');
 menu();ok(ui.innerHTML.includes('hubCamp()')&&ui.innerHTML.includes("setGM('f');play()"),'main menu has the Campaign and Free Play cards');modes();ok(ui.innerHTML.includes('CAMPAIGN')&&ui.innerHTML.includes('FREE PLAY'),'mode screen');
-setGM('c');mapId=campFront();play();ok(UIS=='cmap'&&ui.innerHTML.includes('Suburb')&&ui.innerHTML.includes('Bill')&&ui.innerHTML.includes('HOMETOWN'),'campaign map: Hometown section, Suburb, boss Bill');ok(ORD()[1]==3&&!mapOK(3),'next in campaign order is School (locked)');mapId=3;mapGo();ok(UIS!='surv','locked map cannot be confirmed');
+setGM('c');mapId=campFront();play();ok(UIS=='cmap'&&ui.innerHTML.includes('Dave&#39;s House')&&ui.innerHTML.includes('Bill')&&ui.innerHTML.includes('HOMETOWN'),'campaign map: Hometown section, Dave\\'s House, boss Bill');ok(ORD()[1]==3&&!mapOK(3),'next in campaign order is School (locked)');mapId=3;mapGo();ok(UIS!='surv','locked map cannot be confirmed');
 setGM('f');mapId=4;play();ok(mapId==0,'free play falls back to an unlocked map');
 // campaign run to wave 20
 setGM('c');mapId=0;sel=0;start();ok(wave==1,'campaign always starts at wave 1');P.mx=P.hp=999;wave=19;zs=[];toSp=0;nextWave();
