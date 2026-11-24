@@ -105,7 +105,9 @@ const CMPK=[
 {id:'gravelpatch',n:'Gravel patch',cat:'shape',closed:1,pri:-115,f:pthPatch('gravel')},
 {id:'asphaltpatch',n:'Asphalt patch',cat:'shape',closed:1,def:{o:{curb:1}},opts:[['curb','Curb edge','chk']],pri:-116,f:pthPatch('asphalt')},
 {id:'flowerbed',n:'Flower bed',cat:'shape',closed:1,pri:-114,f:pthPatch('flowers')},
-{id:'forest',n:'Forest floor',cat:'shape',closed:1,pri:-118,def:{o:{s:'floor'}},opts:[['s','Ground',[['floor','Forest floor (leaf litter)'],['churned','Churned earth']]]],f:pthForest}];
+{id:'forest',n:'Forest floor',cat:'shape',closed:1,pri:-118,def:{o:{s:'floor'}},opts:[['s','Ground',[['floor','Forest floor (leaf litter)'],['churned','Churned earth']]]],f:pthForest,
+// made solid (solid: true, Dave's House), the woods can't be walked into, by players or zombies; bullets still fly through, as through the trunks
+coll(P,o,out){cmPolyBoxes(P,12,2,out)}}];
 for(const t of CMPK)cmAddPath(t);
 // the wall flag of a solid path
 function cmPFl(o){const T=cmPath(o.p);return T&&T.fl!=null?T.fl:1}

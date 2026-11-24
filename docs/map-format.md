@@ -317,6 +317,7 @@ Fields: `kind`, `points` (2–400 `[x, y]`; shapes need 3), `width`, `color`, `s
 | `pond` | A pond / lake with a shore (blocks walking, bullets fly over) | | `lily` 0/1, `reeds` 0/1 |
 | `arena` | The front of a stadium (solid): the concrete facade with columns and glass along its outer edge, the concourse roof and the stands behind, in the team's *colour*. Sides that lie along the shape's own bounding box (where the map's edge cuts it off) get no facade, so draw the curve and close it beyond the map's edge with `sharp` on | | |
 | `woods` | Dense woods: dark undergrowth with a ragged line of bushes round its edge (blocks walking, bullets pass). Stand trees in it (`eoak`, `eoakv`, `epine`) with `solid` off, so nobody gets caught between trunks | | |
+| `forest` | Forest floor under the woods (leaf litter, or churned earth with `s: "churned"`). With `"solid": true` nobody can walk into it, players or zombies; bullets still fly through (Dave's House's woods). Stand `foak` / `fpine` trees in it | | `s` |
 | `beach` `clearing` `mosspatch` `dirtpatch` `gravelpatch` `asphaltpatch` `flowerbed` | Ground patches of any shape (`asphaltpatch` has `curb` 0/1) | | |
 
 Roads join up where they overlap; put a `junction` area over a crossing for crosswalks and stop lines. For a T, end one road at the edge of the other.

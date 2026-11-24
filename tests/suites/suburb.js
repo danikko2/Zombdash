@@ -55,6 +55,16 @@ ok(!SM.length,'no smoke (no crash on this map)');
  ok(!bad.length,'zombies can walk to the player from every spawn point ('+bad.length+' cannot '+bad.slice(0,3).map(p=>p.map(Math.round).join(',')).join(' ')+')')}
 start();{ZSPN.on='classic';const R0=[];for(let i=0;i<40;i++){const z=spawnZ(0);if(z){R0.push(z);zs.splice(zs.indexOf(z),1)}}ZSPN.on='near';ok(R0.length==40&&R0.every(z=>HS.sp.some(p=>Math.hypot(p[0]-z.x,p[1]-z.y)<21)),'zombies appear at the spawn points')}
 
+// ---------- the woods: nobody walks into them ----------
+{const F=bimDoc(0).paths.filter(l=>l.p=='forest'),inF=(x,y)=>F.some(l=>cmPolyIn(cmPathSm(l),x,y));ok(F.length==6&&F.every(l=>l.sol===true),'every stretch of woods is solid ('+F.length+')');
+ let n=0,shut=0;for(let y=40;y<WH;y+=97)for(let x=40;x<WW;x+=97){if(![[0,0],[40,0],[-40,0],[0,40],[0,-40]].every(([a,b])=>inF(x+a,y+b)))continue;n++;if(bl[Math.floor(y/gs)*gw+Math.floor(x/gs)])shut++}
+ ok(n>100&&shut==n,'zombies can\\'t walk into the woods ('+shut+' of '+n+' spots well inside are shut)');
+ const walk=(x,y,k,f)=>{P.x=x;P.y=y;for(const q of zs)q.hp=0;zs=[];for(let i=0;i<f;i++){keys[k]=1;P.hp=P.mx;tick(1)}keys[k]=0;return[P.x,P.y]};
+ const a=walk(1250,1000,'d',150),b=walk(700,560,'w',150),c=walk(300,900,'a',150);
+ ok(a[0]>1300&&!inF(a[0],a[1])&&!inF(b[0],b[1])&&b[1]<520&&!inF(c[0],c[1]),'walking straight at the woods, the player stops at their edge ('+[a,b,c].map(p=>p.map(Math.round).join(',')).join(' ')+')');
+ const T=bimDoc(0).paths.find(l=>l.p=='trail'),G=new Int16Array(gw*gh);bfs(G,HS.px,HS.py);const P_=cmPathSm(T).filter(p=>p[0]>40&&p[0]<WW-40),cut=P_.filter(p=>{const i=Math.floor(p[0]/gs),j=Math.floor((p[1]+12)/gs);return G[j*gw+i]<0&&G[(j+1)*gw+i]<0});
+ ok(!cut.length,'the dirt trail stays open all the way along ('+cut.length+' spots cut off '+cut.slice(0,2).map(p=>p.map(Math.round).join(',')).join(' ')+')')}
+
 // ---------- the tutorial and the living room ----------
 {const G=tutGeo(),wallAt=(x,y)=>WL.some(w=>w[4]!=2&&x>=w[0]&&x<=w[0]+w[2]&&y>=w[1]&&y<=w[1]+w[3]);
  ok(!wallAt(G.cx,G.y1)&&wallAt(G.cx-28,G.y1)&&wallAt(G.cx+30,G.y1)&&!wallAt(G.kx,G.y0)&&wallAt(G.x0,G.y0+60)&&wallAt(G.x1,G.y0+30)&&G.X.every(b=>!wallAt(b[0]+b[2]/2,b[1]+b[3]/2)),'Dave\\'s house is where the tutorial expects it (front and patio doors at tutGeo, walls beside them, the doors it shuts are doorways)');
